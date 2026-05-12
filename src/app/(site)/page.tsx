@@ -104,7 +104,7 @@ function NavCard({ href, label, count, preview, description, explore }: NavCardP
         <span className="font-sans text-xs text-ink-muted">{count}</span>
       </div>
 
-      <div className="flex gap-3 flex-wrap">
+      <div className="flex gap-3 flex-wrap" dir="ltr" lang="ko">
         {preview.map((symbol) => (
           <span
             key={symbol}
@@ -122,7 +122,7 @@ function NavCard({ href, label, count, preview, description, explore }: NavCardP
 
       <div className="flex items-center gap-2 mt-auto">
         <span className="font-sans text-xs text-gold tracking-wider">{explore}</span>
-        <span className="text-gold group-hover:translate-x-1 transition-transform inline-block">
+        <span className="text-gold group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform inline-block">
           →
         </span>
       </div>

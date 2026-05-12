@@ -4,7 +4,7 @@ import { buildMtKey, getBundledMachineTranslation } from '@/lib/mtCache'
 
 export const dynamic = 'force-dynamic'
 
-const LANG_CODES: Lang[] = ['ko', 'en', 'zh', 'ja', 'fr', 'de', 'es', 'hi']
+const LANG_CODES: Lang[] = ['ko', 'en', 'zh', 'ja', 'fr', 'de', 'es', 'hi', 'vi', 'ru', 'ar']
 
 function isLang(x: unknown): x is Lang {
   return typeof x === 'string' && (LANG_CODES as string[]).includes(x)
@@ -19,6 +19,9 @@ const MYMEMORY_TARGET: Record<Exclude<Lang, 'ko'>, string> = {
   de: 'de',
   es: 'es',
   hi: 'hi',
+  vi: 'vi',
+  ru: 'ru',
+  ar: 'ar',
 }
 
 const MAX_CHUNK = 420

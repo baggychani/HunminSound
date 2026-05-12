@@ -25,6 +25,7 @@ const config: Config = {
         serif: ['var(--font-serif)', 'Georgia', '"Times New Roman"', 'serif'],
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
         devanagari: ['var(--font-devanagari)', 'Noto Sans Devanagari', 'system-ui', 'sans-serif'],
+        arabic: ['var(--font-arabic)', 'Noto Sans Arabic', 'Segoe UI', 'sans-serif'],
       },
       letterSpacing: {
         korean: '0.05em',

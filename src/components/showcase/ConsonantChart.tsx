@@ -81,8 +81,12 @@ export function ConsonantChart({ consonants }: ConsonantChartProps) {
               )}
             </div>
 
-            {/* 기호 그리드 — articulationGroup 간 구분선 */}
-            <div className="flex flex-wrap items-center gap-y-3">
+            {/* 기호 그리드 — articulationGroup 간 구분선 (아랍어 UI는 전체 RTL이어도 자모 순서는 가로쓰기 유지) */}
+            <div
+              className="flex flex-wrap items-center gap-y-3"
+              dir={lang === 'ar' ? 'ltr' : undefined}
+              lang={lang === 'ar' ? 'ko' : undefined}
+            >
               {subGroups.map((subGroup, idx) => (
                 <Fragment key={subGroup.group || idx}>
                   {/* 그룹 사이 옅은 구분선 */}
@@ -114,7 +118,7 @@ export function ConsonantChart({ consonants }: ConsonantChartProps) {
                           >
                             {consonant.symbol}
                           </span>
-                          <span className="font-sans text-[10px] text-ink-muted mt-2 tracking-wide">
+                          <span className="symbol-sub">
                             {consonant.name.split(' ')[1]?.replace(/[()]/g, '') ?? ''}
                           </span>
                         </motion.button>

@@ -10,6 +10,9 @@ export interface Consonant {
   description_ja?: string
   description_fr?: string
   description_hi?: string
+  description_vi?: string
+  description_ru?: string
+  description_ar?: string
   animationFileName?: string
   mriFileName?: string
 }
@@ -25,6 +28,9 @@ export interface Vowel {
   description_ja?: string
   description_fr?: string
   description_hi?: string
+  description_vi?: string
+  description_ru?: string
+  description_ar?: string
   animationFileName?: string
   mriFileName?: string
 }

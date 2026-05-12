@@ -63,8 +63,12 @@ export function VowelChart({ vowels }: VowelChartProps) {
               </p>
             </div>
 
-            {/* 기호 그리드 */}
-            <div className="flex flex-wrap gap-1">
+            {/* 기호 그리드 (아랍어 UI에서도 자모 순서는 LTR 유지) */}
+            <div
+              className="flex flex-wrap gap-1"
+              dir={lang === 'ar' ? 'ltr' : undefined}
+              lang={lang === 'ar' ? 'ko' : undefined}
+            >
               {items.map((vowel) => {
                 const isActive = activeId === vowel._id
                 return (
@@ -85,7 +89,7 @@ export function VowelChart({ vowels }: VowelChartProps) {
                     >
                       {vowel.symbol}
                     </span>
-                    <span className="font-sans text-[10px] text-ink-muted mt-2 tracking-wide">
+                    <span className="symbol-sub">
                       {vowel.name.split(' ')[1]?.replace(/[()]/g, '') ?? ''}
                     </span>
                   </motion.button>

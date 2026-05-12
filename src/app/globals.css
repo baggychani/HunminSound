@@ -40,6 +40,10 @@
     @apply bg-hanji text-ink antialiased;
   }
 
+  html[dir='rtl'] body {
+    font-family: var(--font-arabic), var(--font-sans), system-ui, sans-serif;
+  }
+
   /* 브라우저 기본 링크(방문 시 보라·밑줄) 제거 — 디자인은 컴포넌트에서 text-* 로 통일 */
   a {
     @apply no-underline;
@@ -125,6 +129,18 @@
   .symbol-btn.active::after {
     content: '';
     @apply absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-gold;
+  }
+
+  /* 자모 아래 이름(비읍 등): 살짝 키우고, 호버·선택 시 위 글자와 같이 진하게 */
+  .symbol-btn .symbol-sub {
+    @apply font-sans text-ink-muted mt-2 tracking-wide;
+    font-size: 10.5px;
+    line-height: 1.2;
+  }
+
+  .symbol-btn:hover .symbol-sub,
+  .symbol-btn.active .symbol-sub {
+    @apply text-ink;
   }
 
   .section-divider {

@@ -105,20 +105,16 @@ export function Header() {
                     className={`font-sans tracking-korean transition-colors ${
                       lang === 'hi' ? 'text-[15px] leading-snug' : 'text-sm'
                     } ${
-                      isActive
-                        ? 'text-ink group-hover:text-ink-accent'
-                        : 'text-ink-muted group-hover:text-ink'
+                      isActive ? 'text-ink' : 'text-ink-muted group-hover:text-ink'
                     }`}
                   >
                     {primary}
                   </span>
                   <span
                     className={`font-sans tracking-widest leading-none transition-colors ${
-                      lang === 'hi' ? 'text-[11px]' : 'text-[10px]'
+                      lang === 'hi' ? 'text-[11.5px]' : 'text-[10.5px]'
                     } ${
-                      isActive
-                        ? 'text-ink-muted group-hover:text-ink'
-                        : 'text-ink-muted group-hover:text-ink'
+                      isActive ? 'text-ink' : 'text-ink-muted group-hover:text-ink'
                     }`}
                   >
                     {secondary}
@@ -126,7 +122,7 @@ export function Header() {
                   {isActive && (
                     <span
                       aria-hidden
-                      className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-ink-accent"
+                      className="pointer-events-none absolute bottom-0 start-0 end-0 h-px bg-ink-accent"
                     />
                   )}
                 </Link>
@@ -137,7 +133,7 @@ export function Header() {
           <button
             type="button"
             onClick={toggleLang}
-            className={`group relative ml-4 sm:ml-8 md:ml-12 lg:ml-16 shrink-0 flex flex-row items-end gap-1 px-0.5 pb-2 transition-colors ${
+            className={`group relative ms-4 sm:ms-8 md:ms-12 lg:ms-16 shrink-0 flex flex-row items-end gap-1 px-0.5 pb-2 transition-colors ${
               langOpen
                 ? 'text-ink-accent'
                 : 'text-ink-muted hover:text-ink'
@@ -159,7 +155,7 @@ export function Header() {
               </span>
               <span
                 className={`font-sans tracking-widest leading-none transition-colors ${
-                  lang === 'hi' ? 'text-[11px]' : 'text-[10px]'
+                  lang === 'hi' ? 'text-[11.5px]' : 'text-[10.5px]'
                 } ${
                   langOpen
                     ? 'text-ink-accent'
@@ -234,7 +230,7 @@ export function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15, ease: 'easeOut' }}
-            className="absolute left-0 right-0 top-full z-[65] border-b border-hanji-border bg-hanji shadow-[0_12px_24px_-8px_rgb(0_0_0_/0.18)] dark:shadow-[0_16px_32px_-10px_rgb(0_0_0_/0.65)] sm:hidden"
+            className="absolute start-0 end-0 top-full z-[65] border-b border-hanji-border bg-hanji shadow-[0_12px_24px_-8px_rgb(0_0_0_/0.18)] dark:shadow-[0_16px_32px_-10px_rgb(0_0_0_/0.65)] sm:hidden"
           >
             <div className="max-w-5xl mx-auto px-4 py-2">
               {NAV_LINKS.map(({ href, topKey }) => {
@@ -269,7 +265,7 @@ export function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15, ease: 'easeOut' }}
-            className="absolute left-0 right-0 top-full z-[70] border-b border-hanji-border bg-hanji shadow-[0_12px_24px_-8px_rgb(0_0_0_/0.18)] dark:shadow-[0_16px_32px_-10px_rgb(0_0_0_/0.65)]"
+            className="absolute start-0 end-0 top-full z-[70] border-b border-hanji-border bg-hanji shadow-[0_12px_24px_-8px_rgb(0_0_0_/0.18)] dark:shadow-[0_16px_32px_-10px_rgb(0_0_0_/0.65)]"
           >
             <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5">
               <div className="flex flex-wrap justify-end gap-x-8 gap-y-3">
@@ -290,7 +286,7 @@ export function Header() {
                       }`}
                     >
                       {isActive && (
-                        <span className="inline-block w-1 h-1 rounded-full bg-gold mr-2 align-middle mb-0.5" />
+                        <span className="inline-block w-1 h-1 rounded-full bg-gold me-2 align-middle mb-0.5" />
                       )}
                       {l.label}
                     </motion.button>

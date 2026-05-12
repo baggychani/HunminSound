@@ -205,7 +205,7 @@ export const consonantsData: Consonant[] = [
     category: '비음',
     articulationGroup: '연구개',
     description:
-      '초성 위치에서는 음가가 없으나, 종성 위치에서는 연구개 비음 [ŋ]으로 실현됩니다. 종성 ㅇ은 연구개와 혀의 후방부가 접촉하여 구강 기류를 막고 비강으로 기류를 내보내는 방식으로 조음됩니다.',
+      '초성 위치에서는 음가가 없으나, 종성 위치에서는 연구개 비음 [ŋ]으로 실현됩니다. 종성 ㅇ은 연구개와 혀의 후방부가 접촉하여 구강 기류를 막고 비강으로 기류를보내는 방식으로 조음됩니다.',
     animationFileName: 'ㅇ.mp4',
     mriFileName: 'ㅇ.mp4',
   },

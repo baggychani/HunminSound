@@ -1,5 +1,10 @@
 import type { Metadata } from 'next'
-import { Noto_Serif_KR, Noto_Sans_KR, Noto_Sans_Devanagari } from 'next/font/google'
+import {
+  Noto_Serif_KR,
+  Noto_Sans_KR,
+  Noto_Sans_Devanagari,
+  Noto_Sans_Arabic,
+} from 'next/font/google'
 import { Providers } from '@/components/theme/Providers'
 import './globals.css'
 
@@ -27,6 +32,14 @@ const notoSansDevanagari = Noto_Sans_Devanagari({
   preload: false,
 })
 
+const notoSansArabic = Noto_Sans_Arabic({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['arabic'],
+  variable: '--font-arabic',
+  display: 'swap',
+  preload: false,
+})
+
 export const metadata: Metadata = {
   title: {
     default: '세종말소리 · Sejong Speech Sounds',
@@ -46,7 +59,7 @@ export default function RootLayout({
     <html
       lang="ko"
       suppressHydrationWarning
-      className={`${notoSerifKr.variable} ${notoSansKr.variable} ${notoSansDevanagari.variable}`}
+      className={`${notoSerifKr.variable} ${notoSansKr.variable} ${notoSansDevanagari.variable} ${notoSansArabic.variable}`}
     >
       <body className="font-sans">
         <Providers>{children}</Providers>

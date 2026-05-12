@@ -1,4 +1,4 @@
-export type Lang = 'ko' | 'en' | 'zh' | 'ja' | 'fr' | 'de' | 'es' | 'hi'
+export type Lang = 'ko' | 'en' | 'zh' | 'ja' | 'fr' | 'de' | 'es' | 'hi' | 'vi' | 'ru' | 'ar'
 
 export const LANGUAGES: { code: Lang; label: string }[] = [
   { code: 'ko', label: '한국어' },
@@ -9,6 +9,9 @@ export const LANGUAGES: { code: Lang; label: string }[] = [
   { code: 'de', label: 'Deutsch' },
   { code: 'es', label: 'Español' },
   { code: 'hi', label: 'हिन्दी' },
+  { code: 'vi', label: 'Tiếng Việt' },
+  { code: 'ru', label: 'Русский' },
+  { code: 'ar', label: 'العربية' },
 ]
 
 /** 헤더 네비 상단 줄 — 항상 한글 고정 */
@@ -491,6 +494,162 @@ const hi: Messages = {
   siteNavMenuAria: 'साइट मेनू खोलें',
 }
 
+/** 베트남어 — UI 초안(영문 베이스 복사 후 주요 항목만 번역, 추후 정리 가능) */
+const vi: Messages = {
+  ...en,
+  consonants: 'Phụ âm',
+  vowels: 'Nguyên âm',
+  navSubConsonants: 'Phụ âm',
+  navSubVowels: 'Nguyên âm',
+  navSubLanguage: 'Ngôn ngữ',
+  homeSubtitle: 'Lưu trữ nghiên cứu âm học điều âm tiếng Hàn',
+  homeDescription:
+    'Lưu trữ nghiên cứu khám phá quá trình điều âm\nnguyên âm và phụ âm tiếng Hàn qua hình ảnh MRI.',
+  homeSub: 'Dự án Hunminjeongeum · Vua Sejong, 1443',
+  homeIntroPart1:
+    'Làm nổi bật lại nguyên lý sáng tạo Hunminjeongeum (訓民正音) dưới góc nhìn ngữ âm học hiện đại,',
+  homeIntroPart2: 'chúng tôi trực quan hóa chuyển động của cơ quan điều âm bằng hình ảnh MRI.',
+  language: 'Ngôn ngữ',
+  footerRight: 'Lưu trữ nghiên cứu âm học điều âm tiếng Hàn',
+  themeLight: 'Sáng',
+  themeDark: 'Tối',
+  themeSystem: 'Hệ thống',
+  themeToggleAria: 'Chọn giao diện hiển thị',
+  languagePickerAria: 'Chọn ngôn ngữ',
+  siteNavMenuAria: 'Mở menu trang',
+  mriVideo: 'Video MRI',
+  animationVideo: 'Hoạt hình điều âm',
+  videoComingSoon: 'Video MRI sắp có',
+  animationComingSoon: 'Hoạt hình sắp có',
+  explore: 'Khám phá',
+  consonantsCount: '19',
+  vowelsCount: '21',
+  consonantsCardDesc:
+    'Khám phá quá trình điều âm của 19 phụ âm tiếng Hàn: âm bật nổ, ma sát, tắc-xát, mũi và cạnh.',
+  vowelsCardDesc:
+    'Khám phá vị trí lưỡi và đặc trưng điều âm của 21 nguyên âm tiếng Hàn.',
+  clickToExplore: 'Nhấp vào ký hiệu để xem mô tả điều âm và video MRI.',
+  monophthongDesc: 'Nguyên âm thuần với một mục tiêu điều âm',
+  diphthongDesc: 'Nguyên âm ghép nửa nguyên âm và nguyên âm đơn',
+  consonantsPageDesc:
+    '19 phụ âm tiếng Hàn được phân loại theo cách điều âm thành âm bật nổ, ma sát, tắc-xát, mũi và cạnh.',
+  vowelsPageDesc:
+    'Nguyên âm tiếng Hàn gồm 10 nguyên âm đơn và 11 nguyên âm đôi, được phân biệt bởi độ cao lưỡi, trước-sau và tròn môi.',
+  categories: {
+    파열음: 'Âm bật nổ',
+    마찰음: 'Âm ma sát',
+    파찰음: 'Âm tắc-xát',
+    비음: 'Âm mũi',
+    유음: 'Âm cạnh',
+    단모음: 'Nguyên âm đơn',
+    이중모음: 'Nguyên âm đôi',
+  },
+}
+
+/** 러시아어 */
+const ru: Messages = {
+  ...en,
+  consonants: 'Согласные',
+  vowels: 'Гласные',
+  navSubConsonants: 'Согласные',
+  navSubVowels: 'Гласные',
+  navSubLanguage: 'Язык',
+  homeSubtitle: 'Архив исследований корейской артикуляторной фонетики',
+  homeDescription:
+    'Исследовательский архив, изучающий артикуляцию\nкорейских согласных и гласных с помощью МРТ.',
+  homeSub: 'Проект Хунминчонъым · король Сечжон, 1443',
+  homeIntroPart1:
+    'Мы заново освещаем принципы создания Хунминчонъыма (訓民正音) с точки зрения современной фонетики,',
+  homeIntroPart2: 'и визуализируем движение органов артикуляции с помощью МРТ.',
+  language: 'Язык',
+  footerRight: 'Архив исследований корейской артикуляторной фонетики',
+  themeLight: 'Светлая',
+  themeDark: 'Тёмная',
+  themeSystem: 'Системная',
+  themeToggleAria: 'Выбрать тему оформления',
+  languagePickerAria: 'Выбрать язык',
+  siteNavMenuAria: 'Открыть меню сайта',
+  mriVideo: 'Видео МРТ',
+  animationVideo: 'Анимация артикуляции',
+  videoComingSoon: 'Видео МРТ скоро',
+  animationComingSoon: 'Анимация скоро',
+  explore: 'Исследовать',
+  consonantsCount: '19',
+  vowelsCount: '21',
+  consonantsCardDesc:
+    'Исследуйте артикуляцию 19 корейских согласных: смычные, щелевые, аффрикаты, носовые и дрожащие.',
+  vowelsCardDesc:
+    'Исследуйте положение языка и артикуляторные признаки 21 корейской гласной.',
+  clickToExplore: 'Нажмите на символ, чтобы увидеть описание артикуляции и видео МРТ.',
+  monophthongDesc: 'Чистые гласные с одной артикуляторной целью',
+  diphthongDesc: 'Гласные, сочетающие скольжение и монофтонг',
+  consonantsPageDesc:
+    '19 корейских согласных классифицируются на смычные, щелевые, аффрикаты, носовые и дрожащие по способу артикуляции.',
+  vowelsPageDesc:
+    'Корейские гласные состоят из 10 монофтонгов и 11 дифтонгов и различаются по высоте языка, продвинутости и округлению губ.',
+  categories: {
+    파열음: 'Смычные',
+    마찰음: 'Щелевые',
+    파찰음: 'Аффрикаты',
+    비음: 'Носовые',
+    유음: 'Плавные',
+    단모음: 'Монофтонги',
+    이중모음: 'Дифтонги',
+  },
+}
+
+/** 아랍어 */
+const ar: Messages = {
+  ...en,
+  consonants: 'الصّوامت',
+  vowels: 'الحروف المتحركة',
+  navSubConsonants: 'الصّوامت',
+  navSubVowels: 'الحروف المتحركة',
+  navSubLanguage: 'اللغة',
+  homeSubtitle: 'أرشيف أبحاث الصوتيات التعبيرية الكورية',
+  homeDescription:
+    'أرشيف بحثي يستكشف ارتباط\nالمقاطع والحركات الكورية من خلال تصوير الرنين المغناطيسي.',
+  homeSub: 'مشروع هونمينجونغئوم · الملك سيجونغ، 1443',
+  homeIntroPart1:
+    'نعيد تسليط الضوء على مبادئ إنشاء هونمينجونغئوم (訓民正音) من منظور الصوتيات الحديثة،',
+  homeIntroPart2: 'ونُظهر حركة أعضاء النطق باستخدام تصوير الرنين المغناطيسي.',
+  language: 'اللغة',
+  footerRight: 'أرشيف أبحاث الصوتيات التعبيرية الكورية',
+  themeLight: 'فاتح',
+  themeDark: 'داكن',
+  themeSystem: 'النظام',
+  themeToggleAria: 'اختيار مظهر العرض',
+  languagePickerAria: 'اختيار اللغة',
+  siteNavMenuAria: 'فتح قائمة الموقع',
+  mriVideo: 'فيديو الرنين',
+  animationVideo: 'رسوم النطق',
+  videoComingSoon: 'فيديو الرنين قريبًا',
+  animationComingSoon: 'الرسوم قريبًا',
+  explore: 'استكشاف',
+  consonantsCount: '19',
+  vowelsCount: '21',
+  consonantsCardDesc:
+    'استكشف ارتباط 19 مقطعًا كوريًا: انفجارية، احتكاكية، انفجارية-احتكاكية، أنفية، وسائلة.',
+  vowelsCardDesc:
+    'استكشف موضع اللسان وخصائص النطق لـ 21 حركة كورية.',
+  clickToExplore: 'انقر رمزًا لعرض وصف النطق وفيديو الرنين.',
+  monophthongDesc: 'حركات صافية بهدف نطقي واحد',
+  diphthongDesc: 'حركات تجمع انزلاقًا وحركة أحادية',
+  consonantsPageDesc:
+    'تُصنَّف المقاطع الكورية التسعة عشر إلى انفجارية واحتكاكية وانفجارية-احتكاكية وأنفية وسائلة حسب طريقة النطق.',
+  vowelsPageDesc:
+    'تتكون الحركات الكورية من 10 أحادية و11 ثنائية، وتُميَّز بارتفاع اللسان وقداميته وتقوس الشفتين.',
+  categories: {
+    파열음: 'انفجارية',
+    마찰음: 'احتكاكية',
+    파찰음: 'انفجارية-احتكاكية',
+    비음: 'أنفية',
+    유음: 'سائلة',
+    단모음: 'أحادية',
+    이중모음: 'ثنائية',
+  },
+}
+
 export const messages: Record<Lang, Messages> = {
   ko,
   en,
@@ -500,6 +659,9 @@ export const messages: Record<Lang, Messages> = {
   de,
   es,
   hi,
+  vi,
+  ru,
+  ar,
 }
 
 export function getMessages(lang: Lang): Messages {

@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useCallback, useContext, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import type { Lang } from '@/lib/i18n'
 
 interface LanguageContextType {
@@ -19,6 +19,12 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const setLang = useCallback((newLang: Lang) => {
     setLangState(newLang)
   }, [])
+
+  useEffect(() => {
+    const html = document.documentElement
+    html.lang = lang === 'zh' ? 'zh-Hans' : lang
+    html.dir = lang === 'ar' ? 'rtl' : 'ltr'
+  }, [lang])
 
   return (
     <LanguageContext.Provider value={{ lang, setLang }}>
