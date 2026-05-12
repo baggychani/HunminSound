@@ -21,9 +21,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 relative border-b border-hanji-border bg-hanji">
       {/* 메인 헤더 바 — 불투명 배경(반투명/블러 제거로 다크 모드에서 본문 비침 방지) */}
-      <div
-        className="max-w-5xl mx-auto px-6 min-h-[4rem] py-3 flex flex-nowrap items-center justify-between gap-3 [contain:layout]"
-      >
+      <div className="max-w-5xl mx-auto px-6 min-h-[4rem] py-3 flex flex-nowrap items-center justify-between gap-3">
         {/* 로고 */}
         <Link
           href="/"
@@ -39,7 +37,7 @@ export function Header() {
         </Link>
 
         {/* 네비게이션 + 언어 (언어는 오른쪽 분리) */}
-        <nav className="flex flex-1 flex-nowrap items-center justify-end min-w-0 overflow-x-auto">
+        <nav className="scrollbar-none flex min-w-0 flex-1 flex-nowrap items-center justify-end overflow-x-auto overflow-y-hidden">
           <div className="flex flex-nowrap items-center gap-4 sm:gap-8 shrink-0">
             {NAV_LINKS.map(({ href, topKey, subKey }) => {
               const isActive = pathname.startsWith(href)
@@ -114,10 +112,10 @@ export function Header() {
             key="lang-panel"
             role="region"
             aria-label="언어 목록"
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
             className="absolute left-0 right-0 top-full z-[70] border-b border-hanji-border bg-hanji shadow-[0_12px_24px_-8px_rgb(0_0_0_/0.18)] dark:shadow-[0_16px_32px_-10px_rgb(0_0_0_/0.65)]"
           >
             <div className="max-w-5xl mx-auto px-6 py-5">
@@ -127,11 +125,11 @@ export function Header() {
                   return (
                     <motion.button
                       key={l.code}
+                      type="button"
                       onClick={() => {
                         setLang(l.code)
                         setLangOpen(false)
                       }}
-                      whileHover={{ y: -1 }}
                       className={`font-sans text-sm tracking-wide transition-colors ${
                         isActive
                           ? 'text-ink-accent'

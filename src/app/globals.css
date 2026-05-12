@@ -32,6 +32,8 @@
 
   html {
     scroll-behavior: smooth;
+    /* 스크롤바 유무로 가로 폭이 바뀌며 헤더 구분선이 흔들이는 현상 완화 */
+    scrollbar-gutter: stable;
   }
 
   body {
@@ -48,8 +50,17 @@
     color: inherit;
   }
 
-  a:focus-visible {
-    @apply outline-none ring-2 ring-ink-accent/80 ring-offset-2 ring-offset-hanji rounded-sm;
+  /* 키보드 포커스만 표시 — 굵은 액센트 링은 클릭 시 번쩍이며 직사각형처럼 보일 수 있음 */
+  a:focus-visible,
+  button:focus-visible {
+    @apply outline-none rounded-sm;
+    box-shadow: 0 0 0 2px rgb(var(--hanji-rgb)), 0 0 0 4px rgb(var(--ink-muted-rgb) / 0.45);
+  }
+
+  a:focus:not(:focus-visible),
+  button:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
   }
 
   ::selection {
@@ -62,8 +73,13 @@
     color: rgb(var(--ink-rgb));
   }
 
+  /*
+   * 스크롤바: width만 주면 가로 스크롤바의 두께(height)가 기본값으로 남아
+   * thumb 색(gold)이 넓은 갈색 띠처럼 보이는 경우가 있음(헤더 nav overflow-x-auto 등).
+   */
   ::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
@@ -77,6 +93,19 @@
   ::-webkit-scrollbar-thumb {
     background: rgb(var(--gold-rgb) / 0.85);
     border-radius: 3px;
+  }
+}
+
+@layer utilities {
+  /** 가로 스크롤이 잠깐 생겨도 스크롤바를 그리지 않음(터치·트랙패드 스와이프는 유지) */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
   }
 }
 
