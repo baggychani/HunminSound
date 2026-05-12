@@ -1,0 +1,45 @@
+# dependencies
+node_modules
+.pnp
+.pnp.js
+
+# next.js
+.next/
+out/
+
+# production / build
+build
+dist
+*.tsbuildinfo
+
+# debug & logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env (secrets — never commit)
+.env
+.env.*
+!.env.example
+
+# vercel
+.vercel
+
+# testing / coverage
+coverage
+.nyc_output
+
+# ide / os
+.idea
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# misc
+*.pem
+.turbo

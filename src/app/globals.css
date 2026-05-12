@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 라이트 / 다크 — Tailwind 색은 rgb(R G B / α) 형식과 매칭 */
+@layer base {
+  :root {
+    --hanji-rgb: 253 253 249;
+    --hanji-warm-rgb: 247 243 236;
+    --hanji-border-rgb: 226 221 213;
+    --hanji-hover-rgb: 240 235 226;
+    --ink-rgb: 28 25 23;
+    --ink-soft-rgb: 68 64 60;
+    --ink-muted-rgb: 120 113 108;
+    --ink-accent-rgb: 146 64 14;
+    --gold-rgb: 180 83 9;
+    --gold-light-rgb: 217 119 6;
+  }
+
+  .dark {
+    --hanji-rgb: 28 25 23;
+    --hanji-warm-rgb: 41 37 36;
+    --hanji-border-rgb: 87 83 78;
+    --hanji-hover-rgb: 68 64 60;
+    --ink-rgb: 250 250 249;
+    --ink-soft-rgb: 214 211 209;
+    --ink-muted-rgb: 168 162 158;
+    --ink-accent-rgb: 251 191 36;
+    --gold-rgb: 245 158 11;
+    --gold-light-rgb: 251 191 36;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-hanji text-ink antialiased;
+  }
+
+  /* 브라우저 기본 링크(방문 시 보라·밑줄) 제거 — 디자인은 컴포넌트에서 text-* 로 통일 */
+  a {
+    @apply no-underline;
+    color: inherit;
+  }
+
+  a:visited {
+    color: inherit;
+  }
+
+  a:focus-visible {
+    @apply outline-none ring-2 ring-ink-accent/80 ring-offset-2 ring-offset-hanji rounded-sm;
+  }
+
+  ::selection {
+    background-color: rgb(var(--gold-light-rgb) / 0.85);
+    color: rgb(var(--hanji-rgb));
+  }
+
+  .dark ::selection {
+    background-color: rgb(var(--gold-rgb) / 0.35);
+    color: rgb(var(--ink-rgb));
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgb(var(--hanji-warm-rgb));
+  }
+
+  .dark ::-webkit-scrollbar-track {
+    background: rgb(var(--hanji-hover-rgb));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--gold-rgb) / 0.85);
+    border-radius: 3px;
+  }
+}
+
+@layer components {
+  .symbol-btn {
+    @apply relative flex flex-col items-center justify-center w-16 h-20 rounded transition-all duration-200 cursor-pointer select-none;
+  }
+
+  .symbol-btn:hover .symbol-char {
+    @apply text-ink-accent;
+  }
+
+  .symbol-btn.active .symbol-char {
+    @apply text-ink-accent;
+  }
+
+  .symbol-btn.active::after {
+    content: '';
+    @apply absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-gold;
+  }
+
+  .section-divider {
+    @apply w-12 h-px bg-hanji-border my-8 mx-auto;
+  }
+}

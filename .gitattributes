@@ -1,0 +1,3 @@
+# 줄바꿈 정규화 (Windows/Mac 혼용 시 충돌 완화)
+* text=auto eol=lf
+*.{bat,cmd} text eol=crlf
