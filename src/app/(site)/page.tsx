@@ -31,8 +31,11 @@ export default function HomePage() {
 
         <div className="section-divider" />
 
-        <p className="font-sans text-base text-ink-soft leading-relaxed max-w-xl mx-auto mt-8 whitespace-pre-line">
-          {m.homeDescription}
+        <p className="font-sans text-base text-ink-soft leading-relaxed max-w-xl mx-auto mt-8">
+          <span className="sm:hidden whitespace-normal">
+            {m.homeDescription.replace(/\n/g, ' ')}
+          </span>
+          <span className="hidden sm:inline whitespace-pre-line">{m.homeDescription}</span>
         </p>
       </section>
 

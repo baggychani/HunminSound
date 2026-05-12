@@ -75,6 +75,7 @@ const ko = {
   themeSystem: '시스템',
   themeToggleAria: '표시 테마 선택',
   languagePickerAria: '언어 선택',
+  siteNavMenuAria: '사이트 메뉴',
 }
 
 export type Messages = typeof ko
@@ -137,6 +138,7 @@ const en: Messages = {
   themeSystem: 'System',
   themeToggleAria: 'Choose display theme',
   languagePickerAria: 'Choose language',
+  siteNavMenuAria: 'Open site menu',
 }
 
 const zh: Messages = {
@@ -190,6 +192,7 @@ const zh: Messages = {
   themeSystem: '跟随系统',
   themeToggleAria: '选择显示主题',
   languagePickerAria: '选择语言',
+  siteNavMenuAria: '打开网站菜单',
 }
 
 const ja: Messages = {
@@ -243,6 +246,7 @@ const ja: Messages = {
   themeSystem: 'システム',
   themeToggleAria: 'テーマを選択',
   languagePickerAria: '言語を選択',
+  siteNavMenuAria: 'サイトメニュー',
 }
 
 const fr: Messages = {
@@ -303,6 +307,7 @@ const fr: Messages = {
   themeSystem: 'Système',
   themeToggleAria: 'Choisir le thème d’affichage',
   languagePickerAria: 'Choisir la langue',
+  siteNavMenuAria: 'Ouvrir le menu du site',
 }
 
 const de: Messages = {
@@ -364,6 +369,7 @@ const de: Messages = {
   themeSystem: 'System',
   themeToggleAria: 'Darstellungsthema wählen',
   languagePickerAria: 'Sprache wählen',
+  siteNavMenuAria: 'Seitenmenü öffnen',
 }
 
 const es: Messages = {
@@ -425,6 +431,7 @@ const es: Messages = {
   themeSystem: 'Sistema',
   themeToggleAria: 'Elegir tema de visualización',
   languagePickerAria: 'Elegir idioma',
+  siteNavMenuAria: 'Abrir menú del sitio',
 }
 
 const hi: Messages = {
@@ -481,6 +488,7 @@ const hi: Messages = {
   themeSystem: 'सिस्टम',
   themeToggleAria: 'थीम चुनें',
   languagePickerAria: 'भाषा चुनें',
+  siteNavMenuAria: 'साइट मेनू खोलें',
 }
 
 export const messages: Record<Lang, Messages> = {
