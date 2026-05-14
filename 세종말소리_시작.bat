@@ -1,10 +1,9 @@
 ﻿@echo off
 setlocal
-title 세종말소리 · Sejong Speech Sounds
 cd /d "%~dp0"
-
-rem 파일 인코딩: UTF-8(BOM 권장). chcp 65001 후 한글 출력이 안정적입니다.
+rem UTF-8: switch code page before any Korean (title/echo).
 chcp 65001 >nul 2>&1
+title 세종말소리 · Sejong Speech Sounds
 
 echo.
 echo  ------------------------------------------

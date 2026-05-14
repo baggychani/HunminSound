@@ -1,7 +1,6 @@
 'use client'
 
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 
@@ -23,7 +22,6 @@ export function PhoneticsViewToggle({ className = '', mode, onModeChange }: Phon
   const activeMode = controlled ? mode : uncontrolledMode
   const setActiveMode = controlled ? onModeChange : setUncontrolledMode
   const trackRef = useRef<HTMLDivElement>(null)
-  /** 첫 페인트 전까지 null → pill 위치를 한 번에 확정해 마운트 시 슬라이드가 돌지 않게 함 */
   const [pill, setPill] = useState<{ left: number; width: number } | null>(null)
 
   const measure = useCallback(() => {
@@ -56,9 +54,6 @@ export function PhoneticsViewToggle({ className = '', mode, onModeChange }: Phon
   const changeMode = useCallback(
     (nextMode: ChartViewMode) => {
       if (nextMode === activeMode) return
-
-      // 토글 직전 현재 글리프 좌표를 캡처하도록 이벤트를 먼저 보낸다.
-      window.dispatchEvent(new CustomEvent('phonetics-view-will-change'))
       setActiveMode(nextMode)
     },
     [activeMode, setActiveMode],
@@ -73,12 +68,10 @@ export function PhoneticsViewToggle({ className = '', mode, onModeChange }: Phon
         className="relative flex h-[52px] w-full select-none rounded-full border border-hanji-border bg-hanji/80 p-1 shadow-[inset_0_1px_2px_rgb(28_25_23/0.05)] dark:bg-hanji-warm/5 dark:shadow-[inset_0_1px_2px_rgb(0_0_0/0.25)]"
       >
         {pill !== null ? (
-          <motion.div
+          <div
             aria-hidden
-            className="pointer-events-none absolute inset-y-1 rounded-full bg-hanji-warm shadow-md ring-1 ring-hanji-border/55 dark:bg-hanji-hover dark:ring-hanji-border/50"
-            initial={false}
-            animate={{ left: pill.left, width: pill.width }}
-            transition={{ type: 'spring', stiffness: 460, damping: 38, mass: 0.82 }}
+            className="pointer-events-none absolute inset-y-1 rounded-full bg-hanji-warm shadow-md ring-1 ring-hanji-border/55 transition-[left,width] duration-200 ease-out dark:bg-hanji-hover dark:ring-hanji-border/50"
+            style={{ left: pill.left, width: pill.width }}
           />
         ) : null}
         <button

@@ -8,6 +8,8 @@ import { DualVideoPlayer } from '@/components/ui/DualVideoPlayer'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import { TranslatedDescription } from '@/components/showcase/TranslatedDescription'
+import { TranslatedVowelArticulation } from '@/components/showcase/TranslatedVowelArticulation'
+import { VOWEL_ARTICULATION_KO } from '@/lib/vowelArticulation'
 import type { Vowel } from '@/types'
 
 const CATEGORY_ORDER = ['단모음', '이중모음']
@@ -56,9 +58,11 @@ export function VowelChart({ vowels }: VowelChartProps) {
                 <h3 className="font-serif text-lg text-ink tracking-wide">
                   {categoryLabel}
                 </h3>
-                <span className="font-sans text-xs text-ink-muted tracking-widest uppercase">
-                  {categoryEnLabel}
-                </span>
+                {categoryEnLabel ? (
+                  <span className="font-sans text-xs text-ink-muted tracking-widest uppercase">
+                    {categoryEnLabel}
+                  </span>
+                ) : null}
               </div>
               <p className="font-sans text-xs text-ink-muted mt-2.5">
                 {CATEGORY_DESC[category]}
@@ -110,7 +114,12 @@ export function VowelChart({ vowels }: VowelChartProps) {
                     animationLabel={m.animationVideo}
                     mriLabel={m.mriVideo}
                     categoryLabel={categoryLabel}
-                    categoryEnLabel={categoryEnLabel}
+                    vowelArticulationSymbol={
+                      category === '단모음' &&
+                      activeItem.symbol in VOWEL_ARTICULATION_KO
+                        ? activeItem.symbol
+                        : undefined
+                    }
                   />
                 </div>
               )}
@@ -128,7 +137,8 @@ interface VowelDetailPanelProps {
   animationLabel: string
   mriLabel: string
   categoryLabel: string
-  categoryEnLabel: string
+  /** 단모음: 음성학 한 줄(KO/EN 고정, 그 외 MT) */
+  vowelArticulationSymbol?: string
 }
 
 function VowelDetailPanel({
@@ -137,7 +147,7 @@ function VowelDetailPanel({
   animationLabel,
   mriLabel,
   categoryLabel,
-  categoryEnLabel,
+  vowelArticulationSymbol,
 }: VowelDetailPanelProps) {
   return (
     <>
@@ -150,12 +160,13 @@ function VowelDetailPanel({
         </div>
         <div>
           <p className="font-serif text-xl text-ink leading-snug">{item.name}</p>
-          <p className="font-sans text-xs text-gold uppercase tracking-widest mt-3">
-            {categoryLabel}
-            {categoryEnLabel && categoryEnLabel !== categoryLabel
-              ? ` · ${categoryEnLabel}`
-              : ''}
-          </p>
+          {vowelArticulationSymbol ? (
+            <TranslatedVowelArticulation symbol={vowelArticulationSymbol} lang={lang} />
+          ) : (
+            <p className="font-sans text-xs text-gold mt-3 uppercase tracking-widest">
+              {categoryLabel}
+            </p>
+          )}
         </div>
       </div>
 
