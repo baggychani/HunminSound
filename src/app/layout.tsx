@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     template: '%s · 세종말소리',
   },
   description:
-    '한국어 자음과 모음의 조음 과정을 MRI 영상으로 탐구하는 한국어 음성학 연구 아카이브.',
+    '1443년 세종이 훈민정음(訓民正音)으로 제시한 상형 원리를 MRI·음성공학·AI 융합으로 실증하는 세종말소리.',
   keywords: ['한국어', '음성학', '조음', 'MRI', '자음', '모음', 'phonetics', 'Korean', 'articulation'],
 }
 

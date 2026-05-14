@@ -22,8 +22,8 @@ echo  이 CMD 창을 닫으면 개발 서버 프로세스도 함께 종료됩니
 echo  ------------------------------------------
 echo.
 
-rem 3000 또는 3001 중 응답하는 주소로 브라우저 열기 (백그라운드)
-start "" powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command "Start-Sleep -Seconds 6; foreach ($p in @(3000,3001)) { try { $u = 'http://127.0.0.1:' + $p; $null = Invoke-WebRequest -Uri $u -TimeoutSec 2 -UseBasicParsing; Start-Process $u; exit } catch {} }"
+rem 서버가 실제로 응답할 때까지 폴링한 뒤 기본 브라우저로 엽니다. (open-dev-browser.ps1)
+start "" powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0open-dev-browser.ps1"
 
 call npm run dev
 endlocal

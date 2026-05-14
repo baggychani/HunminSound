@@ -13,9 +13,15 @@ export default function HomePage() {
       {/* 히어로 섹션 */}
       <section className="pt-28 sm:pt-32 pb-20 md:pb-24 text-center">
         <p
-          className={`font-sans text-xs text-ink-muted tracking-[0.3em] uppercase mb-6 ${
-            lang === 'hi' ? 'font-devanagari normal-case tracking-normal text-[13px] leading-relaxed' : ''
-          }`}
+          className={
+            lang === 'ko'
+              ? 'font-serif text-sm sm:text-base text-ink-muted tracking-wide mb-6'
+              : `font-sans text-xs text-ink-muted tracking-[0.3em] uppercase mb-6 ${
+                  lang === 'hi'
+                    ? 'font-devanagari normal-case tracking-normal text-[13px] leading-relaxed'
+                    : ''
+                }`
+          }
           lang={lang === 'hi' ? 'hi' : undefined}
         >
           {m.homeSubtitle}
@@ -25,18 +31,50 @@ export default function HomePage() {
           세종말소리
         </h1>
 
-        <p className="font-sans text-sm text-ink-muted tracking-[0.2em] mb-10">
+        <p
+          className={`font-sans text-sm text-ink-muted tracking-[0.2em] ${
+            lang === 'ko' ? 'mb-0' : 'mb-10'
+          }`}
+        >
           Sejong Speech Sounds
         </p>
 
-        <div className="section-divider" />
+        {lang === 'ko' ? (
+          <>
+            {/* 브랜드 영역과 소개 영역 구분 — 상단은 타이틀, 하단은 훈민정음 소개(배경 애니메이션 예정) */}
+            <div
+              className="mt-14 sm:mt-20 w-full max-w-2xl mx-auto border-t border-hanji-border"
+              aria-hidden
+            />
+            <div className="relative isolate mt-12 sm:mt-16 max-w-2xl mx-auto px-1 sm:px-2">
+              <div
+                className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-sm"
+                aria-hidden
+              />
+              <p className="relative z-10 font-serif text-base sm:text-[17px] text-ink-soft leading-loose">
+                <span className="sm:hidden whitespace-normal">
+                  {m.homeIntroPart1} {m.homeIntroPart2}
+                </span>
+                <span className="hidden sm:inline">
+                  {m.homeIntroPart1}
+                  <br />
+                  {m.homeIntroPart2}
+                </span>
+              </p>
+            </div>
+          </>
+        ) : null}
 
-        <p className="font-sans text-base text-ink-soft leading-relaxed max-w-xl mx-auto mt-8">
-          <span className="sm:hidden whitespace-normal">
-            {m.homeDescription.replace(/\n/g, ' ')}
-          </span>
-          <span className="hidden sm:inline whitespace-pre-line">{m.homeDescription}</span>
-        </p>
+        <div className={`section-divider ${lang === 'ko' ? 'mt-14 sm:mt-16' : ''}`} />
+
+        {lang !== 'ko' && m.homeDescription.trim() ? (
+          <p className="font-sans text-base text-ink-soft leading-relaxed max-w-xl mx-auto mt-8">
+            <span className="sm:hidden whitespace-normal">
+              {m.homeDescription.replace(/\n/g, ' ')}
+            </span>
+            <span className="hidden sm:inline whitespace-pre-line">{m.homeDescription}</span>
+          </p>
+        ) : null}
       </section>
 
       {/* 네비게이션 카드 */}
@@ -59,23 +97,25 @@ export default function HomePage() {
         />
       </section>
 
-      {/* 소개 섹션 */}
-      <section className="pb-24 max-w-2xl mx-auto text-center">
-        <div className="section-divider" />
-        <p
-          className={`font-serif text-base text-ink-soft leading-loose mt-8 ${
-            lang === 'hi' ? 'font-devanagari' : ''
-          }`}
-          lang={lang === 'hi' ? 'hi' : undefined}
-        >
-          {m.homeIntroPart1}
-          <br className="hidden sm:block" />
-          {m.homeIntroPart2}
-        </p>
-        <p className="font-sans text-xs text-ink-muted mt-6 tracking-wider">
-          {m.homeSub}
-        </p>
-      </section>
+      {/* 소개 섹션 — 한국어는 히어로에 통합. 타 언어는 하단 유지 */}
+      {lang !== 'ko' ? (
+        <section className="pb-24 max-w-2xl mx-auto text-center">
+          <div className="section-divider" />
+          <p
+            className={`font-serif text-base text-ink-soft leading-loose mt-8 ${
+              lang === 'hi' ? 'font-devanagari' : ''
+            }`}
+            lang={lang === 'hi' ? 'hi' : undefined}
+          >
+            {m.homeIntroPart1}
+            <br className="hidden sm:block" />
+            {m.homeIntroPart2}
+          </p>
+          {m.homeSub.trim() ? (
+            <p className="font-sans text-xs text-ink-muted mt-6 tracking-wider">{m.homeSub}</p>
+          ) : null}
+        </section>
+      ) : null}
     </div>
   )
 }

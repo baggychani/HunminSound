@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useScrollToSymbolDetail } from '@/hooks/useScrollToSymbolDetail'
 import { ScrollSection } from '@/components/ui/ScrollSection'
 import { DualVideoPlayer } from '@/components/ui/DualVideoPlayer'
 import { useLang } from '@/contexts/LanguageContext'
@@ -17,6 +18,7 @@ interface VowelChartProps {
 
 export function VowelChart({ vowels }: VowelChartProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
+  const detailScrollRef = useScrollToSymbolDetail(activeId)
   const { lang } = useLang()
   const m = getMessages(lang)
 
@@ -65,6 +67,7 @@ export function VowelChart({ vowels }: VowelChartProps) {
 
             {/* 기호 그리드 (아랍어 UI에서도 자모 순서는 LTR 유지) */}
             <div
+              ref={hasActiveInGroup ? detailScrollRef : undefined}
               className="flex flex-wrap gap-1"
               dir={lang === 'ar' ? 'ltr' : undefined}
               lang={lang === 'ar' ? 'ko' : undefined}

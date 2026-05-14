@@ -25,13 +25,13 @@ const ko = {
   siteTitle: '세종말소리',
   consonants: '자음',
   vowels: '모음',
-  homeSubtitle: '한국어 조음 음성학 연구 아카이브',
-  homeDescription:
-    '한국어 자음과 모음의 조음(調音) 과정을 MRI 영상을 통해 탐구하는\n한국어 음성학 연구 아카이브입니다.',
-  homeSub: '훈민정음 연구 프로젝트 · 세종대왕 1443년',
+  homeSubtitle: '훈민정음 창제 원리의 과학적 재조명',
+  /** KO: hero uses homeIntro only; this string unused. */
+  homeDescription: '',
+  homeSub: '',
   homeIntroPart1:
-    '훈민정음(訓民正音)의 창제 원리를 현대 음성학의 시각으로 재조명하며,',
-  homeIntroPart2: 'MRI 영상 기술을 통해 조음 기관의 움직임을 시각화합니다.',
+    '1443년 세종이 훈민정음(訓民正音)을 창제하며 제시한 상형 원리를,',
+  homeIntroPart2: '580여 년이 지난 오늘 MRI 영상·음성공학·AI 융합 기술로 실증합니다.',
   navSubConsonants: 'Consonants',
   navSubVowels: 'Vowels',
   navSubLanguage: 'Language',
@@ -72,12 +72,15 @@ const ko = {
   vowelsPageDesc:
     '한국어의 모음은 단모음 10개와 이중모음 11개로 구성됩니다. 혀의 높낮이, 전후 위치, 원순성의 조합으로 각 모음이 변별됩니다.',
   language: '언어',
-  footerRight: '한국어 조음 음성학 연구 아카이브',
+  footerRight: '훈민정음 창제 원리의 과학적 재조명',
   themeLight: '라이트',
   themeDark: '다크',
   themeSystem: '시스템',
   themeToggleAria: '표시 테마 선택',
   languagePickerAria: '언어 선택',
+  chartViewHunmin: '훈민정음 제자해',
+  chartViewModern: '현대 음성학',
+  chartViewToggleAria: '설명 표시 방식 전환',
   siteNavMenuAria: '사이트 메뉴',
 }
 
@@ -141,6 +144,9 @@ const en: Messages = {
   themeSystem: 'System',
   themeToggleAria: 'Choose display theme',
   languagePickerAria: 'Choose language',
+  chartViewHunmin: 'Hunminjeongeum commentary',
+  chartViewModern: 'Modern phonetics',
+  chartViewToggleAria: 'Toggle description view',
   siteNavMenuAria: 'Open site menu',
 }
 
@@ -195,6 +201,9 @@ const zh: Messages = {
   themeSystem: '跟随系统',
   themeToggleAria: '选择显示主题',
   languagePickerAria: '选择语言',
+  chartViewHunmin: '训民正音 切字解',
+  chartViewModern: '现代语音学',
+  chartViewToggleAria: '切换说明视图',
   siteNavMenuAria: '打开网站菜单',
 }
 
@@ -249,6 +258,9 @@ const ja: Messages = {
   themeSystem: 'システム',
   themeToggleAria: 'テーマを選択',
   languagePickerAria: '言語を選択',
+  chartViewHunmin: '訓民正音 切字解',
+  chartViewModern: '現代音声学',
+  chartViewToggleAria: '説明表示の切り替え',
   siteNavMenuAria: 'サイトメニュー',
 }
 
@@ -310,6 +322,9 @@ const fr: Messages = {
   themeSystem: 'Système',
   themeToggleAria: 'Choisir le thème d’affichage',
   languagePickerAria: 'Choisir la langue',
+  chartViewHunmin: 'Hunminjeongeum (commentaire)',
+  chartViewModern: 'Phonétique moderne',
+  chartViewToggleAria: "Mode d'affichage des explications",
   siteNavMenuAria: 'Ouvrir le menu du site',
 }
 
@@ -372,6 +387,9 @@ const de: Messages = {
   themeSystem: 'System',
   themeToggleAria: 'Darstellungsthema wählen',
   languagePickerAria: 'Sprache wählen',
+  chartViewHunmin: 'Hunminjeongeum-Erläuterung',
+  chartViewModern: 'Moderne Phonetik',
+  chartViewToggleAria: 'Darstellungsmodus',
   siteNavMenuAria: 'Seitenmenü öffnen',
 }
 
@@ -434,6 +452,9 @@ const es: Messages = {
   themeSystem: 'Sistema',
   themeToggleAria: 'Elegir tema de visualización',
   languagePickerAria: 'Elegir idioma',
+  chartViewHunmin: 'Hunminjeongeum (comentario)',
+  chartViewModern: 'Fonética moderna',
+  chartViewToggleAria: 'Cambiar modo de explicación',
   siteNavMenuAria: 'Abrir menú del sitio',
 }
 
@@ -491,6 +512,9 @@ const hi: Messages = {
   themeSystem: 'सिस्टम',
   themeToggleAria: 'थीम चुनें',
   languagePickerAria: 'भाषा चुनें',
+  chartViewHunmin: 'हुनमिनजोंगइम (व्याख्या)',
+  chartViewModern: 'आधुनिक ध्वनिविज्ञान',
+  chartViewToggleAria: 'विवरण दृश्य बदलें',
   siteNavMenuAria: 'साइट मेनू खोलें',
 }
 
@@ -516,6 +540,9 @@ const vi: Messages = {
   themeSystem: 'Hệ thống',
   themeToggleAria: 'Chọn giao diện hiển thị',
   languagePickerAria: 'Chọn ngôn ngữ',
+  chartViewHunmin: 'Hunminjeongeum (chú thích)',
+  chartViewModern: 'Âm học hiện đại',
+  chartViewToggleAria: 'Chuyển chế độ mô tả',
   siteNavMenuAria: 'Mở menu trang',
   mriVideo: 'Video MRI',
   animationVideo: 'Hoạt hình điều âm',
@@ -568,6 +595,9 @@ const ru: Messages = {
   themeSystem: 'Системная',
   themeToggleAria: 'Выбрать тему оформления',
   languagePickerAria: 'Выбрать язык',
+  chartViewHunmin: 'Хунминчонъым (толкование)',
+  chartViewModern: 'Современная фонетика',
+  chartViewToggleAria: 'Режим показа пояснений',
   siteNavMenuAria: 'Открыть меню сайта',
   mriVideo: 'Видео МРТ',
   animationVideo: 'Анимация артикуляции',
@@ -620,6 +650,9 @@ const ar: Messages = {
   themeSystem: 'النظام',
   themeToggleAria: 'اختيار مظهر العرض',
   languagePickerAria: 'اختيار اللغة',
+  chartViewHunmin: 'هونمينجونغئوم (التفسير)',
+  chartViewModern: 'الصوتيات الحديثة',
+  chartViewToggleAria: 'تبديل وضع الشرح',
   siteNavMenuAria: 'فتح قائمة الموقع',
   mriVideo: 'فيديو الرنين',
   animationVideo: 'رسوم النطق',

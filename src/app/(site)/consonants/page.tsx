@@ -1,5 +1,5 @@
-import { ConsonantChart } from '@/components/showcase/ConsonantChart'
 import { PageHeader } from '@/components/layout/PageHeader'
+import { ConsonantsPageClient } from '@/components/showcase/ConsonantsPageClient'
 import { getConsonants } from '@/lib/queries'
 import { consonantsData } from '@/data/consonants'
 import type { Metadata } from 'next'
@@ -17,7 +17,7 @@ export default async function ConsonantsPage() {
   return (
     <div className="max-w-5xl mx-auto px-6">
       <PageHeader type="consonants" />
-      <ConsonantChart consonants={consonants} />
+      <ConsonantsPageClient consonants={consonants} />
     </div>
   )
 }
