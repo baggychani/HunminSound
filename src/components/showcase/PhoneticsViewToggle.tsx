@@ -53,6 +53,17 @@ export function PhoneticsViewToggle({ className = '', mode, onModeChange }: Phon
     return () => ro.disconnect()
   }, [measure])
 
+  const changeMode = useCallback(
+    (nextMode: ChartViewMode) => {
+      if (nextMode === activeMode) return
+
+      // 토글 직전 현재 글리프 좌표를 캡처하도록 이벤트를 먼저 보낸다.
+      window.dispatchEvent(new CustomEvent('phonetics-view-will-change'))
+      setActiveMode(nextMode)
+    },
+    [activeMode, setActiveMode],
+  )
+
   return (
     <div className={`mx-auto w-full max-w-xl ${className}`}>
       <div
@@ -75,7 +86,7 @@ export function PhoneticsViewToggle({ className = '', mode, onModeChange }: Phon
           role="tab"
           aria-selected={activeMode === 'hunmin'}
           tabIndex={0}
-          onClick={() => setActiveMode('hunmin')}
+          onClick={() => changeMode('hunmin')}
           className={`relative z-10 flex flex-1 items-center justify-center rounded-full px-2 text-center text-sm transition-colors duration-200 sm:text-[15px] ${
             activeMode === 'hunmin' ? 'text-ink' : 'text-ink-muted hover:text-ink-soft'
           }`}
@@ -87,7 +98,7 @@ export function PhoneticsViewToggle({ className = '', mode, onModeChange }: Phon
           role="tab"
           aria-selected={activeMode === 'modern'}
           tabIndex={0}
-          onClick={() => setActiveMode('modern')}
+          onClick={() => changeMode('modern')}
           className={`relative z-10 flex flex-1 items-center justify-center rounded-full px-2 text-center text-sm transition-colors duration-200 sm:text-[15px] ${
             activeMode === 'modern' ? 'text-ink' : 'text-ink-muted hover:text-ink-soft'
           }`}

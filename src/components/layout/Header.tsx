@@ -267,8 +267,8 @@ export function Header() {
             transition={{ duration: 0.15, ease: 'easeOut' }}
             className="absolute start-0 end-0 top-full z-[70] border-b border-hanji-border bg-hanji shadow-[0_12px_24px_-8px_rgb(0_0_0_/0.18)] dark:shadow-[0_16px_32px_-10px_rgb(0_0_0_/0.65)]"
           >
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5">
-              <div className="flex flex-wrap justify-end gap-x-8 gap-y-3">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
+              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5">
                 {LANGUAGES.map((l) => {
                   const isActive = lang === l.code
                   return (
@@ -279,16 +279,19 @@ export function Header() {
                         setLang(l.code)
                         setLangOpen(false)
                       }}
-                      className={`font-sans text-sm tracking-wide transition-colors ${
+                      className={`flex min-h-10 w-full items-center gap-2 rounded-md border border-transparent px-2.5 py-1.5 text-start font-sans text-sm leading-tight tracking-wide transition-colors ${
                         isActive
-                          ? 'text-ink-accent'
-                          : 'text-ink-muted hover:text-ink'
+                          ? 'text-ink-accent bg-hanji-warm/70 border-hanji-border/70'
+                          : 'text-ink-muted hover:text-ink hover:bg-hanji-warm/40'
                       }`}
                     >
-                      {isActive && (
-                        <span className="inline-block w-1 h-1 rounded-full bg-gold me-2 align-middle mb-0.5" />
-                      )}
-                      {l.label}
+                      <span
+                        className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${
+                          isActive ? 'bg-gold' : 'bg-transparent'
+                        }`}
+                        aria-hidden
+                      />
+                      <span className="min-w-0 break-words">{l.label}</span>
                     </motion.button>
                   )
                 })}

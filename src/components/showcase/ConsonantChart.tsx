@@ -1,7 +1,7 @@
 'use client'
 
-import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { LayoutGroup, motion } from 'framer-motion'
+import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { AnimatePresence, LayoutGroup, motion } from 'framer-motion'
 import { useScrollToSymbolDetail } from '@/hooks/useScrollToSymbolDetail'
 import { ScrollSection } from '@/components/ui/ScrollSection'
 import { DualVideoPlayer } from '@/components/ui/DualVideoPlayer'
@@ -19,35 +19,58 @@ import type { Consonant } from '@/types'
 
 const CATEGORY_ORDER = ['파열음', '마찰음', '파찰음', '비음', '유음']
 
-const GLYPH_FLIP_MS = 420
+// 모핑 연출 공통 제어값: 여기만 바꾸면 전체 타이밍/이징이 함께 변경된다.
+const MORPH_DURATION_SECONDS = 1.5
+const MORPH_EASE_BEZIER = [0.65, 0.0, 0.35, 1.0] as const
+const GLYPH_FLIP_MS = MORPH_DURATION_SECONDS * 1000
+const GLYPH_FLIP_EASING = 'cubic-bezier(0.65, 0.0, 0.35, 1.0)'
 
 /** 같은 슬롯(row-slot) 행이 모드 전환 시에도 DOM이 유지되어 layout 보간이 먹도록 */
-const ROW_LAYOUT_SPRING = {
-  type: 'spring' as const,
-  stiffness: 300,
-  damping: 36,
-  mass: 0.92,
+const ROW_LAYOUT_TRANSITION = {
+  type: 'tween' as const,
+  duration: MORPH_DURATION_SECONDS,
+  ease: MORPH_EASE_BEZIER,
 }
 
-function captureGlyphRects(root: HTMLElement) {
-  const map = new Map<string, DOMRect>()
-  root.querySelectorAll<HTMLElement>('[data-glyph-flip]').forEach((el) => {
+type GlyphSnapshot = {
+  rect: DOMRect
+  scrollX: number
+  scrollY: number
+}
+
+function captureGlyphRects(root: HTMLElement, mode: ChartViewMode) {
+  const map = new Map<string, GlyphSnapshot>()
+  root.querySelectorAll<HTMLElement>(`[data-glyph-flip][data-view-mode="${mode}"]`).forEach((el) => {
     const s = el.dataset.glyphFlip
-    if (s) map.set(s, el.getBoundingClientRect())
+    if (s) {
+      map.set(s, {
+        rect: el.getBoundingClientRect(),
+        scrollX: window.scrollX,
+        scrollY: window.scrollY,
+      })
+    }
   })
   return map
 }
 
 /** 이전 뷰 좌표 → 새 DOM: 직선 translate (Framer layoutId 대신) */
-function applyGlyphFlip(root: HTMLElement, firstRects: Map<string, DOMRect>) {
-  root.querySelectorAll<HTMLElement>('[data-glyph-flip]').forEach((el) => {
+function applyGlyphFlip(
+  root: HTMLElement,
+  firstRects: Map<string, GlyphSnapshot>,
+  targetMode: ChartViewMode,
+) {
+  root.querySelectorAll<HTMLElement>(`[data-glyph-flip][data-view-mode="${targetMode}"]`).forEach((el) => {
     const sym = el.dataset.glyphFlip
     if (!sym) return
     const first = firstRects.get(sym)
     if (!first) return
-    const last = el.getBoundingClientRect()
-    const dx = first.left - last.left
-    const dy = first.top - last.top
+    const lastRect = el.getBoundingClientRect()
+    const firstLeft = first.rect.left + first.scrollX
+    const firstTop = first.rect.top + first.scrollY
+    const lastLeft = lastRect.left + window.scrollX
+    const lastTop = lastRect.top + window.scrollY
+    const dx = firstLeft - lastLeft
+    const dy = firstTop - lastTop
     if (Math.abs(dx) < 0.25 && Math.abs(dy) < 0.25) return
 
     el.style.willChange = 'transform'
@@ -56,7 +79,7 @@ function applyGlyphFlip(root: HTMLElement, firstRects: Map<string, DOMRect>) {
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        el.style.transition = `transform ${GLYPH_FLIP_MS}ms linear`
+        el.style.transition = `transform ${GLYPH_FLIP_MS}ms ${GLYPH_FLIP_EASING}`
         el.style.transform = 'translate(0px, 0px)'
         window.setTimeout(() => {
           if (!el.isConnected) return
@@ -112,12 +135,58 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
   const { lang } = useLang()
   const m = getMessages(lang)
   const chartRootRef = useRef<HTMLDivElement>(null)
-  const glyphRectsRef = useRef<Map<string, DOMRect>>(new Map())
+  const glyphRectsRef = useRef<Map<string, GlyphSnapshot>>(new Map())
   const prevViewModeRef = useRef<ChartViewMode>(viewMode)
+  const [shouldAnimateGlyphs, setShouldAnimateGlyphs] = useState(false)
+  const [shouldCrossfadeContent, setShouldCrossfadeContent] = useState(true)
+
+  const captureCurrentGlyphRects = useCallback(() => {
+    if (!chartRootRef.current) return
+    glyphRectsRef.current = captureGlyphRects(chartRootRef.current, viewMode)
+  }, [viewMode])
 
   useEffect(() => {
     setActiveId(null)
   }, [viewMode])
+
+  useEffect(() => {
+    const mediaQueries = [
+      window.matchMedia('(min-width: 1024px)'),
+      window.matchMedia('(hover: hover)'),
+      window.matchMedia('(pointer: fine)'),
+      window.matchMedia('(prefers-reduced-motion: reduce)'),
+    ]
+
+    const updateAnimationAvailability = () => {
+      const isDesktop = mediaQueries[0].matches && mediaQueries[1].matches && mediaQueries[2].matches
+      const reduceMotion = mediaQueries[3].matches
+      setShouldAnimateGlyphs(isDesktop && !reduceMotion)
+      setShouldCrossfadeContent(!reduceMotion)
+    }
+
+    updateAnimationAvailability()
+    mediaQueries.forEach((mq) => mq.addEventListener('change', updateAnimationAvailability))
+    return () => mediaQueries.forEach((mq) => mq.removeEventListener('change', updateAnimationAvailability))
+  }, [])
+
+  useEffect(() => {
+    const onScrollOrResize = () => {
+      requestAnimationFrame(captureCurrentGlyphRects)
+    }
+    const onWillChange = () => {
+      captureCurrentGlyphRects()
+    }
+
+    captureCurrentGlyphRects()
+    window.addEventListener('scroll', onScrollOrResize, { passive: true })
+    window.addEventListener('resize', onScrollOrResize)
+    window.addEventListener('phonetics-view-will-change', onWillChange)
+    return () => {
+      window.removeEventListener('scroll', onScrollOrResize)
+      window.removeEventListener('resize', onScrollOrResize)
+      window.removeEventListener('phonetics-view-will-change', onWillChange)
+    }
+  }, [captureCurrentGlyphRects])
 
   useLayoutEffect(() => {
     const root = chartRootRef.current
@@ -127,21 +196,19 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
     const modeChanged = prevMode !== viewMode
     const snapshot = new Map(glyphRectsRef.current)
 
-    if (modeChanged && snapshot.size > 0) {
-      applyGlyphFlip(root, snapshot)
+    if (shouldAnimateGlyphs && modeChanged && snapshot.size > 0) {
+      applyGlyphFlip(root, snapshot, viewMode)
     }
 
     prevViewModeRef.current = viewMode
 
-    const delayMs = modeChanged ? GLYPH_FLIP_MS + 50 : 0
+    const delayMs = shouldAnimateGlyphs && modeChanged ? GLYPH_FLIP_MS + 50 : 0
     const tid = window.setTimeout(() => {
-      if (chartRootRef.current) {
-        glyphRectsRef.current = captureGlyphRects(chartRootRef.current)
-      }
+      captureCurrentGlyphRects()
     }, delayMs)
 
     return () => clearTimeout(tid)
-  }, [viewMode, consonants, activeId, lang])
+  }, [viewMode, consonants, activeId, lang, shouldAnimateGlyphs, captureCurrentGlyphRects])
 
   const grouped = useMemo(
     () =>
@@ -188,13 +255,20 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
                   </span>
                 ) : null}
                 <div className="flex flex-wrap justify-center gap-1">
-                  {seg.symbols.map((sym) => {
+                  {seg.symbols.map((sym, symIdx) => {
                     const c = findConsonantBySymbol(consonants, sym)
                     const isActive = !!c && activeId === c._id
                     if (!c) {
                       return (
-                        <span
+                        <motion.span
                           key={sym}
+                          initial={{ opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            duration: Math.min(MORPH_DURATION_SECONDS * 0.65, 1.0),
+                            delay: Math.min(symIdx * 0.05, 0.18),
+                            ease: MORPH_EASE_BEZIER,
+                          }}
                           className="symbol-btn cursor-not-allowed bg-hanji/50 opacity-50"
                           aria-disabled
                         >
@@ -202,13 +276,14 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
                             {sym}
                           </span>
                           <span className="symbol-sub text-ink-muted/60">—</span>
-                        </span>
+                        </motion.span>
                       )
                     }
                     return (
                       <span
                         key={c._id}
                         data-glyph-flip={sym}
+                        data-view-mode="hunmin"
                         className="inline-block align-top"
                       >
                         <motion.button
@@ -332,6 +407,7 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
                       <span
                         key={consonant._id}
                         data-glyph-flip={consonant.symbol}
+                        data-view-mode="modern"
                         className="inline-block align-top"
                       >
                         <motion.button
@@ -397,7 +473,7 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
             <motion.section
               key={`row-slot-${rowIndex}`}
               layout
-              transition={ROW_LAYOUT_SPRING}
+              transition={ROW_LAYOUT_TRANSITION}
             >
               <motion.div
                 layout={false}
@@ -428,11 +504,26 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
                 ) : null}
               </motion.div>
 
-              <div>
-                {viewMode === 'hunmin'
-                  ? hunminSlotBody(hunminRow)
-                  : modernSlotBody(category)}
-              </div>
+              <AnimatePresence mode="sync" initial={false}>
+                <motion.div
+                  key={`${viewMode}-row-${rowIndex}`}
+                  initial={shouldCrossfadeContent ? { opacity: 0 } : { opacity: 1 }}
+                  animate={{ opacity: 1 }}
+                  exit={shouldCrossfadeContent ? { opacity: 0 } : { opacity: 1 }}
+                  transition={
+                    shouldCrossfadeContent
+                      ? {
+                          duration: MORPH_DURATION_SECONDS,
+                          ease: MORPH_EASE_BEZIER,
+                        }
+                      : { duration: 0 }
+                  }
+                >
+                  {viewMode === 'hunmin'
+                    ? hunminSlotBody(hunminRow)
+                    : modernSlotBody(category)}
+                </motion.div>
+              </AnimatePresence>
             </motion.section>
           )
         })}
