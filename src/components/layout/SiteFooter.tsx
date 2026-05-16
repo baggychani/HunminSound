@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
 
 export function SiteFooter() {
@@ -10,7 +11,15 @@ export function SiteFooter() {
           <span className="shrink-0 text-center font-serif text-sm text-ink-muted sm:justify-self-start sm:text-start">
             세종말소리 · Sejong Speech Sounds
           </span>
-          <div aria-hidden className="hidden sm:block" />
+          {/* 데스크톱·태블릿만: 관리자 링크 (모바일 숨김) */}
+          <div className="hidden sm:flex shrink-0 items-center justify-center">
+            <Link
+              href="/admin/login"
+              className="font-sans text-[11px] text-ink-muted/70 tracking-[0.04em] transition-colors hover:text-gold dark:text-ink-muted/75 dark:hover:text-gold-light"
+            >
+              관리자 페이지
+            </Link>
+          </div>
           <div className="flex shrink-0 justify-center sm:justify-self-end">
             <ThemeToggle />
           </div>

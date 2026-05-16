@@ -6,14 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\""
   },
   "dependencies": {
     "@sanity/vision": "^3",
+    "@types/nodemailer": "^8.0.0",
     "framer-motion": "^11",
     "next": "^14",
     "next-sanity": "^9",
     "next-themes": "^0.4.6",
+    "nodemailer": "^8.0.7",
     "react": "^18",
     "react-dom": "^18",
     "sanity": "^3"

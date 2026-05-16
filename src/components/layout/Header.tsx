@@ -10,6 +10,7 @@ import { LANGUAGES, NAV_LABEL_KO, getMessages } from '@/lib/i18n'
 const NAV_LINKS = [
   { href: '/consonants', topKey: 'consonants' as const, subKey: 'navSubConsonants' as const },
   { href: '/vowels', topKey: 'vowels' as const, subKey: 'navSubVowels' as const },
+  { href: '/hunminjeongeum', topKey: 'hunminjeongeum' as const, subKey: 'navSubHunminjeongeum' as const },
 ]
 
 function MenuGlyph({ open }: { open: boolean }) {
@@ -87,12 +88,11 @@ export function Header() {
 
         {/* 데스크톱: 기존 가로 네비 */}
         <nav className="scrollbar-none hidden min-w-0 flex-1 flex-nowrap items-center justify-end overflow-x-auto overflow-y-hidden sm:flex">
-          <div className="flex flex-nowrap items-center gap-4 sm:gap-8 shrink-0">
+          <div className="flex flex-nowrap items-center gap-3 sm:gap-6 md:gap-8 shrink-0">
             {NAV_LINKS.map(({ href, topKey, subKey }) => {
               const isActive = pathname.startsWith(href)
               const primary = lang === 'ko' ? NAV_LABEL_KO[topKey] : m[topKey]
-              const secondary =
-                lang === 'ko' ? m[subKey] : NAV_LABEL_KO[topKey]
+              const secondary = lang === 'ko' ? m[subKey] : NAV_LABEL_KO[topKey]
 
               return (
                 <Link
@@ -133,7 +133,7 @@ export function Header() {
           <button
             type="button"
             onClick={toggleLang}
-            className={`group relative ms-4 sm:ms-8 md:ms-12 lg:ms-16 shrink-0 flex flex-row items-end gap-1 px-0.5 pb-2 transition-colors ${
+            className={`group relative ms-4 sm:ms-6 md:ms-8 shrink-0 flex flex-row items-end gap-1 px-0.5 pb-2 transition-colors ${
               langOpen
                 ? 'text-ink-accent'
                 : 'text-ink-muted hover:text-ink'
@@ -235,8 +235,7 @@ export function Header() {
             <div className="max-w-5xl mx-auto px-4 py-2">
               {NAV_LINKS.map(({ href, topKey }) => {
                 const isActive = pathname.startsWith(href)
-                const label =
-                  lang === 'ko' ? NAV_LABEL_KO[topKey] : m[topKey]
+                const label = lang === 'ko' ? NAV_LABEL_KO[topKey] : m[topKey]
                 return (
                   <Link
                     key={href}

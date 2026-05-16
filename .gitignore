@@ -19,9 +19,12 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env (secrets — never commit)
+# .env.local 포함: 관리자 ID/비번·Sanity 등은 여기 두면 Git에 안 올라감.
 .env
 .env.*
 !.env.example
+# 혹시 비번만 따로 쓸 때까지 남겨두는 패턴(선택):
+*.secrets.local
 
 # vercel
 .vercel

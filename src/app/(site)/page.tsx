@@ -1,8 +1,53 @@
 'use client'
 
 import Link from 'next/link'
+import { useRef, useEffect } from 'react'
+import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
+
+/* ── 자석 기호 컴포넌트 ────────────────────────────────────────────────── */
+function MagneticGlyph({ children, className }: { children: string; className: string }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+  const sx = useSpring(x, { stiffness: 150, damping: 20 })
+  const sy = useSpring(y, { stiffness: 150, damping: 20 })
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    // 터치 기기에서는 비활성화
+    if (window.matchMedia('(pointer: coarse)').matches) return
+
+    function onMove(e: MouseEvent) {
+      const rect = el!.getBoundingClientRect()
+      const cx = rect.left + rect.width / 2
+      const cy = rect.top + rect.height / 2
+      const dx = e.clientX - cx
+      const dy = e.clientY - cy
+      const dist = Math.sqrt(dx * dx + dy * dy)
+      const threshold = 60
+      if (dist < threshold) {
+        const pull = (1 - dist / threshold) * 6
+        x.set((dx / dist) * pull)
+        y.set((dy / dist) * pull)
+      } else {
+        x.set(0)
+        y.set(0)
+      }
+    }
+
+    window.addEventListener('mousemove', onMove)
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [x, y])
+
+  return (
+    <motion.span ref={ref} style={{ x: sx, y: sy }} className={className}>
+      {children}
+    </motion.span>
+  )
+}
 
 export default function HomePage() {
   const { lang } = useLang()
@@ -77,8 +122,8 @@ export default function HomePage() {
         ) : null}
       </section>
 
-      {/* 네비게이션 카드 */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-hanji-border mb-24">
+      {/* 네비게이션 카드 — 자음·모음 2열, 훈민정음 전 너비 */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-hanji-border mb-px">
         <NavCard
           href="/consonants"
           label={m.consonants}
@@ -95,7 +140,24 @@ export default function HomePage() {
           description={m.vowelsCardDesc}
           explore={m.explore}
         />
+        <HunminjeongeumCard
+          href="/hunminjeongeum"
+          label={m.hunminjeongeum}
+          description={m.hunminjeongeumCardDesc}
+          explore={m.explore}
+        />
       </section>
+
+      {/* 훈민정음과 연구 소개 사이 — 이후 3D·배너 등 삽입 가능 */}
+      <div className="pt-14 sm:pt-20" aria-hidden />
+
+      <ResearchCard
+        href="/research"
+        label={m.research}
+        description={m.researchCardDesc}
+        cta={m.researchCta}
+      />
+      <div className="mb-24" />
 
       {/* 소개 섹션 — 한국어는 히어로에 통합. 타 언어는 하단 유지 */}
       {lang !== 'ko' ? (
@@ -117,6 +179,95 @@ export default function HomePage() {
         </section>
       ) : null}
     </div>
+  )
+}
+
+interface ResearchCardProps {
+  href: string
+  label: string
+  description: string
+  cta: string
+}
+
+function ResearchCard({ href, label, description, cta }: ResearchCardProps) {
+  return (
+    <Link
+      href={href}
+      className="group mx-auto block max-w-2xl bg-hanji px-8 py-8 text-left transition-colors hover:bg-hanji-warm sm:px-10 sm:py-9"
+    >
+      <div className="flex flex-col gap-5">
+        <div className="min-w-0">
+          <span className="font-serif text-xl text-ink transition-colors group-hover:text-ink-accent">
+            {label}
+          </span>
+          <p className="mt-2 font-sans text-xs leading-relaxed text-ink-muted">{description}</p>
+        </div>
+        <div className="flex justify-end pt-0.5">
+          <span className="flex items-center gap-2">
+            <span className="font-sans text-xs text-gold">{cta}</span>
+            <span className="inline-block text-base text-gold transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1">
+              →
+            </span>
+          </span>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+interface HunminjeongeumCardProps {
+  href: string
+  label: string
+  description: string
+  explore: string
+}
+
+/** 자음/모음 격자 아래 전 너비 — 동급 중요도로 크게 표시 */
+function HunminjeongeumCard({ href, label, description, explore }: HunminjeongeumCardProps) {
+  const baseShapes = ['ㄱ', 'ㄴ', 'ㅁ', 'ㅅ', 'ㅇ']
+
+  return (
+    <Link
+      href={href}
+      className="group col-span-1 sm:col-span-2 relative overflow-hidden bg-hanji hover:bg-hanji-warm transition-colors p-10 sm:p-12 flex flex-col gap-6"
+    >
+      {/* 배경 장식 — 訓民正音 흐린 한자 */}
+      <span
+        className="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 select-none font-serif text-[clamp(3.5rem,10vw,7rem)] leading-none text-ink/[0.04] dark:text-ink/[0.06]"
+        aria-hidden
+      >
+        訓民正音
+      </span>
+
+      <div className="relative z-10">
+        <div className="flex items-baseline gap-3 mb-1">
+          <span className="font-serif text-4xl text-ink group-hover:text-ink-accent transition-colors">
+            {label}
+          </span>
+        </div>
+        <span className="font-sans text-xs text-ink-muted tracking-[0.06em]">훈민정음 · 訓民正音 · 1443</span>
+      </div>
+
+      <div className="relative z-10 flex gap-3 flex-wrap" dir="ltr" lang="ko">
+        {baseShapes.map((s) => (
+          <span key={s} className="font-serif text-2xl text-ink-muted group-hover:text-ink transition-colors">
+            {s}
+          </span>
+        ))}
+        <span className="font-sans text-xl text-ink-muted self-end pb-1">…</span>
+      </div>
+
+      <p className="relative z-10 font-sans text-xs text-ink-muted leading-relaxed max-w-xl">
+        {description}
+      </p>
+
+      <div className="relative z-10 flex items-center gap-2 mt-auto">
+        <span className="font-sans text-xs text-gold tracking-wider">{explore}</span>
+        <span className="text-gold group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform inline-block">
+          →
+        </span>
+      </div>
+    </Link>
   )
 }
 
@@ -146,12 +297,12 @@ function NavCard({ href, label, count, preview, description, explore }: NavCardP
 
       <div className="flex gap-3 flex-wrap" dir="ltr" lang="ko">
         {preview.map((symbol) => (
-          <span
+          <MagneticGlyph
             key={symbol}
-            className="font-serif text-2xl text-ink-muted group-hover:text-ink transition-colors"
+            className="font-serif text-2xl text-ink-muted group-hover:text-ink transition-colors inline-block"
           >
             {symbol}
-          </span>
+          </MagneticGlyph>
         ))}
         <span className="font-sans text-xl text-ink-muted self-end pb-1">…</span>
       </div>
