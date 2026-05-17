@@ -103,7 +103,7 @@ const ko = {
   researchPageDesc: 'NRF 과제 정보, 연구진 소개, 연구 목적과 의의를 소개합니다.',
   researchSec1: '연구진 소개',
   researchSec2: '연구 목적과 의의',
-  researchSec3: 'NRF 과제 정보',
+  researchSec3: '과제 정보',
 }
 
 export type Messages = typeof ko
@@ -190,7 +190,7 @@ const en: Messages = {
   researchPageDesc: 'NRF project information, research team, and research objectives.',
   researchSec1: 'Research team',
   researchSec2: 'Objectives & significance',
-  researchSec3: 'NRF project (reference)',
+  researchSec3: 'Project information',
 }
 
 const zh: Messages = {
@@ -268,7 +268,7 @@ const zh: Messages = {
   researchPageDesc: 'NRF 项目信息、研究团队介绍及研究目的与意义。',
   researchSec1: '研究团队介绍',
   researchSec2: '研究目的与意义',
-  researchSec3: 'NRF 课题信息',
+  researchSec3: '课题信息',
 }
 
 const ja: Messages = {
@@ -346,7 +346,7 @@ const ja: Messages = {
   researchPageDesc: 'NRF プロジェクト情報、研究チーム紹介、研究目的と意義。',
   researchSec1: '研究チーム紹介',
   researchSec2: '研究目的と意義',
-  researchSec3: 'NRF 課題情報',
+  researchSec3: '課題情報',
 }
 
 const fr: Messages = {
@@ -431,7 +431,7 @@ const fr: Messages = {
   researchPageDesc: "Informations sur le projet NRF, présentation de l'équipe et objectifs.",
   researchSec1: "Présentation de l'équipe",
   researchSec2: 'Objectifs et enjeux',
-  researchSec3: 'Projet NRF (référence)',
+  researchSec3: 'Informations sur le projet',
 }
 
 const de: Messages = {
@@ -517,7 +517,7 @@ const de: Messages = {
   researchPageDesc: 'NRF-Projektinformationen, Vorstellung des Forschungsteams und Forschungsziele.',
   researchSec1: 'Vorstellung des Teams',
   researchSec2: 'Ziele und Bedeutung',
-  researchSec3: 'NRF-Projekt (Referenz)',
+  researchSec3: 'Projektinformationen',
 }
 
 const es: Messages = {
@@ -603,7 +603,7 @@ const es: Messages = {
   researchPageDesc: 'Información del proyecto NRF, presentación del equipo investigador y objetivos.',
   researchSec1: 'Presentación del equipo',
   researchSec2: 'Objetivos y relevancia',
-  researchSec3: 'Proyecto NRF (referencia)',
+  researchSec3: 'Información del proyecto',
 }
 
 const hi: Messages = {
@@ -684,7 +684,7 @@ const hi: Messages = {
   researchPageDesc: 'NRF परियोजना, शोध दल और अनुसंधान उद्देश्य।',
   researchSec1: 'शोध दल का परिचय',
   researchSec2: 'उद्देश्य एवं महत्व',
-  researchSec3: 'NRF परियोजना (संदर्भ)',
+  researchSec3: 'परियोजना विवरण',
 }
 
 /** 베트남어 — UI 초안(영문 베이스 복사 후 주요 항목만 번역, 추후 정리 가능) */
