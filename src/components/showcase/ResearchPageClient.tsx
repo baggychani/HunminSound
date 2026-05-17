@@ -92,8 +92,8 @@ function MethodTable({ intro, rows }: { intro: string; rows: { field: string; ro
   return (
     <>
       <p className="mb-6 font-sans text-[0.95rem] leading-relaxed text-ink-soft"><RichText text={intro} /></p>
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse font-sans text-[0.875rem]">
+      <div className="overflow-x-auto -mx-1 px-1">
+        <table className="min-w-max w-full border-collapse font-sans text-[0.875rem]">
           <thead>
             <tr className="border-b border-ink/15">
               {['분야', '역할', '주요 방법'].map((h) => (
@@ -124,8 +124,8 @@ function MethodTable({ intro, rows }: { intro: string; rows: { field: string; ro
 
 function TeamTable({ rows }: { rows: { role: string; name: string; affiliation: string; task: string; field: string }[] }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse font-sans text-[0.875rem]">
+    <div className="overflow-x-auto -mx-1 px-1">
+      <table className="min-w-max w-full border-collapse font-sans text-[0.875rem]">
         <thead>
           <tr className="border-b border-ink/15">
             {['구분', '성명', '소속', '역할', '전공 분야'].map((h) => (

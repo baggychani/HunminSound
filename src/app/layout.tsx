@@ -48,6 +48,15 @@ export const metadata: Metadata = {
   description:
     '1443년 세종이 훈민정음(訓民正音)으로 제시한 상형 원리를 MRI·음성공학·AI 융합으로 실증하는 세종말소리.',
   keywords: ['한국어', '음성학', '조음', 'MRI', '자음', '모음', 'phonetics', 'Korean', 'articulation'],
+  icons: {
+    icon: [
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
 }
 
 export default function RootLayout({
