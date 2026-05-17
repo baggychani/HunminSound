@@ -194,49 +194,84 @@ function BulletListEditor({
 }
 
 /* ── AchievementEntry 목록 편집 ──────────────────────────────────────── */
-function AchievementsEditor({ items, onChange }: { items: AchievementEntry[]; onChange: (v: AchievementEntry[]) => void }) {
+function AchievementsEditor({
+  items, onChange, keyPrefix, trans,
+}: {
+  items: AchievementEntry[]
+  onChange: (v: AchievementEntry[]) => void
+  keyPrefix: string
+  trans: TransHelpers
+}) {
   return (
     <div className="space-y-4">
-      {items.map((item, i) => (
-        <div key={i} className="border border-hanji-border/40 rounded-lg p-3 space-y-3 bg-background">
-          <div className="flex justify-between items-center">
-            <p className="font-sans text-xs text-ink-muted/50">항목 #{i + 1}</p>
-            <RemoveButton onClick={() => onChange(items.filter((_, idx) => idx !== i))} />
-          </div>
-          <div>
-            <FieldLabel>제목 (굵게 표시)</FieldLabel>
-            <TextInput value={item.title} onChange={(v) => {
-              const next = cloneDeep(items)
-              next[i].title = v
-              onChange(next)
-            }} />
-          </div>
-          <div className="space-y-2">
-            <FieldLabel hint="<b>강조</b> 태그 사용 가능. 각 줄이 불릿 항목으로 표시됩니다.">줄 목록</FieldLabel>
-            {item.lines.map((line, j) => (
-              <div key={j} className="flex gap-2 items-start">
-                <div className="flex-1">
-                  <TextArea value={line} onChange={(v) => {
-                    const next = cloneDeep(items)
-                    next[i].lines[j] = v
-                    onChange(next)
-                  }} rows={2} />
-                </div>
-                <RemoveButton onClick={() => {
+      {items.map((item, i) => {
+        const titleKey = `${keyPrefix}.${i}.title`
+        return (
+          <div key={i} className="border border-hanji-border/40 rounded-xl bg-background overflow-hidden">
+            <div className="p-3 space-y-3">
+              <div className="flex justify-between items-center">
+                <p className="font-sans text-xs text-ink-muted/50">항목 #{i + 1}</p>
+                <RemoveButton onClick={() => onChange(items.filter((_, idx) => idx !== i))} />
+              </div>
+              <div>
+                <FieldLabel>제목 (굵게 표시)</FieldLabel>
+                <TextInput value={item.title} onChange={(v) => {
                   const next = cloneDeep(items)
-                  next[i].lines = next[i].lines.filter((_, idx) => idx !== j)
+                  next[i].title = v
                   onChange(next)
                 }} />
               </div>
-            ))}
-            <AddButton onClick={() => {
-              const next = cloneDeep(items)
-              next[i].lines.push('')
-              onChange(next)
-            }} label="+ 줄 추가" />
+              <div className="space-y-2">
+                <FieldLabel hint="<b>강조</b> 태그 사용 가능. 각 줄이 불릿 항목으로 표시됩니다.">줄 목록</FieldLabel>
+                {item.lines.map((line, j) => {
+                  const lineKey = `${keyPrefix}.${i}.lines.${j}`
+                  return (
+                    <div key={j} className="border border-hanji-border/30 rounded-lg overflow-hidden bg-surface/50">
+                      <div className="flex gap-2 items-start p-2.5">
+                        <div className="flex-1">
+                          <TextArea value={line} onChange={(v) => {
+                            const next = cloneDeep(items)
+                            next[i].lines[j] = v
+                            onChange(next)
+                          }} rows={2} />
+                        </div>
+                        <RemoveButton onClick={() => {
+                          const next = cloneDeep(items)
+                          next[i].lines = next[i].lines.filter((_, idx) => idx !== j)
+                          onChange(next)
+                        }} />
+                      </div>
+                      <ResearchTranslationModal
+                        translationKey={lineKey}
+                        koreanSource={line}
+                        langValues={langVals(trans.translations, lineKey)}
+                        snapshot={trans.snapshots[lineKey]}
+                        onSave={(lang, value, snap) => trans.onSave(lineKey, lang, value, snap)}
+                        onRemove={(lang) => trans.onRemove(lineKey, lang)}
+                        onDismissStale={(lang) => trans.onDismissStale(lineKey, lang)}
+                      />
+                    </div>
+                  )
+                })}
+                <AddButton onClick={() => {
+                  const next = cloneDeep(items)
+                  next[i].lines.push('')
+                  onChange(next)
+                }} label="+ 줄 추가" />
+              </div>
+            </div>
+            <ResearchTranslationModal
+              translationKey={titleKey}
+              koreanSource={item.title}
+              langValues={langVals(trans.translations, titleKey)}
+              snapshot={trans.snapshots[titleKey]}
+              onSave={(lang, value, snap) => trans.onSave(titleKey, lang, value, snap)}
+              onRemove={(lang) => trans.onRemove(titleKey, lang)}
+              onDismissStale={(lang) => trans.onDismissStale(titleKey, lang)}
+            />
           </div>
-        </div>
-      ))}
+        )
+      })}
       <AddButton onClick={() => onChange([...items, { title: '', lines: [''] }])} label="+ 성과 항목 추가" />
     </div>
   )
@@ -618,6 +653,8 @@ export default function AdminResearchPage() {
           <AchievementsEditor
             items={data.overview.achievements.vowels}
             onChange={(v) => update({ overview: { ...data.overview, achievements: { ...data.overview.achievements, vowels: v } } })}
+            keyPrefix="overview.achievements.vowels"
+            trans={trans}
           />
         </SectionCard>
 
@@ -625,6 +662,8 @@ export default function AdminResearchPage() {
           <AchievementsEditor
             items={data.overview.achievements.consonants}
             onChange={(v) => update({ overview: { ...data.overview, achievements: { ...data.overview.achievements, consonants: v } } })}
+            keyPrefix="overview.achievements.consonants"
+            trans={trans}
           />
         </SectionCard>
 
@@ -632,6 +671,8 @@ export default function AdminResearchPage() {
           <AchievementsEditor
             items={data.overview.achievements.tech}
             onChange={(v) => update({ overview: { ...data.overview, achievements: { ...data.overview.achievements, tech: v } } })}
+            keyPrefix="overview.achievements.tech"
+            trans={trans}
           />
         </SectionCard>
 
