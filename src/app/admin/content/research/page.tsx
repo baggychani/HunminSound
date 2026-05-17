@@ -4,40 +4,23 @@ import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import type { ResearchContent, AchievementEntry, BulletEntry, MethodRow, TeamRow, TaskInfoRow } from '@/lib/research-content'
 import { AdminFooter } from '@/components/admin/AdminFooter'
-import { LANGUAGES } from '@/lib/i18n'
+import { ResearchTranslationModal } from '@/components/admin/ResearchTranslationModal'
 
-type LangCode = 'en' | 'zh' | 'ja' | 'fr' | 'de' | 'es' | 'hi' | 'vi' | 'ru' | 'ar'
-const TRANS_LANGS = LANGUAGES.filter((l) => l.code !== 'ko') as { code: LangCode; label: string }[]
+/* ── 번역 헬퍼 ────────────────────────────────────────────────────────── */
+interface TransHelpers {
+  translations: Record<string, Record<string, string>>
+  snapshots: Record<string, string>
+  onSave: (key: string, lang: string, value: string, koSource: string) => void
+  onRemove: (key: string, lang: string) => void
+  onDismissStale: (key: string, lang: string) => void
+}
 
-/** Build flat key→Korean text map from content */
-function buildKoreanMap(d: ResearchContent): Record<string, string> {
-  const m: Record<string, string> = {}
-  d.motivation.paragraphs.forEach((p, i) => { m[`motivation.paragraphs.${i}`] = p })
-  m['goals.final'] = d.goals.final
-  d.goals.specific.forEach((item, i) => {
-    m[`goals.specific.${i}.label`] = item.label
-    m[`goals.specific.${i}.text`] = item.text
-  })
-  m['overview.method.intro'] = d.overview.method.intro
-  d.overview.method.rows.forEach((row, i) => {
-    m[`overview.method.rows.${i}.field`] = row.field
-    m[`overview.method.rows.${i}.role`] = row.role
-    row.methods.forEach((mm, j) => { m[`overview.method.rows.${i}.methods.${j}`] = mm })
-  })
-  d.overview.scale.forEach((item, i) => {
-    m[`overview.scale.${i}.label`] = item.label
-    m[`overview.scale.${i}.text`] = item.text
-  })
-  ;(['vowels', 'consonants', 'tech'] as const).forEach((group) => {
-    d.overview.achievements[group].forEach((a, i) => {
-      m[`overview.achievements.${group}.${i}.title`] = a.title
-      a.lines.forEach((l, j) => { m[`overview.achievements.${group}.${i}.lines.${j}`] = l })
-    })
-  })
-  d.significance.paragraphs.forEach((p, i) => { m[`significance.paragraphs.${i}`] = p })
-  d.team.rows.forEach((row, i) => { m[`team.rows.${i}.task`] = row.task })
-  d.taskInfo.rows.forEach((row, i) => { m[`taskInfo.rows.${i}.value`] = row.value })
-  return m
+function langVals(translations: Record<string, Record<string, string>>, key: string): Record<string, string> {
+  const result: Record<string, string> = {}
+  for (const [lang, map] of Object.entries(translations)) {
+    if (map[key]) result[lang] = map[key]
+  }
+  return result
 }
 
 /* ── 유틸 ────────────────────────────────────────────────────────────── */
@@ -111,55 +94,100 @@ function RemoveButton({ onClick }: { onClick: () => void }) {
 }
 
 /* ── 단락 목록 편집 ───────────────────────────────────────────────────── */
-function ParagraphsEditor({ paragraphs, onChange }: { paragraphs: string[]; onChange: (v: string[]) => void }) {
+function ParagraphsEditor({
+  paragraphs, onChange, keyPrefix, trans,
+}: {
+  paragraphs: string[]
+  onChange: (v: string[]) => void
+  keyPrefix: string
+  trans: TransHelpers
+}) {
   return (
     <div className="space-y-3">
       <FieldLabel hint="<b>강조</b> 태그 사용 가능">단락</FieldLabel>
-      {paragraphs.map((p, i) => (
-        <div key={i} className="flex gap-2 items-start">
-          <div className="flex-1">
-            <TextArea value={p} onChange={(v) => {
-              const next = [...paragraphs]
-              next[i] = v
-              onChange(next)
-            }} rows={3} />
+      {paragraphs.map((p, i) => {
+        const tKey = `${keyPrefix}.${i}`
+        return (
+          <div key={i} className="border border-hanji-border/40 rounded-xl bg-background overflow-hidden">
+            <div className="flex gap-2 items-start p-3">
+              <div className="flex-1">
+                <TextArea value={p} onChange={(v) => {
+                  const next = [...paragraphs]
+                  next[i] = v
+                  onChange(next)
+                }} rows={3} />
+              </div>
+              <RemoveButton onClick={() => onChange(paragraphs.filter((_, idx) => idx !== i))} />
+            </div>
+            <ResearchTranslationModal
+              translationKey={tKey}
+              koreanSource={p}
+              langValues={langVals(trans.translations, tKey)}
+              snapshot={trans.snapshots[tKey]}
+              onSave={(lang, value, snap) => trans.onSave(tKey, lang, value, snap)}
+              onRemove={(lang) => trans.onRemove(tKey, lang)}
+              onDismissStale={(lang) => trans.onDismissStale(tKey, lang)}
+            />
           </div>
-          <RemoveButton onClick={() => onChange(paragraphs.filter((_, idx) => idx !== i))} />
-        </div>
-      ))}
+        )
+      })}
       <AddButton onClick={() => onChange([...paragraphs, ''])} label="+ 단락 추가" />
     </div>
   )
 }
 
 /* ── BulletEntry 목록 편집 ───────────────────────────────────────────── */
-function BulletListEditor({ items, onChange, labelName = '라벨' }: { items: BulletEntry[]; onChange: (v: BulletEntry[]) => void; labelName?: string }) {
+function BulletListEditor({
+  items, onChange, labelName = '라벨', keyPrefix, trans,
+}: {
+  items: BulletEntry[]
+  onChange: (v: BulletEntry[]) => void
+  labelName?: string
+  keyPrefix?: string
+  trans?: TransHelpers
+}) {
   return (
     <div className="space-y-4">
-      {items.map((item, i) => (
-        <div key={i} className="border border-hanji-border/40 rounded-lg p-3 space-y-2 bg-background">
-          <div className="flex justify-between items-center">
-            <p className="font-sans text-xs text-ink-muted/50">{labelName} #{i + 1}</p>
-            <RemoveButton onClick={() => onChange(items.filter((_, idx) => idx !== i))} />
+      {items.map((item, i) => {
+        const tKey = keyPrefix ? `${keyPrefix}.${i}.text` : undefined
+        return (
+          <div key={i} className="border border-hanji-border/40 rounded-xl bg-background overflow-hidden">
+            <div className="p-3 space-y-2">
+              <div className="flex justify-between items-center">
+                <p className="font-sans text-xs text-ink-muted/50">{labelName} #{i + 1}</p>
+                <RemoveButton onClick={() => onChange(items.filter((_, idx) => idx !== i))} />
+              </div>
+              <div>
+                <FieldLabel>{labelName}</FieldLabel>
+                <TextInput value={item.label} onChange={(v) => {
+                  const next = cloneDeep(items)
+                  next[i].label = v
+                  onChange(next)
+                }} />
+              </div>
+              <div>
+                <FieldLabel hint="<b>강조</b> 태그 사용 가능">내용</FieldLabel>
+                <TextArea value={item.text} onChange={(v) => {
+                  const next = cloneDeep(items)
+                  next[i].text = v
+                  onChange(next)
+                }} rows={2} />
+              </div>
+            </div>
+            {tKey && trans && (
+              <ResearchTranslationModal
+                translationKey={tKey}
+                koreanSource={item.text}
+                langValues={langVals(trans.translations, tKey)}
+                snapshot={trans.snapshots[tKey]}
+                onSave={(lang, value, snap) => trans.onSave(tKey, lang, value, snap)}
+                onRemove={(lang) => trans.onRemove(tKey, lang)}
+                onDismissStale={(lang) => trans.onDismissStale(tKey, lang)}
+              />
+            )}
           </div>
-          <div>
-            <FieldLabel>{labelName}</FieldLabel>
-            <TextInput value={item.label} onChange={(v) => {
-              const next = cloneDeep(items)
-              next[i].label = v
-              onChange(next)
-            }} />
-          </div>
-          <div>
-            <FieldLabel hint="<b>강조</b> 태그 사용 가능">내용</FieldLabel>
-            <TextArea value={item.text} onChange={(v) => {
-              const next = cloneDeep(items)
-              next[i].text = v
-              onChange(next)
-            }} rows={2} />
-          </div>
-        </div>
-      ))}
+        )
+      })}
       <AddButton onClick={() => onChange([...items, { label: '', text: '' }])} />
     </div>
   )
@@ -365,32 +393,12 @@ function SaveBar({ dirty, saving, onSave, onReset }: { dirty: boolean; saving: b
   )
 }
 
-/* ── 번역 섹션 라벨 (key → 사람이 읽기 쉬운 이름) ──────────────────────── */
-function labelForKey(key: string): string {
-  if (key === 'goals.final') return '연구 목표 — 최종 목표'
-  if (key.startsWith('motivation.paragraphs.')) return `연구 동기 — 단락 ${Number(key.split('.').pop()) + 1}`
-  if (key.startsWith('significance.paragraphs.')) return `연구의 의의 — 단락 ${Number(key.split('.').pop()) + 1}`
-  if (key.match(/^goals\.specific\.(\d+)\.text$/)) return `세부 목표 ${Number(key.split('.')[2]) + 1} — 내용`
-  if (key.match(/^goals\.specific\.(\d+)\.label$/)) return `세부 목표 ${Number(key.split('.')[2]) + 1} — 라벨`
-  if (key === 'overview.method.intro') return '연구 방법 — 소개 문장'
-  return key
-}
-
-const SKIP_KEY_PREFIXES = [
-  'overview.method.rows',
-  'overview.scale',
-  'overview.achievements',
-  'team.rows',
-  'taskInfo.rows',
-]
-
 /* ── 메인 페이지 ─────────────────────────────────────────────────────── */
 export default function AdminResearchPage() {
   const [original, setOriginal] = useState<ResearchContent | null>(null)
   const [data, setData] = useState<ResearchContent | null>(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [transLang, setTransLang] = useState<LangCode>('en')
 
   useEffect(() => {
     fetch('/api/admin/research-content')
@@ -430,13 +438,49 @@ export default function AdminResearchPage() {
     setData((prev) => prev ? { ...prev, ...patch } : prev)
   }, [])
 
-  const updateTranslation = useCallback((lang: string, key: string, value: string) => {
+  const updateTrans = useCallback((key: string, lang: string, value: string, koSource: string) => {
     setData((prev) => {
       if (!prev) return prev
       const existing = prev.translations ?? {}
       const langMap = { ...(existing[lang] ?? {}) }
       if (value.trim()) { langMap[key] = value } else { delete langMap[key] }
+      const snaps = { ...(prev.translationSnapshots ?? {}), [key]: koSource }
+      return { ...prev, translations: { ...existing, [lang]: langMap }, translationSnapshots: snaps }
+    })
+  }, [])
+
+  const removeTrans = useCallback((key: string, lang: string) => {
+    setData((prev) => {
+      if (!prev) return prev
+      const existing = prev.translations ?? {}
+      const langMap = { ...(existing[lang] ?? {}) }
+      delete langMap[key]
       return { ...prev, translations: { ...existing, [lang]: langMap } }
+    })
+  }, [])
+
+  const dismissStale = useCallback((key: string, _lang: string) => {
+    setData((prev) => {
+      if (!prev) return prev
+      const koreanText = (() => {
+        if (key.startsWith('motivation.paragraphs.')) {
+          const idx = parseInt(key.split('.').pop() ?? '0')
+          return prev.motivation.paragraphs[idx] ?? ''
+        }
+        if (key === 'goals.final') return prev.goals.final
+        if (key.startsWith('goals.specific.')) {
+          const idx = parseInt(key.split('.')[2])
+          return prev.goals.specific[idx]?.text ?? ''
+        }
+        if (key === 'overview.method.intro') return prev.overview.method.intro
+        if (key.startsWith('significance.paragraphs.')) {
+          const idx = parseInt(key.split('.').pop() ?? '0')
+          return prev.significance.paragraphs[idx] ?? ''
+        }
+        return ''
+      })()
+      const snaps = { ...(prev.translationSnapshots ?? {}), [key]: koreanText }
+      return { ...prev, translationSnapshots: snaps }
     })
   }, [])
 
@@ -451,6 +495,14 @@ export default function AdminResearchPage() {
       <p className="font-sans text-sm text-ink-muted">불러오는 중…</p>
     </div>
   )
+
+  const trans: TransHelpers = {
+    translations: data.translations ?? {},
+    snapshots: data.translationSnapshots ?? {},
+    onSave: updateTrans,
+    onRemove: removeTrans,
+    onDismissStale: dismissStale,
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -478,6 +530,8 @@ export default function AdminResearchPage() {
           <ParagraphsEditor
             paragraphs={data.motivation.paragraphs}
             onChange={(v) => update({ motivation: { paragraphs: v } })}
+            keyPrefix="motivation.paragraphs"
+            trans={trans}
           />
         </SectionCard>
 
@@ -486,11 +540,24 @@ export default function AdminResearchPage() {
           <div className="space-y-6">
             <div>
               <FieldLabel hint="<b>강조</b> 태그 사용 가능">최종 목표</FieldLabel>
-              <TextArea
-                value={data.goals.final}
-                onChange={(v) => update({ goals: { ...data.goals, final: v } })}
-                rows={3}
-              />
+              <div className="border border-hanji-border/40 rounded-xl bg-background overflow-hidden">
+                <div className="p-3">
+                  <TextArea
+                    value={data.goals.final}
+                    onChange={(v) => update({ goals: { ...data.goals, final: v } })}
+                    rows={3}
+                  />
+                </div>
+                <ResearchTranslationModal
+                  translationKey="goals.final"
+                  koreanSource={data.goals.final}
+                  langValues={langVals(trans.translations, 'goals.final')}
+                  snapshot={trans.snapshots['goals.final']}
+                  onSave={(lang, value, snap) => trans.onSave('goals.final', lang, value, snap)}
+                  onRemove={(lang) => trans.onRemove('goals.final', lang)}
+                  onDismissStale={(lang) => trans.onDismissStale('goals.final', lang)}
+                />
+              </div>
             </div>
             <div>
               <p className="font-sans text-xs font-medium text-ink-muted/60 uppercase tracking-wide mb-3">세부 목표</p>
@@ -498,6 +565,8 @@ export default function AdminResearchPage() {
                 items={data.goals.specific}
                 onChange={(v) => update({ goals: { ...data.goals, specific: v } })}
                 labelName="목표명"
+                keyPrefix="goals.specific"
+                trans={trans}
               />
             </div>
           </div>
@@ -508,11 +577,24 @@ export default function AdminResearchPage() {
           <div className="space-y-4">
             <div>
               <FieldLabel>소개 문장</FieldLabel>
-              <TextArea
-                value={data.overview.method.intro}
-                onChange={(v) => update({ overview: { ...data.overview, method: { ...data.overview.method, intro: v } } })}
-                rows={2}
-              />
+              <div className="border border-hanji-border/40 rounded-xl bg-background overflow-hidden">
+                <div className="p-3">
+                  <TextArea
+                    value={data.overview.method.intro}
+                    onChange={(v) => update({ overview: { ...data.overview, method: { ...data.overview.method, intro: v } } })}
+                    rows={2}
+                  />
+                </div>
+                <ResearchTranslationModal
+                  translationKey="overview.method.intro"
+                  koreanSource={data.overview.method.intro}
+                  langValues={langVals(trans.translations, 'overview.method.intro')}
+                  snapshot={trans.snapshots['overview.method.intro']}
+                  onSave={(lang, value, snap) => trans.onSave('overview.method.intro', lang, value, snap)}
+                  onRemove={(lang) => trans.onRemove('overview.method.intro', lang)}
+                  onDismissStale={(lang) => trans.onDismissStale('overview.method.intro', lang)}
+                />
+              </div>
             </div>
             <p className="font-sans text-xs font-medium text-ink-muted/60 uppercase tracking-wide">표 행</p>
             <MethodTableEditor
@@ -558,6 +640,8 @@ export default function AdminResearchPage() {
           <ParagraphsEditor
             paragraphs={data.significance.paragraphs}
             onChange={(v) => update({ significance: { paragraphs: v } })}
+            keyPrefix="significance.paragraphs"
+            trans={trans}
           />
         </SectionCard>
 
@@ -575,73 +659,6 @@ export default function AdminResearchPage() {
             rows={data.taskInfo.rows}
             onChange={(v) => update({ taskInfo: { rows: v } })}
           />
-        </SectionCard>
-
-        {/* 9. 다국어 번역 편집 */}
-        <SectionCard title="다국어 번역 편집">
-          <p className="font-sans text-xs text-ink-muted/50 -mt-2 mb-4">
-            비워두면 자동 번역을 사용합니다.
-          </p>
-
-          {/* 언어 탭 */}
-          <div className="flex flex-wrap gap-1.5 mb-6">
-            {TRANS_LANGS.map((l) => {
-              const filled = Object.keys(data.translations?.[l.code] ?? {}).length
-              return (
-                <button
-                  key={l.code}
-                  type="button"
-                  onClick={() => setTransLang(l.code)}
-                  className={`font-sans text-xs px-3 py-1.5 rounded-lg border transition-colors ${
-                    transLang === l.code
-                      ? 'bg-gold/90 text-white border-gold/90'
-                      : 'border-hanji-border/60 text-ink-muted hover:border-gold/40'
-                  }`}
-                >
-                  {l.label}
-                  {filled > 0 && (
-                    <span className={`ml-1.5 text-[10px] ${transLang === l.code ? 'opacity-80' : 'text-emerald-500'}`}>
-                      {filled}
-                    </span>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-
-          {/* 키별 편집 */}
-          <div className="space-y-5">
-            {Object.entries(buildKoreanMap(data))
-              .filter(([key]) => !SKIP_KEY_PREFIXES.some(p => key.startsWith(p)))
-              .map(([key, koText]) => {
-                const current = data.translations?.[transLang]?.[key] ?? ''
-                return (
-                  <div key={key} className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
-                    <div>
-                      <p className="font-sans text-[10px] font-medium text-ink-muted/50 uppercase tracking-wide mb-1">
-                        {labelForKey(key)}
-                      </p>
-                      <p className="font-sans text-xs text-ink-muted/70 leading-relaxed bg-hanji-border/20 rounded-lg px-3 py-2 whitespace-pre-wrap">
-                        {koText}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="font-sans text-[10px] font-medium text-ink-muted/50 uppercase tracking-wide mb-1">
-                        {TRANS_LANGS.find(l => l.code === transLang)?.label ?? transLang} 번역
-                        {current && <span className="ml-2 text-emerald-500">●</span>}
-                      </p>
-                      <textarea
-                        className="w-full font-sans text-xs text-ink bg-background border border-hanji-border/60 rounded-lg px-3 py-2 leading-relaxed resize-y focus:outline-none focus:ring-1 focus:ring-gold/50"
-                        rows={3}
-                        value={current}
-                        placeholder="비워두면 자동 번역 사용"
-                        onChange={(e) => updateTranslation(transLang, key, e.target.value)}
-                      />
-                    </div>
-                  </div>
-                )
-              })}
-          </div>
         </SectionCard>
 
         <div className="h-20" />

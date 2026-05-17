@@ -62,6 +62,12 @@ export interface ResearchContent {
    * e.g. translations["en"]["motivation.paragraphs.0"] = "..."
    */
   translations: Record<string, Record<string, string>>
+  /**
+   * Korean source snapshots at time of translation save.
+   * key → Korean text recorded when any translation for that key was last saved.
+   * Used for stale detection: if current Korean differs from snapshot, warn.
+   */
+  translationSnapshots?: Record<string, string>
 }
 
 /** Helper: returns translated value if available, else Korean original */
