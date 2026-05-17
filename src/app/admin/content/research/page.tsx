@@ -3,7 +3,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import type { ResearchContent, AchievementEntry, BulletEntry, MethodRow, TeamRow, TaskInfoRow } from '@/lib/research-content'
-import { AdminTopBar } from '@/components/admin/AdminTopBar'
 import { AdminFooter } from '@/components/admin/AdminFooter'
 import { LANGUAGES } from '@/lib/i18n'
 
@@ -462,7 +461,6 @@ export default function AdminResearchPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <AdminTopBar />
       <main className="max-w-3xl mx-auto px-6 py-10 space-y-8">
 
         {/* 헤더 */}

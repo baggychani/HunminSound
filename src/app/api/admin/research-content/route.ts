@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { verifyAdminSession } from '@/lib/adminSession'
+import { ADMIN_SESSION_COOKIE, getAdminSessionSecret, verifyAdminSessionToken } from '@/lib/adminSession'
 import fs from 'fs'
 import path from 'path'
 
@@ -24,7 +24,8 @@ export async function GET() {
 
 export async function PUT(req: Request) {
   const cookieStore = await cookies()
-  const session = await verifyAdminSession(cookieStore)
+  const token = cookieStore.get(ADMIN_SESSION_COOKIE)?.value
+  const session = await verifyAdminSessionToken(getAdminSessionSecret(), token)
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
