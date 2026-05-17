@@ -89,7 +89,11 @@ function Divider() {
   return <div className="border-t border-hanji-border/50" />
 }
 
-function MethodTable({ intro, rows }: { intro: string; rows: { field: string; role: string; methods: string[] }[] }) {
+function MethodTable({ intro, rows, t }: {
+  intro: string
+  rows: { field: string; role: string; methods: string[] }[]
+  t: (key: string, ko: string) => string
+}) {
   return (
     <>
       <p className="mb-6 font-sans text-[0.95rem] leading-relaxed text-ink-soft"><RichText text={intro} /></p>
@@ -97,9 +101,9 @@ function MethodTable({ intro, rows }: { intro: string; rows: { field: string; ro
         <table className="min-w-max w-full border-collapse font-sans text-[0.875rem]">
           <thead>
             <tr className="border-b border-ink/15">
-              {['분야', '역할', '주요 방법'].map((h) => (
-                <th key={h} className="pb-3 pr-8 text-left font-medium text-ink-muted/55 whitespace-nowrap">{h}</th>
-              ))}
+              <th className="pb-3 pr-8 text-left font-medium text-ink-muted/55 whitespace-nowrap">{t('table.field', '분야')}</th>
+              <th className="pb-3 pr-8 text-left font-medium text-ink-muted/55 whitespace-nowrap">{t('table.methodRole', '역할')}</th>
+              <th className="pb-3 pr-8 text-left font-medium text-ink-muted/55 whitespace-nowrap">{t('table.methods', '주요 방법')}</th>
             </tr>
           </thead>
           <tbody>
@@ -123,14 +127,23 @@ function MethodTable({ intro, rows }: { intro: string; rows: { field: string; ro
   )
 }
 
-function TeamTable({ rows }: { rows: { role: string; name: string; affiliation: string; task: string; field: string }[] }) {
+function TeamTable({ rows, t }: {
+  rows: { role: string; name: string; affiliation: string; task: string; field: string }[]
+  t: (key: string, ko: string) => string
+}) {
   return (
     <div className="overflow-x-auto -mx-1 px-1">
       <table className="min-w-max w-full border-collapse font-sans text-[0.875rem]">
         <thead>
           <tr className="border-b border-ink/15">
-            {['구분', '성명', '소속', '역할', '전공 분야'].map((h) => (
-              <th key={h} className="pb-3 pr-6 last:pr-0 text-left font-medium text-ink-muted/55 whitespace-nowrap">{h}</th>
+            {([
+              ['table.category', '구분'],
+              ['table.name', '성명'],
+              ['table.affiliation', '소속'],
+              ['table.task', '역할'],
+              ['table.major', '전공 분야'],
+            ] as [string, string][]).map(([key, ko]) => (
+              <th key={key} className="pb-3 pr-6 last:pr-0 text-left font-medium text-ink-muted/55 whitespace-nowrap">{t(key, ko)}</th>
             ))}
           </tr>
         </thead>
@@ -181,15 +194,46 @@ export function ResearchPageClient({ content }: Props) {
     if (lang === 'ko') { setAutoTrans({}); return }
 
     const allKeys: { key: string; ko: string }[] = [
+      // 섹션 제목
+      { key: 'section.motivation', ko: '연구 동기' },
+      { key: 'section.goals', ko: '연구 목표' },
+      { key: 'section.overview', ko: '연구 개요' },
+      { key: 'section.significance', ko: '연구의 의의' },
+      // 블록 라벨
+      { key: 'label.finalGoal', ko: '최종 목표' },
+      { key: 'label.specificGoals', ko: '세부 목표' },
+      { key: 'label.method', ko: '연구 방법' },
+      { key: 'label.scale', ko: '연구 규모' },
+      { key: 'label.achievements', ko: '주요 성과' },
+      { key: 'label.vowelSystem', ko: '모음 체계' },
+      { key: 'label.consonantSystem', ko: '자음 체계' },
+      { key: 'label.techDev', ko: '기술 개발' },
+      // 테이블 헤더
+      { key: 'table.field', ko: '분야' },
+      { key: 'table.methodRole', ko: '역할' },
+      { key: 'table.methods', ko: '주요 방법' },
+      { key: 'table.category', ko: '구분' },
+      { key: 'table.name', ko: '성명' },
+      { key: 'table.affiliation', ko: '소속' },
+      { key: 'table.task', ko: '역할' },
+      { key: 'table.major', ko: '전공 분야' },
+      // 본문 콘텐츠
       ...motivation.paragraphs.map((p, i) => ({ key: `motivation.paragraphs.${i}`, ko: p })),
       { key: 'goals.final', ko: goals.final },
-      ...goals.specific.map((item, i) => ({ key: `goals.specific.${i}.text`, ko: item.text })),
+      ...goals.specific.flatMap((item, i) => [
+        { key: `goals.specific.${i}.label`, ko: item.label },
+        { key: `goals.specific.${i}.text`, ko: item.text },
+      ]),
       { key: 'overview.method.intro', ko: overview.method.intro },
       ...overview.method.rows.flatMap((row, i) => [
+        { key: `overview.method.rows.${i}.field`, ko: row.field },
         { key: `overview.method.rows.${i}.role`, ko: row.role },
         ...row.methods.map((mm, j) => ({ key: `overview.method.rows.${i}.methods.${j}`, ko: mm })),
       ]),
-      ...overview.scale.map((item, i) => ({ key: `overview.scale.${i}.text`, ko: item.text })),
+      ...overview.scale.flatMap((item, i) => [
+        { key: `overview.scale.${i}.label`, ko: item.label },
+        { key: `overview.scale.${i}.text`, ko: item.text },
+      ]),
       ...(['vowels', 'consonants', 'tech'] as const).flatMap((group) =>
         overview.achievements[group].flatMap((a, i) => [
           { key: `overview.achievements.${group}.${i}.title`, ko: a.title },
@@ -306,6 +350,7 @@ export function ResearchPageClient({ content }: Props) {
               <BlockLabel>{t('label.method', '연구 방법')}</BlockLabel>
               <MethodTable
                 intro={t('overview.method.intro', overview.method.intro)}
+                t={t}
                 rows={overview.method.rows.map((row, i) => ({
                   field: t(`overview.method.rows.${i}.field`, row.field),
                   role: t(`overview.method.rows.${i}.role`, row.role),
@@ -402,6 +447,7 @@ export function ResearchPageClient({ content }: Props) {
             <SectionTitle id="section-team" muted>{m.researchSec1}</SectionTitle>
           </div>
           <TeamTable
+            t={t}
             rows={team.rows.map((row, i) => ({
               ...row,
               name: lang !== 'ko' && row.nameEn ? row.nameEn : row.name,
