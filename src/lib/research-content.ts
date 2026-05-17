@@ -17,6 +17,7 @@ export interface MethodRow {
 export interface TeamRow {
   role: string
   name: string
+  nameEn?: string
   affiliation: string
   task: string
   field: string

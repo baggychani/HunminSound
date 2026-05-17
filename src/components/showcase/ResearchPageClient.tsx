@@ -105,7 +105,7 @@ function MethodTable({ intro, rows }: { intro: string; rows: { field: string; ro
             {rows.map((row) => (
               <tr key={row.field} className="border-b border-hanji-border/60 last:border-0">
                 <td className="py-3 pr-8 align-top font-semibold text-ink w-20">{row.field}</td>
-                <td className="py-3 pr-8 align-top text-ink-soft leading-relaxed"><RichText text={row.role} /></td>
+                <td className="py-3 pr-6 align-top text-ink-soft leading-relaxed w-64 max-w-[16rem]"><RichText text={row.role} /></td>
                 <td className="py-3 align-top">
                   <ul className="space-y-1">
                     {row.methods.map((m) => (
@@ -139,7 +139,7 @@ function TeamTable({ rows }: { rows: { role: string; name: string; affiliation: 
               <td className="py-3 pr-6 align-top whitespace-nowrap text-ink-muted/60">{mem.role}</td>
               <td className="py-3 pr-6 align-top whitespace-nowrap font-semibold text-ink">{mem.name}</td>
               <td className="py-3 pr-6 align-top text-ink-muted/70 leading-relaxed">{mem.affiliation}</td>
-              <td className="py-3 pr-6 align-top text-ink-soft leading-relaxed"><RichText text={mem.task} /></td>
+              <td className="py-3 pr-6 align-top text-ink-soft leading-relaxed w-56 max-w-[14rem] whitespace-pre-line"><RichText text={mem.task} /></td>
               <td className="py-3 align-top text-ink-muted/70 whitespace-nowrap">{mem.field}</td>
             </tr>
           ))}
@@ -335,6 +335,7 @@ export function ResearchPageClient({ content }: Props) {
           <TeamTable
             rows={team.rows.map((row, i) => ({
               ...row,
+              name: lang !== 'ko' && row.nameEn ? row.nameEn : row.name,
               task: t(`team.rows.${i}.task`, row.task),
             }))}
           />
