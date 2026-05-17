@@ -1,6 +1,18 @@
 [
   {
     "username": "hunmin",
+    "action": "remove",
+    "key": "consonant:b:description:ko",
+    "type": "consonant",
+    "itemId": "b",
+    "itemName": "ㅂ (비읍)",
+    "lang": "ko",
+    "oldValue": "두 입술(양순)이 완전히 닫혀 기류를 차단했다가 개방하는 양순 평음 파열음입니다. 어두 위치에서는 무성 무기음 [p]으로, 유성음 사이에서는 유성음 [b]으로 실현됩니다. 평음·격음·경음 삼중 대립 중 기식이 가장 약한 계열입니다. 수정 테스트ㅇㅇ",
+    "id": "1779011948540-05ubk",
+    "timestamp": "2026-05-17T09:59:08.540Z"
+  },
+  {
+    "username": "hunmin",
     "action": "save",
     "key": "consonant:b:description:ko",
     "type": "consonant",
