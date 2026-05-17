@@ -1,18 +1,79 @@
-﻿param([switch]$Stop)
+﻿param(
+  [switch]$Stop
+)
 
-$projectDir = Split-Path $MyInvocation.MyCommand.Path -Parent
-Set-Location $projectDir
+$ErrorActionPreference = 'Stop'
 
-if ($Stop) {
-    Write-Host "개발 서버를 종료합니다..." -ForegroundColor Yellow
-    Get-Process -Name "node" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-    Write-Host "종료됨." -ForegroundColor Green
-    exit
+$repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$pidFile = Join-Path $repoRoot '.dev-server.pid'
+
+function Stop-TreeByProcessId {
+  param(
+    [Parameter(Mandatory = $true)]
+    [int]$ProcessId
+  )
+
+  $proc = Get-Process -Id $ProcessId -ErrorAction SilentlyContinue
+  if ($null -eq $proc) {
+    return
+  }
+
+  & taskkill /PID $ProcessId /T /F *> $null
 }
 
-Write-Host ""
-Write-Host "  개발 서버 시작 중..." -ForegroundColor Cyan
-Write-Host "  주소: http://localhost:3000" -ForegroundColor Cyan
-Write-Host ""
+function Read-PidFile {
+  if (-not (Test-Path $pidFile)) {
+    return $null
+  }
 
-npm run dev
+  $raw = (Get-Content $pidFile -Raw).Trim()
+  if ([string]::IsNullOrWhiteSpace($raw)) {
+    return $null
+  }
+
+  $parsedId = 0
+  if (-not [int]::TryParse($raw, [ref]$parsedId)) {
+    return $null
+  }
+
+  return $parsedId
+}
+
+if ($Stop) {
+  $existingId = Read-PidFile
+  if ($null -ne $existingId) {
+    Stop-TreeByProcessId -ProcessId $existingId
+  }
+
+  if (Test-Path $pidFile) {
+    Remove-Item $pidFile -Force
+  }
+  exit 0
+}
+
+# 이전 실행에서 남은 프로세스가 있으면 먼저 정리한다.
+$staleId = Read-PidFile
+if ($null -ne $staleId) {
+  Stop-TreeByProcessId -ProcessId $staleId
+  if (Test-Path $pidFile) {
+    Remove-Item $pidFile -Force
+  }
+}
+
+$devProcess = Start-Process `
+  -FilePath 'cmd.exe' `
+  -ArgumentList '/c npm run dev' `
+  -WorkingDirectory $repoRoot `
+  -NoNewWindow `
+  -PassThru
+
+Set-Content -Path $pidFile -Value $devProcess.Id -NoNewline
+
+try {
+  Wait-Process -Id $devProcess.Id
+}
+finally {
+  if (Test-Path $pidFile) {
+    Remove-Item $pidFile -Force
+  }
+}
