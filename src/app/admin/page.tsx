@@ -54,9 +54,9 @@ const SECTIONS = [
     glyph: '研',
     title: '연구 소개',
     en: 'Research',
-    desc: '연구진 소개, 연구 목적과 의의, NRF 과제 정보를 관리합니다.',
-    meta: '3개 섹션',
-    ready: false,
+    desc: '연구 동기, 목표, 개요, 의의, 연구진, 과제 정보를 편집합니다.',
+    meta: '8개 섹션',
+    ready: true,
   },
 ] as const
 
