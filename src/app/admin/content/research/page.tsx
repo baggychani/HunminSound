@@ -287,7 +287,7 @@ function TeamTableEditor({ rows, onChange }: { rows: TeamRow[]; onChange: (v: Te
             {([['role', '구분'], ['name', '성명'], ['affiliation', '소속'], ['field', '전공 분야']] as [keyof TeamRow, string][]).map(([key, label]) => (
               <div key={key}>
                 <FieldLabel>{label}</FieldLabel>
-                <TextInput value={row[key]} onChange={(v) => {
+                <TextInput value={row[key] ?? ''} onChange={(v) => {
                   const next = cloneDeep(rows)
                   next[i][key] = v
                   onChange(next)
@@ -346,7 +346,7 @@ function TaskInfoEditor({ rows, onChange }: { rows: TaskInfoRow[]; onChange: (v:
 function SaveBar({ dirty, saving, onSave, onReset }: { dirty: boolean; saving: boolean; onSave: () => void; onReset: () => void }) {
   if (!dirty && !saving) return null
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-surface border border-hanji-border shadow-lg rounded-2xl px-5 py-3">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-hanji border border-hanji-border shadow-xl rounded-2xl px-5 py-3">
       <p className="font-sans text-sm text-ink-muted">저장되지 않은 변경사항이 있습니다.</p>
       <button
         onClick={onReset}
@@ -390,8 +390,6 @@ export default function AdminResearchPage() {
   const [data, setData] = useState<ResearchContent | null>(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [autoTranslating, setAutoTranslating] = useState(false)
-  const [autoTransProgress, setAutoTransProgress] = useState('')
   const [transLang, setTransLang] = useState<LangCode>('en')
 
   useEffect(() => {
@@ -442,42 +440,6 @@ export default function AdminResearchPage() {
     })
   }, [])
 
-  const autoTranslate = useCallback(async () => {
-    if (!data) return
-    setAutoTranslating(true)
-    setAutoTransProgress('준비 중…')
-    const koMap = buildKoreanMap(data)
-    const entries = Object.entries(koMap).filter(
-      ([key]) => !SKIP_KEY_PREFIXES.some(p => key.startsWith(p))
-    )
-    const result: Record<string, string> = {}
-    for (let i = 0; i < entries.length; i++) {
-      const [key, text] = entries[i]
-      if (!text.trim()) { result[key] = ''; continue }
-      setAutoTransProgress(`번역 중… (${i + 1}/${entries.length})`)
-      try {
-        const res = await fetch('/api/translate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text, target: transLang }),
-        })
-        const json = await res.json() as { translated?: string }
-        result[key] = json.translated ?? text
-      } catch {
-        result[key] = text
-      }
-    }
-    setData((prev) => {
-      if (!prev) return prev
-      const existing = prev.translations ?? {}
-      return {
-        ...prev,
-        translations: { ...existing, [transLang]: { ...(existing[transLang] ?? {}), ...result } },
-      }
-    })
-    setAutoTranslating(false)
-    setAutoTransProgress('')
-  }, [data, transLang])
 
   if (error) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -618,7 +580,7 @@ export default function AdminResearchPage() {
         {/* 9. 다국어 번역 편집 */}
         <SectionCard title="다국어 번역 편집">
           <p className="font-sans text-xs text-ink-muted/50 -mt-2 mb-4">
-            표·연구진·성과 항목 제외, 본문 텍스트만 표시됩니다. 비워두면 한국어 원문이 그대로 표시됩니다.
+            비워두면 자동 번역을 사용합니다.
           </p>
 
           {/* 언어 탭 */}
@@ -647,19 +609,6 @@ export default function AdminResearchPage() {
             })}
           </div>
 
-          {/* 일괄 자동번역 (선택 언어) */}
-          <div className="flex items-center gap-3 mb-6 pb-5 border-b border-hanji-border/40">
-            <button
-              type="button"
-              onClick={autoTranslate}
-              disabled={autoTranslating}
-              className="font-sans text-xs font-medium bg-gold/90 text-white rounded-lg px-3 py-1.5 hover:bg-gold transition-colors disabled:opacity-60 whitespace-nowrap"
-            >
-              {autoTranslating ? autoTransProgress : `${TRANS_LANGS.find(l => l.code === transLang)?.label ?? transLang} 일괄 자동번역`}
-            </button>
-            <p className="font-sans text-[11px] text-ink-muted/50">MyMemory 무료 API 사용 · 결과 확인 후 저장하세요</p>
-          </div>
-
           {/* 키별 편집 */}
           <div className="space-y-5">
             {Object.entries(buildKoreanMap(data))
@@ -685,7 +634,7 @@ export default function AdminResearchPage() {
                         className="w-full font-sans text-xs text-ink bg-background border border-hanji-border/60 rounded-lg px-3 py-2 leading-relaxed resize-y focus:outline-none focus:ring-1 focus:ring-gold/50"
                         rows={3}
                         value={current}
-                        placeholder="비워두면 한국어 원문 사용"
+                        placeholder="비워두면 자동 번역 사용"
                         onChange={(e) => updateTranslation(transLang, key, e.target.value)}
                       />
                     </div>
