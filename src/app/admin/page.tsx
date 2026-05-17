@@ -44,9 +44,9 @@ const SECTIONS = [
     glyph: '訓',
     title: '훈민정음',
     en: 'Hunminjeongeum',
-    desc: '훈민정음 제자 원리 페이지의 각 섹션 내용을 관리합니다.',
-    meta: '4개 섹션',
-    ready: false,
+    desc: '≪훈민정음≫ 해례본 28자 제자 원리·정인지서 단락별 다국어 번역을 편집합니다.',
+    meta: '3개 섹션',
+    ready: true,
   },
   {
     id: 'research',

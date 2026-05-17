@@ -146,4 +146,50 @@
   .section-divider {
     @apply w-12 h-px bg-hanji-border my-8 mx-auto;
   }
+
+  /* ── 훈민정음 페이지 ─────────────────────────────────────────────
+   * 해례본 원문(한자/옛한글 혼합) 가독성과 옛스러운 분위기를 위해
+   * - 한자: 자간을 살짝 늘리고 굵기를 한 단계 무겁게.
+   * - 옛한글 자모(ᅀᅵ, ᅙᅵ, ㆁ 등): Noto Sans CJK KR 등 옛한글 글리프를
+   *   포함한 폰트로 폴백.
+   * - 원문 줄 전체: variant-numeric/feature-settings로 본문 한자 가독성 강화.
+   */
+  .hunmin-original {
+    font-feature-settings: 'palt' 1, 'kern' 1;
+  }
+  .hunmin-hanja {
+    font-feature-settings: 'palt' 1, 'kern' 1;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .hunmin-jamo {
+    /* 옛한글 자모 영역(U+1100–U+11FF, U+A960–U+A97F, U+D7B0–U+D7FF 등) 표시용 폴백 */
+    font-family: 'HCR Batang', 'Hamchorom Batang', 'Malgun Gothic', 'Noto Serif KR',
+      'Noto Sans KR', 'Noto Sans CJK KR', 'Source Han Serif KR', serif;
+  }
+
+  /* ── 한자 위 작은 독음 (ruby/rt) ─────────────────────────────────────
+   * 브라우저 기본 rt 스타일은 너무 작고 위치가 들쭉날쭉하므로 통일.
+   * - ruby-position: over → 한자 위에 글자별 가운데 정렬로 배치.
+   * - rt의 line-height를 줄여 줄 간격이 과도하게 벌어지지 않게.
+   * - 카드 단락이 ruby 때문에 점프하지 않도록 .hunmin-original의 line-height를 충분히 확보.
+   */
+  .hunmin-ruby {
+    ruby-position: over;
+    ruby-align: center;
+  }
+  .hunmin-rt {
+    font-size: 0.4em;
+    line-height: 1;
+    letter-spacing: 0;
+    font-weight: 400;
+    /* 한자와 독음 사이의 여백 (rt와 base 사이 미세 조정 — 작을수록 가깝게 붙음) */
+    margin-bottom: 0.04em;
+    /* 텍스트 흐름에 영향 주지 않게 */
+    user-select: none;
+  }
+  /* WebKit/Blink는 ruby-text(rt)에 별도 글꼴/스타일을 적용 가능 */
+  .hunmin-rt {
+    font-family: var(--font-sans), 'Pretendard', system-ui, sans-serif;
+  }
 }

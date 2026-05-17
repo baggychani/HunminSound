@@ -6,26 +6,32 @@ import {
   TRANSLATION_LANGS,
   makeOverrideKey,
   isStale,
+  type OverrideContentType,
   type SupportedTranslationLang,
   type TranslationOverride,
 } from '@/lib/i18n-overrides'
 import { useOverridesStore, patchOverride } from '@/lib/overrides-store'
 
 interface Props {
-  type: 'consonant' | 'vowel'
+  type: OverrideContentType
   id: string
   displayName?: string
+  /** 다국어 번역의 출처가 되는 텍스트(자/모음은 한국어 설명, 훈민정음은 영어 풀이). */
   koreanSource: string
   baseValues: Partial<Record<SupportedTranslationLang, string>>
+  /** 드로어 행으로부터 제외할 언어 코드(출처 언어가 영어인 경우 'en' 제외 등). */
+  excludeLangs?: SupportedTranslationLang[]
+  /** 행의 placeholder/툴팁용 라벨(예: 자/모음 '한국어', 훈민정음 '영어'). */
+  sourceLabel?: string
 }
 
 /* ── 상태 뱃지 ──────────────────────────────────────────────────────────── */
 type StatusKind = 'none' | 'ok' | 'stale'
 
-function StatusDot({ kind }: { kind: StatusKind }) {
+function StatusDot({ kind, sourceLabel }: { kind: StatusKind; sourceLabel: string }) {
   if (kind === 'stale') {
     return (
-      <span title="원본이 변경됨 — 확인 필요" aria-label="stale"
+      <span title={`${sourceLabel} 원본이 변경됨 — 확인 필요`} aria-label="stale"
         className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-sm bg-amber-400/20 text-amber-500">
         <svg width="9" height="9" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
           <path d="M6 1L11 10H1L6 1z" />
@@ -48,12 +54,13 @@ interface RowProps {
   baseValue: string
   override: TranslationOverride | undefined
   koreanSource: string
+  sourceLabel: string
   onSave: (lang: SupportedTranslationLang, value: string) => Promise<void>
   onDismissStale: (lang: SupportedTranslationLang) => Promise<void>
   onRemove: (lang: SupportedTranslationLang) => Promise<void>
 }
 
-function LangRow({ langCode, langName, baseValue, override, koreanSource,
+function LangRow({ langCode, langName, baseValue, override, koreanSource, sourceLabel,
   onSave, onDismissStale, onRemove }: RowProps) {
   const stale = override ? isStale(override, koreanSource) : false
   const status: StatusKind = !override ? 'none' : stale ? 'stale' : 'ok'
@@ -83,7 +90,7 @@ function LangRow({ langCode, langName, baseValue, override, koreanSource,
   return (
     <div className={`grid grid-cols-[6rem_1fr_6rem] sm:grid-cols-[8rem_1fr_7rem] items-start gap-3 border-b border-hanji-border/50 px-5 py-3 last:border-0 transition-colors ${stale ? 'bg-amber-400/[0.05]' : ''}`}>
       <div className="flex items-center gap-1.5 pt-0.5">
-        <StatusDot kind={status} />
+        <StatusDot kind={status} sourceLabel={sourceLabel} />
         <span className="font-sans text-[11px] text-ink-muted/80">{langName}</span>
       </div>
 
@@ -104,7 +111,7 @@ function LangRow({ langCode, langName, baseValue, override, koreanSource,
               <path d="M6 1L11 10H1L6 1z" />
             </svg>
             <p className="font-sans text-[10px] leading-snug text-amber-600/80 dark:text-amber-400/80">
-              한국어 원본이 변경되었습니다. 번역을 확인해주세요.
+              {sourceLabel} 원본이 변경되었습니다. 번역을 확인해주세요.
             </p>
           </div>
         )}
@@ -148,7 +155,10 @@ function LangRow({ langCode, langName, baseValue, override, koreanSource,
 }
 
 /* ── TranslationDrawer ───────────────────────────────────────────────────── */
-export function TranslationDrawer({ type, id, displayName, koreanSource, baseValues }: Props) {
+export function TranslationDrawer({
+  type, id, displayName, koreanSource, baseValues,
+  excludeLangs, sourceLabel,
+}: Props) {
   const [open, setOpen] = useState(false)
   const store = useOverridesStore()
 
@@ -157,8 +167,13 @@ export function TranslationDrawer({ type, id, displayName, koreanSource, baseVal
     [type, id],
   )
 
-  const overrideCount = TRANSLATION_LANGS.filter(({ code }) => !!store[getKey(code)]).length
-  const staleCount = TRANSLATION_LANGS.filter(({ code }) => {
+  const langs = excludeLangs && excludeLangs.length > 0
+    ? TRANSLATION_LANGS.filter(({ code }) => !excludeLangs.includes(code))
+    : TRANSLATION_LANGS
+  const effectiveSourceLabel = sourceLabel ?? '한국어'
+
+  const overrideCount = langs.filter(({ code }) => !!store[getKey(code)]).length
+  const staleCount = langs.filter(({ code }) => {
     const ov = store[getKey(code)]
     return ov ? isStale(ov, koreanSource) : false
   }).length
@@ -221,10 +236,10 @@ export function TranslationDrawer({ type, id, displayName, koreanSource, baseVal
                 <span className="font-sans text-[10px] uppercase tracking-[0.1em] text-ink-muted/50">다국어 번역 편집</span>
                 <span className="font-sans text-[10px] text-ink-muted/35">텍스트 클릭 또는 수정 버튼</span>
               </div>
-              {TRANSLATION_LANGS.map(({ code, name }) => (
+              {langs.map(({ code, name }) => (
                 <LangRow key={code} langCode={code} langName={name}
                   baseValue={baseValues[code] ?? ''} override={store[getKey(code)]}
-                  koreanSource={koreanSource}
+                  koreanSource={koreanSource} sourceLabel={effectiveSourceLabel}
                   onSave={handleSave} onDismissStale={handleDismissStale} onRemove={handleRemove}
                 />
               ))}

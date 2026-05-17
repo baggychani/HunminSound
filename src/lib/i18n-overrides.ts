@@ -36,14 +36,29 @@ export interface TranslationOverride {
 /** 저장소 전체: key → override */
 export type OverridesStore = Record<string, TranslationOverride>
 
+/**
+ * 오버라이드 대상 콘텐츠 타입.
+ * - consonant / vowel : 자·모음 차트 항목 (단일 description 필드)
+ * - hunminPassage     : 훈민정음 해례본 한 단락(id = 일련번호, 예: '52')
+ */
+export type OverrideContentType = 'consonant' | 'vowel' | 'hunminPassage'
+
 // ── 키 헬퍼 ──────────────────────────────────────────────────────────────────
 
 export function makeOverrideKey(
-  type: 'consonant' | 'vowel',
+  type: OverrideContentType,
   id: string,
   lang: SupportedTranslationLang,
 ): string {
   return `${type}:${id}:description:${lang}`
+}
+
+/** 훈민정음 단락 전용 키 — 다른 곳에서 import 편의를 위해 별도 헬퍼 제공. */
+export function makeHunminPassageOverrideKey(
+  number: string,
+  lang: SupportedTranslationLang,
+): string {
+  return makeOverrideKey('hunminPassage', number, lang)
 }
 
 // ── Stale 판정 ────────────────────────────────────────────────────────────────

@@ -72,12 +72,12 @@ export default function HomePage() {
           {m.homeSubtitle}
         </p>
 
-        <h1 className="font-serif text-6xl sm:text-7xl md:text-8xl text-ink leading-none tracking-wide mb-4">
+        <h1 className="font-serif text-6xl sm:text-7xl md:text-8xl text-ink leading-none tracking-wide">
           세종말소리
         </h1>
 
         <p
-          className={`font-sans text-sm text-ink-muted tracking-[0.2em] ${
+          className={`mt-5 sm:mt-6 font-sans text-sm text-ink-muted tracking-[0.2em] ${
             lang === 'ko' ? 'mb-0' : 'mb-10'
           }`}
         >
@@ -143,6 +143,7 @@ export default function HomePage() {
         <HunminjeongeumCard
           href="/hunminjeongeum"
           label={m.hunminjeongeum}
+          caption={m.hunminjeongeumCaption}
           description={m.hunminjeongeumCardDesc}
           explore={m.explore}
         />
@@ -218,12 +219,13 @@ function ResearchCard({ href, label, description, cta }: ResearchCardProps) {
 interface HunminjeongeumCardProps {
   href: string
   label: string
+  caption: string
   description: string
   explore: string
 }
 
 /** 자음/모음 격자 아래 전 너비 — 동급 중요도로 크게 표시 */
-function HunminjeongeumCard({ href, label, description, explore }: HunminjeongeumCardProps) {
+function HunminjeongeumCard({ href, label, caption, description, explore }: HunminjeongeumCardProps) {
   const baseShapes = ['ㄱ', 'ㄴ', 'ㅁ', 'ㅅ', 'ㅇ']
 
   return (
@@ -245,7 +247,7 @@ function HunminjeongeumCard({ href, label, description, explore }: Hunminjeongeu
             {label}
           </span>
         </div>
-        <span className="font-sans text-xs text-ink-muted tracking-[0.06em]">훈민정음 · 訓民正音 · 1443</span>
+        <span className="font-sans text-xs text-ink-muted tracking-[0.06em]">{caption}</span>
       </div>
 
       <div className="relative z-10 flex gap-3 flex-wrap" dir="ltr" lang="ko">
