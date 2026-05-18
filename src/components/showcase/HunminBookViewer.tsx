@@ -22,7 +22,7 @@ import * as THREE from 'three'
  *  튜닝 위치 요약
  *  • 자세: 아래 `BOOK_ROT_X` / `BOOK_ROT_Y` / `BOOK_ROT_Z`
  *  • 화면에서 상대적 크기: `BOOK_BOUNDS_MARGIN`(작을수록 확대, 잘림 위험)
- *  • 애니메이션 폭: `FLOAT_AMP_Y`, `SWAY_AMP_Y`(및 `useFrame` 안 주파수 계수)
+ *  • 애니메이션: `FLOAT_AMP_Y` / `SWAY_AMP_Y`(폭), `FLOAT_FREQ` / `SWAY_FREQ`(진동 속도)
  *  • 레이아웃 픽셀 높이: `src/app/(site)/page.tsx` 의 3D 컨테이너 `clamp(...)`
  */
 
@@ -36,17 +36,25 @@ useGLTF.preload(MODEL_PATH)
  * `BOOK_ROT_X`: 분모를 키우면 회전량이 줄어든다(예: /4 → /5 는 덜 기울임).
  * 부호·`BOOK_ROT_Y`로 속지가 카메라를 보도록 미세 조정. */
 const BOOK_ROT_X = +Math.PI / 4.4
-const BOOK_ROT_Y = 0.18
+const BOOK_ROT_Y = 0.05
 const BOOK_ROT_Z = 0
 
 /** Bounds `margin`: 1에 가까울수록 꽉 참. **줄이면 카메라가 더 가까이 붙어 책이 커 보임**(0.9~1.05 권장, 너무 낮으면 잘림). */
-const BOOK_BOUNDS_MARGIN = 0.97
+const BOOK_BOUNDS_MARGIN = 1.00
 
-/** 위아래 떠 있는 느낌 최대 이동량(월드 단위). 폭 줄이려면 0.01 전후로. */
-const FLOAT_AMP_Y = 0.015
+/** 위아래 떠 있는 느낌 최대 이동량(월드 단위). */
+const FLOAT_AMP_Y = 0.045
 
-/** Y축 흔들림 진폭(라디안). 폭 줄이려면 0.02~0.04 전후. */
-const SWAY_AMP_Y = 0.035
+/** Y축 흔들림 진폭(라디안). */
+const SWAY_AMP_Y = 0.085
+
+/** X축 미세 끄덕임 진폭(라디안) — 책장이 들렸다 가라앉는 느낌. */
+const TILT_AMP_X = 0.025
+
+/** sin 인자에 곱하는 “속도” 계수 — 커질수록 같은 시간에 더 빠르게 진동. */
+const FLOAT_FREQ = 0.85
+const SWAY_FREQ = 0.5
+const TILT_FREQ = 0.6
 
 function HunminBook() {
   const gltf = useGLTF(MODEL_PATH) as unknown as GLTF
@@ -72,8 +80,9 @@ function HunminBook() {
   useFrame((state) => {
     if (!ref.current) return
     const t = state.clock.elapsedTime
-    ref.current.position.y = Math.sin(t * 0.55) * FLOAT_AMP_Y
-    ref.current.rotation.y = BOOK_ROT_Y + Math.sin(t * 0.28) * SWAY_AMP_Y
+    ref.current.position.y = Math.sin(t * FLOAT_FREQ) * FLOAT_AMP_Y
+    ref.current.rotation.y = BOOK_ROT_Y + Math.sin(t * SWAY_FREQ) * SWAY_AMP_Y
+    ref.current.rotation.x = BOOK_ROT_X + Math.sin(t * TILT_FREQ + 0.6) * TILT_AMP_X
   })
 
   return (

@@ -7,6 +7,7 @@ import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import { ScrollColorWash } from '@/components/ui/ScrollColorWash'
+import { HaeryebonCardWatermark } from '@/components/showcase/HaeryebonCardWatermark'
 
 /* 3D 모델은 클라이언트 전용 — SSR 시 three.js 가 window 를 참조하면 깨지므로
  * dynamic + ssr:false 로 분리 로드. 첫 렌더 시 자리만 잡아 두고 비동기로 들어옴. */
@@ -254,13 +255,7 @@ function HunminjeongeumCard({ href, label, caption, description, explore }: Hunm
       href={href}
       className="group col-span-1 sm:col-span-2 relative overflow-hidden rounded-sm border border-hanji-border/60 bg-hanji/75 backdrop-blur-md transition-colors hover:bg-hanji/90 hover:border-hanji-border p-10 sm:p-12 flex flex-col gap-6 dark:bg-hanji/65 dark:hover:bg-hanji/80"
     >
-      {/* 배경 장식 — 訓民正音 흐린 한자 */}
-      <span
-        className="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 select-none font-serif text-[clamp(3.5rem,10vw,7rem)] leading-none text-ink/[0.04] dark:text-ink/[0.06]"
-        aria-hidden
-      >
-        訓民正音
-      </span>
+      <HaeryebonCardWatermark />
 
       <div className="relative z-10">
         <div className="flex items-baseline gap-3 mb-1">

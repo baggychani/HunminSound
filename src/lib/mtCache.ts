@@ -4,7 +4,7 @@ import mtFile from '@/data/mt-cache.json'
 const file = mtFile as { version: number; entries: Record<string, string> }
 
 /** 로컬 스토리지 키 접두사 */
-export const MT_LS_PREFIX = 'sejong-mt:v1:'
+export const MT_LS_PREFIX = 'sejong-mt:v4:'
 
 /** 한글 원문이 바뀌면 해시가 바뀌어 번들·로컬 캐시가 자동 무효화됨 */
 export function hashKoSource(text: string): string {
@@ -15,8 +15,9 @@ export function hashKoSource(text: string): string {
   return (h >>> 0).toString(16)
 }
 
+/** 키에 버전을 넣어 MT 알고리즘(따옴표 보존 등)이 바뀌면 이전 번들·LS 캐시와 분리 */
 export function buildMtKey(itemId: string, lang: Lang, koSource: string): string {
-  return `${itemId}|${lang}|${hashKoSource(koSource)}`
+  return `${itemId}|${lang}|qprot-ph|${hashKoSource(koSource)}`
 }
 
 export function getBundledMachineTranslation(key: string): string | undefined {

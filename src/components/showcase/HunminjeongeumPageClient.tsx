@@ -43,8 +43,8 @@ export function HunminjeongeumPageClient() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
-          style={{ fontSize: 'clamp(5rem, 18vw, 14rem)', y: bgY, opacity: bgOpacity }}
-          className="pointer-events-none absolute -right-4 top-1/2 -translate-y-1/2 select-none font-serif leading-none text-ink/[0.035] dark:text-ink/[0.055]"
+          style={{ fontSize: 'clamp(3.25rem, 11vw, 8.5rem)', y: bgY, opacity: bgOpacity }}
+          className="pointer-events-none absolute -right-4 top-1/2 -translate-y-1/2 select-none font-serif leading-none text-ink/[0.028] dark:text-ink/[0.038]"
           aria-hidden
         >
           訓民正音
@@ -97,7 +97,7 @@ export function HunminjeongeumPageClient() {
           variants={fadeUp}
           initial="hidden"
           animate="show"
-          className="font-sans text-sm text-ink-muted leading-relaxed max-w-2xl"
+          className="max-w-2xl break-keep font-sans text-sm leading-relaxed text-ink-muted [overflow-wrap:break-word]"
         >
           {m.hunminjeongeumPageDesc}
         </motion.p>
@@ -133,10 +133,16 @@ export function HunminjeongeumPageClient() {
         </motion.div>
       </div>
 
-      {/* ── 일러두기 (상단, 항상 노출) ─────────────────────────────── */}
-      <div className="mb-12 sm:mb-14">
+      {/* ── 일러두기 (상단, 헤더 페이드 시퀀스에 이어서 등장) ───────── */}
+      <motion.div
+        custom={5}
+        variants={fadeUp}
+        initial="hidden"
+        animate="show"
+        className="mb-12 sm:mb-14"
+      >
         <EditorialNote />
-      </div>
+      </motion.div>
 
       {/* ── 본문: 해례본 구절 3개 섹션 ──────────────────────────────── */}
       <div className="space-y-28 pb-24 sm:space-y-32 sm:pb-32">

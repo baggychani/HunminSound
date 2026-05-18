@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { Lang } from '@/lib/i18n'
 import { buildMtKey, getBundledMachineTranslation } from '@/lib/mtCache'
+import { translateKoreanWithPlaceholders, translateLongWithFixedChunk } from '@/lib/mtProtectedKorean'
 
 export const dynamic = 'force-dynamic'
 
@@ -26,18 +27,6 @@ const MYMEMORY_CODE: Record<Lang, string> = {
 }
 
 const MAX_CHUNK = 420
-
-function chunkText(text: string): string[] {
-  const t = text.trim()
-  if (t.length <= MAX_CHUNK) return [t]
-  const parts: string[] = []
-  let i = 0
-  while (i < t.length) {
-    parts.push(t.slice(i, i + MAX_CHUNK))
-    i += MAX_CHUNK
-  }
-  return parts
-}
 
 export async function POST(req: Request) {
   try {
@@ -75,24 +64,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ translated: text })
     }
 
-    const chunks = chunkText(text)
-    const out: string[] = []
-
-    for (let i = 0; i < chunks.length; i++) {
-      const chunk = chunks[i]
-      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=${src}|${tgt}`
+    const translateOneSegment = async (segment: string): Promise<string> => {
+      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(segment)}&langpair=${src}|${tgt}`
       const res = await fetch(url)
       const data = (await res.json()) as {
         responseData?: { translatedText?: string }
       }
       const piece = data?.responseData?.translatedText
-      out.push(typeof piece === 'string' && piece.trim() ? piece : chunk)
-      if (i < chunks.length - 1) {
-        await new Promise((r) => setTimeout(r, 200))
-      }
+      return typeof piece === 'string' && piece.trim() ? piece : segment
     }
 
-    return NextResponse.json({ translated: out.join('') })
+    /* 한국어: 보존 구간은 {{0}}…로 치환한 뒤 한 덩어리(또는 플레이스홀더 안 자르는 청크)로만 번역.
+     * 조각마다 따로 API를 호출하면 `'띠' + '에서와 같이…'`처럼 끊겨 as in 어순이 깨진다. */
+    const translated =
+      sourceLang === 'ko'
+        ? await translateKoreanWithPlaceholders(text, translateOneSegment, MAX_CHUNK)
+        : await translateLongWithFixedChunk(text, translateOneSegment, MAX_CHUNK)
+
+    return NextResponse.json({ translated })
   } catch {
     return NextResponse.json({ translated: null }, { status: 500 })
   }

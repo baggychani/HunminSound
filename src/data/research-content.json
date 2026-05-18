@@ -214,7 +214,7 @@
             {
                 "role": "일반연구원",
                 "name": "이호현",
-                "affiliation": "—",
+                "affiliation": "",
                 "task": "표준상형도 제작 · 첨가도 그림 · 영상 분석/시각화",
                 "field": "음성공학",
                 "nameEn": "Lee Ho-hyeon"
@@ -222,7 +222,7 @@
             {
                 "role": "팀",
                 "name": "윤국진, 정병인,\n오창균 외",
-                "affiliation": "—",
+                "affiliation": "",
                 "task": "AI 파이프라인 개발 · 2D 애니메이션 생성 ·\n웹 데모 시스템 구현",
                 "field": "음성공학 · AI/웹 개발",
                 "nameEn": "Yun Guk-jin, Jeong Byeong-in,\nOh Chang-gyun et al."

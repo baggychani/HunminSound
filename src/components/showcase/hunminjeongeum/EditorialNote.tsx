@@ -19,14 +19,14 @@ export function EditorialNote() {
         {m.hunminEditorialNote ?? '일러두기'}
       </p>
       <ul className="space-y-2 text-[12px] leading-relaxed text-ink-muted sm:text-[13px]">
-        <li className="flex gap-3">
+        <li className="flex gap-3 break-keep [overflow-wrap:break-word]">
           <span
             aria-hidden
             className="mt-1.5 inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-ink-muted/60"
           />
           <span>{m.hunminEditorialSource}</span>
         </li>
-        <li className="flex gap-3">
+        <li className="flex gap-3 break-keep [overflow-wrap:break-word]">
           <span
             aria-hidden
             className="mt-1.5 inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-ink-muted/60"

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import type { ResearchContent } from '@/lib/research-content'
@@ -89,41 +89,345 @@ function Divider() {
   return <div className="border-t border-hanji-border/50" />
 }
 
-function MethodTable({ intro, rows, t }: {
-  intro: string
-  rows: { field: string; role: string; methods: string[] }[]
-  t: (key: string, ko: string) => string
+/** 엠블럼 부유 — 분야마다 진폭·주기·위상을 달리해 살짝 어긋나게 */
+const EMBLEM_FLOAT = [
+  { y: [0, -5, 0], duration: 4.4, delay: 0 },
+  { y: [0, -7, 0], duration: 5.15, delay: 0.38 },
+  { y: [0, -4, 0], duration: 3.85, delay: 0.72 },
+] as const
+
+type MethodTone = {
+  emblemBg: string
+  emblemBorder: string
+  indexColor: string
+  fieldColor: string
+  dotColor: string
+  tagClass: string
+}
+
+/** 엠블럼 연결선 — 열 중앙 고정, 필터·RAF 없음(부유 원과 분리해 일렁임 방지) */
+function MethodEmblemConnections() {
+  return (
+    <svg
+      aria-hidden
+      className="pointer-events-none absolute inset-0 z-0 h-full w-full"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+    >
+      <line x1="16.67" y1="50" x2="50" y2="50" className="method-link-halo" />
+      <line x1="50" y1="50" x2="83.33" y2="50" className="method-link-halo" />
+      <line x1="16.67" y1="50" x2="50" y2="50" className="method-link-core" />
+      <line x1="50" y1="50" x2="83.33" y2="50" className="method-link-core" />
+    </svg>
+  )
+}
+
+function FloatingMethodEmblem({
+  index,
+  field,
+  tone,
+  innerRef,
+}: {
+  index: number
+  field: string
+  tone: MethodTone
+  innerRef: (el: HTMLDivElement | null) => void
+}) {
+  const reduceMotion = useReducedMotion()
+  const preset = EMBLEM_FLOAT[index % EMBLEM_FLOAT.length]
+
+  return (
+    <motion.div
+      ref={innerRef}
+      className="relative z-10 will-change-transform"
+      animate={reduceMotion ? undefined : { y: [...preset.y] }}
+      transition={
+        reduceMotion
+          ? undefined
+          : {
+              duration: preset.duration,
+              delay: preset.delay,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }
+      }
+    >
+      <div
+        className={`relative flex h-[9rem] w-[9rem] items-center justify-center rounded-full border ${tone.emblemBg} ${tone.emblemBorder}`}
+      >
+        <span
+          className={`absolute -top-3 left-1/2 -translate-x-1/2 font-sans text-[0.62rem] tracking-[0.22em] ${tone.indexColor}`}
+        >
+          {String(index + 1).padStart(2, '0')}
+        </span>
+        <span className={`font-serif text-[1.08rem] leading-none tracking-wide ${tone.fieldColor}`}>
+          {field}
+        </span>
+        <span
+          aria-hidden
+          className={`absolute -bottom-1.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full ${tone.dotColor}`}
+        />
+      </div>
+    </motion.div>
+  )
+}
+
+/**
+ * 「세부 목표」 사분(四) 인포그래픽 — 2×2 그리드.
+ *
+ *  설계 결정
+ *   • 단순 bullet 목록을 버리고, 「상형·인문·교육·응용」 네 축을 한지 사분면처럼 배치.
+ *   • 카드마다 별도의 한지 톤(호박·청회·풀빛·갈홍)으로 분야 매칭의 잔향을 유지.
+ *   • 좌상단에 옅은 **인덱스 워터마크**(01~04)와 작은 dot/인덱스 라벨로 정보 위계.
+ *   • 코너 ㄱ/ㄴ 장식 — 옛 책의 광곽(匡郭) 모서리 모티프를 가볍게.
+ *   • 카드는 정지(부유 없음) — 연구 방법 엠블럼과 구분.
+ *   • 단어 단위 줄바꿈(`break-keep`).
+ */
+type GoalTone = {
+  cardBg: string
+  cardBorder: string
+  indexColor: string
+  watermark: string
+  dot: string
+  labelColor: string
+  bodyColor: string
+  cornerColor: string
+}
+
+function GoalQuadCard({
+  index,
+  label,
+  text,
+  tone,
+}: {
+  index: number
+  label: string
+  text: string
+  tone: GoalTone
 }) {
   return (
-    <>
-      <p className="mb-6 font-sans text-[0.95rem] leading-relaxed text-ink-soft"><RichText text={intro} /></p>
-      <div className="overflow-x-auto -mx-1 px-1">
-        <table className="min-w-max w-full border-collapse font-sans text-[0.875rem]">
-          <thead>
-            <tr className="border-b border-ink/15">
-              <th className="pb-3 pr-8 text-left font-medium text-ink-muted/55 whitespace-nowrap">{t('table.field', '분야')}</th>
-              <th className="pb-3 pr-8 text-left font-medium text-ink-muted/55 whitespace-nowrap">{t('table.methodRole', '역할')}</th>
-              <th className="pb-3 pr-8 text-left font-medium text-ink-muted/55 whitespace-nowrap">{t('table.methods', '주요 방법')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.field} className="border-b border-hanji-border/60 last:border-0">
-                <td className="py-3 pr-8 align-top font-semibold text-ink w-20 whitespace-nowrap">{row.field}</td>
-                <td className="py-3 pr-10 align-top text-ink-soft leading-relaxed whitespace-nowrap"><RichText text={row.role} /></td>
-                <td className="py-3 align-top">
-                  <ul className="space-y-1">
-                    {row.methods.map((m) => (
-                      <li key={m} className="text-ink-muted/70 leading-relaxed">{m}</li>
-                    ))}
-                  </ul>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <article
+      className={`goal-quad-card group relative overflow-hidden rounded-2xl border ${tone.cardBorder} ${tone.cardBg} px-6 py-7 sm:px-7 sm:py-8`}
+    >
+      {/* 인덱스 워터마크 */}
+      <span
+        aria-hidden
+        className={`pointer-events-none absolute -right-2 -top-6 select-none font-serif text-[6.5rem] leading-none ${tone.watermark}`}
+      >
+        {String(index + 1).padStart(2, '0')}
+      </span>
+
+      {/* 코너 장식 — 광곽 모티프 */}
+      <span
+        aria-hidden
+        className={`pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t ${tone.cornerColor}`}
+      />
+      <span
+        aria-hidden
+        className={`pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r ${tone.cornerColor}`}
+      />
+
+      <div className="relative z-10 flex flex-col gap-3">
+        <div className="flex items-center gap-2">
+          <span className={`h-1.5 w-1.5 rounded-full ${tone.dot}`} />
+          <span className={`font-sans text-[0.68rem] tracking-[0.22em] ${tone.indexColor}`}>
+            {String(index + 1).padStart(2, '0')}
+          </span>
+        </div>
+        <h3
+          lang="ko"
+          className={`break-keep [overflow-wrap:break-word] font-serif text-[1.08rem] leading-snug ${tone.labelColor}`}
+        >
+          <RichText text={label} />
+        </h3>
+        <p
+          lang="ko"
+          className={`break-keep [overflow-wrap:break-word] font-sans text-[0.9rem] leading-[1.85] ${tone.bodyColor}`}
+        >
+          <RichText text={text} />
+        </p>
       </div>
-    </>
+    </article>
+  )
+}
+
+function SpecificGoalsGrid({
+  items,
+}: {
+  items: { label: string; text: string }[]
+}) {
+  const tones: GoalTone[] = [
+    {
+      cardBg: 'bg-[#faf3e3]',
+      cardBorder: 'border-[#e6cf9c]/70',
+      indexColor: 'text-[#a98551]',
+      watermark: 'text-[#d9c094]/35',
+      dot: 'bg-[#c8a26b]',
+      labelColor: 'text-[#7a5a2b]',
+      bodyColor: 'text-[#6b5340]',
+      cornerColor: 'border-[#d9c094]',
+    },
+    {
+      cardBg: 'bg-[#eef3f8]',
+      cardBorder: 'border-[#b8c8d6]/70',
+      indexColor: 'text-[#5a7791]',
+      watermark: 'text-[#a7bccd]/35',
+      dot: 'bg-[#8ca6ba]',
+      labelColor: 'text-[#3d5870]',
+      bodyColor: 'text-[#4a6278]',
+      cornerColor: 'border-[#a7bccd]',
+    },
+    {
+      cardBg: 'bg-[#eef3e8]',
+      cardBorder: 'border-[#bccab0]/70',
+      indexColor: 'text-[#647955]',
+      watermark: 'text-[#b3c2a4]/35',
+      dot: 'bg-[#97a986]',
+      labelColor: 'text-[#4d6041]',
+      bodyColor: 'text-[#4f6345]',
+      cornerColor: 'border-[#b3c2a4]',
+    },
+    {
+      cardBg: 'bg-[#f5ece2]',
+      cardBorder: 'border-[#d3b7a3]/70',
+      indexColor: 'text-[#8a5a48]',
+      watermark: 'text-[#c9a995]/35',
+      dot: 'bg-[#b48570]',
+      labelColor: 'text-[#704a3a]',
+      bodyColor: 'text-[#6f4f42]',
+      cornerColor: 'border-[#c9a995]',
+    },
+  ]
+
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+      {items.map((item, i) => (
+        <GoalQuadCard
+          key={i}
+          index={i}
+          label={item.label}
+          text={item.text}
+          tone={tones[i % tones.length]}
+        />
+      ))}
+    </div>
+  )
+}
+
+/**
+ * 「연구 방법」 시각화 — 3분야 트라이어드(Triad).
+ *
+ *  설계 결정
+ *   • 표/겹친 원 등 시각 노이즈를 모두 버리고, **상단 원형 엠블럼 + 하단 정렬된
+ *     역할/방법 칼럼** 구조로 3개를 일렬 배치한다. 정보 위계가 분명해지고
+ *     모바일에서도 단순 1열로 떨어진다.
+ *   • 원은 **이름표(엠블럼)** 역할만. 텍스트가 원 안에서 잘리거나 어색하게
+ *     줄바꿈되는 문제를 피한다. 원 안에는 **분야명 + 일련번호**만.
+ *   • 분야 색은 한지 톤에 맞춰 옅게: 인문(호박/세피아)·의(차분한 청회)·공(옅은 풀빛).
+ *     테두리/도트 컬러는 분야별로 분리하되 본문 텍스트는 ink 계열로 통일.
+ *   • 「주요 방법」은 더 이상 점-목록이 아니라 **칩(pill) 태그**. 키워드성이 강해
+ *     스캔 가독성이 좋아진다.
+ *   • 데스크톱: 엠블럼끼리 빛나는 연결선 + 각기 다른 Y축 부유; 선은 RAF로 따라감.
+ */
+function MethodTable({ intro, rows }: {
+  intro: string
+  rows: { field: string; role: string; methods: string[] }[]
+}) {
+  const tones: MethodTone[] = [
+    {
+      emblemBg: 'bg-[#f6efe2]',
+      emblemBorder: 'border-[#d9c094]',
+      indexColor: 'text-[#a98551]',
+      fieldColor: 'text-[#3a2a16]',
+      dotColor: 'bg-[#c8a26b]',
+      tagClass: 'bg-[#f6efe2]/70 text-[#7a5a2b] border-[#d9c094]/70',
+    },
+    {
+      emblemBg: 'bg-[#eaf0f6]',
+      emblemBorder: 'border-[#a7bccd]',
+      indexColor: 'text-[#5a7791]',
+      fieldColor: 'text-[#1f2f44]',
+      dotColor: 'bg-[#8ca6ba]',
+      tagClass: 'bg-[#eaf0f6]/70 text-[#3d5870] border-[#a7bccd]/70',
+    },
+    {
+      emblemBg: 'bg-[#eef3e8]',
+      emblemBorder: 'border-[#b3c2a4]',
+      indexColor: 'text-[#647955]',
+      fieldColor: 'text-[#2a3a22]',
+      dotColor: 'bg-[#97a986]',
+      tagClass: 'bg-[#eef3e8]/70 text-[#4d6041] border-[#b3c2a4]/70',
+    },
+  ]
+
+  return (
+    <div>
+      <p className="mb-12 max-w-3xl break-keep font-sans text-[0.95rem] leading-relaxed text-ink-soft sm:mb-14">
+        <RichText text={intro} />
+      </p>
+
+      <div
+        className="relative mb-8 hidden min-h-[10.5rem] sm:mb-10 sm:grid sm:grid-cols-3 sm:items-center"
+      >
+        <MethodEmblemConnections />
+        {rows.map((row, i) => {
+          const tone = tones[i % tones.length]
+          return (
+            <div key={`emblem-${row.field}`} className="flex justify-center">
+              <FloatingMethodEmblem
+                index={i}
+                field={row.field}
+                tone={tone}
+                innerRef={() => {}}
+              />
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="grid grid-cols-1 items-stretch gap-y-14 sm:grid-cols-3 sm:gap-x-6 sm:gap-y-0 md:gap-x-10">
+        {rows.map((row, i) => {
+          const tone = tones[i % tones.length]
+          return (
+            <article
+              key={row.field}
+              className="relative flex h-full flex-col items-center text-center"
+            >
+              <div className="mb-7 sm:hidden">
+                <FloatingMethodEmblem
+                  index={i}
+                  field={row.field}
+                  tone={tone}
+                  innerRef={() => {}}
+                />
+              </div>
+
+              {/* 역할 — 3열일 때 최소 높이를 맞춰 pill 첫 줄이 같은 높이에서 시작 */}
+              <div
+                className="mb-6 flex w-full max-w-[28ch] flex-col justify-start sm:min-h-[6rem]"
+                lang="ko"
+              >
+                <p className="break-keep [overflow-wrap:break-word] font-sans text-[0.92rem] leading-[1.85] text-ink-soft">
+                  <RichText text={row.role} />
+                </p>
+              </div>
+
+              {/* 주요 방법 — 칩 (짧은 태그는 한 줄에 여러 개) */}
+              <ul className="flex w-full flex-wrap justify-center gap-1.5 px-1">
+                {row.methods.map((m) => (
+                  <li
+                    key={m}
+                    className={`break-keep rounded-full border px-2.5 py-1 font-sans text-[0.78rem] leading-snug ${tone.tagClass}`}
+                  >
+                    {m}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          )
+        })}
+      </div>
+    </div>
   )
 }
 
@@ -152,7 +456,13 @@ function TeamTable({ rows, t }: {
             <tr key={i} className="border-b border-hanji-border/60 last:border-0">
               <td className="py-3 pr-5 align-top whitespace-nowrap text-ink-muted/60">{mem.role}</td>
               <td className="py-3 pr-4 align-top max-w-[8rem] whitespace-pre-line font-semibold text-ink">{mem.name}</td>
-              <td className="py-3 pr-6 align-top text-ink-muted/70 leading-relaxed min-w-[16rem] max-w-[26rem] whitespace-nowrap">{mem.affiliation}</td>
+              <td className="py-3 pr-6 align-top text-ink-muted/70 leading-relaxed min-w-[16rem] max-w-[26rem] whitespace-nowrap">
+                {mem.affiliation.trim() === '' || mem.affiliation.trim() === '—' || mem.affiliation.trim() === '-' ? (
+                  <span className="text-ink-muted/25" aria-hidden> </span>
+                ) : (
+                  mem.affiliation
+                )}
+              </td>
               <td className="py-3 pr-6 align-top text-ink-soft leading-relaxed min-w-[17rem] whitespace-pre-line"><RichText text={mem.task} /></td>
               <td className="py-3 align-top text-ink-muted/70 whitespace-nowrap">{mem.field}</td>
             </tr>
@@ -295,7 +605,7 @@ export function ResearchPageClient({ content }: Props) {
         <h1 className="font-serif text-[2.1rem] leading-tight tracking-tight text-ink sm:text-4xl mb-3">
           {m.research}
         </h1>
-        <p className="font-sans text-sm leading-relaxed text-ink-muted max-w-2xl">
+        <p className="max-w-2xl break-keep font-sans text-sm leading-relaxed text-ink-muted [overflow-wrap:break-word]">
           {m.researchPageDesc}
         </p>
       </div>
@@ -326,15 +636,12 @@ export function ResearchPageClient({ content }: Props) {
             </div>
             <div>
               <BlockLabel>{t('label.specificGoals', '세부 목표')}</BlockLabel>
-              <div className="space-y-4">
-                {goals.specific.map((item, i) => (
-                  <BulletItem
-                    key={i}
-                    label={t(`goals.specific.${i}.label`, item.label)}
-                    text={t(`goals.specific.${i}.text`, item.text)}
-                  />
-                ))}
-              </div>
+              <SpecificGoalsGrid
+                items={goals.specific.map((item, i) => ({
+                  label: t(`goals.specific.${i}.label`, item.label),
+                  text: t(`goals.specific.${i}.text`, item.text),
+                }))}
+              />
             </div>
           </div>
         </motion.section>
@@ -350,7 +657,6 @@ export function ResearchPageClient({ content }: Props) {
               <BlockLabel>{t('label.method', '연구 방법')}</BlockLabel>
               <MethodTable
                 intro={t('overview.method.intro', overview.method.intro)}
-                t={t}
                 rows={overview.method.rows.map((row, i) => ({
                   field: t(`overview.method.rows.${i}.field`, row.field),
                   role: t(`overview.method.rows.${i}.role`, row.role),

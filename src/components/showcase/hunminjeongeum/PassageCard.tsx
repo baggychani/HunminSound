@@ -44,7 +44,7 @@ export function PassageCard({ passage }: PassageCardProps) {
 
       {/* 한문 원문 (글자별 위에 독음) */}
       <p
-        className="hunmin-original text-[clamp(1.4rem,2.6vw,1.85rem)] font-serif leading-[2.3] tracking-[0.04em] text-ink"
+        className="hunmin-original break-keep text-[clamp(1.4rem,2.6vw,1.85rem)] font-serif leading-[2.7] tracking-[0.04em] text-ink [overflow-wrap:break-word]"
         lang="ko"
       >
         <HanjaText
@@ -80,7 +80,7 @@ export function PassageCard({ passage }: PassageCardProps) {
 
       {/* 한국어 풀이 — 항상 노출 */}
       <p
-        className="mt-4 font-serif text-[15px] sm:text-[16px] leading-[2.2] text-ink-soft"
+        className="mt-4 break-keep font-serif text-[15px] leading-[2.2] text-ink-soft [overflow-wrap:break-word] sm:text-[16px]"
         lang="ko"
       >
         {passage.korean}

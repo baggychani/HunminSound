@@ -217,17 +217,82 @@
     ruby-align: center;
   }
   .hunmin-rt {
-    font-size: 0.4em;
+    font-size: 0.38em;
     line-height: 1;
     letter-spacing: 0;
     font-weight: 400;
-    /* 한자와 독음 사이의 여백 (rt와 base 사이 미세 조정 — 작을수록 가깝게 붙음) */
-    margin-bottom: 0.04em;
-    /* 텍스트 흐름에 영향 주지 않게 */
+    /* 한자(base)와 더 가깝게 — 글자 크기는 유지, transform 만으로 ruby 간격 압축 */
+    transform: translateY(0.55em);
+    transform-origin: center bottom;
+    margin-bottom: -0.28em;
+    padding-bottom: 0;
     user-select: none;
   }
   /* WebKit/Blink는 ruby-text(rt)에 별도 글꼴/스타일을 적용 가능 */
   .hunmin-rt {
     font-family: var(--font-sans), 'Pretendard', system-ui, sans-serif;
+  }
+
+  /* 연구 방법 — 엠블럼 연결선 (고정, 필터/RAF 없음 → 일렁임 없음) */
+  .method-link-halo {
+    stroke: rgba(168, 130, 74, 0.32);
+    stroke-width: 0.85;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .method-link-core {
+    stroke: rgba(120, 90, 52, 0.48);
+    stroke-width: 0.35;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .dark .method-link-halo {
+    stroke: rgba(245, 236, 216, 0.22);
+  }
+  .dark .method-link-core {
+    stroke: rgba(252, 248, 240, 0.38);
+  }
+
+  /*
+   * 해례본 워터마크 (메인 훈민정음 카드)
+   * 위치·스케일·패럴랙스 → HaeryebonCardWatermark.tsx 상단 ZONE / IMG_* / PARALLAX_*
+   *
+   * .haeryebon-watermark-feather — 왼쪽 페더만 (위·아래·오른쪽 없음)
+   *   gradient: transparent 0% → … 14% → 불투명 34% → 100%
+   *   14%·34% 를 키우면 왼쪽이 더 넓게 흐려짐
+   */
+  .haeryebon-watermark-feather {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(0, 0, 0, 0.4) 14%,
+      #000 34%,
+      #000 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(0, 0, 0, 0.4) 14%,
+      #000 34%,
+      #000 100%
+    );
+  }
+  /* 라이트: opacity 낮을수록 더 투명 */
+  .haeryebon-watermark-img {
+    opacity: 0.14;
+    mix-blend-mode: screen;
+    filter: contrast(1.05);
+  }
+  /* 다크: invert + screen */
+  .dark .haeryebon-watermark-img {
+    opacity: 0.2;
+    filter: invert(1) brightness(1.05) contrast(1.05);
+    mix-blend-mode: screen;
+  }
+
+  /* 세부 목표 카드 — 배경색 고정이므로 본문 색도 테마와 무관하게 고정 */
+  .goal-quad-card strong {
+    color: inherit;
+    font-weight: 600;
   }
 }

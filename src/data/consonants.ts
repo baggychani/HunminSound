@@ -10,7 +10,7 @@ export const consonantsData: Consonant[] = [
     category: '파열음',
     articulationGroup: '양순',
     description:
-      '두 입술(양순)이 완전히 닫혀 기류를 차단했다가 개방하는 양순 평음 파열음입니다. 어두 위치에서는 무성 무기음 [p]으로, 유성음 사이에서는 유성음 [b]으로 실현됩니다. 평음·격음·경음 삼중 대립 중 기식이 가장 약한 계열입니다.',
+      '\'비\'에서와 같이 첫소리로 나는 소리로, 첫소리에서는 목젖으로 콧길을 막고 두 입술을 다물었다가 벌려 입안의 공기를 밖으로 터뜨릴 때 나는 안울림 입술 파열음입니다. \'읍\'에서와 같이 끝소리로 날 때는 입안의 공기를 밖으로 터뜨리지 않고 발음합니다.',
     animationFileName: 'ㅂ.mp4',
     mriFileName: 'ㅂ.mp4',
   },
@@ -21,7 +21,7 @@ export const consonantsData: Consonant[] = [
     category: '파열음',
     articulationGroup: '양순',
     description:
-      '두 입술이 닫혀 기류를 차단했다가 강한 기식(aspiration)과 함께 개방하는 양순 격음 파열음입니다. VOT(Voice Onset Time)가 평음·경음에 비해 현저히 길게 나타납니다.',
+      '\'피\'에서와 같이 첫소리로 목젖으로 콧길을 막고 두 입술을 다물었다가 뗄 때 거세게 나는 안울림 파열음(터짐소리)입니다. 끝소리 글자로 쓰일 때는 \'읍\'의 경우와 같습니다.',
     animationFileName: 'ㅍ.mp4',
     mriFileName: 'ㅍ.mp4',
   },
@@ -32,7 +32,7 @@ export const consonantsData: Consonant[] = [
     category: '파열음',
     articulationGroup: '양순',
     description:
-      '양순에서 조음되는 경음 파열음입니다. 강한 후두 긴장(glottal constriction)을 동반하며 무기(無氣)입니다. 발화 후 후행 모음의 기본 주파수(F0)가 높게 시작되는 것이 특징입니다.',
+      '\'삐\'에서와 같이 첫소리에서만 나는 소리로, 목젖으로 콧길을 막고 성대 쪽의 후두 근육에 힘을 준 상태로 두 입술을 다물었다가 벌려 입안의 공기를 밖으로 터뜨릴 때 나는 안울림 파열음입니다.',
     animationFileName: 'ㅃ.mp4',
     mriFileName: 'ㅃ.mp4',
   },
@@ -44,7 +44,7 @@ export const consonantsData: Consonant[] = [
     category: '파열음',
     articulationGroup: '치조',
     description:
-      '혀끝이 치조(齒槽)에 닿아 기류를 완전히 차단했다가 개방하는 치조 평음 파열음입니다. 어두에서는 무성 무기음 [t]으로, 모음 사이에서는 유성음 [d]으로 실현됩니다.',
+      '\'디\'에서와 같이 첫소리로 나는 소리로, 목젖으로 콧길을 막고 혀끝을 윗잇몸에 대어 입길을 막았다가 터뜨리면서 내는 파열음입니다. \'읃\'에서와 같이 끝소리로 날 때는 마지막에 터뜨리지 않고 발음합니다.',
     animationFileName: 'ㄷ.mp4',
     mriFileName: 'ㄷ.mp4',
   },
@@ -55,7 +55,7 @@ export const consonantsData: Consonant[] = [
     category: '파열음',
     articulationGroup: '치조',
     description:
-      '혀끝이 치조에 닿아 기류를 차단했다가 강한 기식과 함께 개방하는 치조 격음 파열음입니다. 한국어 파열음 중 VOT 값이 가장 긴 계열에 속합니다.',
+      '\'티\'에서와 같이 첫소리로만 나는 소리로, 목젖으로 콧길을 막고 혀끝을 윗잇몸(치경)에 대었다가 뗄 때 거세게 나는 안울림 파열음입니다. 끝소리 글자로 쓰일 때는 혀끝과 윗잇몸(치경) 사이를 막기만 해서 내는 소리로 \'ㄷ[읃]\'의 경우와 같습니다.',
     animationFileName: 'ㅌ.mp4',
     mriFileName: 'ㅌ.mp4',
   },
@@ -66,7 +66,7 @@ export const consonantsData: Consonant[] = [
     category: '파열음',
     articulationGroup: '치조',
     description:
-      '치조에서 조음되는 경음 파열음으로, 강한 후두 긴장을 동반하며 무기(無氣)입니다. 평음 ㄷ 및 격음 ㅌ과 삼중 후두 대립(three-way laryngeal contrast)을 이룹니다.',
+      '\'띠\'에서와 같이 첫소리에서만 나는 소리로, 목젖으로 콧길을 막고 성대 쪽의 후두 근육에 힘을 준 상태로 혀끝을 윗잇몸에 대어 입길을 막았다가 세게 터뜨려 내는 안울림 파열음입니다.',
     animationFileName: 'ㄸ.mp4',
     mriFileName: 'ㄸ.mp4',
   },
@@ -78,7 +78,7 @@ export const consonantsData: Consonant[] = [
     category: '파열음',
     articulationGroup: '연구개',
     description:
-      '연구개(軟口蓋)와 혀의 후방부(설근)가 접촉하여 기류를 완전히 차단했다가 개방하는 연구개 평음 파열음입니다. 어두에서는 무성 무기음, 유성음 환경에서는 유성음 [ɡ]으로 실현됩니다.',
+      '\'기\'에서와 같이 첫소리로 나는 소리로, 목젖으로 콧길을 막고 혀뿌리를 높여 여린입천장(연구개)에 붙였다가 날숨을 막았다가 뗄 때 나는 안울림소리이며, \'윽\'에서와 같은 끝소리에서는 혀뿌리를 떼지 않고 발음합니다. \'아기\'에서의 \'ㄱ[기]\'와 같이 모음 사이에서는 울림소리로 납니다.',
     animationFileName: 'ㄱ.mp4',
     mriFileName: 'ㄱ.mp4',
   },
@@ -89,7 +89,7 @@ export const consonantsData: Consonant[] = [
     category: '파열음',
     articulationGroup: '연구개',
     description:
-      '연구개와 혀의 후방부가 접촉하여 기류를 차단했다가 강한 기식과 함께 개방하는 연구개 격음 파열음입니다. 한국어 연구개 파열음 삼중 대립 중 기식이 가장 강합니다.',
+      '\'키\'에서와 같이 첫소리로 나는 소리로, 목젖으로 콧길을 막고 혀뿌리를 높여 여린입천장(연구개)에 붙여 입길을 막았다가 뗄 때 거세게 나는 안울림 파열음입니다. 끝소리 자리에 쓰일 때는 \'ㄱ[윽]\'의 경우와 같습니다.',
     animationFileName: 'ㅋ.mp4',
     mriFileName: 'ㅋ.mp4',
   },
@@ -100,7 +100,7 @@ export const consonantsData: Consonant[] = [
     category: '파열음',
     articulationGroup: '연구개',
     description:
-      '연구개에서 조음되는 경음 파열음으로, 강한 후두 긴장을 동반하며 무기(無氣)입니다. 후행 모음의 높은 F0 시작이 특징적이며, 평음 ㄱ·격음 ㅋ과 함께 삼중 대립을 이룹니다.',
+      '\'끼\'에서와 같이 첫소리에서만 나는 소리로, 목젖으로 콧길을 막고 성대 쪽의 후두 근육에 힘을 준 상태로 혓바닥 뒤쪽으로 여린입천장을 막았다가 날숨을 터뜨려 내는 여린입천장소리(연구개음) 파열음입니다. 끝소리 자리에 쓰일 때는 \'ㄱ[윽]\'과 같은 받침소리로 납니다.',
     animationFileName: 'ㄲ.mp4',
     mriFileName: 'ㄲ.mp4',
   },
@@ -113,7 +113,7 @@ export const consonantsData: Consonant[] = [
     category: '마찰음',
     articulationGroup: '치조',
     description:
-      '혀끝이 치조에 근접하여 좁은 공간을 만들어 기류를 마찰시키는 치조 평음 마찰음입니다. 모음 [i, j] 앞에서 구개음화되어 [ɕ]으로 실현되는 것이 대표적인 변이음 규칙입니다.',
+      '\'시\'에서와 같이 첫소리로 나는 소리로, 혀끝을 윗잇몸에 닿을 듯 말 듯, 거의 붙이다시피 올려 날숨이 그사이를 비집고 나오면서 마찰하여 나는 안울림소리입니다. \'옷\'에서와 같이 끝소리 글자로 쓰일 때는 혀끝이 윗잇몸을 막아서 \'ㄷ[읃]\'과 같아집니다.',
     animationFileName: 'ㅅ.mp4',
     mriFileName: 'ㅅ.mp4',
   },
@@ -124,7 +124,7 @@ export const consonantsData: Consonant[] = [
     category: '마찰음',
     articulationGroup: '치조',
     description:
-      '치조에서 조음되는 경음 마찰음으로, 강한 후두 긴장을 동반합니다. 한국어 마찰음 체계에서 격음 짝이 없는 독특한 계열에 속하며, 평음 ㅅ보다 강하고 날카로운 음색을 가집니다.',
+      '\'씨\'에서와 같이 첫소리에서만 나는 소리로, 목젖으로 콧길을 막고 성대 쪽의 후두 근육에 힘을 준 상태로 혀끝을 윗잇몸이나 센입천장에 거의 붙이다시피 올려 날숨이 그사이를 비집고 나오면서 마찰하여 나는 안울림소리입니다.',
     animationFileName: 'ㅆ.mp4',
     mriFileName: 'ㅆ.mp4',
   },
@@ -135,7 +135,7 @@ export const consonantsData: Consonant[] = [
     category: '마찰음',
     articulationGroup: '성문',
     description:
-      '성문(聲門)에서 기류의 마찰이 일어나는 성문 마찰음입니다. 후행 모음의 조음 위치에 따라 조음 특성이 변화하는 양상을 보이며, 모음 사이에서는 유성 성문 마찰음 [ɦ]으로 실현됩니다.',
+      '\'히\'에서와 같이 첫소리로만 나는 소리로, 목청을 좁히어 숨을 내쉴 때 나오는 안울림 마찰음입니다. 끝소리 글자로 쓰일 때는 혀끝과 윗잇몸을 떼지 않고 막기만 하여서 내는 소리로 \'ㄷ[읃]\'의 경우와 같습니다.',
     animationFileName: 'ㅎ.mp4',
     mriFileName: 'ㅎ.mp4',
   },
@@ -148,7 +148,7 @@ export const consonantsData: Consonant[] = [
     category: '파찰음',
     articulationGroup: '치조경구개',
     description:
-      '혀가 치조와 경구개 사이에서 접촉을 이루었다가 마찰을 일으키며 개방되는 치조 경구개 평음 파찰음입니다. 후행 [i, j] 모음 앞에서 조음 위치가 더욱 경구개 쪽으로 이동합니다.',
+      '\'지\'에서와 같이 첫소리로만 나는 소리로, 혓바닥의 앞쪽을 센입천장(경구개)에 넓게 대었다가 터뜨리면서 마찰도 함께 일으키며 내는 안울림 파찰음입니다. 끝소리로 날 때는 혀끝으로 잇몸을 막아서 \'ㄷ[읃]\'과 같아집니다. \'모자\'에서의 \'ㅈ\'과 같이 모음 사이에서는 울림소리로 납니다.',
     animationFileName: 'ㅈ.mp4',
     mriFileName: 'ㅈ.mp4',
   },
@@ -159,7 +159,7 @@ export const consonantsData: Consonant[] = [
     category: '파찰음',
     articulationGroup: '치조경구개',
     description:
-      '파찰음 ㅈ에 강한 기식이 동반된 격음 계열의 치조 경구개 파찰음입니다. 개방 시 강한 기류가 함께 방출되며, VOT가 평음·경음에 비해 현저히 깁니다.',
+      '\'치\'에서와 같이 첫소리로만 나는 소리로, 혓바닥의 앞쪽을 센입천장에 대었다가 터뜨릴 때, 날숨을 거세게 내며 마찰도 함께 일어나는 안울림 파찰음입니다. 끝소리로 날 때는 혀끝으로 윗잇몸(치경)을 막아서 \'ㄷ[읃]\'과 같아집니다.',
     animationFileName: 'ㅊ.mp4',
     mriFileName: 'ㅊ.mp4',
   },
@@ -170,7 +170,7 @@ export const consonantsData: Consonant[] = [
     category: '파찰음',
     articulationGroup: '치조경구개',
     description:
-      '치조 경구개에서 조음되는 경음 파찰음으로, 강한 후두 긴장을 동반하며 무기(無氣)입니다. 평음 ㅈ, 격음 ㅊ과 함께 한국어 파찰음의 삼중 후두 대립을 이룹니다.',
+      '\'찌\'에서와 같이 첫소리에서만 나는 소리로, 목젖으로 콧길을 막고 성대 쪽의 후두 근육에 힘을 준 상태로 혓바닥의 앞쪽을 입천장에 붙여 날숨을 막았다가 터뜨릴 때 마찰도 함께 일어나는 안울림 파찰음입니다.',
     animationFileName: 'ㅉ.mp4',
     mriFileName: 'ㅉ.mp4',
   },
@@ -183,7 +183,7 @@ export const consonantsData: Consonant[] = [
     category: '비음',
     articulationGroup: '치조',
     description:
-      '혀끝이 치조에 닿아 구강 기류를 차단하고, 연구개를 내려 기류가 비강(鼻腔)을 통해 흘러나오는 치조 비음입니다. 어두·어중·어말 모두에서 안정적으로 나타납니다.',
+      '\'니\'에서와 같이 첫소리로 나는 소리로, 혀끝을 윗잇몸(치경)에 붙였다가 떼면서 날숨을 콧구멍으로 나오게 하여 코안을 울려서 내는 울림소리이며, 끝소리에서는 혀끝을 떼지 않고 발음합니다.',
     animationFileName: 'ㄴ.mp4',
     mriFileName: 'ㄴ.mp4',
   },
@@ -194,7 +194,7 @@ export const consonantsData: Consonant[] = [
     category: '비음',
     articulationGroup: '양순',
     description:
-      '두 입술이 완전히 닫혀 구강 기류를 차단하고, 비강으로 공기가 공명하며 나오는 양순 비음입니다. 모든 발화 위치에서 안정적으로 실현되며, 세계 언어에서 가장 보편적인 자음 중 하나입니다.',
+      '\'미\'에서와 같이 첫소리로 나는 소리로, 입을 다물고 날숨을 코안으로 내보내며 목청을 울려서 내는 울림소리이며, 끝소리에서는 입술을 떼지 않고 발음합니다.',
     animationFileName: 'ㅁ.mp4',
     mriFileName: 'ㅁ.mp4',
   },
@@ -205,7 +205,7 @@ export const consonantsData: Consonant[] = [
     category: '비음',
     articulationGroup: '연구개',
     description:
-      '초성 위치에서는 음가가 없으나, 종성 위치에서는 연구개 비음 [ŋ]으로 실현됩니다. 종성 ㅇ은 연구개와 혀의 후방부가 접촉하여 구강 기류를 막고 비강으로 기류를보내는 방식으로 조음됩니다.',
+      '\'이\'에서와 같이 첫소리로 날 때는 음가가 없고, \'응\'에서와 같이 끝소리에서는 혀뿌리를 높여 여린입천장에 붙여 날숨을 막았다가 코안으로 내보낼 때 나는 울림소리 콧소리입니다.',
     animationFileName: 'ㅇ.mp4',
     mriFileName: 'ㅇ.mp4',
   },
@@ -218,7 +218,7 @@ export const consonantsData: Consonant[] = [
     category: '유음',
     articulationGroup: '치조',
     description:
-      '한국어의 유일한 유음으로, 두 가지 주요 변이음을 가집니다. 모음 사이에서는 혀끝을 치조에 빠르게 한 번 두드리는 탄음(flap) [ɾ]으로, 음절말 또는 [l] 앞에서는 혀끝이 치조에 닿은 설측음(lateral) [l]으로 실현됩니다.',
+      '\'리\'에서와 같이 첫소리로 나는 소리로, 첫소리 날 때는 혀끝이 윗잇몸을 한 번 가볍게 치면서 진동하는 소리이며, \'을\'에서와 같이 끝소리로 날 때는 혀끝을 윗잇몸에 꼭 붙이고 혀의 양쪽으로 공기를 내보내는 흐름소리입니다.',
     animationFileName: 'ㄹ.mp4',
     mriFileName: 'ㄹ.mp4',
   },
