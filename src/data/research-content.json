@@ -221,11 +221,11 @@
             },
             {
                 "role": "팀",
-                "name": "윤국진, 정병인, 오창균 외",
+                "name": "윤국진, 정병인,\n오창균 외",
                 "affiliation": "—",
                 "task": "AI 파이프라인 개발 · 2D 애니메이션 생성 ·\n웹 데모 시스템 구현",
                 "field": "음성공학 · AI/웹 개발",
-                "nameEn": "Yun Guk-jin, Jeong Byeong-in, Oh Chang-gyun et al."
+                "nameEn": "Yun Guk-jin, Jeong Byeong-in,\nOh Chang-gyun et al."
             }
         ]
     },

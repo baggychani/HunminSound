@@ -1,10 +1,20 @@
 'use client'
 
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { useRef, useEffect } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
+import { ScrollColorWash } from '@/components/ui/ScrollColorWash'
+
+/* 3D 모델은 클라이언트 전용 — SSR 시 three.js 가 window 를 참조하면 깨지므로
+ * dynamic + ssr:false 로 분리 로드. 첫 렌더 시 자리만 잡아 두고 비동기로 들어옴. */
+const HunminBookViewer = dynamic(
+  () =>
+    import('@/components/showcase/HunminBookViewer').then((m) => m.HunminBookViewer),
+  { ssr: false, loading: () => <div className="h-full w-full" aria-hidden /> },
+)
 
 /* ── 자석 기호 컴포넌트 ────────────────────────────────────────────────── */
 function MagneticGlyph({ children, className }: { children: string; className: string }) {
@@ -54,9 +64,12 @@ export default function HomePage() {
   const m = getMessages(lang)
 
   return (
-    <div className="max-w-5xl mx-auto px-6">
+    <div className="relative mx-auto w-full max-w-7xl px-6 sm:px-8 lg:px-12">
+      {/* 스크롤에 따라 색이 스미듯 흐르는 배경 워시 (메인 페이지 한정) */}
+      <ScrollColorWash />
+
       {/* 히어로 섹션 */}
-      <section className="pt-28 sm:pt-32 pb-20 md:pb-24 text-center">
+      <section className="pt-24 sm:pt-28 pb-12 md:pb-16 text-center">
         <p
           className={
             lang === 'ko'
@@ -86,16 +99,12 @@ export default function HomePage() {
 
         {lang === 'ko' ? (
           <>
-            {/* 브랜드 영역과 소개 영역 구분 — 상단은 타이틀, 하단은 훈민정음 소개(배경 애니메이션 예정) */}
+            {/* 브랜드 영역과 소개 영역 구분선 — 상단 가는 가로선 */}
             <div
-              className="mt-14 sm:mt-20 w-full max-w-2xl mx-auto border-t border-hanji-border"
+              className="mt-10 sm:mt-12 w-full max-w-2xl mx-auto border-t border-hanji-border"
               aria-hidden
             />
-            <div className="relative isolate mt-12 sm:mt-16 max-w-2xl mx-auto px-1 sm:px-2">
-              <div
-                className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-sm"
-                aria-hidden
-              />
+            <div className="relative isolate mt-6 sm:mt-8 max-w-2xl mx-auto px-1 sm:px-2">
               <p className="relative z-10 font-serif text-base sm:text-[17px] text-ink-soft leading-loose">
                 <span className="sm:hidden whitespace-normal">
                   {m.homeIntroPart1} {m.homeIntroPart2}
@@ -107,10 +116,21 @@ export default function HomePage() {
                 </span>
               </p>
             </div>
+
+            {/* 훈민정음 해례본 3D — 높이는 clamp(최소, vw, 최대) 로만 키우면 됨.
+             *  모델 확대·확대 여백은 HunminBookViewer 의 BOOK_BOUNDS_MARGIN 참고. */}
+            <div
+              className="relative mx-auto mt-2 sm:mt-3 h-[clamp(14rem,28vw,23rem)] w-full max-w-4xl"
+              aria-hidden
+            >
+              <HunminBookViewer className="absolute inset-0" />
+            </div>
           </>
         ) : null}
 
-        <div className={`section-divider ${lang === 'ko' ? 'mt-14 sm:mt-16' : ''}`} />
+        {lang !== 'ko' ? (
+          <div className="section-divider" />
+        ) : null}
 
         {lang !== 'ko' && m.homeDescription.trim() ? (
           <p className="font-sans text-base text-ink-soft leading-relaxed max-w-xl mx-auto mt-8">
@@ -122,8 +142,9 @@ export default function HomePage() {
         ) : null}
       </section>
 
-      {/* 네비게이션 카드 — 자음·모음 2열, 훈민정음 전 너비 */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-hanji-border mb-px">
+      {/* 네비게이션 카드 — 자음·모음 2열, 훈민정음 전 너비.
+       * 카드 사이 1px 라인 대신 살짝 띄워 와이드한 호흡감을 살린다(워시가 사이로 비침). */}
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
         <NavCard
           href="/consonants"
           label={m.consonants}
@@ -149,8 +170,8 @@ export default function HomePage() {
         />
       </section>
 
-      {/* 훈민정음과 연구 소개 사이 — 이후 3D·배너 등 삽입 가능 */}
-      <div className="pt-14 sm:pt-20" aria-hidden />
+      {/* 훈민정음과 연구 소개 사이 */}
+      <div className="pt-10 sm:pt-14" aria-hidden />
 
       <ResearchCard
         href="/research"
@@ -194,7 +215,7 @@ function ResearchCard({ href, label, description, cta }: ResearchCardProps) {
   return (
     <Link
       href={href}
-      className="group mx-auto block max-w-2xl bg-hanji px-8 py-8 text-left transition-colors hover:bg-hanji-warm sm:px-10 sm:py-9"
+      className="group mx-auto block max-w-2xl rounded-sm border border-hanji-border/60 bg-hanji/75 px-8 py-8 text-left shadow-[0_1px_0_rgb(var(--ink-rgb)/0.02)] backdrop-blur-md transition-colors hover:bg-hanji/90 hover:border-hanji-border sm:px-10 sm:py-9 dark:bg-hanji/65 dark:hover:bg-hanji/80"
     >
       <div className="flex flex-col gap-5">
         <div className="min-w-0">
@@ -231,7 +252,7 @@ function HunminjeongeumCard({ href, label, caption, description, explore }: Hunm
   return (
     <Link
       href={href}
-      className="group col-span-1 sm:col-span-2 relative overflow-hidden bg-hanji hover:bg-hanji-warm transition-colors p-10 sm:p-12 flex flex-col gap-6"
+      className="group col-span-1 sm:col-span-2 relative overflow-hidden rounded-sm border border-hanji-border/60 bg-hanji/75 backdrop-blur-md transition-colors hover:bg-hanji/90 hover:border-hanji-border p-10 sm:p-12 flex flex-col gap-6 dark:bg-hanji/65 dark:hover:bg-hanji/80"
     >
       {/* 배경 장식 — 訓民正音 흐린 한자 */}
       <span
@@ -286,7 +307,7 @@ function NavCard({ href, label, count, preview, description, explore }: NavCardP
   return (
     <Link
       href={href}
-      className="group bg-hanji hover:bg-hanji-warm transition-colors p-10 sm:p-12 flex flex-col gap-6"
+      className="group flex flex-col gap-6 rounded-sm border border-hanji-border/60 bg-hanji/75 backdrop-blur-md transition-colors hover:bg-hanji/90 hover:border-hanji-border p-10 sm:p-12 dark:bg-hanji/65 dark:hover:bg-hanji/80"
     >
       <div>
         <div className="flex items-baseline gap-3 mb-1">

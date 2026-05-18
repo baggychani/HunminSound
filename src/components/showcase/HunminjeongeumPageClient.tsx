@@ -38,7 +38,7 @@ export function HunminjeongeumPageClient() {
   return (
     <>
       {/* ── 헤더 ──────────────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden pt-16 pb-20 border-b border-hanji-border mb-20">
+      <div className="relative overflow-hidden pt-16 pb-12 border-b border-hanji-border mb-6 sm:mb-8">
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -133,8 +133,8 @@ export function HunminjeongeumPageClient() {
         </motion.div>
       </div>
 
-      {/* ── 일러두기 (상단) ────────────────────────────────────────── */}
-      <div className="mb-14 sm:mb-16">
+      {/* ── 일러두기 (상단, 항상 노출) ─────────────────────────────── */}
+      <div className="mb-12 sm:mb-14">
         <EditorialNote />
       </div>
 

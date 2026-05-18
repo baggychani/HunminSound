@@ -150,10 +150,10 @@ function TeamTable({ rows, t }: {
         <tbody>
           {rows.map((mem, i) => (
             <tr key={i} className="border-b border-hanji-border/60 last:border-0">
-              <td className="py-3 pr-6 align-top whitespace-nowrap text-ink-muted/60">{mem.role}</td>
-              <td className="py-3 pr-6 align-top whitespace-nowrap font-semibold text-ink">{mem.name}</td>
-              <td className="py-3 pr-6 align-top text-ink-muted/70 leading-relaxed max-w-[9rem]">{mem.affiliation}</td>
-              <td className="py-3 pr-6 align-top text-ink-soft leading-relaxed min-w-[19rem] whitespace-pre-line"><RichText text={mem.task} /></td>
+              <td className="py-3 pr-5 align-top whitespace-nowrap text-ink-muted/60">{mem.role}</td>
+              <td className="py-3 pr-4 align-top max-w-[8rem] whitespace-pre-line font-semibold text-ink">{mem.name}</td>
+              <td className="py-3 pr-6 align-top text-ink-muted/70 leading-relaxed min-w-[16rem] max-w-[26rem] whitespace-nowrap">{mem.affiliation}</td>
+              <td className="py-3 pr-6 align-top text-ink-soft leading-relaxed min-w-[17rem] whitespace-pre-line"><RichText text={mem.task} /></td>
               <td className="py-3 align-top text-ink-muted/70 whitespace-nowrap">{mem.field}</td>
             </tr>
           ))}
