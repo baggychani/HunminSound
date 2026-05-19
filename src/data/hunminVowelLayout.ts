@@ -29,7 +29,11 @@ const res = (): HunminVowelSlot => ({ kind: 'reserved' })
 const cmp = (jamo: string, mapTo?: string): HunminVowelSlot => ({ kind: 'compound', jamo, mapTo })
 
 /** 합용자 IPA: 파일명 m→ɨ, e→ə (vj 등 예외는 overrides) */
-const IPA_OVERRIDES: Record<string, string> = { vj: '/ʌj/' }
+const IPA_OVERRIDES: Record<string, string> = {
+  v: '/ʌ/',
+  i: '/ɔ/',
+  vj: '/ʌj/',
+}
 
 function ipaLabel(asset: string): string {
   if (IPA_OVERRIDES[asset]) return IPA_OVERRIDES[asset]
@@ -48,7 +52,7 @@ export const HUNMIN_VOWEL_ROWS: HunminVowelRow[] = [
     id: 'yang',
     title: '양성',
     basicSegments: [
-      { label: '상형기본자', slots: [img('v', undefined, '/v/')] },
+      { label: '상형기본자', slots: [img('v')] },
       { label: '합성자', groupLine: '초출자', slots: [sym('ㅗ'), sym('ㅏ')] },
       { groupLine: '재출자', slots: [sym('ㅛ'), sym('ㅑ')] },
     ],
@@ -89,7 +93,7 @@ export const HUNMIN_VOWEL_ROWS: HunminVowelRow[] = [
   {
     id: 'neutral',
     title: '양음성',
-    basicSegments: [{ label: '상형기본자', slots: [img('i', undefined, '/i/')] }],
+    basicSegments: [{ label: '상형기본자', slots: [img('i')] }],
     combinedSegments: [],
   },
 ]
