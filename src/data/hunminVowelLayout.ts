@@ -30,8 +30,8 @@ const cmp = (jamo: string, mapTo?: string): HunminVowelSlot => ({ kind: 'compoun
 
 /** 합용자 IPA: 파일명 m→ɨ, e→ə (vj 등 예외는 overrides) */
 const IPA_OVERRIDES: Record<string, string> = {
-  v: '/ʌ/',
-  i: '/ɔ/',
+  v: '/ʌ/, /ɔ/',
+  i: '/i/',
   vj: '/ʌj/',
 }
 
