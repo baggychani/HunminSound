@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useLang } from '@/contexts/LanguageContext'
 import { LANGUAGES, NAV_LABEL_KO, getMessages } from '@/lib/i18n'
 
@@ -46,6 +46,35 @@ export function Header() {
   const m = getMessages(lang)
   const [langOpen, setLangOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const navTrackRef = useRef<HTMLDivElement>(null)
+  const navLinkRefs = useRef<(HTMLAnchorElement | null)[]>([])
+  const [navIndicator, setNavIndicator] = useState<{ left: number; width: number } | null>(null)
+
+  const activeNavIndex = NAV_LINKS.findIndex(({ href }) => pathname.startsWith(href))
+
+  const measureNavIndicator = useCallback(() => {
+    const track = navTrackRef.current
+    const link = activeNavIndex >= 0 ? navLinkRefs.current[activeNavIndex] : null
+    if (!track || !link) {
+      setNavIndicator(null)
+      return
+    }
+    const tr = track.getBoundingClientRect()
+    const lr = link.getBoundingClientRect()
+    setNavIndicator({ left: lr.left - tr.left, width: lr.width })
+  }, [activeNavIndex])
+
+  useLayoutEffect(() => {
+    measureNavIndicator()
+  }, [measureNavIndicator, lang])
+
+  useLayoutEffect(() => {
+    const track = navTrackRef.current
+    if (!track || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(() => measureNavIndicator())
+    ro.observe(track)
+    return () => ro.disconnect()
+  }, [measureNavIndicator])
 
   useEffect(() => {
     setLangOpen(false)
@@ -88,8 +117,18 @@ export function Header() {
 
         {/* 데스크톱: 기존 가로 네비 */}
         <nav className="scrollbar-none hidden min-w-0 flex-1 flex-nowrap items-center justify-end overflow-x-auto overflow-y-hidden sm:flex">
-          <div className="flex flex-nowrap items-center gap-3 sm:gap-6 md:gap-8 shrink-0">
-            {NAV_LINKS.map(({ href, topKey, subKey }) => {
+          <div
+            ref={navTrackRef}
+            className="relative flex flex-nowrap items-center gap-3 sm:gap-6 md:gap-8 shrink-0"
+          >
+            {navIndicator !== null && activeNavIndex >= 0 ? (
+              <span
+                aria-hidden
+                className="pointer-events-none absolute bottom-0 h-px bg-ink-accent transition-[left,width] duration-200 ease-out"
+                style={{ left: navIndicator.left, width: navIndicator.width }}
+              />
+            ) : null}
+            {NAV_LINKS.map(({ href, topKey, subKey }, index) => {
               const isActive = pathname.startsWith(href)
               const primary = lang === 'ko' ? NAV_LABEL_KO[topKey] : m[topKey]
               const secondary = lang === 'ko' ? m[subKey] : NAV_LABEL_KO[topKey]
@@ -97,6 +136,9 @@ export function Header() {
               return (
                 <Link
                   key={href}
+                  ref={(el) => {
+                    navLinkRefs.current[index] = el
+                  }}
                   href={href}
                   onClick={closePanels}
                   className="group relative flex flex-col items-center justify-center gap-0.5 pb-2"
@@ -119,12 +161,6 @@ export function Header() {
                   >
                     {secondary}
                   </span>
-                  {isActive && (
-                    <span
-                      aria-hidden
-                      className="pointer-events-none absolute bottom-0 start-0 end-0 h-px bg-ink-accent"
-                    />
-                  )}
                 </Link>
               )
             })}

@@ -8,6 +8,7 @@ import {
   buildMtKey,
   getBundledMachineTranslation,
 } from '@/lib/mtCache'
+import { JamoText } from '@/components/ui/JamoText'
 
 type DescItem = { description: string; [key: string]: unknown }
 
@@ -94,5 +95,11 @@ export function TranslatedDescription({
     return () => ac.abort()
   }, [lang, item.description, itemId])
 
-  return <p className={className}>{text}</p>
+  /* 설명문 안에 끼어 있는 단독 자모(예: 'ㄷ[읃]')는 교수님 지정 폰트로 통일.
+   * 자모가 없으면 JamoText 가 추가 마크업을 생성하지 않으므로 비용은 0. */
+  return (
+    <p className={className}>
+      <JamoText text={text} />
+    </p>
+  )
 }

@@ -88,7 +88,7 @@ function VowelRow({ vowel, index }: { vowel: Vowel; index: number }) {
   return (
     <motion.div custom={index} variants={fadeUp} initial="hidden" animate="show">
       <div className="grid grid-cols-[3rem_1fr] sm:grid-cols-[3rem_12rem_1fr] gap-x-4 gap-y-2 px-5 py-4">
-        <span className="font-serif text-2xl text-ink leading-none self-start pt-1" lang="ko">
+        <span className="font-jamo text-2xl text-ink leading-none self-start pt-1" lang="ko">
           {vowel.symbol}
         </span>
         <div>

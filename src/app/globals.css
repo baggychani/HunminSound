@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ──────────────────────────────────────────────────────────────
+ * 은평사가독서체
+ * • Title — 단독 자모(ㄱ ㅏ …), 제자해(훈민) 차트
+ * • Text  — 훈민정음 페이지 [기][이] 발음 괄호, 자음·모음 현대 음성학 차트
+ * ──────────────────────────────────────────────────────────────*/
+@font-face {
+  font-family: 'EunpyeongSagaDogseo';
+  src: url('/fonts/EunpyeongSagaDogseoTitle-Regular.otf') format('opentype'),
+       url('/fonts/EunpyeongSagaDogseoTitle-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'EunpyeongSagaDogseoText';
+  src: url('/fonts/EunpyeongSagaDogseoText-Regular.otf') format('opentype'),
+       url('/fonts/EunpyeongSagaDogseoText-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* 라이트 / 다크 — Tailwind 색은 rgb(R G B / α) 형식과 매칭 */
 @layer base {
   :root {
@@ -53,6 +76,16 @@
 
   body {
     @apply bg-hanji text-ink antialiased;
+  }
+
+  /* 모바일: 한글 본문은 음절/단어 단위 줄바꿈 — "실증합니|다." 처럼 글자만 떨어지지 않게 */
+  @media (max-width: 639px) {
+    body {
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      line-break: strict;
+      text-wrap: pretty;
+    }
   }
 
   /* 한지 결(grain) — 본문 전체 위에 매우 옅게 얹어 종이 질감을 더한다.
@@ -200,10 +233,21 @@
     font-weight: 500;
     letter-spacing: 0.02em;
   }
-  .hunmin-jamo {
-    /* 옛한글 자모 영역(U+1100–U+11FF, U+A960–U+A97F, U+D7B0–U+D7FF 등) 표시용 폴백 */
-    font-family: 'HCR Batang', 'Hamchorom Batang', 'Malgun Gothic', 'Noto Serif KR',
-      'Noto Sans KR', 'Noto Sans CJK KR', 'Source Han Serif KR', serif;
+  /* 제자해·옛한글 자모 — Title + 옛한글 글리프 폴백 */
+  .hunmin-jamo,
+  .font-jamo {
+    font-family: 'EunpyeongSagaDogseo', 'HCR Batang', 'Hamchorom Batang',
+      'Malgun Gothic', 'Noto Serif KR', 'Noto Sans KR', 'Noto Sans CJK KR',
+      'Source Han Serif KR', serif;
+    font-weight: 400;
+    font-synthesis: none;
+  }
+
+  /* [기][이] 발음 괄호, 현대 음성학 차트 — Text (옛한글 폰트 폴백 없음) */
+  .font-dogseo-text {
+    font-family: 'EunpyeongSagaDogseoText', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+    font-weight: 400;
+    font-synthesis: none;
   }
 
   /* ── 한자 위 작은 독음 (ruby/rt) ─────────────────────────────────────
@@ -276,6 +320,26 @@
       #000 34%,
       #000 100%
     );
+  }
+
+  /* 모바일 훈민정음 카드: 왼쪽 페더를 짧게 해 우측 해례본이 더 넓게 보이게 */
+  @media (max-width: 639px) {
+    .haeryebon-watermark-feather--mobile {
+      -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(0, 0, 0, 0.45) 6%,
+        #000 18%,
+        #000 100%
+      );
+      mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(0, 0, 0, 0.45) 6%,
+        #000 18%,
+        #000 100%
+      );
+    }
   }
   /* 라이트: opacity 낮을수록 더 투명 */
   .haeryebon-watermark-img {

@@ -115,11 +115,11 @@ export function HunminjeongeumPageClient() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.55 + i * 0.07, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="font-serif text-3xl sm:text-4xl text-ink-muted/70 dark:text-ink-muted/50 select-none"
-              dir="ltr"
-              lang="ko"
-            >
-              {glyph}
+            className="font-jamo text-3xl sm:text-4xl text-ink-muted/70 dark:text-ink-muted/50 select-none"
+            dir="ltr"
+            lang="ko"
+          >
+            {glyph}
             </motion.span>
           ))}
           <motion.span

@@ -9,6 +9,7 @@ import {
 } from '@/lib/mtCache'
 import { makeHunminPassageOverrideKey, type SupportedTranslationLang } from '@/lib/i18n-overrides'
 import { useOverridesStore } from '@/lib/overrides-store'
+import { HunminPassageText } from './HunminPassageText'
 import type { HunminPassage } from '@/data/hunminjeongeumPassages'
 
 function readLs(key: string): string | undefined {
@@ -158,7 +159,7 @@ export function TranslatedPassageText({ passage, lang, className }: TranslatedPa
 
   return (
     <p className={className} lang={lang}>
-      {text}
+      <HunminPassageText text={text} />
     </p>
   )
 }

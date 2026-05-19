@@ -106,7 +106,7 @@ export default function HomePage() {
               aria-hidden
             />
             <div className="relative isolate mt-6 sm:mt-8 max-w-2xl mx-auto px-1 sm:px-2">
-              <p className="relative z-10 font-serif text-base sm:text-[17px] text-ink-soft leading-loose">
+              <p className="relative z-10 break-keep font-serif text-base sm:text-[17px] text-ink-soft leading-loose [overflow-wrap:break-word]">
                 <span className="sm:hidden whitespace-normal">
                   {m.homeIntroPart1} {m.homeIntroPart2}
                 </span>
@@ -268,14 +268,14 @@ function HunminjeongeumCard({ href, label, caption, description, explore }: Hunm
 
       <div className="relative z-10 flex gap-3 flex-wrap" dir="ltr" lang="ko">
         {baseShapes.map((s) => (
-          <span key={s} className="font-serif text-2xl text-ink-muted group-hover:text-ink transition-colors">
+          <span key={s} className="font-jamo text-2xl text-ink-muted group-hover:text-ink transition-colors">
             {s}
           </span>
         ))}
         <span className="font-sans text-xl text-ink-muted self-end pb-1">…</span>
       </div>
 
-      <p className="relative z-10 font-sans text-xs text-ink-muted leading-relaxed max-w-xl">
+      <p className="relative z-10 break-keep font-sans text-xs text-ink-muted leading-relaxed max-w-xl [overflow-wrap:break-word]">
         {description}
       </p>
 
@@ -317,7 +317,7 @@ function NavCard({ href, label, count, preview, description, explore }: NavCardP
         {preview.map((symbol) => (
           <MagneticGlyph
             key={symbol}
-            className="font-serif text-2xl text-ink-muted group-hover:text-ink transition-colors inline-block"
+            className="font-jamo text-2xl text-ink-muted group-hover:text-ink transition-colors inline-block"
           >
             {symbol}
           </MagneticGlyph>

@@ -26,6 +26,17 @@ const config: Config = {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
         devanagari: ['var(--font-devanagari)', 'Noto Sans Devanagari', 'system-ui', 'sans-serif'],
         arabic: ['var(--font-arabic)', 'Noto Sans Arabic', 'Segoe UI', 'sans-serif'],
+        // 단독 자모 — Title(제자해) / Text(현대·[기] 괄호)는 CSS 클래스로 구분
+        jamo: [
+          'EunpyeongSagaDogseo',
+          'HCR Batang',
+          'Hamchorom Batang',
+          'Malgun Gothic',
+          'Noto Serif KR',
+          'Noto Sans KR',
+          'serif',
+        ],
+        'dogseo-text': ['EunpyeongSagaDogseoText', 'Malgun Gothic', 'Noto Sans KR', 'sans-serif'],
       },
       letterSpacing: {
         korean: '0.05em',

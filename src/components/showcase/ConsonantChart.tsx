@@ -8,6 +8,7 @@ import { DualVideoPlayer } from '@/components/ui/DualVideoPlayer'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import { TranslatedDescription } from '@/components/showcase/TranslatedDescription'
+import { JamoText } from '@/components/ui/JamoText'
 import type { ChartViewMode } from '@/components/showcase/PhoneticsViewToggle'
 import {
   HUNMIN_CONSONANT_ROWS,
@@ -47,6 +48,7 @@ interface GlyphButtonProps {
   consonant: Consonant
   isActive: boolean
   onClick: () => void
+  symbolFontClass: string
 }
 
 function consonantButtonSubLabel(name: string): string | null {
@@ -57,7 +59,7 @@ function consonantButtonSubLabel(name: string): string | null {
   return raw
 }
 
-function GlyphButton({ consonant, isActive, onClick }: GlyphButtonProps) {
+function GlyphButton({ consonant, isActive, onClick, symbolFontClass }: GlyphButtonProps) {
   const sub = consonantButtonSubLabel(consonant.name)
   return (
     <span className="inline-block align-top">
@@ -71,7 +73,7 @@ function GlyphButton({ consonant, isActive, onClick }: GlyphButtonProps) {
         aria-label={`${consonant.name} 상세 보기`}
       >
         <span
-          className={`symbol-char font-serif text-4xl leading-none transition-colors ${
+          className={`symbol-char ${symbolFontClass} text-4xl leading-none transition-colors ${
             isActive ? 'text-ink-accent' : 'text-ink'
           }`}
         >
@@ -88,10 +90,10 @@ function GlyphButton({ consonant, isActive, onClick }: GlyphButtonProps) {
   )
 }
 
-function GlyphPlaceholder({ symbol }: { symbol: string }) {
+function GlyphPlaceholder({ symbol, symbolFontClass }: { symbol: string; symbolFontClass: string }) {
   return (
     <span className="symbol-btn cursor-not-allowed bg-hanji/50 opacity-50" aria-disabled>
-      <span className="symbol-char font-serif text-4xl leading-none text-ink-muted">{symbol}</span>
+      <span className={`symbol-char ${symbolFontClass} text-4xl leading-none text-ink-muted`}>{symbol}</span>
       <span className="symbol-sub invisible select-none" aria-hidden>
         {'\u00a0'}
       </span>
@@ -181,6 +183,7 @@ function HunminRowBody({
             consonants={consonants}
             activeId={activeId}
             onToggle={onToggle}
+            symbolFontClass="font-jamo"
           />
         </div>
         {row.extendedSegments.length > 0 && (
@@ -195,13 +198,16 @@ function HunminRowBody({
                 consonants={consonants}
                 activeId={activeId}
                 onToggle={onToggle}
+                symbolFontClass="font-jamo"
               />
             </div>
           </>
         )}
       </div>
       {row.footnote && (
-        <p className="mt-3 max-w-3xl font-sans text-xs leading-relaxed text-ink-muted">{row.footnote}</p>
+        <p className="mt-3 max-w-3xl font-sans text-xs leading-relaxed text-ink-muted">
+          <JamoText text={row.footnote} />
+        </p>
       )}
       <ScrollSection isOpen={hasActive}>
         {activeItem && hasActive && (
@@ -214,6 +220,7 @@ function HunminRowBody({
               type="consonants"
               categoryLabel={activeHunminRowTitle}
               categoryEnLabel=""
+              symbolFontClass="font-jamo"
             />
           </div>
         )}
@@ -229,9 +236,18 @@ interface HunminZoneProps {
   consonants: Consonant[]
   activeId: string | null
   onToggle: (id: string) => void
+  symbolFontClass: string
 }
 
-function HunminZone({ row, zoneKey, segments, consonants, activeId, onToggle }: HunminZoneProps) {
+function HunminZone({
+  row,
+  zoneKey,
+  segments,
+  consonants,
+  activeId,
+  onToggle,
+  symbolFontClass,
+}: HunminZoneProps) {
   return (
     <div className="flex flex-wrap items-end">
       {segments.map((seg, segIdx) => (
@@ -253,13 +269,14 @@ function HunminZone({ row, zoneKey, segments, consonants, activeId, onToggle }: 
             <div className="flex flex-wrap justify-center gap-1">
               {seg.symbols.map((sym) => {
                 const c = findConsonantBySymbol(consonants, sym)
-                if (!c) return <GlyphPlaceholder key={sym} symbol={sym} />
+                if (!c) return <GlyphPlaceholder key={sym} symbol={sym} symbolFontClass={symbolFontClass} />
                 return (
                   <GlyphButton
                     key={c._id}
                     consonant={c}
                     isActive={activeId === c._id}
                     onClick={() => onToggle(c._id)}
+                    symbolFontClass={symbolFontClass}
                   />
                 )
               })}
@@ -324,6 +341,7 @@ function ModernRowBody({
                   consonant={consonant}
                   isActive={activeId === consonant._id}
                   onClick={() => onToggle(consonant._id)}
+                  symbolFontClass="font-dogseo-text"
                 />
               ))}
             </div>
@@ -341,6 +359,7 @@ function ModernRowBody({
               type="consonants"
               categoryLabel={categoryLabel}
               categoryEnLabel={categoryEnLabel}
+              symbolFontClass="font-dogseo-text"
             />
           </div>
         )}
@@ -523,6 +542,7 @@ interface DetailPanelProps {
   type: 'consonants' | 'vowels'
   categoryLabel: string
   categoryEnLabel: string
+  symbolFontClass: string
 }
 
 function DetailPanel({
@@ -533,16 +553,19 @@ function DetailPanel({
   type,
   categoryLabel,
   categoryEnLabel,
+  symbolFontClass,
 }: DetailPanelProps) {
   return (
     <div className="mt-8 pt-8 border-t border-hanji-border">
       <div className="flex items-baseline gap-4 mb-5">
         <div className="flex flex-col items-center gap-3 shrink-0">
-          <span className="font-serif text-6xl text-ink leading-none">{item.symbol}</span>
+          <span className={`${symbolFontClass} text-6xl text-ink leading-none`}>{item.symbol}</span>
           <div className="h-px w-full bg-hanji-border" aria-hidden />
         </div>
         <div>
-          <p className="font-serif text-xl text-ink leading-snug">{item.name}</p>
+          <p className="font-serif text-xl text-ink leading-snug">
+            <JamoText text={item.name} />
+          </p>
           <p className="font-sans text-xs text-gold uppercase tracking-widest mt-3">
             {categoryLabel}
             {categoryEnLabel && categoryEnLabel !== categoryLabel ? ` · ${categoryEnLabel}` : ''}

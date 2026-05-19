@@ -10,6 +10,7 @@ import { getMessages } from '@/lib/i18n'
 import { TranslatedDescription } from '@/components/showcase/TranslatedDescription'
 import { TranslatedVowelArticulation } from '@/components/showcase/TranslatedVowelArticulation'
 import { VOWEL_ARTICULATION_KO } from '@/lib/vowelArticulation'
+import { JamoText } from '@/components/ui/JamoText'
 import type { Vowel } from '@/types'
 
 const CATEGORY_ORDER = ['단모음', '이중모음']
@@ -90,7 +91,7 @@ export function VowelChart({ vowels }: VowelChartProps) {
                     aria-label={`${vowel.name} 상세 보기`}
                   >
                     <span
-                      className={`symbol-char font-serif text-4xl leading-none transition-colors ${
+                      className={`symbol-char font-dogseo-text text-4xl leading-none transition-colors ${
                         isActive ? 'text-ink-accent' : 'text-ink'
                       }`}
                     >
@@ -153,13 +154,15 @@ function VowelDetailPanel({
     <>
       <div className="flex items-baseline gap-4 mb-5">
         <div className="flex flex-col items-center gap-3 shrink-0">
-          <span className="font-serif text-6xl text-ink leading-none">
+          <span className="font-dogseo-text text-6xl text-ink leading-none">
             {item.symbol}
           </span>
           <div className="h-px w-full bg-hanji-border" aria-hidden />
         </div>
         <div>
-          <p className="font-serif text-xl text-ink leading-snug">{item.name}</p>
+          <p className="font-serif text-xl text-ink leading-snug">
+            <JamoText text={item.name} />
+          </p>
           {vowelArticulationSymbol ? (
             <TranslatedVowelArticulation symbol={vowelArticulationSymbol} lang={lang} />
           ) : (

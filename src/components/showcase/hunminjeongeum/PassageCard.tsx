@@ -7,6 +7,7 @@ import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import { HanjaText } from './HanjaText'
 import { TranslatedPassageText } from './TranslatedPassageText'
+import { HunminPassageText } from './HunminPassageText'
 import type { HunminPassage, GlyphLink } from '@/data/hunminjeongeumPassages'
 
 function buildGlyphHref(link: GlyphLink): string {
@@ -78,12 +79,12 @@ export function PassageCard({ passage }: PassageCardProps) {
         {passage.reference}
       </p>
 
-      {/* 한국어 풀이 — 항상 노출 */}
+      {/* 한국어 풀이 — 항상 노출. 본문 흐름 속 단독 자모(ㄱ, ㄴ …)는 교수님 지정 폰트로. */}
       <p
         className="mt-4 break-keep font-serif text-[15px] leading-[2.2] text-ink-soft [overflow-wrap:break-word] sm:text-[16px]"
         lang="ko"
       >
-        {passage.korean}
+        <HunminPassageText text={passage.korean} />
       </p>
 
       {/* 추가 언어 풀이 — 사이트 언어가 한국어가 아닐 때, 자동 번역(필요 시) 적용 */}
@@ -105,7 +106,7 @@ export function PassageCard({ passage }: PassageCardProps) {
               className="group/link inline-flex items-baseline gap-1.5 font-sans text-[11px] tracking-[0.04em] text-ink-muted/55 transition-colors hover:text-ink-accent/85 focus-visible:text-ink-accent/85 sm:text-[12px]"
             >
               <span
-                className="font-serif text-[14px] leading-none text-ink-muted/60 transition-colors group-hover/link:text-ink-accent/85 sm:text-[15px]"
+                className="font-jamo text-[14px] leading-none text-ink-muted/60 transition-colors group-hover/link:text-ink-accent/85 sm:text-[15px]"
                 lang="ko"
               >
                 {link.symbol}

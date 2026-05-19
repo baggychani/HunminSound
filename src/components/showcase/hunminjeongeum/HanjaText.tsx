@@ -117,7 +117,7 @@ export function HanjaText({
           return (
             <span
               key={tok.key}
-              className="mx-[0.05em] inline-block align-baseline text-[0.6em] font-sans tracking-tight text-ink-muted/80"
+              className="mx-[0.05em] inline-block align-baseline font-serif text-[0.6em] tracking-tight text-ink-muted/80"
               lang="ko"
               aria-label={`발음 ${tok.text}`}
             >
