@@ -26,6 +26,14 @@ export function consonantSegmentSeparatorKind(
   return hunminSegmentSeparatorKind(prev, next)
 }
 
+/** 모음 훈민 차트 — 구간 사이는 모두 | (상형기본자→합성자 포함) */
+export function hunminVowelSegmentSeparatorKind(
+  _prev: { label?: string; groupLine?: string },
+  _next: { label?: string; groupLine?: string },
+): 'gaheuk-arrow' | 'pipe' {
+  return 'pipe'
+}
+
 export function HunminZoneHeading({ title }: { title: string }) {
   return (
     <div className="mb-4 w-full">
@@ -77,7 +85,7 @@ export function HunminBetweenSeparator({
   const rail = compact ? HUNMIN_COMPACT_RAIL_CLASS : HUNMIN_GLYPH_RAIL_CLASS
   return (
     <div
-      className={`${rail} ${kind === 'gaheuk-arrow' ? 'px-1 sm:px-1.5' : 'px-0.5 sm:px-1'}`}
+      className={`${rail} ${kind === 'gaheuk-arrow' ? 'px-1 sm:px-1.5' : compact ? 'px-px sm:px-0.5' : 'px-0.5 sm:px-1'}`}
       aria-hidden
       title={kind === 'gaheuk-arrow' ? '가획' : undefined}
     >

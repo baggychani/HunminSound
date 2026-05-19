@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { useScrollToSymbolDetail } from '@/hooks/useScrollToSymbolDetail'
 import { ScrollSection } from '@/components/ui/ScrollSection'
@@ -13,7 +13,13 @@ import { VOWEL_ARTICULATION_KO } from '@/lib/vowelArticulation'
 import { JamoText } from '@/components/ui/JamoText'
 import type { ChartViewMode } from '@/components/showcase/PhoneticsViewToggle'
 import { HunminZoneHeading } from '@/components/showcase/hunmin/HunminChartParts'
-import { HunminVowelImageGlyph, HunminVowelZone } from '@/components/showcase/hunmin/HunminVowelZone'
+import { PhoneticsHaeryeSource } from '@/components/showcase/phonetics/PhoneticsHaeryeSource'
+import {
+  HUNMIN_VOWEL_GLYPH_RAIL_CLASS,
+  HunminVowelImageGlyph,
+  HunminVowelJamoGlyph,
+  HunminVowelZone,
+} from '@/components/showcase/hunmin/HunminVowelZone'
 import {
   HUNMIN_VOWEL_ROWS,
   hunminVowelRowContainsSymbol,
@@ -59,11 +65,11 @@ function GlyphButton({ vowel, isActive, onClick, symbolFontClass }: GlyphButtonP
       <button
         type="button"
         onClick={onClick}
-        className={`symbol-btn transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 ${
+        className={`symbol-btn symbol-btn-hunmin transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 ${
           isActive ? 'active bg-hanji-hover' : 'hover:bg-hanji-hover'
         }`}
         aria-expanded={isActive}
-        aria-label={`${vowel.name} ?? ??`}
+        aria-label={`${vowel.name} \uC0C1\uC138 \uBCF4\uAE30`}
       >
         <span
           className={`symbol-char ${symbolFontClass} text-4xl leading-none transition-colors ${
@@ -82,8 +88,10 @@ function GlyphButton({ vowel, isActive, onClick, symbolFontClass }: GlyphButtonP
 
 function GlyphPlaceholder({ symbol, symbolFontClass }: { symbol: string; symbolFontClass: string }) {
   return (
-    <span className="symbol-btn cursor-not-allowed bg-hanji/50 opacity-50" aria-disabled>
-      <span className={`symbol-char ${symbolFontClass} text-4xl leading-none text-ink-muted`}>{symbol}</span>
+    <span className="symbol-btn symbol-btn-hunmin cursor-not-allowed bg-hanji/50 opacity-50" aria-disabled>
+      <span className={`symbol-char ${symbolFontClass} text-4xl leading-none text-ink-muted`}>
+        {symbol}
+      </span>
       <span className="symbol-sub invisible select-none" aria-hidden>
         {'\u00a0'}
       </span>
@@ -210,23 +218,27 @@ function renderVowelSlot(
   if (slot.kind === 'image') {
     return <HunminVowelImageGlyph key={slotKey} asset={slot.asset} ipa={slot.ipa} />
   }
-  const vowel = findVowelBySymbol(vowels, slot.value)
-  if (!vowel) {
-    return <GlyphPlaceholder key={slotKey} symbol={slot.value} symbolFontClass={symbolFontClass} />
+  if (slot.ipa) {
+    return <HunminVowelJamoGlyph key={slotKey} symbol={slot.value} ipa={slot.ipa} />
   }
-  return (
-    <GlyphButton
-      key={vowel._id}
-      vowel={vowel}
-      isActive={activeId === vowel._id}
-      onClick={() => onToggle(vowel._id)}
-      symbolFontClass={symbolFontClass}
-    />
-  )
+  const vowel = findVowelBySymbol(vowels, slot.value)
+  if (vowel) {
+    return (
+      <GlyphButton
+        key={vowel._id}
+        vowel={vowel}
+        isActive={activeId === vowel._id}
+        onClick={() => onToggle(vowel._id)}
+        symbolFontClass={symbolFontClass}
+      />
+    )
+  }
+  return <GlyphPlaceholder key={slotKey} symbol={slot.value} symbolFontClass={symbolFontClass} />
 }
 
 interface HunminVowelRowBodyProps {
   row: HunminVowelRow
+  rowIndex: number
   vowels: Vowel[]
   activeId: string | null
   activeItem: Vowel | null
@@ -236,10 +248,13 @@ interface HunminVowelRowBodyProps {
   animationLabel: string
   mriLabel: string
   onToggle: (id: string) => void
+  onBasicColumnWidth: (rowIndex: number, widthPx: number) => void
+  basicColumnMinWidthPx: number
 }
 
 function HunminVowelRowBody({
   row,
+  rowIndex,
   vowels,
   activeId,
   activeItem,
@@ -249,34 +264,56 @@ function HunminVowelRowBody({
   animationLabel,
   mriLabel,
   onToggle,
+  onBasicColumnWidth,
+  basicColumnMinWidthPx,
 }: HunminVowelRowBodyProps) {
   const hasActive = !!activeItem && hunminVowelRowContainsSymbol(row, activeItem.symbol)
+  const hasCombinedZone = row.combinedSegments.length > 0
+  const basicColRef = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    const el = basicColRef.current
+    if (!el) return
+    const report = () => onBasicColumnWidth(rowIndex, el.getBoundingClientRect().width)
+    report()
+    const ro = new ResizeObserver(report)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [rowIndex, onBasicColumnWidth, row.basicSegments, row.combinedSegments, vowels])
 
   return (
     <div>
       <div
         ref={hasActive ? detailScrollRef : undefined}
-        className="flex max-w-full flex-nowrap items-end gap-x-2 sm:gap-x-3"
+        className="flex max-w-full flex-nowrap items-stretch gap-x-1.5 sm:gap-x-2"
         dir={lang === 'ar' ? 'ltr' : undefined}
         lang={lang === 'ar' ? 'ko' : undefined}
       >
-        <div className="shrink-0">
+        <div
+          ref={basicColRef}
+          className="flex min-w-0 shrink-0 flex-col"
+          style={
+            basicColumnMinWidthPx > 0 ? { minWidth: basicColumnMinWidthPx } : undefined
+          }
+        >
           <HunminZoneHeading title={HUNMIN_ZONE_BASIC} />
-          <HunminVowelZone
-            row={row}
-            zoneKey="b"
-            segments={row.basicSegments}
-            interactive
-            renderSlot={(slot, slotKey, interactive) =>
-              renderVowelSlot(slot, slotKey, vowels, activeId, onToggle, 'font-jamo', interactive)
-            }
-          />
+          <div className="mt-auto">
+            <HunminVowelZone
+              row={row}
+              zoneKey="b"
+              segments={row.basicSegments}
+              interactive
+              renderSlot={(slot, slotKey, interactive) =>
+                renderVowelSlot(slot, slotKey, vowels, activeId, onToggle, 'font-jamo', interactive)
+              }
+            />
+          </div>
         </div>
-        {row.combinedSegments.length > 0 && (
-          <>
-            <div className="mb-0 w-px shrink-0 self-stretch min-h-[5.5rem] bg-hanji-border/75" aria-hidden />
-            <div className="shrink-0">
-              <HunminZoneHeading title={HUNMIN_ZONE_COMBINED} />
+        <div className="w-px shrink-0 self-stretch bg-hanji-border/75" aria-hidden />
+        <div className="flex min-w-0 shrink-0 flex-col">
+          {hasCombinedZone ? <HunminZoneHeading title={HUNMIN_ZONE_COMBINED} /> : null}
+          <div className="mt-auto">
+            {hasCombinedZone ? (
               <HunminVowelZone
                 row={row}
                 zoneKey="c"
@@ -286,9 +323,11 @@ function HunminVowelRowBody({
                   renderVowelSlot(slot, slotKey, vowels, activeId, onToggle, 'font-jamo', false)
                 }
               />
-            </div>
-          </>
-        )}
+            ) : (
+              <div className={HUNMIN_VOWEL_GLYPH_RAIL_CLASS} aria-hidden />
+            )}
+          </div>
+        </div>
       </div>
       <ScrollSection isOpen={hasActive}>
         {activeItem && hasActive && (
@@ -400,6 +439,17 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
   const [displayMode, setDisplayMode] = useState<ChartViewMode>(viewMode)
   const [chartOpacity, setChartOpacity] = useState(1)
   const fadeTimerRef = useRef<number | null>(null)
+  const [hunminBasicColMinPx, setHunminBasicColMinPx] = useState(0)
+  const hunminBasicWidthsRef = useRef<[number, number, number]>([0, 0, 0])
+
+  const onHunminBasicColumnWidth = useCallback((rowIndex: number, widthPx: number) => {
+    if (rowIndex < 0 || rowIndex > 2) return
+    const next = [...hunminBasicWidthsRef.current] as [number, number, number]
+    next[rowIndex] = widthPx
+    hunminBasicWidthsRef.current = next
+    setHunminBasicColMinPx(Math.max(...next))
+  }, [])
+
 
   useEffect(() => {
     if (viewMode === displayMode) return
@@ -461,16 +511,16 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
     [VOWEL_CAT_DIPHTH]: m.diphthongDesc,
   }
 
+  const chartFadeStyle = {
+    opacity: chartOpacity,
+    transition: `opacity ${chartOpacity === 0 ? CHART_FADE_OUT_MS : CHART_FADE_IN_MS}ms ease-out`,
+  }
+
   return (
-    <div
-      className="space-y-16"
-      style={{
-        opacity: chartOpacity,
-        transition: `opacity ${chartOpacity === 0 ? CHART_FADE_OUT_MS : CHART_FADE_IN_MS}ms ease-out`,
-      }}
-    >
+    <div>
+      <div className="space-y-16" style={chartFadeStyle}>
       {displayMode === 'hunmin'
-        ? HUNMIN_VOWEL_ROWS.map((row) => (
+        ? HUNMIN_VOWEL_ROWS.map((row, rowIndex) => (
             <section key={row.id}>
               <div className="mb-4">
                 <h3 className="font-jamo text-lg tracking-wide text-ink">{row.title}</h3>
@@ -478,6 +528,7 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
               </div>
               <HunminVowelRowBody
                 row={row}
+                rowIndex={rowIndex}
                 vowels={vowels}
                 activeId={activeId}
                 activeItem={activeItem}
@@ -487,6 +538,8 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
                 animationLabel={m.animationVideo}
                 mriLabel={m.mriVideo}
                 onToggle={toggle}
+                onBasicColumnWidth={onHunminBasicColumnWidth}
+                basicColumnMinWidthPx={hunminBasicColMinPx}
               />
             </section>
           ))
@@ -514,6 +567,12 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
               />
             )
           })}
+      </div>
+      {displayMode === 'hunmin' ? (
+        <div style={chartFadeStyle}>
+          <PhoneticsHaeryeSource kind="vowels" />
+        </div>
+      ) : null}
     </div>
   )
 }

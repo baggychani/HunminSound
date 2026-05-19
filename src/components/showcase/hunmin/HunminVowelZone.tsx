@@ -5,12 +5,13 @@ import Image from 'next/image'
 import {
   HUNMIN_LABEL_BLOCK_CLASS,
   HunminBetweenSeparator,
-  hunminSegmentSeparatorKind,
+  hunminVowelSegmentSeparatorKind,
 } from '@/components/showcase/hunmin/HunminChartParts'
 import type { HunminVowelRow, HunminVowelSegment, HunminVowelSlot } from '@/data/hunminVowelLayout'
 import { hunminVowelImageSrc } from '@/lib/hunminVowelImages'
 
-const HUNMIN_VOWEL_RAIL_CLASS = 'flex h-[4.25rem] shrink-0 items-center justify-center sm:h-[4.75rem]'
+export const HUNMIN_VOWEL_GLYPH_RAIL_CLASS =
+  'flex h-[4.25rem] shrink-0 items-center justify-center sm:h-[4.75rem]'
 
 type VowelSegmentGroup = { spanLabel?: string; segments: HunminVowelSegment[] }
 
@@ -59,20 +60,13 @@ function HunminVowelSegmentColumn({
 }) {
   const multiSpan = Boolean(spanGroup.spanLabel && spanGroup.segments.length > 1)
   const showColumnLabel = !multiSpan && seg.label?.trim()
-
   return (
     <div className="flex min-w-0 shrink-0 flex-col items-center">
       <div className={`${HUNMIN_LABEL_BLOCK_CLASS} mb-1 ${multiSpan ? 'min-h-[1.35rem]' : 'min-h-[2.35rem]'}`}>
-        {showColumnLabel ? (
-          <span className="font-sans text-[11px] leading-snug tracking-wide text-ink-muted sm:text-xs">{seg.label}</span>
-        ) : null}
-        {seg.groupLine ? (
-          <span className="font-sans text-[10px] leading-snug tracking-wide text-ink-muted/80 sm:text-[11px]">
-            {seg.groupLine}
-          </span>
-        ) : null}
+        {showColumnLabel ? <span className="hunmin-vowel-segment-label">{seg.label}</span> : null}
+        {seg.groupLine ? <span className="hunmin-vowel-segment-label">{seg.groupLine}</span> : null}
       </div>
-      <div className={`${HUNMIN_VOWEL_RAIL_CLASS} flex-nowrap justify-center gap-1 sm:gap-1.5`}>
+      <div className={`${HUNMIN_VOWEL_GLYPH_RAIL_CLASS} flex-nowrap justify-center gap-0.5 sm:gap-1`}>
         {seg.slots.map((slot, slotIdx) =>
           renderSlot(slot, `${row.id}-${zoneKey}-${segIdx}-${slotIdx}`, interactive),
         )}
@@ -96,14 +90,12 @@ export function HunminVowelZone({ row, zoneKey, segments, interactive = true, re
         return (
           <Fragment key={`${row.id}-${zoneKey}-g-${groupIdx}`}>
             {groupIdx > 0 && prevSeg && firstSeg && (
-              <HunminBetweenSeparator compact kind={hunminSegmentSeparatorKind(prevSeg, firstSeg)} />
+              <HunminBetweenSeparator compact kind={hunminVowelSegmentSeparatorKind(prevSeg, firstSeg)} />
             )}
             <div className={multiSpan ? 'flex shrink-0 flex-col items-stretch' : 'contents'}>
               {multiSpan && group.spanLabel ? (
                 <div className="mb-1 flex flex-col items-center px-0.5">
-                  <span className="font-sans text-[11px] leading-snug tracking-wide text-ink-muted sm:text-xs">
-                    {group.spanLabel}
-                  </span>
+                  <span className="hunmin-vowel-segment-label">{group.spanLabel}</span>
                   <div className="mt-1.5 h-px w-full min-w-[5.5rem] bg-hanji-border/80" aria-hidden />
                 </div>
               ) : null}
@@ -113,7 +105,7 @@ export function HunminVowelZone({ row, zoneKey, segments, interactive = true, re
                     {segIdx > 0 && (
                       <HunminBetweenSeparator
                         compact
-                        kind={hunminSegmentSeparatorKind(group.segments[segIdx - 1], seg)}
+                        kind={hunminVowelSegmentSeparatorKind(group.segments[segIdx - 1], seg)}
                       />
                     )}
                     <HunminVowelSegmentColumn
@@ -136,6 +128,19 @@ export function HunminVowelZone({ row, zoneKey, segments, interactive = true, re
   )
 }
 
+/** 훈민 모음 — 옛한글 자모 + IPA (DB 모음 없을 때) */
+export function HunminVowelJamoGlyph({ symbol, ipa }: { symbol: string; ipa?: string }) {
+  const sub = ipa ?? null
+  return (
+    <span className="symbol-btn symbol-btn-hunmin pointer-events-none cursor-default bg-transparent">
+      <span className="symbol-char font-jamo text-4xl leading-none text-ink">{symbol}</span>
+      <span className={`symbol-sub hunmin-vowel-ipa ${sub ? '' : 'invisible'}`} aria-hidden={sub ? undefined : true}>
+        {sub ?? '\u00a0'}
+      </span>
+    </span>
+  )
+}
+
 export function HunminVowelImageGlyph({ asset, ipa }: { asset: string; ipa?: string }) {
   const sub = ipa ?? null
   return (
@@ -144,7 +149,7 @@ export function HunminVowelImageGlyph({ asset, ipa }: { asset: string; ipa?: str
         <Image
           src={hunminVowelImageSrc(asset)}
           alt=""
-          width={52}
+          width={56}
           height={48}
           className="hunmin-vowel-img opacity-90"
           draggable={false}

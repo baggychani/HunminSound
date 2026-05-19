@@ -10,6 +10,7 @@ import { getMessages } from '@/lib/i18n'
 import { TranslatedDescription } from '@/components/showcase/TranslatedDescription'
 import { JamoText } from '@/components/ui/JamoText'
 import type { ChartViewMode } from '@/components/showcase/PhoneticsViewToggle'
+import { PhoneticsHaeryeSource } from '@/components/showcase/phonetics/PhoneticsHaeryeSource'
 import {
   consonantSegmentSeparatorKind,
   HUNMIN_GLYPH_RAIL_CLASS,
@@ -452,14 +453,14 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
     setActiveId((prev) => (prev === id ? null : id))
   }, [])
 
+  const chartFadeStyle = {
+    opacity: chartOpacity,
+    transition: `opacity ${chartOpacity === 0 ? CHART_FADE_OUT_MS : CHART_FADE_IN_MS}ms ease-out`,
+  }
+
   return (
-    <div
-      className="space-y-16"
-      style={{
-        opacity: chartOpacity,
-        transition: `opacity ${chartOpacity === 0 ? CHART_FADE_OUT_MS : CHART_FADE_IN_MS}ms ease-out`,
-      }}
-    >
+    <div>
+      <div className="space-y-16" style={chartFadeStyle}>
       {[0, 1, 2, 3, 4].map((rowIndex) => {
         const hunminRow = HUNMIN_CONSONANT_ROWS[rowIndex]
         const category = CATEGORY_ORDER[rowIndex]
@@ -529,6 +530,12 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
           </section>
         )
       })}
+      </div>
+      {displayMode === 'hunmin' ? (
+        <div style={chartFadeStyle}>
+          <PhoneticsHaeryeSource kind="consonants" />
+        </div>
+      ) : null}
     </div>
   )
 }

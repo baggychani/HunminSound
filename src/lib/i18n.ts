@@ -107,6 +107,10 @@ const ko = {
     '출처: 세종 외 8인 원저(1446) / 김슬옹 편저(2025). ≪훈민정음 해례본 함께 읽기≫. 마리북스.',
   hunminEditorialNumbering:
     '왼쪽 대괄호 안의 숫자는 ≪훈민정음≫ 해례본 366개 문장의 일련번호를 뜻합니다.',
+  hunminConsonantChartSource:
+    '출처: 김슬옹, 2017/2020, ≪훈민정음 해례본 입체 강독본≫. 박이정. 17쪽.',
+  hunminVowelChartSource:
+    '출처: 김슬옹, 2017/2020, ≪훈민정음 해례본 입체 강독본≫. 박이정. 18쪽.',
   hunminPronunciationLink: '발음 보기',
   hunminHoverHint: '한자에 마우스를 올리면 훈음이 나타납니다.',
   comingSoon: '내용 준비 중',
@@ -204,6 +208,10 @@ const en: Messages = {
     'Source: Sejong et al. (1446), edited by Kim Sŭl-ong (2025). Reading the Hunminjeongeum Haerye Together. Maribooks.',
   hunminEditorialNumbering:
     'The number in square brackets indicates the sentence number among the 366 sentences of the Hunminjeongeum Haerye.',
+  hunminConsonantChartSource:
+    'Source: Kim Seul-ong, 2017/2020, Three-Dimensional Intensive Reading Edition of the Hunminjeongeum Haerye. Initials section. p. 17.',
+  hunminVowelChartSource:
+    'Source: Kim Seul-ong, 2017/2020, Three-Dimensional Intensive Reading Edition of the Hunminjeongeum Haerye. Medials section. p. 18.',
   hunminPronunciationLink: 'See pronunciation',
   hunminHoverHint: 'Hover over a Chinese character to see its meaning and reading.',
   comingSoon: 'Coming soon',
@@ -291,6 +299,10 @@ const zh: Messages = {
   hunminEditorialSource:
     '出处：世宗等8人原著（1446）／金瑟雍编著（2025）。《一起阅读训民正音解例本》。Maribooks。',
   hunminEditorialNumbering: '左侧方括号中的数字表示《训民正音》解例本366句中的序号。',
+  hunminConsonantChartSource:
+    '出处：金瑟雍，2017/2020，《训民正音解例本立体精读本》。朴以正。第17页。',
+  hunminVowelChartSource:
+    '出处：金瑟雍，2017/2020，《训民正音解例本立体精读本》。朴以正。第18页。',
   hunminPronunciationLink: '查看发音',
   hunminHoverHint: '将鼠标悬停在汉字上可查看训读与释义。',
   comingSoon: '内容准备中',
@@ -379,6 +391,10 @@ const ja: Messages = {
     '出典：世宗ほか8名原著（1446）／キム・スロン編著（2025）。『訓民正音解例本を共に読む』。マリブックス。',
   hunminEditorialNumbering:
     '左の角括弧内の数字は、『訓民正音』解例本366文の通し番号を表します。',
+  hunminConsonantChartSource:
+    '出典：キム・スロン，2017/2020，『訓民正音解例本立体精読本』。朴以正。17頁。',
+  hunminVowelChartSource:
+    '出典：キム・スロン，2017/2020，『訓民正音解例本立体精読本』。朴以正。18頁。',
   hunminPronunciationLink: '発音を見る',
   hunminHoverHint: '漢字にマウスを乗せると訓と意味が表示されます。',
   comingSoon: 'コンテンツ準備中',
@@ -474,6 +490,10 @@ const fr: Messages = {
     "Source : Sejong et al. (1446) ; éd. Kim Sŭl-ong (2025). Lire ensemble le Haerye du Hunminjeongeum. Maribooks.",
   hunminEditorialNumbering:
     "Le numéro entre crochets indique la position parmi les 366 phrases du Haerye du Hunminjeongeum.",
+  hunminConsonantChartSource:
+    'Source : Kim Seul-ong, 2017/2020, éd. intensive en 3D du Haerye du Hunminjeongeum. Section Park I-jeong. p. 17.',
+  hunminVowelChartSource:
+    'Source : Kim Seul-ong, 2017/2020, éd. intensive en 3D du Haerye du Hunminjeongeum. Section Park I-jeong. p. 18.',
   hunminPronunciationLink: 'Voir la prononciation',
   hunminHoverHint: 'Survolez un caractère chinois pour voir sa glose en coréen.',
   comingSoon: 'Contenu en cours',
@@ -570,6 +590,10 @@ const de: Messages = {
     'Quelle: Sejong et al. (1446); Hrsg. Kim Sŭl-ong (2025). Den Hunminjeongeum-Haerye gemeinsam lesen. Maribooks.',
   hunminEditorialNumbering:
     'Die Zahl in eckigen Klammern bezeichnet die Position unter den 366 Sätzen des Hunminjeongeum-Haerye.',
+  hunminConsonantChartSource:
+    'Quelle: Kim Seul-ong, 2017/2020, Dreidimensionale Intensivleseausgabe des Hunminjeongeum-Haerye. Park I-jeong. S. 17.',
+  hunminVowelChartSource:
+    'Quelle: Kim Seul-ong, 2017/2020, Dreidimensionale Intensivleseausgabe des Hunminjeongeum-Haerye. Park I-jeong. S. 18.',
   hunminPronunciationLink: 'Aussprache ansehen',
   hunminHoverHint: 'Mit dem Mauszeiger über ein Schriftzeichen fahren, um die koreanische Glosse zu sehen.',
   comingSoon: 'Inhalt in Vorbereitung',
@@ -666,6 +690,10 @@ const es: Messages = {
     'Fuente: Sejong et al. (1446); ed. Kim Sŭl-ong (2025). Leyendo juntos el Haerye del Hunminjeongeum. Maribooks.',
   hunminEditorialNumbering:
     'El número entre corchetes indica la posición entre las 366 oraciones del Haerye del Hunminjeongeum.',
+  hunminConsonantChartSource:
+    'Fuente: Kim Seul-ong, 2017/2020, edición de lectura intensiva en 3D del Haerye del Hunminjeongeum. Park I-jeong. p. 17.',
+  hunminVowelChartSource:
+    'Fuente: Kim Seul-ong, 2017/2020, edición de lectura intensiva en 3D del Haerye del Hunminjeongeum. Park I-jeong. p. 18.',
   hunminPronunciationLink: 'Ver pronunciación',
   hunminHoverHint: 'Pase el ratón sobre un carácter chino para ver su glosa coreana.',
   comingSoon: 'Contenido en preparación',
@@ -757,6 +785,10 @@ const hi: Messages = {
     'स्रोत: सेजोंग व अन्य (1446); संपा. किम सूल-ओंग (2025). हुनमिनजोंगइम हाएरये साथ पढ़ना. Maribooks।',
   hunminEditorialNumbering:
     'वर्ग कोष्ठक की संख्या हुनमिनजोंगइम हाएरये के 366 वाक्यों में स्थान दर्शाती है।',
+  hunminConsonantChartSource:
+    'स्रोत: किम सूल-ओंग, 2017/2020, हुनमिनजोंगइम हाएरये त्रिविम आत्मीय पठन संस्करण। पार्क ई-जेओंग। पृ. 17।',
+  hunminVowelChartSource:
+    'स्रोत: किम सूल-ओंग, 2017/2020, हुनमिनजोंगइम हाएरये त्रिविम आत्मीय पठन संस्करण। पार्क ई-जेओंग। पृ. 18।',
   hunminPronunciationLink: 'उच्चारण देखें',
   hunminHoverHint: 'अर्थ देखने के लिए चीनी अक्षर पर माउस ले जाएँ।',
   comingSoon: 'सामग्री तैयार हो रही है',

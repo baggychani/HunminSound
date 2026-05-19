@@ -4,7 +4,7 @@
  */
 
 export type HunminVowelSlot =
-  | { kind: 'symbol'; value: string }
+  | { kind: 'symbol'; value: string; ipa?: string }
   | { kind: 'reserved' }
   | { kind: 'compound'; jamo: string; mapTo?: string }
   /** images/hunmin/vowels/{asset}.png — 훈민 모음 필기 이미지 */
@@ -24,9 +24,12 @@ export type HunminVowelRow = {
   combinedSegments: HunminVowelSegment[]
 }
 
-const sym = (value: string): HunminVowelSlot => ({ kind: 'symbol', value })
+const sym = (value: string, ipa?: string): HunminVowelSlot =>
+  ipa ? { kind: 'symbol', value, ipa } : { kind: 'symbol', value }
+/** 옛한글 자모 — IPA는 대응 PNG asset 명명 규칙과 동일 (파일은 유지, UI만 교체) */
+const jamo = (value: string, asset: string): HunminVowelSlot => sym(value, ipaLabel(asset))
 const res = (): HunminVowelSlot => ({ kind: 'reserved' })
-const cmp = (jamo: string, mapTo?: string): HunminVowelSlot => ({ kind: 'compound', jamo, mapTo })
+const cmp = (jamoStr: string, mapTo?: string): HunminVowelSlot => ({ kind: 'compound', jamo: jamoStr, mapTo })
 
 /** 합용자 IPA: 파일명 m→ɨ, e→ə (vj 등 예외는 overrides) */
 const IPA_OVERRIDES: Record<string, string> = {
@@ -57,15 +60,15 @@ export const HUNMIN_VOWEL_ROWS: HunminVowelRow[] = [
       { groupLine: '재출자', slots: [sym('ㅛ'), sym('ㅑ')] },
     ],
     combinedSegments: [
-      { label: '동출합용자', slots: [img('wa'), img('joja')] },
+      { label: '동출합용자', slots: [jamo('ㅘ', 'wa'), jamo('ㆇ', 'joja')] },
       {
         label: 'ㅣ 합용자',
         groupLine: '기본 중성자와 ㅣ',
-        slots: [img('vj'), img('oj'), img('aj'), img('joj'), img('jaj')],
+        slots: [jamo('ㆎ', 'vj'), jamo('ㅚ', 'oj'), jamo('ㅐ', 'aj'), jamo('ㆉ', 'joj'), jamo('ㅒ', 'jaj')],
       },
       {
         groupLine: '동출합용자와 ㅣ',
-        slots: [img('waj'), img('jojaj')],
+        slots: [jamo('ㅙ', 'waj'), jamo('ㆈ', 'jojaj')],
       },
     ],
   },
@@ -78,15 +81,15 @@ export const HUNMIN_VOWEL_ROWS: HunminVowelRow[] = [
       { groupLine: '재출자', slots: [sym('ㅠ'), sym('ㅕ')] },
     ],
     combinedSegments: [
-      { label: '동출합용자', slots: [img('we'), img('juje')] },
+      { label: '동출합용자', slots: [jamo('ㅝ', 'we'), jamo('ㆊ', 'juje')] },
       {
         label: 'ㅣ 합용자',
         groupLine: '기본 중성자와 ㅣ',
-        slots: [img('mj'), img('uj'), img('ej'), img('juj'), img('jej')],
+        slots: [jamo('ㅢ', 'mj'), jamo('ㅟ', 'uj'), jamo('ㅔ', 'ej'), jamo('ㆌ', 'juj'), jamo('ㅖ', 'jej')],
       },
       {
         groupLine: '동출합용자와 ㅣ',
-        slots: [img('wej'), img('jujej')],
+        slots: [jamo('ㅞ', 'wej'), jamo('ㆋ', 'jujej')],
       },
     ],
   },

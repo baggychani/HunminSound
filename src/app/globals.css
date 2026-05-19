@@ -200,6 +200,11 @@
     mix-blend-mode: multiply;
   }
 
+  /* 모음 훈민 구간 라벨(상형기본자·초출자·재출자·ㅣ 합용 하위 등) */
+  .hunmin-vowel-segment-label {
+    @apply font-sans text-[11px] leading-snug tracking-wide text-ink-muted sm:text-xs;
+  }
+
   .symbol-btn .hunmin-vowel-ipa {
     @apply font-sans tracking-normal normal-case;
     font-size: 10px;
