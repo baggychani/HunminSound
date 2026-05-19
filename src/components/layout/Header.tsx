@@ -107,8 +107,8 @@ export function Header() {
           className="group flex min-w-0 flex-1 items-baseline gap-2 sm:flex-initial sm:shrink-0 sm:gap-3"
           onClick={closePanels}
         >
-          <span className="font-serif text-lg sm:text-xl tracking-wide text-ink group-hover:text-ink-accent transition-colors truncate">
-            세종말소리
+          <span className="font-jamo text-lg sm:text-xl tracking-wide text-ink group-hover:text-ink-accent transition-colors truncate">
+            {m.siteTitle}
           </span>
           <span className="hidden sm:inline font-sans text-xs text-ink-muted tracking-widest uppercase shrink-0">
             Sejong Speech Sounds

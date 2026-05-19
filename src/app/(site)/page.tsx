@@ -74,7 +74,7 @@ export default function HomePage() {
         <p
           className={
             lang === 'ko'
-              ? 'font-serif text-sm sm:text-base text-ink-muted tracking-wide mb-6'
+              ? 'font-serif text-[15px] sm:text-[17px] text-ink-muted tracking-wide mb-6'
               : `font-sans text-xs text-ink-muted tracking-[0.3em] uppercase mb-6 ${
                   lang === 'hi'
                     ? 'font-devanagari normal-case tracking-normal text-[13px] leading-relaxed'
@@ -86,8 +86,8 @@ export default function HomePage() {
           {m.homeSubtitle}
         </p>
 
-        <h1 className="font-serif text-6xl sm:text-7xl md:text-8xl text-ink leading-none tracking-wide">
-          세종말소리
+        <h1 className="font-jamo text-6xl sm:text-7xl md:text-8xl text-ink leading-none tracking-wide">
+          {m.siteTitle}
         </h1>
 
         <p
@@ -259,7 +259,7 @@ function HunminjeongeumCard({ href, label, caption, description, explore }: Hunm
 
       <div className="relative z-10">
         <div className="flex items-baseline gap-3 mb-1">
-          <span className="font-serif text-4xl text-ink group-hover:text-ink-accent transition-colors">
+          <span className="font-jamo text-4xl text-ink group-hover:text-ink-accent transition-colors">
             {label}
           </span>
         </div>
@@ -306,7 +306,7 @@ function NavCard({ href, label, count, preview, description, explore }: NavCardP
     >
       <div>
         <div className="flex items-baseline gap-3 mb-1">
-          <span className="font-serif text-4xl text-ink group-hover:text-ink-accent transition-colors">
+          <span className="font-jamo text-4xl text-ink group-hover:text-ink-accent transition-colors">
             {label}
           </span>
         </div>

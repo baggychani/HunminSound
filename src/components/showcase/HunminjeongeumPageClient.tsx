@@ -61,7 +61,7 @@ export function HunminjeongeumPageClient() {
         </motion.p>
 
         <h1
-          className="font-serif leading-none text-ink mb-6 flex"
+          className="font-jamo leading-none text-ink mb-6 flex"
           style={{ fontSize: 'clamp(3rem, 9vw, 5.5rem)' }}
           aria-label="훈민정음"
         >

@@ -34,7 +34,7 @@ export function PassageSection({
           <div className="min-w-0">
             <h2
               id={`${id}-title`}
-              className="font-serif text-2xl leading-snug tracking-tight text-ink sm:text-3xl"
+              className="font-jamo text-2xl leading-snug tracking-tight text-ink sm:text-3xl"
               lang="ko"
             >
               {title}

@@ -48,7 +48,7 @@ export function PageHeader({ type }: PageHeaderProps) {
             initial="hidden"
             animate="show"
             exit="exit"
-            className="font-serif text-5xl sm:text-6xl text-ink leading-none mb-6"
+            className="font-jamo text-5xl sm:text-6xl text-ink leading-none mb-6"
           >
             {title}
           </motion.h1>
