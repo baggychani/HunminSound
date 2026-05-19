@@ -11,6 +11,13 @@ import { TranslatedDescription } from '@/components/showcase/TranslatedDescripti
 import { JamoText } from '@/components/ui/JamoText'
 import type { ChartViewMode } from '@/components/showcase/PhoneticsViewToggle'
 import {
+  consonantSegmentSeparatorKind,
+  HUNMIN_GLYPH_RAIL_CLASS,
+  HUNMIN_LABEL_BLOCK_CLASS,
+  HunminBetweenSeparator,
+  HunminZoneHeading,
+} from '@/components/showcase/hunmin/HunminChartParts'
+import {
   HUNMIN_CONSONANT_ROWS,
   hunminRowContainsSymbol,
   type HunminRow,
@@ -32,17 +39,6 @@ const HUNMIN_CLASSIC_LABEL_BY_ROW_ID: Record<string, string> = {
 /** 토글 시 차트 전체: 먼저 사라졌다가 새 모드로 나타남 (ms) */
 const CHART_FADE_OUT_MS = 220
 const CHART_FADE_IN_MS = 220
-
-function HunminZoneHeading({ title }: { title: string }) {
-  return (
-    <div className="mb-4 w-full">
-      <span className="block text-left font-sans text-xs leading-snug tracking-wide text-ink-muted sm:text-[13px]">
-        {title}
-      </span>
-      <div className="mt-2.5 h-px w-full bg-hanji-border/80" aria-hidden />
-    </div>
-  )
-}
 
 interface GlyphButtonProps {
   consonant: Consonant
@@ -188,7 +184,7 @@ function HunminRowBody({
         </div>
         {row.extendedSegments.length > 0 && (
           <>
-            <div className="mx-10 shrink-0 self-stretch sm:mx-14 md:mx-20" aria-hidden />
+            <div className="mx-10 shrink-0 sm:mx-14 md:mx-20" aria-hidden />
             <div className="min-w-0 shrink">
               <HunminZoneHeading title="확장자" />
               <HunminZone
@@ -253,20 +249,19 @@ function HunminZone({
       {segments.map((seg, segIdx) => (
         <Fragment key={`${row.id}-${zoneKey}-${seg.label}-${segIdx}`}>
           {segIdx > 0 && (
-            <span
-              className="flex shrink-0 items-center self-stretch px-1.5 text-base text-ink-muted/45 sm:px-2 sm:text-lg"
-              aria-hidden
-            >
-              |
-            </span>
+            <HunminBetweenSeparator
+              kind={consonantSegmentSeparatorKind(segments[segIdx - 1], seg)}
+            />
           )}
-          <div className="flex min-w-0 flex-col items-center gap-2">
-            {seg.label && (
-              <span className="w-full px-1 text-center font-sans text-xs leading-snug tracking-wide text-ink-muted sm:text-[13px]">
-                {seg.label}
-              </span>
-            )}
-            <div className="flex flex-wrap justify-center gap-1">
+          <div className="flex min-w-0 flex-col items-center">
+            <div className={HUNMIN_LABEL_BLOCK_CLASS}>
+              {seg.label ? (
+                <span className="font-sans text-xs leading-snug tracking-wide text-ink-muted sm:text-[13px]">
+                  {seg.label}
+                </span>
+              ) : null}
+            </div>
+            <div className={`${HUNMIN_GLYPH_RAIL_CLASS} flex-wrap justify-center gap-1`}>
               {seg.symbols.map((sym) => {
                 const c = findConsonantBySymbol(consonants, sym)
                 if (!c) return <GlyphPlaceholder key={sym} symbol={sym} symbolFontClass={symbolFontClass} />
@@ -479,7 +474,11 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
           <section key={`row-${rowIndex}`} className="relative">
             <div className="mb-4">
               <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                <h3 className={`font-serif text-lg tracking-wide ${isEmpty ? 'text-ink-muted' : 'text-ink'}`}>
+                <h3
+                  className={`text-lg tracking-wide ${
+                    displayMode === 'hunmin' ? 'font-jamo' : 'font-serif'
+                  } ${isEmpty ? 'text-ink-muted' : 'text-ink'}`}
+                >
                   {titleText}
                 </h3>
                 {displayMode === 'hunmin' && hunminClassicLabel ? (

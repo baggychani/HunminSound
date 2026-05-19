@@ -1,5 +1,4 @@
-import { VowelChart } from '@/components/showcase/VowelChart'
-import { PhoneticsViewToggle } from '@/components/showcase/PhoneticsViewToggle'
+import { VowelsPageClient } from '@/components/showcase/VowelsPageClient'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { getVowels } from '@/lib/queries'
 import { vowelsData } from '@/data/vowels'
@@ -18,8 +17,7 @@ export default async function VowelsPage() {
   return (
     <div className="max-w-5xl mx-auto px-6">
       <PageHeader type="vowels" />
-      <PhoneticsViewToggle className="mb-12 mt-2" />
-      <VowelChart vowels={vowels} />
+      <VowelsPageClient vowels={vowels} />
     </div>
   )
 }

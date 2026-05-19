@@ -189,6 +189,22 @@
     @apply relative flex flex-col items-center justify-center w-16 h-20 rounded transition-all duration-200 cursor-pointer select-none;
   }
 
+  /* 훈민 모음 합용자 이미지 칸 */
+  .symbol-btn-hunmin {
+    @apply h-[4.25rem] w-[3.1rem] sm:h-[4.75rem] sm:w-[3.35rem];
+  }
+
+  /* 흰 바탕 PNG → 한지 배경과 합치기 (완전 투명화는 불가, multiply로 밝은 바탕 제거) */
+  .hunmin-vowel-img {
+    @apply h-[2.05rem] w-auto max-w-[3.1rem] object-contain object-bottom sm:h-[2.35rem] sm:max-w-[3.35rem];
+    mix-blend-mode: multiply;
+  }
+
+  .symbol-btn .hunmin-vowel-ipa {
+    @apply font-sans tracking-normal normal-case;
+    font-size: 10px;
+  }
+
   .symbol-btn:hover .symbol-char {
     @apply text-ink-accent;
   }
