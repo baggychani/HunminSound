@@ -10,9 +10,9 @@ const IMAGE_PATH = '/images/background.jpg'
 const IMAGE_LEFT_FEATHER =
   'linear-gradient(to right, transparent 0%, transparent 16%, rgba(0,0,0,0.06) 24%, rgba(0,0,0,0.28) 34%, rgba(0,0,0,0.58) 44%, rgba(0,0,0,0.82) 54%, black 66%, black 100%)'
 
-/** 하단 — 왼쪽보다는 약하지만 끝선이 안 보이게 */
+/** 하단 — 맨 아래 가장자리만 은은하게 (본체·허리는 유지) */
 const IMAGE_BOTTOM_FEATHER =
-  'linear-gradient(to top, transparent 0%, transparent 4%, rgba(0,0,0,0.1) 11%, rgba(0,0,0,0.38) 20%, rgba(0,0,0,0.68) 30%, rgba(0,0,0,0.9) 38%, black 46%, black 100%)'
+  'linear-gradient(to top, transparent 0%, transparent 2%, rgba(0,0,0,0.18) 6%, rgba(0,0,0,0.52) 10%, rgba(0,0,0,0.82) 14%, black 19%, black 100%)'
 
 const IMAGE_MASK = `${IMAGE_LEFT_FEATHER}, ${IMAGE_BOTTOM_FEATHER}`
 
@@ -83,8 +83,8 @@ export function HeroActBackdrop({ heroRef }: HeroActBackdropProps) {
       {/* 상단 — 헤더·제목 가독성 */}
       <div className="absolute inset-0 bg-gradient-to-b from-hanji from-[0%] via-hanji/75 via-[16%] to-transparent to-[36%]" />
 
-      {/* 하단 — 소개 문단·이미지 하단 외곽선 녹임 */}
-      <div className="absolute inset-0 bg-gradient-to-t from-hanji from-[0%] via-hanji/95 via-[14%] via-hanji/55 via-[28%] to-transparent to-[46%]" />
+      {/* 하단 — 맨 끝 외곽선만 한지에 녹임 */}
+      <div className="absolute inset-0 bg-gradient-to-t from-hanji from-[0%] via-hanji/85 via-[8%] to-transparent to-[22%]" />
     </motion.div>
   )
 }
