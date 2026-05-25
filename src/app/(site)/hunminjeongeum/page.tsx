@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function HunminjeongeumPage() {
   return (
-    <div className="max-w-5xl mx-auto px-6">
+    <div className="site-container">
       <HunminjeongeumPageClient />
     </div>
   )

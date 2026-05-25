@@ -19,7 +19,7 @@ function loadContent(): ResearchContent {
 export default function ResearchPage() {
   const content = loadContent()
   return (
-    <div className="max-w-5xl mx-auto px-6">
+    <div className="site-container">
       <ResearchPageClient content={content} />
     </div>
   )

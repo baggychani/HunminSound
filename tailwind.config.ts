@@ -24,6 +24,7 @@ const config: Config = {
       fontFamily: {
         serif: ['var(--font-serif)', 'Georgia', '"Times New Roman"', 'serif'],
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'var(--font-serif)', 'Georgia', 'serif'],
         devanagari: ['var(--font-devanagari)', 'Noto Sans Devanagari', 'system-ui', 'sans-serif'],
         arabic: ['var(--font-arabic)', 'Noto Sans Arabic', 'Segoe UI', 'sans-serif'],
         // 단독 자모 — Title(제자해) / Text(현대·[기] 괄호)는 CSS 클래스로 구분

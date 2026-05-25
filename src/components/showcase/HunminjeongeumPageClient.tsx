@@ -6,6 +6,7 @@ import { getMessages } from '@/lib/i18n'
 import { HUNMIN_PASSAGE_SECTIONS } from '@/data/hunminjeongeumPassages'
 import { PassageSection } from './hunminjeongeum/PassageSection'
 import { EditorialNote } from './hunminjeongeum/EditorialNote'
+import { HunminSectionNav } from './hunminjeongeum/HunminSectionNav'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -35,8 +36,16 @@ export function HunminjeongeumPageClient() {
     appraisal: { title: m.hunminAppraisalTitle, sub: m.hunminAppraisalSub },
   }
 
+  const navLabels = {
+    initial: m.hunminInitialTitle,
+    medial: m.hunminMedialTitle,
+    appraisal: m.hunminAppraisalTitle,
+  } as const
+
   return (
     <>
+      <HunminSectionNav labels={navLabels} />
+
       {/* ── 헤더 ──────────────────────────────────────────────────────── */}
       <div className="relative overflow-hidden pt-16 pb-12 border-b border-hanji-border mb-6 sm:mb-8">
         <motion.span

@@ -23,7 +23,7 @@ import * as THREE from 'three'
  *  • 자세: 아래 `BOOK_ROT_X` / `BOOK_ROT_Y` / `BOOK_ROT_Z`
  *  • 화면에서 상대적 크기: `BOOK_BOUNDS_MARGIN`(작을수록 확대, 잘림 위험)
  *  • 애니메이션: `FLOAT_AMP_Y` / `SWAY_AMP_Y`(폭), `FLOAT_FREQ` / `SWAY_FREQ`(진동 속도)
- *  • 레이아웃 픽셀 높이: `src/app/(site)/page.tsx` 의 3D 컨테이너 `clamp(...)`
+ *  • 레이아웃 픽셀 높이: `page.tsx` clamp(11rem,22vw,18rem) + calc(100dvh-22rem) 상한
  */
 
 /** 정적 자산: `public/models/hmji.glb` → URL `/models/hmji.glb` */
@@ -39,17 +39,17 @@ const BOOK_ROT_X = +Math.PI / 4.4
 const BOOK_ROT_Y = 0.05
 const BOOK_ROT_Z = 0
 
-/** Bounds `margin`: 1에 가까울수록 꽉 참. **줄이면 카메라가 더 가까이 붙어 책이 커 보임**(0.9~1.05 권장, 너무 낮으면 잘림). */
-const BOOK_BOUNDS_MARGIN = 1.00
+/** Bounds `margin`: 1.02 — 히어로 3D 책 미세 확대(잘림 여유 유지). */
+const BOOK_BOUNDS_MARGIN = 1.02
 
 /** 위아래 떠 있는 느낌 최대 이동량(월드 단위). */
-const FLOAT_AMP_Y = 0.045
+const FLOAT_AMP_Y = 0.028
 
 /** Y축 흔들림 진폭(라디안). */
-const SWAY_AMP_Y = 0.085
+const SWAY_AMP_Y = 0.055
 
 /** X축 미세 끄덕임 진폭(라디안) — 책장이 들렸다 가라앉는 느낌. */
-const TILT_AMP_X = 0.025
+const TILT_AMP_X = 0.015
 
 /** sin 인자에 곱하는 “속도” 계수 — 커질수록 같은 시간에 더 빠르게 진동. */
 const FLOAT_FREQ = 0.85
@@ -116,7 +116,7 @@ export function HunminBookViewer({ className }: HunminBookViewerProps) {
         <directionalLight position={[3, 4, 5]} intensity={0.95} />
         <directionalLight position={[-3, 2, -2]} intensity={0.35} />
         <Suspense fallback={null}>
-          <Bounds fit clip margin={BOOK_BOUNDS_MARGIN}>
+          <Bounds fit margin={BOOK_BOUNDS_MARGIN}>
             <HunminBook />
           </Bounds>
         </Suspense>

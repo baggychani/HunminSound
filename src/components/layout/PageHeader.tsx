@@ -58,7 +58,7 @@ export function PageHeader({ type }: PageHeaderProps) {
             initial="hidden"
             animate="show"
             exit="exit"
-            className="max-w-4xl break-keep font-sans text-sm leading-relaxed text-ink-muted [overflow-wrap:break-word]"
+            className="max-w-none break-keep font-sans text-sm leading-relaxed text-ink-muted [overflow-wrap:break-word]"
           >
             {desc}
             <br />

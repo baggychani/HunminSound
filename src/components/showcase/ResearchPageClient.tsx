@@ -5,15 +5,27 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import type { ResearchContent } from '@/lib/research-content'
+import {
+  AchievementsShowcase,
+  FinalGoalBlock,
+  ScaleInfographic,
+  TeamCardGrid,
+} from '@/components/showcase/research/ResearchInfographics'
 import { tr } from '@/lib/research-content'
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-  }),
+/** 하위 섹션(최종목표·연구규모 등) — 뷰포트 진입 시 개별 등장 */
+function SubsectionReveal({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {children}
+    </motion.div>
+  )
 }
 
 /** <b>텍스트</b> 를 <strong>으로 렌더링 */
@@ -57,7 +69,7 @@ function GroupLabel({ children }: { children: React.ReactNode }) {
 }
 
 function BodyText({ text }: { text: string }) {
-  return <p className="font-sans text-[0.95rem] leading-[1.9] text-ink-soft"><RichText text={text} /></p>
+  return <p className="font-sans text-[0.97rem] leading-[2.05] text-ink-soft"><RichText text={text} /></p>
 }
 
 function BulletItem({ label, text }: { label?: string; text: string }) {
@@ -87,6 +99,36 @@ function AchievementItem({ title, lines }: { title: string; lines: string[] }) {
 
 function Divider() {
   return <div className="border-t border-hanji-border/50" />
+}
+
+/** 좌: 제목 / 우: 본문 — 섹션 단위로 함께 스크롤 (sticky 없음) */
+function SplitSection({
+  id,
+  title,
+  muted,
+  children,
+}: {
+  id: string
+  title: string
+  muted?: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <section id={id} className="border-t border-hanji-border/60 py-20 first:border-t-0 first:pt-0 sm:py-28">
+      <div className="research-split">
+        <div className="shrink-0">
+          <h2
+            className={`font-serif leading-snug tracking-tight ${
+              muted ? 'text-xl text-ink-muted sm:text-2xl' : 'text-2xl text-ink sm:text-[1.75rem]'
+            }`}
+          >
+            {title}
+          </h2>
+        </div>
+        <div className="min-w-0 pt-1 lg:pt-0">{children}</div>
+      </div>
+    </section>
+  )
 }
 
 /** 엠블럼 부유 — 분야마다 진폭·주기·위상을 달리해 살짝 어긋나게 */
@@ -172,17 +214,6 @@ function FloatingMethodEmblem({
   )
 }
 
-/**
- * 「세부 목표」 사분(四) 인포그래픽 — 2×2 그리드.
- *
- *  설계 결정
- *   • 단순 bullet 목록을 버리고, 「상형·인문·교육·응용」 네 축을 한지 사분면처럼 배치.
- *   • 카드마다 별도의 한지 톤(호박·청회·풀빛·갈홍)으로 분야 매칭의 잔향을 유지.
- *   • 좌상단에 옅은 **인덱스 워터마크**(01~04)와 작은 dot/인덱스 라벨로 정보 위계.
- *   • 코너 ㄱ/ㄴ 장식 — 옛 책의 광곽(匡郭) 모서리 모티프를 가볍게.
- *   • 카드는 정지(부유 없음) — 연구 방법 엠블럼과 구분.
- *   • 단어 단위 줄바꿈(`break-keep`).
- */
 type GoalTone = {
   cardBg: string
   cardBorder: string
@@ -209,15 +240,12 @@ function GoalQuadCard({
     <article
       className={`goal-quad-card group relative overflow-hidden rounded-2xl border ${tone.cardBorder} ${tone.cardBg} px-6 py-7 sm:px-7 sm:py-8`}
     >
-      {/* 인덱스 워터마크 */}
       <span
         aria-hidden
         className={`pointer-events-none absolute -right-2 -top-6 select-none font-serif text-[6.5rem] leading-none ${tone.watermark}`}
       >
         {String(index + 1).padStart(2, '0')}
       </span>
-
-      {/* 코너 장식 — 광곽 모티프 */}
       <span
         aria-hidden
         className={`pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t ${tone.cornerColor}`}
@@ -226,7 +254,6 @@ function GoalQuadCard({
         aria-hidden
         className={`pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r ${tone.cornerColor}`}
       />
-
       <div className="relative z-10 flex flex-col gap-3">
         <div className="flex items-center gap-2">
           <span className={`h-1.5 w-1.5 rounded-full ${tone.dot}`} />
@@ -251,11 +278,7 @@ function GoalQuadCard({
   )
 }
 
-function SpecificGoalsGrid({
-  items,
-}: {
-  items: { label: string; text: string }[]
-}) {
+function SpecificGoalsGrid({ items }: { items: { label: string; text: string }[] }) {
   const tones: GoalTone[] = [
     {
       cardBg: 'bg-[#faf3e3]',
@@ -362,7 +385,7 @@ function MethodTable({ intro, rows }: {
 
   return (
     <div>
-      <p className="mb-12 max-w-3xl break-keep font-sans text-[0.95rem] leading-relaxed text-ink-soft sm:mb-14">
+      <p className="mb-12 max-w-none break-keep font-sans text-[0.95rem] leading-relaxed text-ink-soft sm:mb-14">
         <RichText text={intro} />
       </p>
 
@@ -427,48 +450,6 @@ function MethodTable({ intro, rows }: {
           )
         })}
       </div>
-    </div>
-  )
-}
-
-function TeamTable({ rows, t }: {
-  rows: { role: string; name: string; affiliation: string; task: string; field: string }[]
-  t: (key: string, ko: string) => string
-}) {
-  return (
-    <div className="overflow-x-auto -mx-1 px-1">
-      <table className="min-w-max w-full border-collapse font-sans text-[0.875rem]">
-        <thead>
-          <tr className="border-b border-ink/15">
-            {([
-              ['table.category', '구분'],
-              ['table.name', '성명'],
-              ['table.affiliation', '소속'],
-              ['table.task', '역할'],
-              ['table.major', '전공 분야'],
-            ] as [string, string][]).map(([key, ko]) => (
-              <th key={key} className="pb-3 pr-6 last:pr-0 text-left font-medium text-ink-muted/55 whitespace-nowrap">{t(key, ko)}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((mem, i) => (
-            <tr key={i} className="border-b border-hanji-border/60 last:border-0">
-              <td className="py-3 pr-5 align-top whitespace-nowrap text-ink-muted/60">{mem.role}</td>
-              <td className="py-3 pr-4 align-top max-w-[8rem] whitespace-pre-line font-semibold text-ink">{mem.name}</td>
-              <td className="py-3 pr-6 align-top text-ink-muted/70 leading-relaxed min-w-[16rem] max-w-[26rem] whitespace-nowrap">
-                {mem.affiliation.trim() === '' || mem.affiliation.trim() === '—' || mem.affiliation.trim() === '-' ? (
-                  <span className="text-ink-muted/25" aria-hidden> </span>
-                ) : (
-                  mem.affiliation
-                )}
-              </td>
-              <td className="py-3 pr-6 align-top text-ink-soft leading-relaxed min-w-[17rem] whitespace-pre-line"><RichText text={mem.task} /></td>
-              <td className="py-3 align-top text-ink-muted/70 whitespace-nowrap">{mem.field}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   )
 }
@@ -601,40 +582,36 @@ export function ResearchPageClient({ content }: Props) {
 
   return (
     <>
-      <div className="pt-16 pb-12 mb-14 sm:mb-16">
-        <h1 className="font-serif text-[2.1rem] leading-tight tracking-tight text-ink sm:text-4xl mb-3">
+      <div className="mb-14 border-b border-hanji-border pb-12 pt-16 sm:mb-16">
+        <h1 className="mb-3 font-serif text-[2.1rem] leading-tight tracking-tight text-ink sm:text-4xl">
           {m.research}
         </h1>
-        <p className="max-w-2xl break-keep font-sans text-sm leading-relaxed text-ink-muted [overflow-wrap:break-word]">
+        <p className="max-w-3xl break-keep font-sans text-[0.95rem] leading-relaxed text-ink-muted [overflow-wrap:break-word]">
           {m.researchPageDesc}
         </p>
       </div>
 
-      <div className="space-y-20 pb-28 sm:space-y-24 sm:pb-36">
+      <div className="space-y-0 pb-28 sm:pb-36">
 
-        {/* 연구 동기 */}
-        <motion.section custom={0} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }}>
-          <div className="mb-10">
-            <SectionTitle id="section-motivation">{t('section.motivation', '연구 동기')}</SectionTitle>
-          </div>
-          <div className="space-y-5">
+        <SplitSection id="section-motivation" title={t('section.motivation', '연구 동기')}>
+          <div className="space-y-7 sm:space-y-8">
             {motivation.paragraphs.map((p, i) => (
-              <BodyText key={i} text={t(`motivation.paragraphs.${i}`, p)} />
+              <SubsectionReveal key={i}>
+                <BodyText text={t(`motivation.paragraphs.${i}`, p)} />
+              </SubsectionReveal>
             ))}
           </div>
-        </motion.section>
+        </SplitSection>
 
-        {/* 연구 목표 */}
-        <motion.section custom={1} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }}>
-          <div className="mb-10">
-            <SectionTitle id="section-goals">{t('section.goals', '연구 목표')}</SectionTitle>
-          </div>
-          <div className="space-y-12">
-            <div>
-              <BlockLabel>{t('label.finalGoal', '최종 목표')}</BlockLabel>
-              <BodyText text={t('goals.final', goals.final)} />
-            </div>
-            <div>
+        <SplitSection id="section-goals" title={t('section.goals', '연구 목표')}>
+          <div className="space-y-14 sm:space-y-16">
+            <SubsectionReveal>
+              <FinalGoalBlock
+                label={t('label.finalGoal', '최종 목표')}
+                text={t('goals.final', goals.final)}
+              />
+            </SubsectionReveal>
+            <SubsectionReveal>
               <BlockLabel>{t('label.specificGoals', '세부 목표')}</BlockLabel>
               <SpecificGoalsGrid
                 items={goals.specific.map((item, i) => ({
@@ -642,18 +619,13 @@ export function ResearchPageClient({ content }: Props) {
                   text: t(`goals.specific.${i}.text`, item.text),
                 }))}
               />
-            </div>
+            </SubsectionReveal>
           </div>
-        </motion.section>
+        </SplitSection>
 
-        {/* 연구 개요 */}
-        <motion.section custom={2} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }}>
-          <div className="mb-10">
-            <SectionTitle id="section-overview">{t('section.overview', '연구 개요')}</SectionTitle>
-          </div>
-          <div className="space-y-14">
-
-            <div>
+        <SplitSection id="section-overview" title={t('section.overview', '연구 개요')}>
+          <div className="space-y-16 sm:space-y-20">
+            <SubsectionReveal>
               <BlockLabel>{t('label.method', '연구 방법')}</BlockLabel>
               <MethodTable
                 intro={t('overview.method.intro', overview.method.intro)}
@@ -665,115 +637,77 @@ export function ResearchPageClient({ content }: Props) {
                   ),
                 }))}
               />
-            </div>
+            </SubsectionReveal>
 
             <Divider />
 
-            <div>
+            <SubsectionReveal>
               <BlockLabel>{t('label.scale', '연구 규모')}</BlockLabel>
-              <div className="space-y-3.5">
-                {overview.scale.map((item, i) => (
-                  <BulletItem
-                    key={i}
-                    label={t(`overview.scale.${i}.label`, item.label)}
-                    text={t(`overview.scale.${i}.text`, item.text)}
-                  />
-                ))}
-              </div>
-            </div>
+              <ScaleInfographic
+                items={overview.scale.map((item, i) => ({
+                  label: t(`overview.scale.${i}.label`, item.label),
+                  text: t(`overview.scale.${i}.text`, item.text),
+                }))}
+              />
+            </SubsectionReveal>
 
             <Divider />
 
-            <div>
+            <SubsectionReveal>
               <BlockLabel>{t('label.achievements', '주요 성과')}</BlockLabel>
-              <div className="space-y-10">
-                <div>
-                  <GroupLabel>{t('label.vowelSystem', '모음 체계')}</GroupLabel>
-                  <div className="space-y-7">
-                    {overview.achievements.vowels.map((a, i) => (
-                      <AchievementItem
-                        key={i}
-                        title={t(`overview.achievements.vowels.${i}.title`, a.title)}
-                        lines={a.lines.map((l, j) =>
-                          t(`overview.achievements.vowels.${i}.lines.${j}`, l)
-                        )}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <GroupLabel>{t('label.consonantSystem', '자음 체계')}</GroupLabel>
-                  <div className="space-y-7">
-                    {overview.achievements.consonants.map((a, i) => (
-                      <AchievementItem
-                        key={i}
-                        title={t(`overview.achievements.consonants.${i}.title`, a.title)}
-                        lines={a.lines.map((l, j) =>
-                          t(`overview.achievements.consonants.${i}.lines.${j}`, l)
-                        )}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <GroupLabel>{t('label.techDev', '기술 개발')}</GroupLabel>
-                  <div className="space-y-7">
-                    {overview.achievements.tech.map((a, i) => (
-                      <AchievementItem
-                        key={i}
-                        title={t(`overview.achievements.tech.${i}.title`, a.title)}
-                        lines={a.lines.map((l, j) =>
-                          t(`overview.achievements.tech.${i}.lines.${j}`, l)
-                        )}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
+              <AchievementsShowcase
+                vowelLabel={t('label.vowelSystem', '모음 체계')}
+                consonantLabel={t('label.consonantSystem', '자음 체계')}
+                techLabel={t('label.techDev', '기술 개발')}
+                vowels={overview.achievements.vowels.map((a, i) => ({
+                  title: t(`overview.achievements.vowels.${i}.title`, a.title),
+                  lines: a.lines.map((l, j) => t(`overview.achievements.vowels.${i}.lines.${j}`, l)),
+                }))}
+                consonants={overview.achievements.consonants.map((a, i) => ({
+                  title: t(`overview.achievements.consonants.${i}.title`, a.title),
+                  lines: a.lines.map((l, j) => t(`overview.achievements.consonants.${i}.lines.${j}`, l)),
+                }))}
+                tech={overview.achievements.tech.map((a, i) => ({
+                  title: t(`overview.achievements.tech.${i}.title`, a.title),
+                  lines: a.lines.map((l, j) => t(`overview.achievements.tech.${i}.lines.${j}`, l)),
+                }))}
+              />
+            </SubsectionReveal>
           </div>
-        </motion.section>
+        </SplitSection>
 
-        {/* 연구의 의의 */}
-        <motion.section custom={3} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }}>
-          <div className="mb-10">
-            <SectionTitle id="section-significance">{t('section.significance', '연구의 의의')}</SectionTitle>
-          </div>
-          <div className="space-y-5">
+        <SplitSection id="section-significance" title={t('section.significance', '연구의 의의')}>
+          <div className="space-y-7 sm:space-y-8">
             {significance.paragraphs.map((p, i) => (
-              <BodyText key={i} text={t(`significance.paragraphs.${i}`, p)} />
+              <SubsectionReveal key={i}>
+                <BodyText text={t(`significance.paragraphs.${i}`, p)} />
+              </SubsectionReveal>
             ))}
           </div>
-        </motion.section>
+        </SplitSection>
 
-        {/* 연구진 소개 */}
-        <motion.section custom={4} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }}>
-          <div className="mb-10">
-            <SectionTitle id="section-team" muted>{m.researchSec1}</SectionTitle>
-          </div>
-          <TeamTable
-            t={t}
-            rows={team.rows.map((row, i) => ({
-              ...row,
-              name: lang !== 'ko' && row.nameEn ? row.nameEn : row.name,
-              task: t(`team.rows.${i}.task`, row.task),
-            }))}
-          />
-        </motion.section>
+        <SplitSection id="section-team" title={m.researchSec1} muted>
+          <SubsectionReveal>
+            <TeamCardGrid
+              rows={team.rows.map((row, i) => ({
+                ...row,
+                name: lang !== 'ko' && row.nameEn ? row.nameEn : row.name,
+                task: t(`team.rows.${i}.task`, row.task),
+              }))}
+            />
+          </SubsectionReveal>
+        </SplitSection>
 
-        {/* 과제 정보 */}
-        <motion.section custom={5} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }}>
-          <div className="mb-10">
-            <SectionTitle id="section-nrf" muted>{m.researchSec3}</SectionTitle>
-          </div>
-          <InfoTable
-            rows={taskInfo.rows.map((row, i) => ({
-              label: row.label,
-              value: t(`taskInfo.rows.${i}.value`, row.value),
-            }))}
-          />
-        </motion.section>
+        <SplitSection id="section-nrf" title={m.researchSec3} muted>
+          <SubsectionReveal>
+            <InfoTable
+              rows={taskInfo.rows.map((row, i) => ({
+                label: row.label,
+                value: t(`taskInfo.rows.${i}.value`, row.value),
+              }))}
+            />
+          </SubsectionReveal>
+        </SplitSection>
 
       </div>
     </>

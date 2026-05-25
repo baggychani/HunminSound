@@ -171,6 +171,18 @@
   }
 }
 
+@layer components {
+  /** 공개 사이트 공통 가로 폭 — 기존 max-w-5xl(1024px)보다 넓게 */
+  .site-container {
+    @apply mx-auto w-full max-w-[1480px] px-6 sm:px-10 lg:px-14;
+  }
+
+  /** 연구 페이지 — 좌 제목 / 우 본문, 섹션마다 독립 블록 */
+  .research-split {
+    @apply grid gap-8 lg:grid-cols-[minmax(9.5rem,13rem)_minmax(0,1fr)] lg:items-start lg:gap-x-20 xl:gap-x-28;
+  }
+}
+
 @layer utilities {
   /** 가로 스크롤이 잠깐 생겨도 스크롤바를 그리지 않음(터치·트랙패드 스와이프는 유지) */
   .scrollbar-none {
@@ -379,5 +391,14 @@
   .goal-quad-card strong {
     color: inherit;
     font-weight: 600;
+  }
+
+  /* 연구 최종 목표 블록 */
+  .final-goal-block strong {
+    @apply font-bold text-ink;
+  }
+
+  .team-member-card strong {
+    @apply font-semibold text-ink;
   }
 }

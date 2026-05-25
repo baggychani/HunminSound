@@ -4,6 +4,7 @@ import {
   Noto_Sans_KR,
   Noto_Sans_Devanagari,
   Noto_Sans_Arabic,
+  Gowun_Batang,
 } from 'next/font/google'
 import { Providers } from '@/components/theme/Providers'
 import './globals.css'
@@ -40,6 +41,14 @@ const notoSansArabic = Noto_Sans_Arabic({
   preload: false,
 })
 
+const gowunBatang = Gowun_Batang({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+  preload: false,
+})
+
 export const metadata: Metadata = {
   title: {
     default: '세종말소리 · Sejong Speech Sounds',
@@ -68,7 +77,7 @@ export default function RootLayout({
     <html
       lang="ko"
       suppressHydrationWarning
-      className={`${notoSerifKr.variable} ${notoSansKr.variable} ${notoSansDevanagari.variable} ${notoSansArabic.variable}`}
+      className={`${notoSerifKr.variable} ${notoSansKr.variable} ${notoSansDevanagari.variable} ${notoSansArabic.variable} ${gowunBatang.variable}`}
     >
       <body className="font-sans">
         <Providers>{children}</Providers>

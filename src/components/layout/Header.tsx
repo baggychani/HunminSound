@@ -101,7 +101,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 relative border-b border-hanji-border bg-hanji">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 min-h-[3.5rem] sm:min-h-[4rem] py-3 flex flex-nowrap items-center justify-between gap-2 sm:gap-3">
+      <div className="site-container min-h-[3.5rem] py-3 sm:min-h-[4rem] flex flex-nowrap items-center justify-between gap-2 sm:gap-3">
         <Link
           href="/"
           className="group flex min-w-0 flex-1 items-baseline gap-2 sm:flex-initial sm:shrink-0 sm:gap-3"
@@ -268,7 +268,7 @@ export function Header() {
             transition={{ duration: 0.15, ease: 'easeOut' }}
             className="absolute start-0 end-0 top-full z-[65] border-b border-hanji-border bg-hanji shadow-[0_12px_24px_-8px_rgb(0_0_0_/0.18)] dark:shadow-[0_16px_32px_-10px_rgb(0_0_0_/0.65)] sm:hidden"
           >
-            <div className="max-w-5xl mx-auto px-4 py-2">
+            <div className="site-container py-2">
               {NAV_LINKS.map(({ href, topKey }) => {
                 const isActive = pathname.startsWith(href)
                 const label = lang === 'ko' ? NAV_LABEL_KO[topKey] : m[topKey]
@@ -302,7 +302,7 @@ export function Header() {
             transition={{ duration: 0.15, ease: 'easeOut' }}
             className="absolute start-0 end-0 top-full z-[70] border-b border-hanji-border bg-hanji shadow-[0_12px_24px_-8px_rgb(0_0_0_/0.18)] dark:shadow-[0_16px_32px_-10px_rgb(0_0_0_/0.65)]"
           >
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
+            <div className="site-container py-4 sm:py-5">
               <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5">
                 {LANGUAGES.map((l) => {
                   const isActive = lang === l.code

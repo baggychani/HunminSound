@@ -1,0 +1,38 @@
+[
+  {
+    "id": "pub-1",
+    "year": "2025",
+    "journal": "대한후두음성언어의학회지",
+    "title": "훈민정음 중성자 천(·, 天) 지(ㅡ, 地) 인(ㅣ, 人) 제자해 설명에 대한 Magnetic Resonance 영상의학적 융합 연구",
+    "authors": "최홍식, 이정민, 김진아, 이호영, 이은상, 이천우, 김슬옹",
+    "tags": ["Vowels", "Harmony", "Coordination", "MRI"],
+    "status": "published"
+  },
+  {
+    "id": "pub-2",
+    "year": "2026",
+    "journal": "대한후두음성언어의학회지",
+    "title": "훈민정음 중성자 중 초출자와 재출자 제자해 설명에 대한 MR 영상의학적 융합 연구",
+    "authors": "최홍식, 이정민, 김진아, 이호영, 강윤석, 이승수, 김슬옹",
+    "tags": ["MRI", "Korean", "Stops"],
+    "status": "published"
+  },
+  {
+    "id": "pub-3",
+    "year": "",
+    "journal": "한글학회지",
+    "title": "후행모음 환경에 따른 한국어 아음 /ㄱ/, /ㄲ/, /ㅋ/의 조음위치 변화",
+    "authors": "이승수, 최홍식, 김진아, 김슬옹, 이호영",
+    "tags": ["Hunminjeongeum", "Historical", "Phonology"],
+    "status": "review"
+  },
+  {
+    "id": "pub-4",
+    "year": "",
+    "journal": "한글학회지",
+    "title": "훈민정음 제자해 중 어금닛소리(아음, 牙音) 글자에 대한 MR 영상의학적 및 음향학적 연구",
+    "authors": "최홍식, 이정민, 김슬옹, 김진아, 이승수, 이호영",
+    "tags": ["Fricatives", "Acoustics", "Vocal Tract"],
+    "status": "review"
+  }
+]

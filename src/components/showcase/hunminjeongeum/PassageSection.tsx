@@ -22,8 +22,9 @@ export function PassageSection({
   return (
     <motion.section
       id={id}
-      initial={{ opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      className="scroll-mt-24 sm:scroll-mt-28"
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       aria-labelledby={`${id}-title`}

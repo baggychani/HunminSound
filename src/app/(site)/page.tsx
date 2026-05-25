@@ -7,6 +7,7 @@ import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import { ScrollColorWash } from '@/components/ui/ScrollColorWash'
+import { HeroActBackdrop } from '@/components/ui/HeroActBackdrop'
 import { HaeryebonCardWatermark } from '@/components/showcase/HaeryebonCardWatermark'
 
 /* 3D 모델은 클라이언트 전용 — SSR 시 three.js 가 window 를 참조하면 깨지므로
@@ -63,78 +64,88 @@ function MagneticGlyph({ children, className }: { children: string; className: s
 export default function HomePage() {
   const { lang } = useLang()
   const m = getMessages(lang)
+  const heroRef = useRef<HTMLElement>(null)
 
   return (
-    <div className="relative mx-auto w-full max-w-7xl px-6 sm:px-8 lg:px-12">
-      {/* 스크롤에 따라 색이 스미듯 흐르는 배경 워시 (메인 페이지 한정) */}
+    <div className="relative w-full">
       <ScrollColorWash />
 
-      {/* 히어로 섹션 */}
-      <section className="pt-24 sm:pt-28 pb-12 md:pb-16 text-center">
-        <p
-          className={
-            lang === 'ko'
-              ? 'font-serif text-[15px] sm:text-[17px] text-ink-muted tracking-wide mb-6'
-              : `font-sans text-xs text-ink-muted tracking-[0.3em] uppercase mb-6 ${
-                  lang === 'hi'
-                    ? 'font-devanagari normal-case tracking-normal text-[13px] leading-relaxed'
-                    : ''
-                }`
-          }
-          lang={lang === 'hi' ? 'hi' : undefined}
-        >
-          {m.homeSubtitle}
-        </p>
-
-        <h1 className="font-jamo text-6xl sm:text-7xl md:text-8xl text-ink leading-none tracking-wide">
-          {m.siteTitle}
-        </h1>
-
-        <p
-          className={`mt-5 sm:mt-6 font-sans text-sm text-ink-muted tracking-[0.2em] ${
-            lang === 'ko' ? 'mb-0' : 'mb-10'
-          }`}
-        >
-          Sejong Speech Sounds
-        </p>
+      {/* 1막 — 좌: 본문(한지) / 우: 동상. 2열 그리드. */}
+      <section
+        ref={heroRef}
+        className={
+          lang === 'ko'
+            ? 'relative z-10 h-[100dvh] overflow-hidden isolation-isolate'
+            : 'relative z-10 flex min-h-[100dvh] flex-col items-center justify-center px-6 pb-24 pt-24 text-center sm:px-8 sm:pt-28 lg:px-12'
+        }
+      >
+        {lang === 'ko' ? <HeroActBackdrop heroRef={heroRef} /> : null}
 
         {lang === 'ko' ? (
-          <>
-            {/* 브랜드 영역과 소개 영역 구분선 — 상단 가는 가로선 */}
-            <div
-              className="mt-10 sm:mt-12 w-full max-w-2xl mx-auto border-t border-hanji-border"
-              aria-hidden
-            />
-            <div className="relative isolate mt-6 sm:mt-8 max-w-2xl mx-auto px-1 sm:px-2">
-              <p className="relative z-10 break-keep font-serif text-base sm:text-[17px] text-ink-soft leading-loose [overflow-wrap:break-word]">
+          <div className="relative z-10 mx-auto grid h-full w-full max-w-6xl grid-cols-1 items-center px-6 pb-[5.5rem] pt-[5rem] sm:px-8 sm:pb-[6rem] sm:pt-[5.25rem] sm:ps-[4vw] lg:grid-cols-[0.42fr_1.18fr_0.88fr] lg:px-10 lg:pb-[6.5rem] lg:pt-[5.5rem] lg:ps-[5vw]">
+            <div className="hidden lg:block" aria-hidden />
+
+            <div className="flex flex-col items-center text-center translate-x-[clamp(0.25rem,2vw,0.75rem)] sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] lg:translate-x-0">
+              <p className="font-serif text-[15px] text-ink-muted tracking-wide sm:text-[17px]">
+                {m.homeSubtitle}
+              </p>
+
+              <h1 className="mt-4 font-jamo text-[4rem] leading-none tracking-wide text-ink sm:mt-5 sm:text-[4.75rem] md:text-[6.35rem] lg:text-[5.85rem]">
+                {m.siteTitle}
+              </h1>
+
+              <p className="mt-4 font-sans text-sm tracking-[0.2em] text-ink-muted sm:mt-5">
+                Sejong Speech Sounds
+              </p>
+
+              <div className="mx-auto mt-3 w-full max-w-lg shrink-0 sm:mt-4 lg:max-w-xl">
+                <div
+                  className="relative h-[min(clamp(12rem,24vw,19.5rem),max(8rem,calc(100dvh-24rem)))] w-full"
+                  aria-hidden
+                >
+                  <HunminBookViewer className="absolute inset-0" />
+                </div>
+              </div>
+
+              <p className="relative mt-3 w-full max-w-[min(100%,42rem)] shrink-0 break-keep px-1 font-serif text-base leading-loose text-ink-soft [overflow-wrap:break-word] sm:mt-4 sm:px-0 sm:text-[17px]">
                 <span className="sm:hidden whitespace-normal">
                   {m.homeIntroPart1} {m.homeIntroPart2}
                 </span>
-                <span className="hidden sm:inline">
-                  {m.homeIntroPart1}
-                  <br />
-                  {m.homeIntroPart2}
-                </span>
+                <span className="hidden sm:block sm:whitespace-nowrap">{m.homeIntroPart1}</span>
+                <span className="hidden sm:block sm:whitespace-nowrap">{m.homeIntroPart2}</span>
               </p>
             </div>
 
-            {/* 훈민정음 해례본 3D — 높이는 clamp(최소, vw, 최대) 로만 키우면 됨.
-             *  모델 확대·확대 여백은 HunminBookViewer 의 BOOK_BOUNDS_MARGIN 참고. */}
-            <div
-              className="relative mx-auto mt-2 sm:mt-3 h-[clamp(14rem,28vw,23rem)] w-full max-w-4xl"
-              aria-hidden
+            {/* 우측 열 — 동상이 그radient 뒤로 보이는 여백 */}
+            <div className="hidden min-h-[12rem] lg:block" aria-hidden />
+          </div>
+        ) : (
+          <>
+            <p
+              className={`font-sans text-xs text-ink-muted tracking-[0.3em] uppercase ${
+                lang === 'hi'
+                  ? 'font-devanagari normal-case tracking-normal text-[13px] leading-relaxed'
+                  : ''
+              }`}
+              lang={lang === 'hi' ? 'hi' : undefined}
             >
-              <HunminBookViewer className="absolute inset-0" />
-            </div>
-          </>
-        ) : null}
+              {m.homeSubtitle}
+            </p>
 
-        {lang !== 'ko' ? (
-          <div className="section-divider" />
-        ) : null}
+            <h1 className="mt-5 font-jamo text-6xl leading-none tracking-wide text-ink sm:mt-6 sm:text-7xl md:text-8xl lg:text-[5.5rem]">
+              {m.siteTitle}
+            </h1>
+
+            <p className="mt-4 font-sans text-sm tracking-[0.2em] text-ink-muted sm:mt-5">
+              Sejong Speech Sounds
+            </p>
+          </>
+        )}
+
+        {lang !== 'ko' ? <div className="section-divider mt-8" /> : null}
 
         {lang !== 'ko' && m.homeDescription.trim() ? (
-          <p className="font-sans text-base text-ink-soft leading-relaxed max-w-xl mx-auto mt-8">
+          <p className="mx-auto mt-8 max-w-3xl font-sans text-base leading-relaxed text-ink-soft">
             <span className="sm:hidden whitespace-normal">
               {m.homeDescription.replace(/\n/g, ' ')}
             </span>
@@ -143,9 +154,8 @@ export default function HomePage() {
         ) : null}
       </section>
 
-      {/* 네비게이션 카드 — 자음·모음 2열, 훈민정음 전 너비.
-       * 카드 사이 1px 라인 대신 살짝 띄워 와이드한 호흡감을 살린다(워시가 사이로 비침). */}
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
+      <div className="site-container relative z-10 pb-24">
+        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
         <NavCard
           href="/consonants"
           label={m.consonants}
@@ -180,11 +190,12 @@ export default function HomePage() {
         description={m.researchCardDesc}
         cta={m.researchCta}
       />
-      <div className="mb-24" />
+      </div>
 
       {/* 소개 섹션 — 한국어는 히어로에 통합. 타 언어는 하단 유지 */}
       {lang !== 'ko' ? (
-        <section className="pb-24 max-w-2xl mx-auto text-center">
+        <div className="site-container pb-24">
+          <section className="mx-auto max-w-3xl text-center">
           <div className="section-divider" />
           <p
             className={`font-serif text-base text-ink-soft leading-loose mt-8 ${
@@ -199,7 +210,8 @@ export default function HomePage() {
           {m.homeSub.trim() ? (
             <p className="font-sans text-xs text-ink-muted mt-6 tracking-wider">{m.homeSub}</p>
           ) : null}
-        </section>
+          </section>
+        </div>
       ) : null}
     </div>
   )
@@ -216,7 +228,7 @@ function ResearchCard({ href, label, description, cta }: ResearchCardProps) {
   return (
     <Link
       href={href}
-      className="group mx-auto block max-w-2xl rounded-sm border border-hanji-border/60 bg-hanji/75 px-8 py-8 text-left shadow-[0_1px_0_rgb(var(--ink-rgb)/0.02)] backdrop-blur-md transition-colors hover:bg-hanji/90 hover:border-hanji-border sm:px-10 sm:py-9 dark:bg-hanji/65 dark:hover:bg-hanji/80"
+      className="group block w-full rounded-sm border border-hanji-border/60 bg-hanji/75 px-8 py-8 text-left shadow-[0_1px_0_rgb(var(--ink-rgb)/0.02)] backdrop-blur-md transition-colors hover:border-hanji-border hover:bg-hanji/90 sm:px-10 sm:py-9 dark:bg-hanji/65 dark:hover:bg-hanji/80"
     >
       <div className="flex flex-col gap-5">
         <div className="min-w-0">

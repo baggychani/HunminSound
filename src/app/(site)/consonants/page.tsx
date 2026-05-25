@@ -15,7 +15,7 @@ export default async function ConsonantsPage() {
   const consonants = sanityData.length > 0 ? sanityData : consonantsData
 
   return (
-    <div className="max-w-5xl mx-auto px-6">
+    <div className="site-container">
       <PageHeader type="consonants" />
       <ConsonantsPageClient consonants={consonants} />
     </div>
