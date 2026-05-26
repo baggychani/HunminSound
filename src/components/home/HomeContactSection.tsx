@@ -83,14 +83,14 @@ export function HomeContactSection() {
             </div>
           </dl>
 
-          <div className="mt-8 w-full max-w-[22rem] rounded-sm border border-hanji-border/60 bg-white px-5 py-4 sm:max-w-[28rem] sm:px-6 sm:py-5">
+          <div className="mt-8 w-full max-w-[20rem] rounded-sm border border-hanji-border/60 bg-white px-5 py-4 sm:max-w-[25rem] sm:px-6 sm:py-5">
             <Image
               src="/images/sejongorg.png"
               alt="세종대왕기념사업회"
               width={485}
               height={512}
               className="h-auto w-full"
-              sizes="(max-width: 640px) 352px, 448px"
+              sizes="(max-width: 640px) 320px, 400px"
             />
           </div>
         </div>
