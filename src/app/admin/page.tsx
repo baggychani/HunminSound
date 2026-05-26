@@ -56,7 +56,7 @@ const SECTIONS = [
     en: 'Research',
     desc: '연구 동기, 목표, 개요, 의의, 연구진, 과제 정보를 편집합니다.',
     meta: '8개 섹션',
-    ready: true,
+    ready: false,
   },
 ] as const
 

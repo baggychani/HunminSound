@@ -19,6 +19,8 @@ const fadeUp = {
 
 const TITLE_CHARS = ['훈', '민', '정', '음']
 
+const INITIAL_SECTION_IMAGE = '/images/hunmin/sejong-statue-gwanghwamun.jpg'
+
 export function HunminjeongeumPageClient() {
   const { lang } = useLang()
   const m = getMessages(lang)
@@ -165,6 +167,14 @@ export function HunminjeongeumPageClient() {
               subtitle={label.sub}
               classicLabel={section.classicLabel}
               passages={section.passages}
+              aside={
+                section.id === 'initial'
+                  ? {
+                      src: INITIAL_SECTION_IMAGE,
+                      alt: '광화문 세종대왕 동상',
+                    }
+                  : undefined
+              }
             />
           )
         })}

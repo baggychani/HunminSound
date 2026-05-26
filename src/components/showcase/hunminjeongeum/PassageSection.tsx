@@ -2,7 +2,13 @@
 
 import { motion } from 'framer-motion'
 import { PassageCard } from './PassageCard'
+import { HunminSectionParallaxAside } from './HunminSectionParallaxAside'
 import type { HunminPassage } from '@/data/hunminjeongeumPassages'
+
+interface PassageSectionAside {
+  src: string
+  alt: string
+}
 
 interface PassageSectionProps {
   id: string
@@ -10,6 +16,7 @@ interface PassageSectionProps {
   subtitle?: string
   classicLabel?: string
   passages: HunminPassage[]
+  aside?: PassageSectionAside
 }
 
 export function PassageSection({
@@ -18,6 +25,7 @@ export function PassageSection({
   subtitle,
   classicLabel,
   passages,
+  aside,
 }: PassageSectionProps) {
   return (
     <motion.section
@@ -58,11 +66,20 @@ export function PassageSection({
         </div>
       </header>
 
-      {/* 카드 리스트 */}
-      <div className="space-y-16 sm:space-y-20">
-        {passages.map((p) => (
-          <PassageCard key={p.number} passage={p} />
-        ))}
+      {/* 카드 리스트 (+ 선택적 우측 패럴랙스) */}
+      <div
+        className={
+          aside
+            ? 'lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(11rem,17rem)] lg:items-start lg:gap-x-10 xl:grid-cols-[minmax(0,1fr)_minmax(13rem,19rem)] xl:gap-x-14'
+            : undefined
+        }
+      >
+        <div className="min-w-0 space-y-16 sm:space-y-20">
+          {passages.map((p) => (
+            <PassageCard key={p.number} passage={p} />
+          ))}
+        </div>
+        {aside ? <HunminSectionParallaxAside src={aside.src} alt={aside.alt} /> : null}
       </div>
     </motion.section>
   )
