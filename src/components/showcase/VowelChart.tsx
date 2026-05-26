@@ -56,9 +56,10 @@ interface GlyphButtonProps {
 function vowelButtonSubLabel(name: string): string | null {
   const paren = name.match(/\(([^)]*)\)/)
   const raw = (paren?.[1] ?? name.split(' ').slice(1).join(' ')).replace(/[()]/g, '').trim()
-  if (!raw) return null
-  if (/^[\-?.]+$/.test(raw)) return null
-  return raw
+  if (raw && !/^[\-?.]+$/.test(raw)) return raw
+  const beforeParen = name.replace(/\s*\([^)]*\)\s*$/, '').trim()
+  if (beforeParen && beforeParen !== name) return beforeParen
+  return null
 }
 
 function GlyphButton({
@@ -133,6 +134,7 @@ function VowelCompoundSlot({
   interactive?: boolean
 }) {
   const mapped = mapTo ? findVowelBySymbol(vowels, mapTo) : undefined
+  const sub = mapped ? vowelButtonSubLabel(mapped.name) : null
   const glyph = (
     <span
       className={`symbol-char ${symbolFontClass} inline-flex items-baseline leading-none tracking-[-0.22em] ${HUNMIN_VOWEL_CARD_CHAR_CLASS}`}
@@ -159,8 +161,8 @@ function VowelCompoundSlot({
         >
           <span aria-hidden className="symbol-card-dot" />
           {glyph}
-          <span className="symbol-sub invisible select-none" aria-hidden>
-            {'\u00a0'}
+          <span className={`symbol-sub ${sub ? '' : 'invisible'}`} aria-hidden={sub ? undefined : true}>
+            {sub ?? '\u00a0'}
           </span>
         </button>
       </span>
@@ -174,8 +176,8 @@ function VowelCompoundSlot({
       title={'\uBBF8\uC0AC\uC6A9 \uD569\uC6A9\uC790'}
     >
       {glyph}
-      <span className="symbol-sub invisible select-none" aria-hidden>
-        {'\u00a0'}
+      <span className={`symbol-sub ${sub ? '' : 'invisible'}`} aria-hidden={sub ? undefined : true}>
+        {sub ?? '\u00a0'}
       </span>
     </span>
   )
@@ -226,12 +228,37 @@ function renderVowelSlot(
     )
   }
   if (slot.kind === 'image') {
-    return <HunminVowelImageGlyph key={slotKey} asset={slot.asset} ipa={slot.ipa} />
+    const mapped = slot.mapTo ? findVowelBySymbol(vowels, slot.mapTo) : undefined
+    const subLabel =
+      slot.cardLabel ?? (mapped ? vowelButtonSubLabel(mapped.name) : slot.ipa) ?? undefined
+    return (
+      <HunminVowelImageGlyph
+        key={slotKey}
+        asset={slot.asset}
+        subLabel={subLabel}
+        interactive={interactive && Boolean(mapped)}
+        isActive={mapped ? activeId === mapped._id : false}
+        onClick={mapped ? () => onToggle(mapped._id) : undefined}
+        ariaLabel={mapped?.name}
+      />
+    )
+  }
+  const targetSymbol = slot.mapTo ?? slot.value
+  const vowel = findVowelBySymbol(vowels, targetSymbol)
+  if (vowel && slot.mapTo) {
+    return (
+      <GlyphButton
+        key={vowel._id}
+        vowel={vowel}
+        isActive={activeId === vowel._id}
+        onClick={() => onToggle(vowel._id)}
+        symbolFontClass={symbolFontClass}
+      />
+    )
   }
   if (slot.ipa) {
     return <HunminVowelJamoGlyph key={slotKey} symbol={slot.value} ipa={slot.ipa} />
   }
-  const vowel = findVowelBySymbol(vowels, slot.value)
   if (vowel) {
     return (
       <GlyphButton
@@ -257,6 +284,7 @@ interface HunminVowelRowBodyProps {
   lang: ReturnType<typeof useLang>['lang']
   animationLabel: string
   mriLabel: string
+  pictogramLabel: string
   onToggle: (id: string) => void
   onBasicColumnWidth: (rowIndex: number, widthPx: number) => void
   basicColumnMinWidthPx: number
@@ -273,6 +301,7 @@ function HunminVowelRowBody({
   lang,
   animationLabel,
   mriLabel,
+  pictogramLabel,
   onToggle,
   onBasicColumnWidth,
   basicColumnMinWidthPx,
@@ -325,9 +354,9 @@ function HunminVowelRowBody({
                 row={row}
                 zoneKey="c"
                 segments={row.combinedSegments}
-                interactive={false}
+                interactive
                 renderSlot={(slot, slotKey) =>
-                  renderVowelSlot(slot, slotKey, vowels, activeId, onToggle, 'font-jamo', false)
+                  renderVowelSlot(slot, slotKey, vowels, activeId, onToggle, 'font-jamo', true)
                 }
               />
           ) : (
@@ -343,7 +372,11 @@ function HunminVowelRowBody({
               lang={lang}
               animationLabel={animationLabel}
               mriLabel={mriLabel}
+              pictogramLabel={pictogramLabel}
               categoryLabel={activeHunminRowTitle}
+              vowelArticulationSymbol={
+                activeItem.symbol in VOWEL_ARTICULATION_KO ? activeItem.symbol : undefined
+              }
             />
           </div>
         )}
@@ -364,6 +397,7 @@ interface ModernVowelSectionProps {
   lang: ReturnType<typeof useLang>['lang']
   animationLabel: string
   mriLabel: string
+  pictogramLabel: string
   onToggle: (id: string) => void
 }
 
@@ -379,6 +413,7 @@ function ModernVowelSection({
   lang,
   animationLabel,
   mriLabel,
+  pictogramLabel,
   onToggle,
 }: ModernVowelSectionProps) {
   if (!items || items.length === 0) return null
@@ -423,6 +458,7 @@ function ModernVowelSection({
               lang={lang}
               animationLabel={animationLabel}
               mriLabel={mriLabel}
+              pictogramLabel={pictogramLabel}
               categoryLabel={categoryLabel}
               vowelArticulationSymbol={
                 category === VOWEL_CAT_MONO && activeItem.symbol in VOWEL_ARTICULATION_KO
@@ -549,6 +585,7 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
                 lang={lang}
                 animationLabel={m.animationVideo}
                 mriLabel={m.mriVideo}
+                pictogramLabel={m.pictogramVideo}
                 onToggle={toggle}
                 onBasicColumnWidth={onHunminBasicColumnWidth}
                 basicColumnMinWidthPx={hunminBasicColMinPx}
@@ -577,6 +614,7 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
                 lang={lang}
                 animationLabel={m.animationVideo}
                 mriLabel={m.mriVideo}
+                pictogramLabel={m.pictogramVideo}
                 onToggle={toggle}
               />
             )
@@ -597,6 +635,7 @@ interface VowelDetailPanelProps {
   lang: ReturnType<typeof useLang>['lang']
   animationLabel: string
   mriLabel: string
+  pictogramLabel: string
   categoryLabel: string
   vowelArticulationSymbol?: string
 }
@@ -606,6 +645,7 @@ function VowelDetailPanel({
   lang,
   animationLabel,
   mriLabel,
+  pictogramLabel,
   categoryLabel,
   vowelArticulationSymbol,
 }: VowelDetailPanelProps) {
@@ -637,9 +677,11 @@ function VowelDetailPanel({
         <DualVideoPlayer
           animationFileName={item.animationFileName}
           mriFileName={item.mriFileName}
+          pictogramFileName={item.pictogramFileName}
           type="vowels"
           animationLabel={animationLabel}
           mriLabel={mriLabel}
+          pictogramLabel={pictogramLabel}
         />
       </div>
     </>

@@ -1,3 +1,5 @@
+import { HOME_RESEARCH_BY_LANG } from './homeResearch-i18n'
+
 export type Lang = 'ko' | 'en' | 'zh' | 'ja' | 'fr' | 'de' | 'es' | 'hi' | 'vi' | 'ru' | 'ar'
 
 export const LANGUAGES: { code: Lang; label: string }[] = [
@@ -56,6 +58,7 @@ const ko = {
   } as Record<string, string>,
   mriVideo: 'MRI 영상',
   animationVideo: '조음 애니메이션',
+  pictogramVideo: '상형도',
   videoComingSoon: 'MRI 영상 준비 중',
   animationComingSoon: '애니메이션 준비 중',
   explore: '탐구하기',
@@ -71,7 +74,7 @@ const ko = {
   consonantsPageDesc:
     '한국어의 19개 자음은 조음 방법에 따라 파열음, 마찰음, 파찰음, 비음, 유음으로 분류됩니다.',
   vowelsPageDesc:
-    '한국어의 모음은 단모음 10개와 이중모음 11개로 구성됩니다.',
+    '한국어의 21개 모음은 단모음 10개와 이중모음 11개로 구성됩니다.',
   language: '언어',
   footerRight: '훈민정음 창제 원리의 과학적 재조명',
   themeLight: '라이트',
@@ -175,6 +178,7 @@ const en: Messages = {
   },
   mriVideo: 'MRI Video',
   animationVideo: 'Articulation Animation',
+  pictogramVideo: 'Pictogram',
   videoComingSoon: 'MRI video coming soon',
   animationComingSoon: 'Animation coming soon',
   explore: 'Explore',
@@ -289,6 +293,7 @@ const zh: Messages = {
   },
   mriVideo: 'MRI影像',
   animationVideo: '发音动画',
+  pictogramVideo: '象形图',
   videoComingSoon: 'MRI影像准备中',
   animationComingSoon: '动画准备中',
   explore: '探索',
@@ -398,6 +403,7 @@ const ja: Messages = {
   },
   mriVideo: 'MRI映像',
   animationVideo: '調音アニメーション',
+  pictogramVideo: '象形図',
   videoComingSoon: 'MRI映像準備中',
   animationComingSoon: 'アニメーション準備中',
   explore: '探求する',
@@ -511,6 +517,7 @@ const fr: Messages = {
   },
   mriVideo: 'Vidéo IRM',
   animationVideo: 'Animation articulatoire',
+  pictogramVideo: 'Schéma pictographique',
   videoComingSoon: 'Vidéo IRM à venir',
   animationComingSoon: 'Animation à venir',
   explore: 'Explorer',
@@ -628,6 +635,7 @@ const de: Messages = {
   },
   mriVideo: 'MRT-Video',
   animationVideo: 'Artikulationsanimation',
+  pictogramVideo: 'Piktogramm',
   videoComingSoon: 'MRT-Video folgt in Kürze',
   animationComingSoon: 'Animation folgt in Kürze',
   explore: 'Erkunden',
@@ -746,6 +754,7 @@ const es: Messages = {
   },
   mriVideo: 'Video de RM',
   animationVideo: 'Animación articulatoria',
+  pictogramVideo: 'Pictograma',
   videoComingSoon: 'Video de RM próximamente',
   animationComingSoon: 'Animación próximamente',
   explore: 'Explorar',
@@ -864,6 +873,7 @@ const hi: Messages = {
   },
   mriVideo: 'MRI वीडियो',
   animationVideo: 'उच्चारण एनीमेशन',
+  pictogramVideo: 'चित्रलेख',
   videoComingSoon: 'MRI वीडियो शीघ्र आएगा',
   animationComingSoon: 'एनीमेशन शीघ्र आएगा',
   explore: 'अन्वेषण',
@@ -970,6 +980,7 @@ const vi: Messages = {
   siteNavMenuAria: 'Mở menu trang',
   mriVideo: 'Video MRI',
   animationVideo: 'Hoạt hình điều âm',
+  pictogramVideo: 'Sơ đồ tượng hình',
   videoComingSoon: 'Video MRI sắp có',
   animationComingSoon: 'Hoạt hình sắp có',
   explore: 'Khám phá',
@@ -1061,6 +1072,7 @@ const ru: Messages = {
   siteNavMenuAria: 'Открыть меню сайта',
   mriVideo: 'Видео МРТ',
   animationVideo: 'Анимация артикуляции',
+  pictogramVideo: 'Пиктограмма',
   videoComingSoon: 'Видео МРТ скоро',
   animationComingSoon: 'Анимация скоро',
   explore: 'Исследовать',
@@ -1134,6 +1146,7 @@ const ar: Messages = {
   siteNavMenuAria: 'فتح قائمة الموقع',
   mriVideo: 'فيديو الرنين',
   animationVideo: 'رسوم النطق',
+  pictogramVideo: 'رسم تصويري',
   videoComingSoon: 'فيديو الرنين قريبًا',
   animationComingSoon: 'الرسوم قريبًا',
   explore: 'استكشاف',
@@ -1194,7 +1207,7 @@ export const messages: Record<Lang, Messages> = {
 }
 
 export function getMessages(lang: Lang): Messages {
-  return messages[lang]
+  return { ...messages[lang], ...HOME_RESEARCH_BY_LANG[lang] }
 }
 
 /** 현재 언어에 맞는 설명 텍스트를 반환. 번역 없으면 한국어 원문을 fallback. */

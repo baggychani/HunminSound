@@ -37,7 +37,7 @@ export function HeroActBackdrop({ heroRef }: HeroActBackdropProps) {
   const { scrollY } = useScroll()
 
   const layerOpacity = useTransform(scrollY, (y) => {
-    if (reduce) return 0.45
+    if (reduce) return 0.4
 
     const end =
       heroRef.current?.offsetHeight ??
@@ -67,7 +67,7 @@ export function HeroActBackdrop({ heroRef }: HeroActBackdropProps) {
         initial={reduce ? false : { opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.35, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute inset-x-0 top-[-7vh] h-[calc(100%+7vh)] origin-right scale-[0.86] opacity-[0.52] blur-[0.6px] saturate-[0.88] translate-x-[14vw] sm:top-[-7.5vh] sm:h-[calc(100%+7.5vh)] sm:translate-x-[16vw] lg:top-[-8vh] lg:h-[calc(100%+8vh)] lg:translate-x-[18vw]"
+        className="absolute inset-x-0 top-[-7vh] h-[calc(100%+7vh)] origin-right scale-[0.86] opacity-[0.46] blur-[0.6px] saturate-[0.88] translate-x-[14vw] sm:top-[-7.5vh] sm:h-[calc(100%+7.5vh)] sm:translate-x-[16vw] lg:top-[-8vh] lg:h-[calc(100%+8vh)] lg:translate-x-[18vw]"
         style={{
           WebkitMaskImage: IMAGE_MASK,
           WebkitMaskComposite: 'source-in',

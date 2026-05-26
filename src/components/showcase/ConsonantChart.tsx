@@ -139,6 +139,7 @@ interface HunminRowBodyProps {
   lang: ReturnType<typeof useLang>['lang']
   animationLabel: string
   mriLabel: string
+  pictogramLabel: string
   onToggle: (id: string) => void
   /** 기본자 열 너비 보고 → 다섯 줄에서 확장자 시작 세로 정렬 */
   onBasicColumnWidth: (rowIndex: number, widthPx: number) => void
@@ -157,6 +158,7 @@ function HunminRowBody({
   lang,
   animationLabel,
   mriLabel,
+  pictogramLabel,
   onToggle,
   onBasicColumnWidth,
   basicColumnMinWidthPx,
@@ -229,6 +231,7 @@ function HunminRowBody({
               lang={lang}
               animationLabel={animationLabel}
               mriLabel={mriLabel}
+              pictogramLabel={pictogramLabel}
               type="consonants"
               categoryLabel={activeHunminRowTitle}
               categoryEnLabel=""
@@ -310,6 +313,7 @@ interface ModernRowBodyProps {
   lang: ReturnType<typeof useLang>['lang']
   animationLabel: string
   mriLabel: string
+  pictogramLabel: string
   onToggle: (id: string) => void
 }
 
@@ -323,6 +327,7 @@ function ModernRowBody({
   lang,
   animationLabel,
   mriLabel,
+  pictogramLabel,
   onToggle,
 }: ModernRowBodyProps) {
   if (!items || items.length === 0) {
@@ -368,6 +373,7 @@ function ModernRowBody({
               lang={lang}
               animationLabel={animationLabel}
               mriLabel={mriLabel}
+              pictogramLabel={pictogramLabel}
               type="consonants"
               categoryLabel={categoryLabel}
               categoryEnLabel={categoryEnLabel}
@@ -527,6 +533,7 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
                 lang={lang}
                 animationLabel={m.animationVideo}
                 mriLabel={m.mriVideo}
+                pictogramLabel={m.pictogramVideo}
                 onToggle={toggle}
                 onBasicColumnWidth={onHunminBasicColumnWidth}
                 basicColumnMinWidthPx={hunminBasicColMinPx}
@@ -543,6 +550,7 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
                 lang={lang}
                 animationLabel={m.animationVideo}
                 mriLabel={m.mriVideo}
+                pictogramLabel={m.pictogramVideo}
                 onToggle={toggle}
               />
             )}
@@ -564,6 +572,7 @@ interface DetailPanelProps {
   lang: ReturnType<typeof useLang>['lang']
   animationLabel: string
   mriLabel: string
+  pictogramLabel: string
   type: 'consonants' | 'vowels'
   categoryLabel: string
   categoryEnLabel: string
@@ -575,6 +584,7 @@ function DetailPanel({
   lang,
   animationLabel,
   mriLabel,
+  pictogramLabel,
   type,
   categoryLabel,
   categoryEnLabel,
@@ -605,9 +615,11 @@ function DetailPanel({
         <DualVideoPlayer
           animationFileName={item.animationFileName}
           mriFileName={item.mriFileName}
+          pictogramFileName={item.pictogramFileName}
           type={type}
           animationLabel={animationLabel}
           mriLabel={mriLabel}
+          pictogramLabel={pictogramLabel}
         />
       </div>
     </div>

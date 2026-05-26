@@ -143,10 +143,24 @@ export function HunminVowelJamoGlyph({ symbol, ipa }: { symbol: string; ipa?: st
   )
 }
 
-export function HunminVowelImageGlyph({ asset, ipa }: { asset: string; ipa?: string }) {
-  const sub = ipa ?? null
-  return (
-    <span className="symbol-btn symbol-btn-card pointer-events-none cursor-default">
+export function HunminVowelImageGlyph({
+  asset,
+  subLabel,
+  interactive = false,
+  isActive = false,
+  onClick,
+  ariaLabel,
+}: {
+  asset: string
+  subLabel?: string
+  interactive?: boolean
+  isActive?: boolean
+  onClick?: () => void
+  ariaLabel?: string
+}) {
+  const sub = subLabel ?? null
+  const inner = (
+    <>
       <span className="symbol-char hunmin-vowel-img-wrap flex items-end justify-center">
         <Image
           src={hunminVowelImageSrc(asset)}
@@ -158,9 +172,34 @@ export function HunminVowelImageGlyph({ asset, ipa }: { asset: string; ipa?: str
           unoptimized
         />
       </span>
-      <span className={`symbol-sub hunmin-vowel-ipa ${sub ? '' : 'invisible'}`} aria-hidden={sub ? undefined : true}>
+      <span className={`symbol-sub ${sub ? '' : 'invisible'}`} aria-hidden={sub ? undefined : true}>
         {sub ?? '\u00a0'}
       </span>
+    </>
+  )
+
+  if (interactive && onClick) {
+    return (
+      <span className="inline-block align-top">
+        <button
+          type="button"
+          onClick={onClick}
+          className={`symbol-btn symbol-btn-card transition-transform duration-200 ease-out hover:-translate-y-px active:translate-y-0 ${
+            isActive ? 'active' : ''
+          }`}
+          aria-expanded={isActive}
+          aria-label={ariaLabel}
+        >
+          <span aria-hidden className="symbol-card-dot" />
+          {inner}
+        </button>
+      </span>
+    )
+  }
+
+  return (
+    <span className="symbol-btn symbol-btn-card pointer-events-none cursor-default">
+      {inner}
     </span>
   )
 }

@@ -15,6 +15,8 @@ export interface Consonant {
   description_ar?: string
   animationFileName?: string
   mriFileName?: string
+  /** 상형도 일러스트 — public/images/pictograms/ */
+  pictogramFileName?: string
 }
 
 export interface Vowel {
@@ -33,4 +35,5 @@ export interface Vowel {
   description_ar?: string
   animationFileName?: string
   mriFileName?: string
+  pictogramFileName?: string
 }

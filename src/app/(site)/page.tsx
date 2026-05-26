@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 import { useRef, useEffect } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
@@ -9,17 +8,10 @@ import { getMessages } from '@/lib/i18n'
 import { ScrollColorWash } from '@/components/ui/ScrollColorWash'
 import { HeroActBackdrop } from '@/components/ui/HeroActBackdrop'
 import { HaeryebonCardWatermark } from '@/components/showcase/HaeryebonCardWatermark'
+import { HunminBookViewer } from '@/components/showcase/HunminBookViewer'
 import { HomeResearchAct } from '@/components/home/HomeResearchAct'
 import { HomeContactSection } from '@/components/home/HomeContactSection'
 import { useHomeActScroll } from '@/hooks/useHomeActScroll'
-
-/* 3D 모델은 클라이언트 전용 — SSR 시 three.js 가 window 를 참조하면 깨지므로
- * dynamic + ssr:false 로 분리 로드. 첫 렌더 시 자리만 잡아 두고 비동기로 들어옴. */
-const HunminBookViewer = dynamic(
-  () =>
-    import('@/components/showcase/HunminBookViewer').then((m) => m.HunminBookViewer),
-  { ssr: false, loading: () => <div className="h-full w-full" aria-hidden /> },
-)
 
 /* ── 자석 기호 컴포넌트 ────────────────────────────────────────────────── */
 function MagneticGlyph({ children, className }: { children: string; className: string }) {
@@ -115,7 +107,7 @@ export default function HomePage() {
               Sejong Speech Sounds
             </p>
 
-            <div className="mx-auto mt-3 w-full max-w-lg shrink-0 sm:mt-4 lg:max-w-xl">
+            <div className="mx-auto -mt-1 w-full max-w-lg shrink-0 sm:mt-0 lg:max-w-xl">
               <div
                 className="relative h-[min(clamp(12rem,24vw,19.5rem),max(8rem,calc(100dvh-var(--site-header-h,4rem)-22rem)))] w-full"
                 aria-hidden

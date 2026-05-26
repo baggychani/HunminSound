@@ -79,6 +79,9 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${notoSerifKr.variable} ${notoSansKr.variable} ${notoSansDevanagari.variable} ${notoSansArabic.variable} ${gowunBatang.variable}`}
     >
+      <head>
+        <link rel="preload" href="/models/hmji.glb" as="fetch" crossOrigin="anonymous" />
+      </head>
       <body className="font-sans">
         <Providers>{children}</Providers>
       </body>

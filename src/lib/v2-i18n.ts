@@ -1,4 +1,5 @@
 import type { Lang } from '@/lib/i18n'
+import { HOME_CONTACT_BY_LANG } from '@/lib/homeContact-i18n'
 
 const ko = {
   navOverview: '연구',
@@ -159,8 +160,7 @@ const en: Record<keyof typeof ko, string> = {
 export type V2Messages = typeof ko
 
 export function getV2Messages(lang: Lang): V2Messages {
-  if (lang === 'ko') return ko
-  return en as V2Messages
+  return { ...en, ...HOME_CONTACT_BY_LANG[lang] } as V2Messages
 }
 
 export const SECTION_IDS = [

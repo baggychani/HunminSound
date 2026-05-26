@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState } from 'react'
 import { useLang } from '@/contexts/LanguageContext'
 import { getV2Messages } from '@/lib/v2-i18n'
@@ -81,6 +82,17 @@ export function HomeContactSection() {
               <dd className="mt-1 text-ink-soft">서울 동대문구 회기로 56</dd>
             </div>
           </dl>
+
+          <div className="mt-8 w-full max-w-[22rem] rounded-sm border border-hanji-border/60 bg-white px-5 py-4 sm:max-w-[28rem] sm:px-6 sm:py-5">
+            <Image
+              src="/images/sejongorg.png"
+              alt="세종대왕기념사업회"
+              width={485}
+              height={512}
+              className="h-auto w-full"
+              sizes="(max-width: 640px) 352px, 448px"
+            />
+          </div>
         </div>
 
         <form

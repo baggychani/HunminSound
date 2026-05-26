@@ -4,11 +4,11 @@
  */
 
 export type HunminVowelSlot =
-  | { kind: 'symbol'; value: string; ipa?: string }
+  | { kind: 'symbol'; value: string; ipa?: string; mapTo?: string }
   | { kind: 'reserved' }
   | { kind: 'compound'; jamo: string; mapTo?: string }
   /** images/hunmin/vowels/{asset}.png — 훈민 모음 필기 이미지 */
-  | { kind: 'image'; asset: string; mapTo?: string; ipa?: string }
+  | { kind: 'image'; asset: string; mapTo?: string; ipa?: string; cardLabel?: string }
 
 export type HunminVowelSegment = {
   /** 비우면 직전 구간(예: ㅣ 합용자)의 하위 — groupLine만 표시 */
@@ -24,8 +24,10 @@ export type HunminVowelRow = {
   combinedSegments: HunminVowelSegment[]
 }
 
-const sym = (value: string, ipa?: string): HunminVowelSlot =>
-  ipa ? { kind: 'symbol', value, ipa } : { kind: 'symbol', value }
+const sym = (value: string, ipa?: string, mapTo?: string): HunminVowelSlot =>
+  mapTo ? { kind: 'symbol', value, mapTo } : ipa ? { kind: 'symbol', value, ipa } : { kind: 'symbol', value }
+/** 현대 모음과 연결 — 카드 아래 와·워·이 등 표시 */
+const linked = (value: string, mapTo: string = value): HunminVowelSlot => ({ kind: 'symbol', value, mapTo })
 /** 옛한글 자모 — IPA는 대응 PNG asset 명명 규칙과 동일 (파일은 유지, UI만 교체) */
 const jamo = (value: string, asset: string): HunminVowelSlot => sym(value, ipaLabel(asset))
 const res = (): HunminVowelSlot => ({ kind: 'reserved' })
@@ -43,11 +45,11 @@ function ipaLabel(asset: string): string {
   return `/${asset.replace(/m/g, 'ɨ').replace(/e/g, 'ə')}/`
 }
 
-const img = (asset: string, mapTo?: string, ipa?: string): HunminVowelSlot => ({
+const img = (asset: string, mapTo?: string, cardLabel?: string): HunminVowelSlot => ({
   kind: 'image',
   asset,
   mapTo,
-  ipa: ipa ?? ipaLabel(asset),
+  cardLabel,
 })
 
 export const HUNMIN_VOWEL_ROWS: HunminVowelRow[] = [
@@ -55,12 +57,12 @@ export const HUNMIN_VOWEL_ROWS: HunminVowelRow[] = [
     id: 'yang',
     title: '양성',
     basicSegments: [
-      { label: '상형기본자', slots: [img('v')] },
+      { label: '상형기본자', slots: [img('v', '·', '아래아')] },
       { label: '합성자', groupLine: '초출자', slots: [sym('ㅗ'), sym('ㅏ')] },
       { groupLine: '재출자', slots: [sym('ㅛ'), sym('ㅑ')] },
     ],
     combinedSegments: [
-      { label: '동출합용자', slots: [jamo('ㅘ', 'wa'), jamo('ㆇ', 'joja')] },
+      { label: '동출합용자', slots: [linked('ㅘ'), jamo('ㆇ', 'joja')] },
       {
         label: 'ㅣ 합용자',
         groupLine: '기본 중성자와 ㅣ',
@@ -81,7 +83,7 @@ export const HUNMIN_VOWEL_ROWS: HunminVowelRow[] = [
       { groupLine: '재출자', slots: [sym('ㅠ'), sym('ㅕ')] },
     ],
     combinedSegments: [
-      { label: '동출합용자', slots: [jamo('ㅝ', 'we'), jamo('ㆊ', 'juje')] },
+      { label: '동출합용자', slots: [linked('ㅝ'), jamo('ㆊ', 'juje')] },
       {
         label: 'ㅣ 합용자',
         groupLine: '기본 중성자와 ㅣ',
@@ -96,7 +98,7 @@ export const HUNMIN_VOWEL_ROWS: HunminVowelRow[] = [
   {
     id: 'neutral',
     title: '양음성',
-    basicSegments: [{ label: '상형기본자', slots: [img('i')] }],
+    basicSegments: [{ label: '상형기본자', slots: [img('i', 'ㅣ')] }],
     combinedSegments: [],
   },
 ]
@@ -107,7 +109,7 @@ export function hunminVowelRowContainsSymbol(row: HunminVowelRow, symbol: string
     segs.some((s) =>
       s.slots.some(
         (sl) =>
-          (sl.kind === 'symbol' && sl.value === symbol) ||
+          (sl.kind === 'symbol' && (sl.value === symbol || sl.mapTo === symbol)) ||
           (sl.kind === 'compound' && sl.mapTo === symbol) ||
           (sl.kind === 'image' && sl.mapTo === symbol),
       ),

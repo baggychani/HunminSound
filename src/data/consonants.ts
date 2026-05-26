@@ -81,6 +81,7 @@ export const consonantsData: Consonant[] = [
       '\'기\'에서와 같이 첫소리로 나는 소리로, 목젖으로 콧길을 막고 혀뿌리를 높여 여린입천장(연구개)에 붙였다가 날숨을 막았다가 뗄 때 나는 안울림소리이며, \'윽\'에서와 같은 끝소리에서는 혀뿌리를 떼지 않고 발음합니다. \'아기\'에서의 \'ㄱ[기]\'와 같이 모음 사이에서는 울림소리로 납니다.',
     animationFileName: 'ㄱ.mp4',
     mriFileName: 'ㄱ.mp4',
+    pictogramFileName: 'ㄱ.jpg',
   },
   {
     _id: 'k',
@@ -186,6 +187,7 @@ export const consonantsData: Consonant[] = [
       '\'니\'에서와 같이 첫소리로 나는 소리로, 혀끝을 윗잇몸(치경)에 붙였다가 떼면서 날숨을 콧구멍으로 나오게 하여 코안을 울려서 내는 울림소리이며, 끝소리에서는 혀끝을 떼지 않고 발음합니다.',
     animationFileName: 'ㄴ.mp4',
     mriFileName: 'ㄴ.mp4',
+    pictogramFileName: 'ㄴ.jpg',
   },
   {
     _id: 'm',

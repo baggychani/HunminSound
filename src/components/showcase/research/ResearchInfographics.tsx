@@ -243,7 +243,7 @@ function MemberPhoto({ name }: { name: string }) {
         alt=""
         fill
         sizes="(max-width: 640px) 50vw, 25vw"
-        className="object-cover object-[center_18%]"
+        className="object-cover object-[center_14%]"
         onError={() => setFailed(true)}
       />
     )

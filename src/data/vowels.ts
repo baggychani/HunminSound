@@ -1,6 +1,17 @@
 import type { Vowel } from '@/types'
 
 export const vowelsData: Vowel[] = [
+  // 천지인 — 아래아 (훈민정음 전용, 현대 음성학 차트에는 미표시) ─────────────────
+  {
+    _id: 'araea',
+    name: '아래아 (·)',
+    symbol: '·',
+    category: '천지인',
+    description:
+      '입은 ‘ㅏ’보다는 좁히고 ‘ㅗ’보다는 더 벌려 냅니다. 입술 모양은 ‘ㅏ’처럼 벌어지지도 않고 ‘ㅗ’처럼 오므라지지도 않는 중간쯤 됩니다. 혀는 ㅗ와 같이 안쪽으로 오그리되, ㅡ를 낼 때보다 더 오그리고 혀를 아예 오그리지 않는 ㅣ보다는 훨씬 더 오그립니다. 혀중앙을 혀 안쪽으로 오그리며 발음하므로 성대가 살짝 열리면서 소리는 성대 깊숙이 울려 나옵니다.',
+    pictogramFileName: '아래아.jpg',
+  },
+
   // 단모음 (Monophthongs) ──────────────────────────────────────────────────────
   {
     _id: 'a',
@@ -8,7 +19,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅏ',
     category: '단모음',
     description:
-      '한국어의 가장 기본적인 단모음으로, 혀를 낮은 위치 중앙에 두고 입을 크게 벌려 발음합니다. 비원순 중설 저모음 [a]에 가깝습니다. 한국 모음 중 가장 중립적인 조음 위치를 가진 핵심 모음입니다.',
+      '평순 중설 저모음입니다. 아래턱을 최대한 내려 입을 크게 벌리고, 혓몸을 입천장으로부터 많이 떨어뜨리고, 혀뿌리를 뒤로 당겨 발음합니다. 이때 혀끝은 아랫니의 뒤쪽에 위치하나 아랫니에는 닿지 않습니다. 혀의 양옆은 윗 어금니로부터 완전히 떨어뜨립니다.',
     animationFileName: 'ani_a.mp4',
     mriFileName: 'mri_a.mp4',
   },
@@ -18,7 +29,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅐ',
     category: '단모음',
     description:
-      '중저 전설 비원순 모음으로, IPA로는 [ɛ]로 표기합니다. 현재 서울 방언에서는 ㅔ와의 구분이 차차 소실되어 두 모음의 합류(merger)가 뚜렷하게 관찰됩니다.',
+      '평순 전설 저모음입니다. 혀를 ‘ㅏ’ 소리를 내는 위치보다 조금 높은 자리에서 약간 내밀고 입을 약간 크게 벌려 숨을 내쉬어 내는 단모음입니다.',
     animationFileName: 'ani_ae.mp4',
     mriFileName: 'mri_ae.mp4',
   },
@@ -28,7 +39,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅓ',
     category: '단모음',
     description:
-      '중후설 비원순 모음으로, IPA로는 [ʌ]에 가깝게 표기합니다. 혀 중간 높이에서 입술을 평순한 채로 발음합니다. ㅡ와 대립을 이루며 한국어 모음 체계의 중요한 축을 구성합니다.',
+      '평순 중설 중모음입니다. 혀를 조금 올리고 입술을 중간에 놓은 뒤 입을 약간 크게 벌려 입안의 안쪽을 넓게 하면서 냅니다. 입술을 예사로 하고 입아귀를 조금 크게 벌리어 입안의 앞쪽을 넓게 하여 냅니다. 혓바닥을 조금 올려 혀는 입안에 떠 있으면서 뒤로 약간 당겨지고, 입술은 [ㅡ] 소리보다 조금 더 벌립니다.',
     animationFileName: 'ani_v.mp4',
     mriFileName: 'mri_eo.mp4',
   },
@@ -38,7 +49,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅔ',
     category: '단모음',
     description:
-      '중전설 비원순 모음으로, IPA로는 [e]로 표기합니다. 현재 서울 방언에서 ㅐ와 차차 합류하는 경향이 있으며, 두 모음을 구분하지 않는 화자가 증가하고 있습니다.',
+      '평순 전설 중모음입니다. 혀를 ‘ㅓ’ 소리를 내는 위치보다 조금 높은 자리에서 약간 내밀고 입을 보통으로 벌려 숨을 내쉬어 내는 단모음입니다.',
     animationFileName: 'ani_e.mp4',
     mriFileName: 'mri_e.mp4',
   },
@@ -48,7 +59,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅗ',
     category: '단모음',
     description:
-      '고후설 원순 모음으로, 혀의 뒤쪽 높은 위치에서 입술을 둥글게 모아 발음합니다. IPA로는 [o]로 표기합니다. ㅜ와 함께 한국어의 원순 모음 체계를 구성합니다.',
+      '원순 후설 중고모음입니다. 입술을 둥글게 하여 입술이 앞으로 약간 나오면서 입아귀를 조금 크게 벌리고 혀 뒤를 연구개에 접근시켜 조음합니다. /ㅗ/를 조음할 때에는 /ㅜ/나 /ㅡ/를 조음할 때보다 혀 뒤를 연구개에 덜 접근시킵니다. 혀끝은 아랫니 뒤쪽에 위치하지만 아랫니에는 닿지 않습니다. 혀의 양옆은 어금니에 닿지 않을 정도로 내립니다. 턱은 새끼손가락이 조금 들어갈 정도로 조금만 벌립니다.',
     animationFileName: 'ani_o.mp4',
     mriFileName: 'mri_o.mp4',
   },
@@ -58,7 +69,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅚ',
     category: '단모음',
     description:
-      '전통적으로 중전설 원순 단모음 [oe]로 분류되나, 현재 서울 방언에서는 대부분이 이중모음 [we]로 발음합니다. 원래의 단모음 발음을 보존하는 화자는 차차 감소하는 경향입니다.',
+      '원순 전설 중모음입니다. 혀를 ‘ㅗ’ 소리를 내는 위치보다 조금 앞의 자리에 놓고 입술을 둥글게 하여 숨을 내쉬어 내는 단모음입니다. 혀와 입 모양을 ‘ㅗ’ 소리를 낼 때와 같이 하고 있다가 ‘ㅐ’ 소리를 낼 때와 같이 옮기면서 숨을 내쉬어 내는 이중모음으로도 발음할 수 있습니다.',
     animationFileName: 'ani_oe.mp4',
   },
   {
@@ -67,7 +78,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅜ',
     category: '단모음',
     description:
-      '고후설 원순 모음으로, 입술을 강하게 둥글게 오므려 발음합니다. IPA로는 [u]로 표기합니다. ㅗ와 함께 한국어의 원순 모음 체계를 형성합니다.',
+      '원순 후설 고모음입니다. 입술을 좀 둥글게 오므리어 앞으로 얼마간 내밀고 입아귀는 가장 작게 벌리고 혀 뒤를 연구개에 바짝 접근시켜 조음합니다. 이때 혀끝은 아랫니 뒤쪽에 위치하지만, 아랫니에는 닿지 않습니다. 혀의 양옆은 윗 어금니에 살짝 닿습니다. 턱은 아래 어금니와 윗 어금니가 거의 맞닿을 정도로 닫습니다.',
     animationFileName: 'ani_u.mp4',
     mriFileName: 'mri_u.mp4',
   },
@@ -77,7 +88,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅟ',
     category: '단모음',
     description:
-      '전통적으로 고전설 원순 단모음 [y]로 분류되나, 현재 서울 방언에서는 이중모음 [wi]로 발음됩니다. 단모음으로 발화되는 경우는 격식체나 느린 발화에서 간헐적으로 관찰됩니다.',
+      '원순 전설 고모음입니다. 혀를 ‘ㅜ’ 소리를 내는 위치보다 조금 앞의 자리에 놓고 입술을 둥글게 하여 앞으로 내밀고 숨을 내쉬어 내는 단모음입니다. 혀와 입 모양을 ‘ㅜ’ 소리를 낼 때와 같이 하고 있다가 ‘ㅣ’ 소리를 낼 때와 같이 옮기면서 숨을 내쉬어 내는 이중모음으로도 발음할 수 있습니다.',
     animationFileName: 'ani_wi.mp4',
   },
   {
@@ -86,9 +97,10 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅡ',
     category: '단모음',
     description:
-      '고후설 비원순 모음으로, IPA로는 [eu]로 표기합니다. 입술을 평순하게 유지하면서 혀를 뒤쪽 높은 곳에 두어 발음합니다. 한국어에서 독특한 위치를 차지하는 특징적인 모음입니다.',
+      '평순 중설 고모음입니다. 입술은 작게 옆으로 평평하게 벌리고 입아귀를 가장 작게 벌리어 냅니다. 혀뒤를 여린입천장(연구개)에 바짝 접근시켜 조음합니다. 이때 혀끝은 아랫니 뒤쪽에 위치하지만 아랫니에는 닿지 않는 상황에서 혀를 안쪽으로 살짝 당기듯이 합니다. 혀의 양옆은 어금니에 살짝 닿을 정도로 접근시키고, 턱은 아래 어금니와 윗어금니가 거의 맞닿을 정도로 닫습니다.',
     animationFileName: 'ani_w.mp4',
     mriFileName: 'mri_eu.mp4',
+    pictogramFileName: 'ㅡ.jpg',
   },
   {
     _id: 'i',
@@ -96,9 +108,10 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅣ',
     category: '단모음',
     description:
-      '고전설 비원순 모음으로, 혀를 앞쪽 높은 위치에 두고 입술을 평순하게 발음합니다. IPA로는 [i]로 표기합니다. 이중모음 조음 시 활음 /j/의 기저 형태 역할도 합니다.',
+      '평순 전설 고모음입니다. 입술은 양옆으로 작게 벌리고 혀를 앞으로 다가 내면서 앞 바닥을 아주 높이어 센입천장에 가깝게 하고 입가를 앞쪽으로 조금 당기는 듯이 하고, 입아귀를 가장 작게 벌리어 냅니다. 이때 혀끝은 아랫니 뒤에 대고 혀의 양옆은 윗어금니에 단단하게 밀착시킵니다. 턱은 아랫니와 윗니가 거의 맞닿을 정도로 닫습니다.',
     animationFileName: 'ani_i.mp4',
     mriFileName: 'mri_i.mp4',
+    pictogramFileName: 'ㅣ.jpg',
   },
 
   // 이중모음 j계 (j-Diphthongs) ─────────────────────────────────────────────
@@ -108,7 +121,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅑ',
     category: '이중모음',
     description:
-      '활음 [j] 뒤에 ㅏ[a]가 결합하는 이중모음입니다. 조음 시 혀가 [i] 위치에서 시작해 빠르게 [a] 위치로 이동합니다. IPA로는 [ja]로 표기합니다.',
+      '혀와 입 모양을 ‘ㅣ’ 소리를 낼 때와 같이 하고 있다가 ‘ㅏ’ 소리를 낼 때와 같이 옮기면서 숨을 내쉬어 냅니다.',
     animationFileName: 'ani_ja.mp4',
     mriFileName: 'mri_ya.mp4',
   },
@@ -118,7 +131,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅒ',
     category: '이중모음',
     description:
-      '활음 [j] 뒤에 ㅐ가 결합하는 이중모음입니다. 현재 서울 방언에서는 ㅖ와의 구분이 모호해지는 경향이 있으며, 두 소리를 동일하게 발음하는 화자가 증가하고 있습니다.',
+      '혀와 입 모양을 ‘ㅣ’ 소리를 낼 때와 같이 하고 있다가 ‘ㅐ’ 소리를 낼 때와 같이 옮기면서 숨을 내쉬어 냅니다.',
     animationFileName: 'ani_jae.mp4',
   },
   {
@@ -127,7 +140,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅕ',
     category: '이중모음',
     description:
-      '활음 [j] 뒤에 ㅓ가 결합하는 이중모음으로, IPA로는 [jeo]에 가깝게 표기합니다. 구어에서 매우 자주 사용되는 이중모음입니다.',
+      '혀와 입 모양을 ‘ㅣ’ 소리를 낼 때와 같이 하고 있다가 ‘ㅓ’ 소리를 낼 때와 같이 옮기면서 숨을 내쉬어 냅니다.',
     animationFileName: 'ani_jv.mp4',
     mriFileName: 'mri_yeo.mp4',
   },
@@ -137,7 +150,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅖ',
     category: '이중모음',
     description:
-      '활음 [j] 뒤에 ㅔ[e]가 결합하는 이중모음으로, IPA로는 [je]로 표기합니다. 자음 뒤에서는 단모음 [e]로 발화되는 경우가 많습니다.',
+      '혀와 입 모양을 ‘ㅣ’ 소리를 낼 때와 같이 하고 있다가 ‘ㅔ’ 소리를 낼 때와 같이 옮기면서 숨을 내쉬어 냅니다.',
     animationFileName: 'ani_je.mp4',
   },
   {
@@ -146,7 +159,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅛ',
     category: '이중모음',
     description:
-      '활음 [j] 뒤에 ㅗ[o]가 결합하는 이중모음으로, IPA로는 [jo]로 표기합니다. 조음 시 혀가 [i] 위치에서 시작해 빠르게 원순 후설 위치로 이동합니다.',
+      '혀와 입 모양을 ‘ㅣ’ 소리를 낼 때와 같이 하고 있다가 ‘ㅗ’ 소리를 낼 때와 같이 옮기면서 숨을 내쉬어 냅니다.',
     animationFileName: 'ani_jo.mp4',
     mriFileName: 'mri_yo.mp4',
   },
@@ -156,7 +169,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅠ',
     category: '이중모음',
     description:
-      '활음 [j] 뒤에 ㅜ[u]가 결합하는 이중모음으로, IPA로는 [ju]로 표기합니다. ㅛ와 함께 j계 원순 이중모음 쌍을 이룹니다.',
+      '혀와 입 모양을 ‘ㅣ’ 소리를 낼 때와 같이 하고 있다가 ‘ㅜ’ 소리를 낼 때와 같이 옮기면서 숨을 내쉬어 냅니다.',
     animationFileName: 'ani_ju.mp4',
     mriFileName: 'mri_yu.mp4',
   },
@@ -168,7 +181,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅘ',
     category: '이중모음',
     description:
-      'ㅗ에 ㅏ가 결합하는 이중모음으로 활음 [w]로 시작합니다. IPA로는 [wa]로 표기합니다. 구어에서 자연스럽게 발화되며 자주 사용됩니다.',
+      '혀와 입 모양을 ‘ㅗ’ 소리를 낼 때와 같이 하고 있다가 ‘ㅏ’ 소리를 낼 때와 같이 옮기면서 숨을 내쉬어 냅니다.',
     animationFileName: 'ani_wa.mp4',
     mriFileName: 'mri_wa.mp4',
   },
@@ -178,7 +191,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅙ',
     category: '이중모음',
     description:
-      'ㅗ에 ㅐ가 결합하는 이중모음으로, IPA로는 [wae]로 표기합니다. 현재 서울 방언에서는 ㅞ 및 ㅚ와 구분 없이 [we]로 발음하는 경향이 강합니다.',
+      '혀와 입 모양을 ‘ㅗ’ 소리를 낼 때와 같이 하고 있다가 ‘ㅐ’ 소리를 낼 때와 같이 옮기면서 숨을 내쉬어 냅니다.',
     animationFileName: 'ani_wae.mp4',
   },
   {
@@ -187,7 +200,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅝ',
     category: '이중모음',
     description:
-      'ㅜ에 ㅓ가 결합하는 이중모음으로 활음 [w]로 시작합니다. IPA로는 [wo]에 가깝게 표기합니다. 구어에서 자연스럽게 발화되며 자주 사용됩니다.',
+      '혀와 입 모양을 ‘ㅜ’ 소리를 낼 때와 같이 하고 있다가 ‘ㅓ’ 소리를 낼 때와 같이 옮기면서 숨을 내쉬어 냅니다.',
     animationFileName: 'ani_wv.mp4',
   },
   {
@@ -196,7 +209,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅞ',
     category: '이중모음',
     description:
-      'ㅜ에 ㅔ가 결합하는 이중모음으로, IPA로는 [we]로 표기합니다. 현재 서울 방언에서는 ㅙ 및 ㅚ와 합류하여 모두 [we]로 발음되는 경향이 있습니다.',
+      '혀와 입 모양을 ‘ㅜ’ 소리를 낼 때와 같이 하고 있다가 ‘ㅔ’ 소리를 낼 때와 같이 옮기면서 숨을 내쉬어 냅니다.',
     animationFileName: 'ani_we.mp4',
   },
   {
@@ -205,7 +218,7 @@ export const vowelsData: Vowel[] = [
     symbol: 'ㅢ',
     category: '이중모음',
     description:
-      'ㅡ에 ㅣ가 결합하는 이중모음으로, IPA로는 [ui]로 표기합니다. 조사 "의"로 쓰일 때는 [e]로 발화되는 등 문법적 위치에 따라 발음 변이가 큰 특수한 이중모음입니다.',
+      '혀와 입 모양을 ‘ㅡ’ 소리를 낼 때와 같이 하고 있다가 ‘ㅣ’ 소리를 낼 때와 같이 옮기면서 숨을 내쉬어 냅니다.',
     animationFileName: 'ani_Gi.mp4',
     mriFileName: 'mri_ui.mp4',
   },

@@ -1,5 +1,5 @@
 const CHEON_JI_IN_ITEMS = [
-  { glyph: '\u00B7', title: '\uD558\uB298', hanja: '\u5929', desc: '\uB91C\uADFC \uC810 \u2014 \uD558\uB298\uC744 \uC0C1\uC9D5' },
+  { glyph: '\u00B7', title: '\uC544\uB798\uC544', hanja: '\u5929', desc: '\uB465\uADFC \uC810 \u2014 \uD558\uB298\uC744 \uC0C1\uC9D5' },
   { glyph: '\u3161', title: '\uB545', hanja: '\u5730', desc: '\uD3C9\uD3C9\uD55C \uC120 \u2014 \uB545\uC744 \uC0C1\uC9D5' },
   { glyph: '\u3163', title: '\uC0AC\uB78C', hanja: '\u4EBA', desc: '\uC138\uC6B4 \uC120 \u2014 \uC0AC\uB78C\uC744 \uC0C1\uC9D5' },
 ] as const
