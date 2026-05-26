@@ -202,7 +202,7 @@ export default function HomePage() {
       <section
         ref={act4Ref}
         id="home-act4"
-        className={`home-scroll-margin site-container relative z-10 flex ${heroHeightClass} min-h-0 flex-col justify-start overflow-y-auto overscroll-contain py-[clamp(0.5rem,1.25dvh,1rem)] lg:justify-center`}
+        className={`home-scroll-margin site-container relative z-10 flex ${heroHeightClass} flex-col justify-center overflow-hidden py-[clamp(0.75rem,2dvh,1.5rem)]`}
       >
         <HomeContactSection />
       </section>
