@@ -67,6 +67,8 @@ export default function HomePage() {
   useHomeActScroll(act1Ref, act2Ref, act3Ref, act4Ref)
 
   const heroHeightClass = 'h-[calc(100dvh-var(--site-header-h,4rem))] min-h-0'
+  /** 4막만 1뷰포트 고정 포기 — 내용 높이만큼 늘어나고, 최소 1화면은 유지 */
+  const act4SectionClass = 'min-h-[calc(100dvh-var(--site-header-h,4rem))]'
 
   return (
     <div className="relative w-full">
@@ -198,11 +200,11 @@ export default function HomePage() {
       {/* 3막 — 연구 소개 (다크 풀블리드 · 1뷰포트) */}
       <HomeResearchAct ref={act3Ref} />
 
-      {/* 4막 — 문의하기 (1뷰포트) */}
+      {/* 4막 — 문의하기 (최소 1뷰포트, 내용 많으면 세로로 확장) */}
       <section
         ref={act4Ref}
         id="home-act4"
-        className={`home-scroll-margin site-container relative z-10 flex ${heroHeightClass} flex-col justify-center overflow-hidden py-[clamp(0.75rem,2dvh,1.5rem)]`}
+        className={`home-scroll-margin site-container relative z-10 flex ${act4SectionClass} flex-col justify-center py-[clamp(1rem,2.5dvh,2rem)] lg:py-[clamp(1.25rem,3dvh,2.5rem)]`}
       >
         <HomeContactSection />
       </section>
