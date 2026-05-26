@@ -9,6 +9,9 @@ import { getMessages } from '@/lib/i18n'
 import { ScrollColorWash } from '@/components/ui/ScrollColorWash'
 import { HeroActBackdrop } from '@/components/ui/HeroActBackdrop'
 import { HaeryebonCardWatermark } from '@/components/showcase/HaeryebonCardWatermark'
+import { HomeResearchAct } from '@/components/home/HomeResearchAct'
+import { HomeContactSection } from '@/components/home/HomeContactSection'
+import { useHomeActScroll } from '@/hooks/useHomeActScroll'
 
 /* 3D 모델은 클라이언트 전용 — SSR 시 three.js 가 window 를 참조하면 깨지므로
  * dynamic + ssr:false 로 분리 로드. 첫 렌더 시 자리만 잡아 두고 비동기로 들어옴. */
@@ -64,49 +67,64 @@ function MagneticGlyph({ children, className }: { children: string; className: s
 export default function HomePage() {
   const { lang } = useLang()
   const m = getMessages(lang)
-  const heroRef = useRef<HTMLElement>(null)
+  const act1Ref = useRef<HTMLElement>(null)
+  const act2Ref = useRef<HTMLElement>(null)
+  const act3Ref = useRef<HTMLElement>(null)
+  const act4Ref = useRef<HTMLElement>(null)
+
+  useHomeActScroll(act1Ref, act2Ref, act3Ref, act4Ref)
+
+  const heroHeightClass = 'h-[calc(100dvh-var(--site-header-h,4rem))] min-h-0'
 
   return (
     <div className="relative w-full">
-      <ScrollColorWash />
+      <ScrollColorWash actRefs={{ act1: act1Ref, act2: act2Ref, act3: act3Ref }} />
 
-      {/* 1막 — 좌: 본문(한지) / 우: 동상. 2열 그리드. */}
+      {/* 1막 — 히어로 (모든 언어 동일 레이아웃·배경·3D) */}
       <section
-        ref={heroRef}
-        className={
-          lang === 'ko'
-            ? 'relative z-10 h-[100dvh] overflow-hidden isolation-isolate'
-            : 'relative z-10 flex min-h-[100dvh] flex-col items-center justify-center px-6 pb-24 pt-24 text-center sm:px-8 sm:pt-28 lg:px-12'
-        }
+        ref={act1Ref}
+        id="home-act1"
+        className={`relative z-10 ${heroHeightClass} overflow-hidden isolation-isolate`}
       >
-        {lang === 'ko' ? <HeroActBackdrop heroRef={heroRef} /> : null}
+        <HeroActBackdrop heroRef={act1Ref} />
 
-        {lang === 'ko' ? (
-          <div className="relative z-10 mx-auto grid h-full w-full max-w-6xl grid-cols-1 items-center px-6 pb-[5.5rem] pt-[5rem] sm:px-8 sm:pb-[6rem] sm:pt-[5.25rem] sm:ps-[4vw] lg:grid-cols-[0.42fr_1.18fr_0.88fr] lg:px-10 lg:pb-[6.5rem] lg:pt-[5.5rem] lg:ps-[5vw]">
-            <div className="hidden lg:block" aria-hidden />
+        <div className="relative z-10 mx-auto grid h-full w-full max-w-6xl grid-cols-1 items-center px-6 sm:px-8 sm:ps-[4vw] lg:grid-cols-[0.42fr_1.18fr_0.88fr] lg:px-10 lg:ps-[5vw]">
+          <div className="hidden lg:block" aria-hidden />
 
-            <div className="flex flex-col items-center text-center translate-x-[clamp(0.25rem,2vw,0.75rem)] sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] lg:translate-x-0">
-              <p className="font-serif text-[15px] text-ink-muted tracking-wide sm:text-[17px]">
-                {m.homeSubtitle}
-              </p>
+          <div className="flex flex-col items-center text-center translate-x-[clamp(0.25rem,2vw,0.75rem)] sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] lg:translate-x-0">
+            <p
+              className={`font-serif text-[15px] text-ink-muted tracking-wide sm:text-[17px] ${
+                lang === 'hi' ? 'font-devanagari normal-case tracking-normal' : ''
+              }`}
+              lang={lang === 'hi' ? 'hi' : undefined}
+            >
+              {m.homeSubtitle}
+            </p>
 
-              <h1 className="mt-4 font-jamo text-[4rem] leading-none tracking-wide text-ink sm:mt-5 sm:text-[4.75rem] md:text-[6.35rem] lg:text-[5.85rem]">
-                {m.siteTitle}
-              </h1>
+            <h1
+              className={`mt-4 font-jamo leading-none tracking-wide text-ink sm:mt-5 ${
+                lang === 'ko'
+                  ? 'text-[4rem] sm:text-[4.75rem] md:text-[6.35rem] lg:text-[5.85rem]'
+                  : 'text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem]'
+              }`}
+            >
+              {m.siteTitle}
+            </h1>
 
-              <p className="mt-4 font-sans text-sm tracking-[0.2em] text-ink-muted sm:mt-5">
-                Sejong Speech Sounds
-              </p>
+            <p className="mt-4 font-sans text-sm tracking-[0.2em] text-ink-muted sm:mt-5">
+              Sejong Speech Sounds
+            </p>
 
-              <div className="mx-auto mt-3 w-full max-w-lg shrink-0 sm:mt-4 lg:max-w-xl">
-                <div
-                  className="relative h-[min(clamp(12rem,24vw,19.5rem),max(8rem,calc(100dvh-24rem)))] w-full"
-                  aria-hidden
-                >
-                  <HunminBookViewer className="absolute inset-0" />
-                </div>
+            <div className="mx-auto mt-3 w-full max-w-lg shrink-0 sm:mt-4 lg:max-w-xl">
+              <div
+                className="relative h-[min(clamp(12rem,24vw,19.5rem),max(8rem,calc(100dvh-var(--site-header-h,4rem)-22rem)))] w-full"
+                aria-hidden
+              >
+                <HunminBookViewer className="absolute inset-0" />
               </div>
+            </div>
 
+            {lang === 'ko' ? (
               <p className="relative mt-3 w-full max-w-[min(100%,42rem)] shrink-0 break-keep px-1 font-serif text-base leading-loose text-ink-soft [overflow-wrap:break-word] sm:mt-4 sm:px-0 sm:text-[17px]">
                 <span className="sm:hidden whitespace-normal">
                   {m.homeIntroPart1} {m.homeIntroPart2}
@@ -114,49 +132,50 @@ export default function HomePage() {
                 <span className="hidden sm:block sm:whitespace-nowrap">{m.homeIntroPart1}</span>
                 <span className="hidden sm:block sm:whitespace-nowrap">{m.homeIntroPart2}</span>
               </p>
-            </div>
-
-            {/* 우측 열 — 동상이 그radient 뒤로 보이는 여백 */}
-            <div className="hidden min-h-[12rem] lg:block" aria-hidden />
+            ) : m.homeDescription.trim() ? (
+              <p
+                className={`relative mt-3 w-full max-w-[min(100%,42rem)] shrink-0 px-1 font-serif text-base leading-loose text-ink-soft sm:mt-4 sm:px-0 sm:text-[17px] ${
+                  lang === 'hi' ? 'font-devanagari' : ''
+                }`}
+                lang={lang === 'hi' ? 'hi' : undefined}
+              >
+                <span className="sm:hidden whitespace-normal">
+                  {m.homeDescription.replace(/\n/g, ' ')}
+                </span>
+                <span className="hidden sm:inline whitespace-pre-line">{m.homeDescription}</span>
+              </p>
+            ) : (
+              <p
+                className={`relative mt-3 w-full max-w-[min(100%,42rem)] shrink-0 px-1 font-serif text-base leading-loose text-ink-soft sm:mt-4 sm:px-0 sm:text-[17px] ${
+                  lang === 'hi' ? 'font-devanagari' : ''
+                }`}
+                lang={lang === 'hi' ? 'hi' : undefined}
+              >
+                <span className="sm:hidden whitespace-normal">
+                  {m.homeIntroPart1} {m.homeIntroPart2}
+                </span>
+                <span className="hidden sm:block sm:whitespace-pre-line">
+                  {m.homeIntroPart1}
+                  {'\n'}
+                  {m.homeIntroPart2}
+                </span>
+              </p>
+            )}
           </div>
-        ) : (
-          <>
-            <p
-              className={`font-sans text-xs text-ink-muted tracking-[0.3em] uppercase ${
-                lang === 'hi'
-                  ? 'font-devanagari normal-case tracking-normal text-[13px] leading-relaxed'
-                  : ''
-              }`}
-              lang={lang === 'hi' ? 'hi' : undefined}
-            >
-              {m.homeSubtitle}
-            </p>
 
-            <h1 className="mt-5 font-jamo text-6xl leading-none tracking-wide text-ink sm:mt-6 sm:text-7xl md:text-8xl lg:text-[5.5rem]">
-              {m.siteTitle}
-            </h1>
-
-            <p className="mt-4 font-sans text-sm tracking-[0.2em] text-ink-muted sm:mt-5">
-              Sejong Speech Sounds
-            </p>
-          </>
-        )}
-
-        {lang !== 'ko' ? <div className="section-divider mt-8" /> : null}
-
-        {lang !== 'ko' && m.homeDescription.trim() ? (
-          <p className="mx-auto mt-8 max-w-3xl font-sans text-base leading-relaxed text-ink-soft">
-            <span className="sm:hidden whitespace-normal">
-              {m.homeDescription.replace(/\n/g, ' ')}
-            </span>
-            <span className="hidden sm:inline whitespace-pre-line">{m.homeDescription}</span>
-          </p>
-        ) : null}
+          <div className="hidden min-h-[12rem] lg:block" aria-hidden />
+        </div>
       </section>
 
-      <div className="site-container relative z-10 pb-24">
-        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
+      {/* 2막 — 자음 · 모음 · 훈민정음 (1뷰포트) */}
+      <section
+        ref={act2Ref}
+        id="home-act2"
+        className={`home-scroll-margin site-container relative z-10 flex ${heroHeightClass} flex-col justify-center overflow-hidden py-[clamp(0.75rem,2dvh,1.5rem)]`}
+      >
+        <div className="grid min-h-0 w-full grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:gap-5">
         <NavCard
+          compact
           href="/consonants"
           label={m.consonants}
           count={m.consonantsCount}
@@ -165,6 +184,7 @@ export default function HomePage() {
           explore={m.explore}
         />
         <NavCard
+          compact
           href="/vowels"
           label={m.vowels}
           count={m.vowelsCount}
@@ -173,80 +193,28 @@ export default function HomePage() {
           explore={m.explore}
         />
         <HunminjeongeumCard
+          compact
           href="/hunminjeongeum"
           label={m.hunminjeongeum}
           caption={m.hunminjeongeumCaption}
           description={m.hunminjeongeumCardDesc}
           explore={m.explore}
         />
+        </div>
       </section>
 
-      {/* 훈민정음과 연구 소개 사이 */}
-      <div className="pt-10 sm:pt-14" aria-hidden />
+      {/* 3막 — 연구 소개 (다크 풀블리드 · 1뷰포트) */}
+      <HomeResearchAct ref={act3Ref} />
 
-      <ResearchCard
-        href="/research"
-        label={m.research}
-        description={m.researchCardDesc}
-        cta={m.researchCta}
-      />
-      </div>
-
-      {/* 소개 섹션 — 한국어는 히어로에 통합. 타 언어는 하단 유지 */}
-      {lang !== 'ko' ? (
-        <div className="site-container pb-24">
-          <section className="mx-auto max-w-3xl text-center">
-          <div className="section-divider" />
-          <p
-            className={`font-serif text-base text-ink-soft leading-loose mt-8 ${
-              lang === 'hi' ? 'font-devanagari' : ''
-            }`}
-            lang={lang === 'hi' ? 'hi' : undefined}
-          >
-            {m.homeIntroPart1}
-            <br className="hidden sm:block" />
-            {m.homeIntroPart2}
-          </p>
-          {m.homeSub.trim() ? (
-            <p className="font-sans text-xs text-ink-muted mt-6 tracking-wider">{m.homeSub}</p>
-          ) : null}
-          </section>
-        </div>
-      ) : null}
+      {/* 4막 — 문의하기 (1뷰포트) */}
+      <section
+        ref={act4Ref}
+        id="home-act4"
+        className={`home-scroll-margin site-container relative z-10 flex ${heroHeightClass} min-h-0 max-h-[calc(100dvh-var(--site-header-h,4rem))] flex-col justify-center overflow-y-auto py-[clamp(0.75rem,2dvh,1.5rem)]`}
+      >
+        <HomeContactSection />
+      </section>
     </div>
-  )
-}
-
-interface ResearchCardProps {
-  href: string
-  label: string
-  description: string
-  cta: string
-}
-
-function ResearchCard({ href, label, description, cta }: ResearchCardProps) {
-  return (
-    <Link
-      href={href}
-      className="group block w-full rounded-sm border border-hanji-border/60 bg-hanji/75 px-8 py-8 text-left shadow-[0_1px_0_rgb(var(--ink-rgb)/0.02)] backdrop-blur-md transition-colors hover:border-hanji-border hover:bg-hanji/90 sm:px-10 sm:py-9 dark:bg-hanji/65 dark:hover:bg-hanji/80"
-    >
-      <div className="flex flex-col gap-5">
-        <div className="min-w-0">
-          <span className="font-serif text-xl text-ink transition-colors group-hover:text-ink-accent">
-            {label}
-          </span>
-          <p className="mt-2 font-sans text-xs leading-relaxed text-ink-muted">{description}</p>
-        </div>
-        <div className="flex justify-end pt-0.5">
-          <span className="flex items-center gap-2">
-            <span className="font-sans text-xs text-gold">{cta}</span>
-            <span className="inline-block text-base text-gold transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1">
-              →
-            </span>
-          </span>
-        </div>
-      </div>
-    </Link>
   )
 }
 
@@ -256,38 +224,57 @@ interface HunminjeongeumCardProps {
   caption: string
   description: string
   explore: string
+  compact?: boolean
 }
 
 /** 자음/모음 격자 아래 전 너비 — 동급 중요도로 크게 표시 */
-function HunminjeongeumCard({ href, label, caption, description, explore }: HunminjeongeumCardProps) {
+function HunminjeongeumCard({
+  href,
+  label,
+  caption,
+  description,
+  explore,
+  compact = false,
+}: HunminjeongeumCardProps) {
   const baseShapes = ['ㄱ', 'ㄴ', 'ㅁ', 'ㅅ', 'ㅇ']
 
   return (
     <Link
       href={href}
-      className="group col-span-1 sm:col-span-2 relative overflow-hidden rounded-sm border border-hanji-border/60 bg-hanji/75 backdrop-blur-md transition-colors hover:bg-hanji/90 hover:border-hanji-border p-10 sm:p-12 flex flex-col gap-6 dark:bg-hanji/65 dark:hover:bg-hanji/80"
+      className={`group col-span-1 sm:col-span-2 relative overflow-hidden rounded-sm border border-hanji-border/60 bg-hanji/75 backdrop-blur-md transition-colors hover:bg-hanji/90 hover:border-hanji-border flex flex-col dark:bg-hanji/65 dark:hover:bg-hanji/80 ${
+        compact ? 'gap-4 p-6 sm:gap-5 sm:p-7 lg:p-8' : 'gap-6 p-10 sm:p-12'
+      }`}
     >
       <HaeryebonCardWatermark />
 
       <div className="relative z-10">
         <div className="flex items-baseline gap-3 mb-1">
-          <span className="font-jamo text-4xl text-ink group-hover:text-ink-accent transition-colors">
+          <span
+            className={`font-jamo text-ink group-hover:text-ink-accent transition-colors ${
+              compact ? 'text-3xl lg:text-4xl' : 'text-4xl'
+            }`}
+          >
             {label}
           </span>
         </div>
         <span className="font-sans text-xs text-ink-muted tracking-[0.06em]">{caption}</span>
       </div>
 
-      <div className="relative z-10 flex gap-3 flex-wrap" dir="ltr" lang="ko">
+      <div className="relative z-10 flex gap-2 flex-wrap sm:gap-3" dir="ltr" lang="ko">
         {baseShapes.map((s) => (
-          <span key={s} className="font-jamo text-2xl text-ink-muted group-hover:text-ink transition-colors">
+          <span
+            key={s}
+            className={`font-jamo text-ink-muted group-hover:text-ink transition-colors ${
+              compact ? 'text-xl sm:text-2xl' : 'text-2xl'
+            }`}
+          >
             {s}
           </span>
         ))}
         <span className="font-sans text-xl text-ink-muted self-end pb-1">…</span>
       </div>
 
-      <p className="relative z-10 break-keep font-sans text-xs text-ink-muted leading-relaxed max-w-xl [overflow-wrap:break-word]">
+      <p className="relative z-10 break-keep font-sans text-xs text-ink-muted leading-relaxed max-w-xl line-clamp-2 sm:line-clamp-none [overflow-wrap:break-word]">
         {description}
       </p>
 
@@ -308,28 +295,45 @@ interface NavCardProps {
   preview: string[]
   description: string
   explore: string
+  compact?: boolean
 }
 
-function NavCard({ href, label, count, preview, description, explore }: NavCardProps) {
+function NavCard({
+  href,
+  label,
+  count,
+  preview,
+  description,
+  explore,
+  compact = false,
+}: NavCardProps) {
   return (
     <Link
       href={href}
-      className="group flex flex-col gap-6 rounded-sm border border-hanji-border/60 bg-hanji/75 backdrop-blur-md transition-colors hover:bg-hanji/90 hover:border-hanji-border p-10 sm:p-12 dark:bg-hanji/65 dark:hover:bg-hanji/80"
+      className={`group flex flex-col rounded-sm border border-hanji-border/60 bg-hanji/75 backdrop-blur-md transition-colors hover:bg-hanji/90 hover:border-hanji-border dark:bg-hanji/65 dark:hover:bg-hanji/80 ${
+        compact ? 'min-h-0 gap-4 p-6 sm:gap-5 sm:p-7 lg:p-8' : 'gap-6 p-10 sm:p-12'
+      }`}
     >
       <div>
         <div className="flex items-baseline gap-3 mb-1">
-          <span className="font-jamo text-4xl text-ink group-hover:text-ink-accent transition-colors">
+          <span
+            className={`font-jamo text-ink group-hover:text-ink-accent transition-colors ${
+              compact ? 'text-3xl lg:text-4xl' : 'text-4xl'
+            }`}
+          >
             {label}
           </span>
         </div>
         <span className="font-sans text-xs text-ink-muted">{count}</span>
       </div>
 
-      <div className="flex gap-3 flex-wrap" dir="ltr" lang="ko">
+      <div className="flex gap-2 flex-wrap sm:gap-3" dir="ltr" lang="ko">
         {preview.map((symbol) => (
           <MagneticGlyph
             key={symbol}
-            className="font-jamo text-2xl text-ink-muted group-hover:text-ink transition-colors inline-block"
+            className={`font-jamo text-ink-muted group-hover:text-ink transition-colors inline-block ${
+              compact ? 'text-xl sm:text-2xl' : 'text-2xl'
+            }`}
           >
             {symbol}
           </MagneticGlyph>
@@ -337,7 +341,11 @@ function NavCard({ href, label, count, preview, description, explore }: NavCardP
         <span className="font-sans text-xl text-ink-muted self-end pb-1">…</span>
       </div>
 
-      <p className="font-sans text-xs text-ink-muted leading-relaxed">
+      <p
+        className={`font-sans text-xs text-ink-muted leading-relaxed ${
+          compact ? 'line-clamp-2 sm:line-clamp-none' : ''
+        }`}
+      >
         {description}
       </p>
 

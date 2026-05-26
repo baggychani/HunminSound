@@ -15,7 +15,7 @@ import {
   consonantSegmentSeparatorKind,
   HUNMIN_GLYPH_RAIL_CLASS,
   HUNMIN_LABEL_BLOCK_CLASS,
-  HunminBetweenSeparator,
+  HunminColumnSeparator,
   HunminZoneHeading,
 } from '@/components/showcase/hunmin/HunminChartParts'
 import {
@@ -46,6 +46,7 @@ interface GlyphButtonProps {
   isActive: boolean
   onClick: () => void
   symbolFontClass: string
+  variant?: 'default' | 'card'
 }
 
 function consonantButtonSubLabel(name: string): string | null {
@@ -56,22 +57,33 @@ function consonantButtonSubLabel(name: string): string | null {
   return raw
 }
 
-function GlyphButton({ consonant, isActive, onClick, symbolFontClass }: GlyphButtonProps) {
+function GlyphButton({
+  consonant,
+  isActive,
+  onClick,
+  symbolFontClass,
+  variant = 'card',
+}: GlyphButtonProps) {
   const sub = consonantButtonSubLabel(consonant.name)
+  const isCard = variant === 'card'
+  const cardClass = isCard ? 'symbol-btn-card' : ''
   return (
     <span className="inline-block align-top">
       <button
         type="button"
         onClick={onClick}
-        className={`symbol-btn transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 ${
-          isActive ? 'active bg-hanji-hover' : 'hover:bg-hanji-hover'
-        }`}
+        className={`symbol-btn transition-transform duration-200 ease-out hover:-translate-y-px active:translate-y-0 ${cardClass} ${
+          isActive ? 'active' : ''
+        } ${isActive && !isCard ? 'bg-hanji-hover' : ''} ${!isCard ? 'hover:bg-hanji-hover' : ''}`}
         aria-expanded={isActive}
         aria-label={`${consonant.name} 상세 보기`}
       >
+        {isCard ? <span aria-hidden className="symbol-card-dot" /> : null}
         <span
-          className={`symbol-char ${symbolFontClass} text-4xl leading-none transition-colors ${
-            isActive ? 'text-ink-accent' : 'text-ink'
+          className={`symbol-char ${symbolFontClass} leading-none ${
+            isCard ? '' : 'transition-colors'
+          } ${isCard ? 'text-[1.85rem] sm:text-[2rem]' : 'text-4xl'} ${
+            isCard ? '' : isActive ? 'text-ink-accent' : 'text-ink'
           }`}
         >
           {consonant.symbol}
@@ -89,8 +101,11 @@ function GlyphButton({ consonant, isActive, onClick, symbolFontClass }: GlyphBut
 
 function GlyphPlaceholder({ symbol, symbolFontClass }: { symbol: string; symbolFontClass: string }) {
   return (
-    <span className="symbol-btn cursor-not-allowed bg-hanji/50 opacity-50" aria-disabled>
-      <span className={`symbol-char ${symbolFontClass} text-4xl leading-none text-ink-muted`}>{symbol}</span>
+    <span
+      className="symbol-btn symbol-btn-card is-disabled is-muted cursor-not-allowed"
+      aria-disabled
+    >
+      <span className={`symbol-char ${symbolFontClass} text-4xl leading-none`}>{symbol}</span>
       <span className="symbol-sub invisible select-none" aria-hidden>
         {'\u00a0'}
       </span>
@@ -246,15 +261,15 @@ function HunminZone({
   symbolFontClass,
 }: HunminZoneProps) {
   return (
-    <div className="flex flex-wrap items-end">
+    <div className="flex flex-nowrap items-stretch gap-2 sm:gap-3">
       {segments.map((seg, segIdx) => (
         <Fragment key={`${row.id}-${zoneKey}-${seg.label}-${segIdx}`}>
           {segIdx > 0 && (
-            <HunminBetweenSeparator
+            <HunminColumnSeparator
               kind={consonantSegmentSeparatorKind(segments[segIdx - 1], seg)}
             />
           )}
-          <div className="flex min-w-0 flex-col items-center">
+          <div className="flex min-w-0 shrink-0 flex-col items-center">
             <div className={HUNMIN_LABEL_BLOCK_CLASS}>
               {seg.label ? (
                 <span className="font-sans text-xs leading-snug tracking-wide text-ink-muted sm:text-[13px]">
@@ -262,7 +277,7 @@ function HunminZone({
                 </span>
               ) : null}
             </div>
-            <div className={`${HUNMIN_GLYPH_RAIL_CLASS} flex-wrap justify-center gap-1`}>
+            <div className={`${HUNMIN_GLYPH_RAIL_CLASS} flex flex-wrap justify-center gap-2 sm:gap-3`}>
               {seg.symbols.map((sym) => {
                 const c = findConsonantBySymbol(consonants, sym)
                 if (!c) return <GlyphPlaceholder key={sym} symbol={sym} symbolFontClass={symbolFontClass} />
@@ -328,16 +343,17 @@ function ModernRowBody({
         {subGroups.map((subGroup, idx) => (
           <Fragment key={subGroup.group || idx}>
             {idx > 0 && subGroups.length > 1 && (
-              <span className="mx-3 block h-20 w-px shrink-0 bg-hanji-border" aria-hidden="true" />
+              <span className="mx-3 block h-[4.625rem] w-px shrink-0 bg-hanji-border sm:h-[4.875rem]" aria-hidden="true" />
             )}
-            <div className="flex gap-1">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               {subGroup.items.map((consonant) => (
                 <GlyphButton
                   key={consonant._id}
                   consonant={consonant}
                   isActive={activeId === consonant._id}
                   onClick={() => onToggle(consonant._id)}
-                  symbolFontClass="font-dogseo-text"
+                  symbolFontClass="font-serif"
+                  variant="card"
                 />
               ))}
             </div>
@@ -355,7 +371,7 @@ function ModernRowBody({
               type="consonants"
               categoryLabel={categoryLabel}
               categoryEnLabel={categoryEnLabel}
-              symbolFontClass="font-dogseo-text"
+              symbolFontClass="font-serif"
             />
           </div>
         )}
@@ -460,7 +476,10 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
 
   return (
     <div>
-      <div className="space-y-16" style={chartFadeStyle}>
+      <div
+        className={displayMode === 'hunmin' ? 'space-y-24' : 'space-y-16'}
+        style={chartFadeStyle}
+      >
       {[0, 1, 2, 3, 4].map((rowIndex) => {
         const hunminRow = HUNMIN_CONSONANT_ROWS[rowIndex]
         const category = CATEGORY_ORDER[rowIndex]

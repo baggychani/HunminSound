@@ -12,33 +12,61 @@ const ID_TO_KEY: Record<HunminNavId, HunminPassageSectionId> = {
   'hunmin-appraisal': 'appraisal',
 }
 
-function readHeaderGap(): number {
-  if (typeof document === 'undefined') return 96
-  const header = document.querySelector('header')
-  const h = header ? header.getBoundingClientRect().height : 0
-  return Math.ceil(h) + 12
-}
+const NAV_WIDTH_PX = 148
+const NAV_MARGIN_PX = 16
 
 function scrollToHunminSection(id: string): void {
   const section = document.getElementById(id)
-  const title = document.getElementById(`${id}-title`)
-  const target = title ?? section
-  if (!target) return
+  if (!section) return
 
-  const scrollOnce = (): void => {
-    const headerGap = readHeaderGap()
-    const scrollMt =
-      parseFloat(getComputedStyle(section ?? target).scrollMarginTop) || 0
-    const rect = target.getBoundingClientRect()
-    const y = window.scrollY + rect.top - headerGap - scrollMt
-    window.scrollTo({ top: Math.max(0, y), left: 0, behavior: 'instant' })
-  }
-
-  scrollOnce()
+  const run = () => section.scrollIntoView({ behavior: 'instant', block: 'start' })
+  run()
   requestAnimationFrame(() => {
-    scrollOnce()
-    requestAnimationFrame(scrollOnce)
+    run()
+    requestAnimationFrame(run)
   })
+}
+
+function readHeaderGap(): number {
+  if (typeof document === 'undefined') return 64
+  const raw = getComputedStyle(document.documentElement).getPropertyValue('--site-header-h').trim()
+  const parsed = parseFloat(raw)
+  if (Number.isFinite(parsed) && parsed > 0) return parsed
+  const header = document.querySelector('header')
+  return header ? Math.ceil(header.getBoundingClientRect().height) : 64
+}
+
+/** 본문 컨테이너 왼쪽에 목차가 들어갈 여백이 있는지 (좁은 노트북에서는 숨김) */
+function useSideNavPlacement() {
+  const [visible, setVisible] = useState(false)
+  const [insetStart, setInsetStart] = useState(NAV_MARGIN_PX)
+
+  useEffect(() => {
+    const update = () => {
+      const container = document.querySelector('.site-container')
+      if (!container) {
+        setVisible(false)
+        return
+      }
+      const left = container.getBoundingClientRect().left
+      const minLeft = NAV_WIDTH_PX + NAV_MARGIN_PX
+      setVisible(left >= minLeft)
+      setInsetStart(Math.max(NAV_MARGIN_PX, left - NAV_WIDTH_PX - 12))
+    }
+
+    update()
+    window.addEventListener('resize', update)
+    const container = document.querySelector('.site-container')
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(update) : null
+    if (container) ro?.observe(container)
+
+    return () => {
+      window.removeEventListener('resize', update)
+      ro?.disconnect()
+    }
+  }, [])
+
+  return { visible, insetStart }
 }
 
 interface HunminSectionNavProps {
@@ -47,10 +75,12 @@ interface HunminSectionNavProps {
 
 export function HunminSectionNav({ labels }: HunminSectionNavProps) {
   const [active, setActive] = useState<HunminNavId>('hunmin-initial')
+  const { visible, insetStart } = useSideNavPlacement()
 
   useEffect(() => {
     const headerGap = readHeaderGap()
-    const visible = new Map<HunminNavId, number>()
+
+    const visibleSections = new Map<HunminNavId, number>()
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -58,18 +88,18 @@ export function HunminSectionNav({ labels }: HunminSectionNavProps) {
           const id = entry.target.id as HunminNavId
           if (!SECTION_IDS.includes(id)) continue
           if (entry.isIntersecting) {
-            visible.set(id, entry.intersectionRatio)
+            visibleSections.set(id, entry.intersectionRatio)
           } else {
-            visible.delete(id)
+            visibleSections.delete(id)
           }
         }
 
-        if (visible.size === 0) return
+        if (visibleSections.size === 0) return
 
         let best: HunminNavId = 'hunmin-initial'
         let bestRatio = -1
         for (const id of SECTION_IDS) {
-          const ratio = visible.get(id)
+          const ratio = visibleSections.get(id)
           if (ratio !== undefined && ratio >= bestRatio) {
             bestRatio = ratio
             best = id
@@ -97,9 +127,12 @@ export function HunminSectionNav({ labels }: HunminSectionNavProps) {
     setActive(id)
   }, [])
 
+  if (!visible) return null
+
   return (
     <nav
-      className="fixed start-3 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-0.5 lg:start-4 lg:flex xl:start-[max(1.5rem,calc((100vw-min(100vw,1480px))/2-11rem))]"
+      className="fixed top-1/2 z-40 flex -translate-y-1/2 flex-col gap-0.5"
+      style={{ insetInlineStart: insetStart }}
       aria-label="훈민정음 본문 목차"
     >
       <div className="rounded-xl border border-hanji-border/80 bg-hanji/88 px-2 py-2.5 shadow-sm backdrop-blur-sm dark:bg-hanji/75">

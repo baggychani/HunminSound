@@ -22,7 +22,7 @@ export function PassageSection({
   return (
     <motion.section
       id={id}
-      className="scroll-mt-24 sm:scroll-mt-28"
+      className="home-scroll-margin"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: '-60px' }}

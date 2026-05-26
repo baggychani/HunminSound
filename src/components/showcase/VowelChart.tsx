@@ -13,9 +13,11 @@ import { VOWEL_ARTICULATION_KO } from '@/lib/vowelArticulation'
 import { JamoText } from '@/components/ui/JamoText'
 import type { ChartViewMode } from '@/components/showcase/PhoneticsViewToggle'
 import { HunminZoneHeading } from '@/components/showcase/hunmin/HunminChartParts'
+import { HunminCheonJiInBanner } from '@/components/showcase/hunmin/HunminCheonJiInBanner'
 import { PhoneticsHaeryeSource } from '@/components/showcase/phonetics/PhoneticsHaeryeSource'
 import {
   HUNMIN_VOWEL_GLYPH_RAIL_CLASS,
+  HUNMIN_VOWEL_CARD_CHAR_CLASS,
   HunminVowelImageGlyph,
   HunminVowelJamoGlyph,
   HunminVowelZone,
@@ -48,6 +50,7 @@ interface GlyphButtonProps {
   isActive: boolean
   onClick: () => void
   symbolFontClass: string
+  variant?: 'default' | 'card'
 }
 
 function vowelButtonSubLabel(name: string): string | null {
@@ -58,22 +61,33 @@ function vowelButtonSubLabel(name: string): string | null {
   return raw
 }
 
-function GlyphButton({ vowel, isActive, onClick, symbolFontClass }: GlyphButtonProps) {
+function GlyphButton({
+  vowel,
+  isActive,
+  onClick,
+  symbolFontClass,
+  variant = 'card',
+}: GlyphButtonProps) {
   const sub = vowelButtonSubLabel(vowel.name)
+  const isCard = variant === 'card'
+  const cardClass = isCard ? 'symbol-btn-card' : 'symbol-btn-hunmin'
   return (
     <span className="inline-block align-top">
       <button
         type="button"
         onClick={onClick}
-        className={`symbol-btn symbol-btn-hunmin transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 ${
-          isActive ? 'active bg-hanji-hover' : 'hover:bg-hanji-hover'
-        }`}
+        className={`symbol-btn transition-transform duration-200 ease-out hover:-translate-y-px active:translate-y-0 ${cardClass} ${
+          isActive ? 'active' : ''
+        } ${isActive && !isCard ? 'bg-hanji-hover' : ''} ${!isCard ? 'hover:bg-hanji-hover' : ''}`}
         aria-expanded={isActive}
         aria-label={`${vowel.name} \uC0C1\uC138 \uBCF4\uAE30`}
       >
+        {isCard ? <span aria-hidden className="symbol-card-dot" /> : null}
         <span
-          className={`symbol-char ${symbolFontClass} text-4xl leading-none transition-colors ${
-            isActive ? 'text-ink-accent' : 'text-ink'
+          className={`symbol-char ${symbolFontClass} leading-none ${
+            isCard ? '' : 'transition-colors'
+          } ${isCard ? HUNMIN_VOWEL_CARD_CHAR_CLASS : 'text-4xl'} ${
+            isCard ? '' : isActive ? 'text-ink-accent' : 'text-ink'
           }`}
         >
           {vowel.symbol}
@@ -88,10 +102,11 @@ function GlyphButton({ vowel, isActive, onClick, symbolFontClass }: GlyphButtonP
 
 function GlyphPlaceholder({ symbol, symbolFontClass }: { symbol: string; symbolFontClass: string }) {
   return (
-    <span className="symbol-btn symbol-btn-hunmin cursor-not-allowed bg-hanji/50 opacity-50" aria-disabled>
-      <span className={`symbol-char ${symbolFontClass} text-4xl leading-none text-ink-muted`}>
-        {symbol}
-      </span>
+    <span
+      className="symbol-btn symbol-btn-card is-disabled is-muted cursor-not-allowed"
+      aria-disabled
+    >
+      <span className={`symbol-char ${symbolFontClass} leading-none ${HUNMIN_VOWEL_CARD_CHAR_CLASS}`}>{symbol}</span>
       <span className="symbol-sub invisible select-none" aria-hidden>
         {'\u00a0'}
       </span>
@@ -120,13 +135,7 @@ function VowelCompoundSlot({
   const mapped = mapTo ? findVowelBySymbol(vowels, mapTo) : undefined
   const glyph = (
     <span
-      className={`symbol-char ${symbolFontClass} inline-flex items-baseline leading-none tracking-[-0.22em] transition-colors ${
-        mapped
-          ? isActive
-            ? 'text-ink-accent'
-            : 'text-ink'
-          : 'text-ink-muted/75'
-      } text-[1.65rem] sm:text-4xl`}
+      className={`symbol-char ${symbolFontClass} inline-flex items-baseline leading-none tracking-[-0.22em] ${HUNMIN_VOWEL_CARD_CHAR_CLASS}`}
     >
       {Array.from(jamo).map((ch, i) => (
         <span key={`${ch}-${i}`} className="inline-block">
@@ -142,12 +151,13 @@ function VowelCompoundSlot({
         <button
           type="button"
           onClick={onClick}
-          className={`symbol-btn transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 ${
-            isActive ? 'active bg-hanji-hover' : 'hover:bg-hanji-hover'
+          className={`symbol-btn symbol-btn-card transition-transform duration-200 ease-out hover:-translate-y-px active:translate-y-0 ${
+            isActive ? 'active' : ''
           }`}
           aria-expanded={isActive}
           aria-label={mapped.name}
         >
+          <span aria-hidden className="symbol-card-dot" />
           {glyph}
           <span className="symbol-sub invisible select-none" aria-hidden>
             {'\u00a0'}
@@ -159,7 +169,7 @@ function VowelCompoundSlot({
 
   return (
     <span
-      className={`symbol-btn cursor-default bg-hanji/30 ${interactive ? '' : 'pointer-events-none'}`}
+      className="symbol-btn symbol-btn-card is-muted pointer-events-none cursor-default"
       aria-disabled
       title={'\uBBF8\uC0AC\uC6A9 \uD569\uC6A9\uC790'}
     >
@@ -173,7 +183,7 @@ function VowelCompoundSlot({
 
 function VowelReservedSlot() {
   return (
-    <span className="symbol-btn cursor-default bg-transparent" aria-hidden>
+    <span className="symbol-btn symbol-btn-card invisible border-transparent shadow-none" aria-hidden>
       <span className="symbol-char invisible text-4xl leading-none">{'\u00a0'}</span>
       <span className="symbol-sub invisible select-none">{'\u00a0'}</span>
     </span>
@@ -285,7 +295,7 @@ function HunminVowelRowBody({
     <div>
       <div
         ref={hasActive ? detailScrollRef : undefined}
-        className="flex max-w-full flex-nowrap items-stretch gap-x-1.5 sm:gap-x-2"
+        className="flex max-w-full flex-nowrap items-stretch gap-x-4 sm:gap-x-6 lg:gap-x-8"
         dir={lang === 'ar' ? 'ltr' : undefined}
         lang={lang === 'ar' ? 'ko' : undefined}
       >
@@ -297,8 +307,7 @@ function HunminVowelRowBody({
           }
         >
           <HunminZoneHeading title={HUNMIN_ZONE_BASIC} />
-          <div className="mt-auto">
-            <HunminVowelZone
+          <HunminVowelZone
               row={row}
               zoneKey="b"
               segments={row.basicSegments}
@@ -308,13 +317,11 @@ function HunminVowelRowBody({
               }
             />
           </div>
-        </div>
         <div className="w-px shrink-0 self-stretch bg-hanji-border/75" aria-hidden />
         <div className="flex min-w-0 shrink-0 flex-col">
           {hasCombinedZone ? <HunminZoneHeading title={HUNMIN_ZONE_COMBINED} /> : null}
-          <div className="mt-auto">
-            {hasCombinedZone ? (
-              <HunminVowelZone
+          {hasCombinedZone ? (
+            <HunminVowelZone
                 row={row}
                 zoneKey="c"
                 segments={row.combinedSegments}
@@ -323,10 +330,9 @@ function HunminVowelRowBody({
                   renderVowelSlot(slot, slotKey, vowels, activeId, onToggle, 'font-jamo', false)
                 }
               />
-            ) : (
-              <div className={HUNMIN_VOWEL_GLYPH_RAIL_CLASS} aria-hidden />
-            )}
-          </div>
+          ) : (
+            <div className={HUNMIN_VOWEL_GLYPH_RAIL_CLASS} aria-hidden />
+          )}
         </div>
       </div>
       <ScrollSection isOpen={hasActive}>
@@ -393,7 +399,7 @@ function ModernVowelSection({
 
       <div
         ref={hasActive ? detailScrollRef : undefined}
-        className="flex flex-wrap gap-1"
+        className="flex flex-wrap gap-2 sm:gap-3"
         dir={lang === 'ar' ? 'ltr' : undefined}
         lang={lang === 'ar' ? 'ko' : undefined}
       >
@@ -403,7 +409,8 @@ function ModernVowelSection({
             vowel={vowel}
             isActive={activeId === vowel._id}
             onClick={() => onToggle(vowel._id)}
-            symbolFontClass="font-dogseo-text"
+            symbolFontClass="font-serif"
+            variant="card"
           />
         ))}
       </div>
@@ -518,9 +525,14 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
 
   return (
     <div>
-      <div className="space-y-16" style={chartFadeStyle}>
-      {displayMode === 'hunmin'
-        ? HUNMIN_VOWEL_ROWS.map((row, rowIndex) => (
+      <div
+        className={displayMode === 'hunmin' ? 'space-y-24' : 'space-y-16'}
+        style={chartFadeStyle}
+      >
+      {displayMode === 'hunmin' ? (
+        <>
+          <HunminCheonJiInBanner />
+          {HUNMIN_VOWEL_ROWS.map((row, rowIndex) => (
             <section key={row.id}>
               <div className="mb-4">
                 <h3 className="font-jamo text-lg tracking-wide text-ink">{row.title}</h3>
@@ -542,8 +554,10 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
                 basicColumnMinWidthPx={hunminBasicColMinPx}
               />
             </section>
-          ))
-        : CATEGORY_ORDER.map((category) => {
+          ))}
+        </>
+      ) : (
+        CATEGORY_ORDER.map((category) => {
             const items = grouped[category]
             if (!items || items.length === 0) return null
             const categoryLabel = m.categories[category] ?? category
@@ -566,7 +580,8 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
                 onToggle={toggle}
               />
             )
-          })}
+          })
+      )}
       </div>
       {displayMode === 'hunmin' ? (
         <div style={chartFadeStyle}>
@@ -598,7 +613,7 @@ function VowelDetailPanel({
     <>
       <div className="flex items-baseline gap-4 mb-5">
         <div className="flex flex-col items-center gap-3 shrink-0">
-          <span className="font-dogseo-text text-6xl text-ink leading-none">{item.symbol}</span>
+          <span className="font-serif text-6xl text-ink leading-none">{item.symbol}</span>
           <div className="h-px w-full bg-hanji-border" aria-hidden />
         </div>
         <div>

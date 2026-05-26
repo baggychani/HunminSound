@@ -5,7 +5,11 @@ export const HUNMIN_GLYPH_RAIL_CLASS = 'flex h-20 shrink-0 items-center justify-
 
 /** 구간 라벨 영역 — 열마다 높이를 맞춰 구분선이 글리프 중앙에 오게 함 */
 export const HUNMIN_LABEL_BLOCK_CLASS =
-  'mb-2 flex min-h-[2.85rem] w-full flex-col items-center justify-end gap-0.5 px-1 text-center'
+  'mb-1.5 flex min-h-[1.35rem] w-full flex-col items-center justify-end gap-0.5 px-1 text-center'
+
+/** 모음 훈민 — 합성자·ㅣ 합용자·상형기본자 등 span 라벨 + 가로선 */
+export const HUNMIN_VOWEL_SPAN_HEADER_CLASS =
+  'mb-1.5 flex w-full flex-col items-center justify-end gap-0 px-1 text-center'
 
 /** 상형기본자 → 일반 가획(자음) / 합성자(모음): 가획·합성 관계 */
 export function hunminSegmentSeparatorKind(
@@ -36,11 +40,11 @@ export function hunminVowelSegmentSeparatorKind(
 
 export function HunminZoneHeading({ title }: { title: string }) {
   return (
-    <div className="mb-4 w-full">
+    <div className="mb-1.5 w-full">
       <span className="block text-left font-sans text-xs leading-snug tracking-wide text-ink-muted sm:text-[13px]">
         {title}
       </span>
-      <div className="mt-2.5 h-px w-full bg-hanji-border/80" aria-hidden />
+      <div className="mt-1.5 h-px w-full bg-hanji-border/80" aria-hidden />
     </div>
   )
 }
@@ -71,7 +75,31 @@ export function HunminSegmentSeparator({ kind }: { kind: 'gaheuk-arrow' | 'pipe'
   )
 }
 
-const HUNMIN_COMPACT_RAIL_CLASS = 'flex h-[4.25rem] shrink-0 items-center justify-center sm:h-[4.75rem]'
+const HUNMIN_COMPACT_RAIL_CLASS = 'flex h-[4.625rem] shrink-0 items-center justify-center sm:h-[4.875rem]'
+
+/** 모음·자음 훈민 — 열 전체 높이 세로 구분선 (라벨~카드) */
+export function HunminColumnSeparator({ kind = 'pipe' }: { kind?: 'gaheuk-arrow' | 'pipe' }) {
+  return (
+    <div
+      className={`flex w-3 shrink-0 self-stretch justify-center sm:w-3.5 ${
+        kind === 'gaheuk-arrow' ? 'items-center' : 'items-stretch'
+      }`}
+      aria-hidden
+      title={kind === 'gaheuk-arrow' ? '가획' : undefined}
+    >
+      {kind === 'gaheuk-arrow' ? (
+        <HunminSegmentSeparator kind="gaheuk-arrow" />
+      ) : (
+        <span className="w-px min-h-full self-stretch bg-hanji-border/70" />
+      )}
+    </div>
+  )
+}
+
+/** @deprecated HunminColumnSeparator 사용 */
+export function HunminVowelColumnSeparator() {
+  return <HunminColumnSeparator kind="pipe" />
+}
 
 /** 글리프 행(h-20) 안에서만 화살표·| 정렬 */
 export function HunminBetweenSeparator({
@@ -85,7 +113,7 @@ export function HunminBetweenSeparator({
   const rail = compact ? HUNMIN_COMPACT_RAIL_CLASS : HUNMIN_GLYPH_RAIL_CLASS
   return (
     <div
-      className={`${rail} ${kind === 'gaheuk-arrow' ? 'px-1 sm:px-1.5' : compact ? 'px-px sm:px-0.5' : 'px-0.5 sm:px-1'}`}
+      className={`${rail} ${kind === 'gaheuk-arrow' ? 'px-1 sm:px-1.5' : compact ? 'px-0.5 sm:px-1' : 'px-0.5 sm:px-1'}`}
       aria-hidden
       title={kind === 'gaheuk-arrow' ? '가획' : undefined}
     >

@@ -1,14 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
-import { teamInitials, teamPhotoSrc } from '@/lib/teamSlugs'
+import { motion, useInView } from 'framer-motion'
+import { teamPhotoSrc } from '@/lib/teamSlugs'
 
 /** 연구 페이지 인포그래픽 — 성과·규모 (연구 방법 MethodTable 팔레트와 분리, 한지 중립 톤) */
 
-/** 나중에 연구 전용 소스로 교체 — public/videos/research/final-goal.mp4 등 */
-const FINAL_GOAL_MEDIA = '/videos/vowels/animation/ani_a.mp4'
+const FINAL_GOAL_IMAGE = '/images/research/mri-ana.jpg'
 function RichText({ text }: { text: string }) {
   const parts = text.split(/(<b>.*?<\/b>)/g)
   return (
@@ -53,14 +52,13 @@ export function FinalGoalBlock({ label, text }: { label: string; text: string })
     <figure className="final-goal-block group relative overflow-hidden rounded-xl border border-hanji-border/80 bg-hanji-warm/30 shadow-[0_1px_0_rgb(var(--ink-rgb)/0.03)]">
       <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] sm:items-stretch">
         <div className="final-goal-media relative aspect-[16/9] max-h-[11.5rem] overflow-hidden bg-ink/[0.04] sm:aspect-auto sm:max-h-none sm:h-full sm:min-h-0">
-          <video
-            className="absolute inset-0 h-full w-full object-cover object-center"
-            src={FINAL_GOAL_MEDIA}
-            autoPlay
-            loop
-            muted
-            playsInline
-            aria-hidden
+          <Image
+            src={FINAL_GOAL_IMAGE}
+            alt="조음 MRI 영상 — /ㄴ, 아나/ [a n a]"
+            fill
+            sizes="(max-width: 640px) 100vw, 40vw"
+            className="object-cover object-center"
+            priority
           />
           <div
             aria-hidden
@@ -219,10 +217,24 @@ export function AchievementsShowcase({
 
 /* ── 연구진 — 명함형 카드 4×2 ── */
 
+function MemberAvatarFallback() {
+  return (
+    <div className="flex h-full items-center justify-center bg-gradient-to-b from-hanji/55 to-hanji-warm/45">
+      <div
+        className="flex aspect-square w-[38%] min-w-[3.25rem] max-w-[4.5rem] items-center justify-center rounded-full bg-ink/[0.05] ring-1 ring-ink/[0.09]"
+        aria-hidden
+      >
+        <svg viewBox="0 0 24 24" className="h-[52%] w-[52%] text-ink/28" fill="currentColor">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1h16v-1c0-2.66-5.33-4-8-4z" />
+        </svg>
+      </div>
+    </div>
+  )
+}
+
 function MemberPhoto({ name }: { name: string }) {
   const [failed, setFailed] = useState(false)
   const src = teamPhotoSrc(name)
-  const initials = teamInitials(name)
 
   if (src && !failed) {
     return (
@@ -237,20 +249,13 @@ function MemberPhoto({ name }: { name: string }) {
     )
   }
 
-  return (
-    <div className="flex h-full flex-col items-center justify-center gap-1 bg-gradient-to-b from-hanji/60 to-hanji-warm/50">
-      <span className="font-serif text-[1.75rem] leading-none text-ink/20 sm:text-[2rem]">{initials}</span>
-      <span className="font-sans text-[9px] tracking-[0.12em] text-ink-muted/40">PHOTO</span>
-    </div>
-  )
+  return <MemberAvatarFallback />
 }
 
 function TeamMemberCard({
   member,
-  index,
 }: {
   member: { role: string; name: string; affiliation: string; task: string; field: string }
-  index: number
 }) {
   const isLead = member.role.includes('책임')
   const affiliation = member.affiliation.trim()
@@ -259,43 +264,53 @@ function TeamMemberCard({
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-30px' }}
-      transition={{ duration: 0.55, delay: (index % 4) * 0.07 + Math.floor(index / 4) * 0.05, ease: [0.22, 1, 0.36, 1] }}
+      variants={{
+        hidden: { opacity: 0, y: 22 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.52, ease: [0.22, 1, 0.36, 1] },
+        },
+      }}
       className="team-member-card flex h-full flex-col overflow-hidden rounded-lg border border-hanji-border/75 bg-hanji/25 shadow-[0_1px_0_rgb(var(--ink-rgb)/0.03)]"
     >
       <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden border-b border-hanji-border/60 bg-hanji/40">
         <MemberPhoto name={member.name} />
       </div>
 
-      <div className="flex flex-1 flex-col px-3.5 py-3.5 sm:px-4 sm:py-4">
-        <p
-          className={`h-3.5 font-sans text-[10px] font-medium leading-[0.875rem] tracking-[0.12em] ${
-            isLead ? 'text-gold' : 'text-ink-muted/70'
-          }`}
-        >
-          {member.role}
-        </p>
-        <h3 className="mt-1.5 min-h-[1.375rem] break-keep font-serif text-[0.95rem] leading-snug text-ink [overflow-wrap:break-word] sm:min-h-[1.5rem] sm:text-base">
-          {displayName}
-        </h3>
-        <div className="mt-2.5 flex h-[2.35rem] flex-col justify-end sm:mt-3 sm:h-[2.5rem]">
-          {showAffiliation ? (
-            <p className="line-clamp-2 break-keep font-sans text-[11px] leading-snug text-ink-muted/75 [overflow-wrap:break-word] sm:text-xs">
-              {affiliation}
-            </p>
-          ) : null}
+      <div className="flex min-h-0 flex-1 flex-col px-3.5 py-3.5 sm:px-4 sm:py-4">
+        <div className="shrink-0">
+          <p
+            className={`h-3.5 font-sans text-[10px] font-medium leading-[0.875rem] tracking-[0.12em] ${
+              isLead ? 'text-gold' : 'text-ink-muted/70'
+            }`}
+          >
+            {member.role}
+          </p>
+          <h3 className="mt-1 min-h-[2.125rem] line-clamp-2 break-keep font-serif text-[0.95rem] leading-snug text-ink [overflow-wrap:break-word] sm:text-base">
+            {displayName}
+          </h3>
+          <p
+            className={`mt-0.5 min-h-[1.75rem] line-clamp-2 break-keep font-sans text-[11px] leading-snug [overflow-wrap:break-word] sm:text-xs ${
+              showAffiliation ? 'text-ink-muted/75' : 'text-transparent select-none'
+            }`}
+            aria-hidden={!showAffiliation}
+          >
+            {showAffiliation ? affiliation : '\u00A0'}
+          </p>
         </div>
-        <div className="border-t border-hanji-border/50 pt-2">
-          <p className="break-keep font-sans text-[11px] leading-[1.6] text-ink-soft [overflow-wrap:break-word] sm:text-[0.78rem] sm:leading-[1.65]">
+
+        <div className="min-h-0 flex-1" aria-hidden />
+
+        <div className="mt-3 shrink-0 border-t border-hanji-border/50 pt-3">
+          <p className="min-h-[2.625rem] line-clamp-3 break-keep font-sans text-[11px] leading-[1.6] text-ink-soft [overflow-wrap:break-word] sm:text-[0.78rem] sm:leading-[1.65]">
             <RichText text={member.task} />
           </p>
-          <p className="mt-2">
+          <div className="mt-2 flex h-6 items-center">
             <span className="inline-flex max-w-full rounded-full border border-hanji-border/70 bg-hanji/40 px-2.5 py-0.5 font-sans text-[10px] leading-snug text-ink-muted/80">
               {member.field}
             </span>
-          </p>
+          </div>
         </div>
       </div>
     </motion.article>
@@ -307,11 +322,28 @@ export function TeamCardGrid({
 }: {
   rows: { role: string; name: string; affiliation: string; task: string; field: string }[]
 }) {
+  const gridRef = useRef<HTMLDivElement>(null)
+  const inView = useInView(gridRef, { once: true, margin: '-60px' })
+
   return (
-    <div className="grid grid-cols-2 items-stretch gap-2 sm:gap-2.5 lg:grid-cols-4 lg:gap-3">
+    <motion.div
+      ref={gridRef}
+      className="grid grid-cols-2 items-stretch gap-2 sm:gap-2.5 lg:grid-cols-4 lg:gap-3"
+      initial="hidden"
+      animate={inView ? 'visible' : 'hidden'}
+      variants={{
+        hidden: {},
+        visible: {
+          transition: {
+            staggerChildren: 0.14,
+            delayChildren: 0.06,
+          },
+        },
+      }}
+    >
       {rows.map((member, i) => (
-        <TeamMemberCard key={`${member.name}-${i}`} member={member} index={i} />
+        <TeamMemberCard key={`${member.name}-${i}`} member={member} />
       ))}
-    </div>
+    </motion.div>
   )
 }

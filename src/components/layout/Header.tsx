@@ -44,10 +44,25 @@ export function Header() {
   const pathname = usePathname()
   const { lang, setLang } = useLang()
   const m = getMessages(lang)
+  const headerRef = useRef<HTMLElement>(null)
   const [langOpen, setLangOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const navTrackRef = useRef<HTMLDivElement>(null)
   const navLinkRefs = useRef<(HTMLAnchorElement | null)[]>([])
+
+  useLayoutEffect(() => {
+    const el = headerRef.current
+    if (!el) return undefined
+
+    const syncHeaderHeight = () => {
+      document.documentElement.style.setProperty('--site-header-h', `${el.offsetHeight}px`)
+    }
+
+    syncHeaderHeight()
+    const ro = new ResizeObserver(syncHeaderHeight)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
   const [navIndicator, setNavIndicator] = useState<{ left: number; width: number } | null>(null)
 
   const activeNavIndex = NAV_LINKS.findIndex(({ href }) => pathname.startsWith(href))
@@ -100,7 +115,10 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 relative border-b border-hanji-border bg-hanji">
+    <header
+      ref={headerRef}
+      className="sticky top-0 z-50 relative border-b border-hanji-border bg-hanji"
+    >
       <div className="site-container min-h-[3.5rem] py-3 sm:min-h-[4rem] flex flex-nowrap items-center justify-between gap-2 sm:gap-3">
         <Link
           href="/"

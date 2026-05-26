@@ -20,27 +20,35 @@ export function DualVideoPlayer({
   animationLabel,
   mriLabel,
 }: DualVideoPlayerProps) {
+  const showAnimation = Boolean(animationFileName)
+  const showMri = Boolean(mriFileName)
+
+  if (!showAnimation && !showMri) return null
+
+  const labelClass = 'mb-2 font-sans text-[11px] uppercase tracking-widest text-ink-muted'
+  const slotSpacer = <div className="aspect-video w-full" aria-hidden />
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div>
-        <p className="font-sans text-[11px] text-ink-muted tracking-widest uppercase mb-2">
+        <p className={`${labelClass} ${showAnimation ? '' : 'invisible'}`} aria-hidden={!showAnimation}>
           {animationLabel}
         </p>
-        <VideoPlayer
-          fileName={animationFileName}
-          type={type}
-          videoType="animation"
-        />
+        {showAnimation ? (
+          <VideoPlayer fileName={animationFileName} type={type} videoType="animation" />
+        ) : (
+          slotSpacer
+        )}
       </div>
       <div>
-        <p className="font-sans text-[11px] text-ink-muted tracking-widest uppercase mb-2">
+        <p className={`${labelClass} ${showMri ? '' : 'invisible'}`} aria-hidden={!showMri}>
           {mriLabel}
         </p>
-        <VideoPlayer
-          fileName={mriFileName}
-          type={type}
-          videoType="mri"
-        />
+        {showMri ? (
+          <VideoPlayer fileName={mriFileName} type={type} videoType="mri" />
+        ) : (
+          slotSpacer
+        )}
       </div>
     </div>
   )

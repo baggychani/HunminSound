@@ -207,7 +207,6 @@ export const consonantsData: Consonant[] = [
     description:
       '\'이\'에서와 같이 첫소리로 날 때는 음가가 없고, \'응\'에서와 같이 끝소리에서는 혀뿌리를 높여 여린입천장에 붙여 날숨을 막았다가 코안으로 내보낼 때 나는 울림소리 콧소리입니다.',
     animationFileName: 'ㅇ.mp4',
-    mriFileName: 'ㅇ.mp4',
   },
 
   // ─── 유음 (Liquids) ──────────────────────────────────────────────

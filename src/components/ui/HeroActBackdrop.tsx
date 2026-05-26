@@ -6,11 +6,19 @@ import type { RefObject } from 'react'
 
 const IMAGE_PATH = '/images/background.jpg'
 
-/** 좌측 — 강한 페더 */
+/**
+ * @feather-left-mask — 동상 이미지 좌측 페더 (mask-image)
+ * 검색: feather-left-mask
+ * • transparent 구간 = 지워짐 / black = 선명
+ * • 숫자를 줄이면(예: 16→12) 좌측이 더 많이 지워짐, 늘리면(16→20) 덜 지워짐
+ */
 const IMAGE_LEFT_FEATHER =
-  'linear-gradient(to right, transparent 0%, transparent 16%, rgba(0,0,0,0.06) 24%, rgba(0,0,0,0.28) 34%, rgba(0,0,0,0.58) 44%, rgba(0,0,0,0.82) 54%, black 66%, black 100%)'
+  'linear-gradient(to right, transparent 0%, transparent 14%, rgba(0,0,0,0.06) 22%, rgba(0,0,0,0.28) 32%, rgba(0,0,0,0.58) 42%, rgba(0,0,0,0.82) 52%, black 64%, black 100%)'
 
-/** 하단 — 맨 아래 가장자리만 은은하게 (본체·허리는 유지) */
+/**
+ * @feather-bottom-mask — 동상 이미지 하단 페더 (mask-image)
+ * 검색: feather-bottom-mask
+ */
 const IMAGE_BOTTOM_FEATHER =
   'linear-gradient(to top, transparent 0%, transparent 2%, rgba(0,0,0,0.18) 6%, rgba(0,0,0,0.52) 10%, rgba(0,0,0,0.82) 14%, black 19%, black 100%)'
 
@@ -77,13 +85,17 @@ export function HeroActBackdrop({ heroRef }: HeroActBackdropProps) {
         />
       </motion.div>
 
-      {/* 좌→우: 마스크와 겹쳐 한지 쪽 완전히 녹임 */}
-      <div className="absolute inset-0 bg-gradient-to-r from-hanji from-[0%] via-hanji via-[38%] via-hanji/95 via-[52%] via-hanji/55 via-[62%] to-transparent to-[88%] lg:via-[48%] lg:via-hanji/98 lg:via-[58%] lg:to-transparent lg:to-[78%]" />
+      {/*
+       * @feather-left-overlay — 좌→우 한지 오버레이 (동상 좌측 페더 보조)
+       * 검색: feather-left-overlay
+       * • via-[38%] 등 %를 줄이면 한지가 덜 침범(동상 더 선명), 늘리면 더 지워짐
+       */}
+      <div className="absolute inset-0 bg-gradient-to-r from-hanji from-[0%] via-hanji via-[34%] via-hanji/95 via-[50%] via-hanji/55 via-[58%] to-transparent to-[86%] lg:via-[44%] lg:via-hanji/98 lg:via-[56%] lg:to-transparent lg:to-[76%]" />
 
-      {/* 상단 — 헤더·제목 가독성 */}
+      {/* @feather-top-overlay — 상단 페더 (검색: feather-top-overlay) */}
       <div className="absolute inset-0 bg-gradient-to-b from-hanji from-[0%] via-hanji/75 via-[16%] to-transparent to-[36%]" />
 
-      {/* 하단 — 맨 끝 외곽선만 한지에 녹임 */}
+      {/* @feather-bottom-overlay — 하단 페더 (검색: feather-bottom-overlay) */}
       <div className="absolute inset-0 bg-gradient-to-t from-hanji from-[0%] via-hanji/85 via-[8%] to-transparent to-[22%]" />
     </motion.div>
   )

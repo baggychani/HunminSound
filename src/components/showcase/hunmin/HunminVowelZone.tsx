@@ -4,14 +4,17 @@ import { Fragment, type ReactNode } from 'react'
 import Image from 'next/image'
 import {
   HUNMIN_LABEL_BLOCK_CLASS,
-  HunminBetweenSeparator,
-  hunminVowelSegmentSeparatorKind,
+  HUNMIN_VOWEL_SPAN_HEADER_CLASS,
+  HunminColumnSeparator,
 } from '@/components/showcase/hunmin/HunminChartParts'
 import type { HunminVowelRow, HunminVowelSegment, HunminVowelSlot } from '@/data/hunminVowelLayout'
 import { hunminVowelImageSrc } from '@/lib/hunminVowelImages'
 
 export const HUNMIN_VOWEL_GLYPH_RAIL_CLASS =
-  'flex h-[4.25rem] shrink-0 items-center justify-center sm:h-[4.75rem]'
+  'flex h-[4.625rem] shrink-0 items-center justify-center sm:h-[4.875rem]'
+
+/** 카드·현대 음성학과 동일한 글리프 크기 */
+export const HUNMIN_VOWEL_CARD_CHAR_CLASS = 'text-[1.85rem] sm:text-[2rem]'
 
 type VowelSegmentGroup = { spanLabel?: string; segments: HunminVowelSegment[] }
 
@@ -58,15 +61,23 @@ function HunminVowelSegmentColumn({
   interactive: boolean
   renderSlot: HunminVowelZoneProps['renderSlot']
 }) {
-  const multiSpan = Boolean(spanGroup.spanLabel && spanGroup.segments.length > 1)
-  const showColumnLabel = !multiSpan && seg.label?.trim()
+  const hasSpanHeader = Boolean(spanGroup.spanLabel)
+  const showColumnLabel = !hasSpanHeader && seg.label?.trim()
+  /** 합성자·ㅣ 합용자처럼 하위 라벨(초출자 등)이 없는 span — 카드 높이 맞춤용 빈 칸 */
+  const needsSubLabelSpacer = hasSpanHeader && !seg.groupLine
+  const showLabelBlock = showColumnLabel || Boolean(seg.groupLine) || needsSubLabelSpacer
   return (
-    <div className="flex min-w-0 shrink-0 flex-col items-center">
-      <div className={`${HUNMIN_LABEL_BLOCK_CLASS} mb-1 ${multiSpan ? 'min-h-[1.35rem]' : 'min-h-[2.35rem]'}`}>
-        {showColumnLabel ? <span className="hunmin-vowel-segment-label">{seg.label}</span> : null}
-        {seg.groupLine ? <span className="hunmin-vowel-segment-label">{seg.groupLine}</span> : null}
-      </div>
-      <div className={`${HUNMIN_VOWEL_GLYPH_RAIL_CLASS} flex-nowrap justify-center gap-0.5 sm:gap-1`}>
+    <div className="flex min-w-0 shrink-0 flex-col">
+      {showLabelBlock ? (
+        <div
+          className={HUNMIN_LABEL_BLOCK_CLASS}
+          aria-hidden={needsSubLabelSpacer ? true : undefined}
+        >
+          {showColumnLabel ? <span className="hunmin-vowel-segment-label">{seg.label}</span> : null}
+          {seg.groupLine ? <span className="hunmin-vowel-segment-label">{seg.groupLine}</span> : null}
+        </div>
+      ) : null}
+      <div className={`${HUNMIN_VOWEL_GLYPH_RAIL_CLASS} flex flex-nowrap justify-center gap-2 sm:gap-3`}>
         {seg.slots.map((slot, slotIdx) =>
           renderSlot(slot, `${row.id}-${zoneKey}-${segIdx}-${slotIdx}`, interactive),
         )}
@@ -81,33 +92,24 @@ export function HunminVowelZone({ row, zoneKey, segments, interactive = true, re
   const groups = groupVowelSegments(segments)
 
   return (
-    <div className="flex flex-nowrap items-end">
+    <div className="flex flex-nowrap items-stretch gap-2 sm:gap-3">
       {groups.map((group, groupIdx) => {
-        const prevSeg = groupIdx > 0 ? groups[groupIdx - 1].segments.at(-1) : undefined
-        const firstSeg = group.segments[0]
-        const multiSpan = Boolean(group.spanLabel && group.segments.length > 1)
+        const hasSpanHeader = Boolean(group.spanLabel)
 
         return (
           <Fragment key={`${row.id}-${zoneKey}-g-${groupIdx}`}>
-            {groupIdx > 0 && prevSeg && firstSeg && (
-              <HunminBetweenSeparator compact kind={hunminVowelSegmentSeparatorKind(prevSeg, firstSeg)} />
-            )}
-            <div className={multiSpan ? 'flex shrink-0 flex-col items-stretch' : 'contents'}>
-              {multiSpan && group.spanLabel ? (
-                <div className="mb-1 flex flex-col items-center px-0.5">
+            {groupIdx > 0 ? <HunminColumnSeparator /> : null}
+            <div className="flex shrink-0 flex-col items-stretch">
+              {hasSpanHeader ? (
+                <div className={HUNMIN_VOWEL_SPAN_HEADER_CLASS}>
                   <span className="hunmin-vowel-segment-label">{group.spanLabel}</span>
                   <div className="mt-1.5 h-px w-full min-w-[5.5rem] bg-hanji-border/80" aria-hidden />
                 </div>
               ) : null}
-              <div className="flex flex-nowrap items-end">
+              <div className="flex flex-nowrap items-stretch gap-2 sm:gap-3">
                 {group.segments.map((seg, segIdx) => (
                   <Fragment key={`${row.id}-${zoneKey}-${seg.groupLine ?? seg.label ?? ''}-${segIdx}`}>
-                    {segIdx > 0 && (
-                      <HunminBetweenSeparator
-                        compact
-                        kind={hunminVowelSegmentSeparatorKind(group.segments[segIdx - 1], seg)}
-                      />
-                    )}
+                    {segIdx > 0 ? <HunminColumnSeparator /> : null}
                     <HunminVowelSegmentColumn
                       seg={seg}
                       row={row}
@@ -132,8 +134,8 @@ export function HunminVowelZone({ row, zoneKey, segments, interactive = true, re
 export function HunminVowelJamoGlyph({ symbol, ipa }: { symbol: string; ipa?: string }) {
   const sub = ipa ?? null
   return (
-    <span className="symbol-btn symbol-btn-hunmin pointer-events-none cursor-default bg-transparent">
-      <span className="symbol-char font-jamo text-4xl leading-none text-ink">{symbol}</span>
+    <span className="symbol-btn symbol-btn-card pointer-events-none cursor-default">
+      <span className={`symbol-char font-jamo leading-none ${HUNMIN_VOWEL_CARD_CHAR_CLASS}`}>{symbol}</span>
       <span className={`symbol-sub hunmin-vowel-ipa ${sub ? '' : 'invisible'}`} aria-hidden={sub ? undefined : true}>
         {sub ?? '\u00a0'}
       </span>
@@ -144,8 +146,8 @@ export function HunminVowelJamoGlyph({ symbol, ipa }: { symbol: string; ipa?: st
 export function HunminVowelImageGlyph({ asset, ipa }: { asset: string; ipa?: string }) {
   const sub = ipa ?? null
   return (
-    <span className="symbol-btn symbol-btn-hunmin pointer-events-none cursor-default bg-transparent">
-      <span className="symbol-char flex items-end justify-center bg-hanji">
+    <span className="symbol-btn symbol-btn-card pointer-events-none cursor-default">
+      <span className="symbol-char hunmin-vowel-img-wrap flex items-end justify-center">
         <Image
           src={hunminVowelImageSrc(asset)}
           alt=""

@@ -44,6 +44,9 @@
     --wash-warm-rgb: 232 213 178;
     --wash-deep-rgb: 214 195 162;
     --wash-cool-rgb: 220 226 224;
+
+    /** sticky 헤더 실측 전 fallback — Header ResizeObserver가 덮어씀 */
+    --site-header-h: 4rem;
   }
 
   .dark {
@@ -194,6 +197,11 @@
     width: 0;
     height: 0;
   }
+
+  /** scrollIntoView 시 헤더 아래 맞춤 (page.tsx 1막↔2막 휠 전환) */
+  .home-scroll-margin {
+    scroll-margin-top: var(--site-header-h, 4rem);
+  }
 }
 
 @layer components {
@@ -201,7 +209,161 @@
     @apply relative flex flex-col items-center justify-center w-16 h-20 rounded transition-all duration-200 cursor-pointer select-none;
   }
 
-  /* 훈민 모음 합용자 이미지 칸 */
+  /* 자음·모음 카드 — 날씬한 세로형 · 흰 바탕 고정 */
+  .symbol-btn-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    width: 3.5rem;
+    height: 4.625rem;
+    padding: 0.375rem 0.25rem 0.4375rem;
+    border-radius: 0;
+    border: 1px solid #e8e4dc;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(28, 25, 23, 0.05);
+    color: #1c1917;
+    isolation: isolate;
+    transition:
+      border-color 0.18s ease,
+      box-shadow 0.18s ease,
+      transform 0.18s ease;
+  }
+
+  @media (min-width: 640px) {
+    .symbol-btn-card {
+      width: 3.75rem;
+      height: 4.875rem;
+    }
+  }
+
+  .symbol-btn-card:hover {
+    border-color: #d8d2c8;
+    box-shadow: 0 2px 6px rgba(28, 25, 23, 0.07);
+  }
+
+  .symbol-btn-card.active {
+    border-color: #c9a962;
+    box-shadow: 0 1px 4px rgba(180, 140, 60, 0.12);
+  }
+
+  .dark .symbol-btn-card,
+  .dark .symbol-btn-card:hover,
+  .dark .symbol-btn-card.active {
+    background-color: #ffffff;
+    border-color: #e8e4dc;
+    color: #1c1917;
+  }
+
+  .dark .symbol-btn-card:hover {
+    border-color: #d8d2c8;
+  }
+
+  .dark .symbol-btn-card.active {
+    border-color: #c9a962;
+  }
+
+  .symbol-btn-card .symbol-card-dot {
+    position: absolute;
+    right: 0.4375rem;
+    top: 0.4375rem;
+    height: 0.3125rem;
+    width: 0.3125rem;
+    border-radius: 9999px;
+    background-color: rgba(30, 58, 95, 0.2);
+    transition: background-color 0.18s ease;
+  }
+
+  .symbol-btn-card:hover .symbol-card-dot {
+    background-color: rgba(30, 58, 95, 0.45);
+  }
+
+  .symbol-btn-card.active .symbol-card-dot {
+    background-color: #1e3a5f;
+  }
+
+  .symbol-btn-card .symbol-char {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 0.125rem;
+    color: #1c1917;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .symbol-btn-card:hover .symbol-char {
+    color: #1c1917;
+  }
+
+  .symbol-btn-card.active .symbol-char {
+    color: #8b6914;
+  }
+
+  .dark .symbol-btn-card .symbol-char,
+  .dark .symbol-btn-card:hover .symbol-char {
+    color: #1c1917;
+  }
+
+  .dark .symbol-btn-card.active .symbol-char {
+    color: #8b6914;
+  }
+
+  .symbol-btn-card .symbol-sub,
+  .symbol-btn-card .symbol-sub.hunmin-vowel-ipa {
+    flex-shrink: 0;
+    margin-top: 0;
+    padding-bottom: 0;
+    font-family: var(--font-sans, 'Noto Sans KR', sans-serif);
+    font-size: 10px;
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+    color: #a8a29e;
+  }
+
+  .symbol-btn-card:hover .symbol-sub {
+    color: #78716c;
+  }
+
+  .symbol-btn-card.active .symbol-sub {
+    color: #8b6914;
+  }
+
+  .dark .symbol-btn-card .symbol-sub,
+  .dark .symbol-btn-card .symbol-sub.hunmin-vowel-ipa {
+    color: #a8a29e;
+  }
+
+  .dark .symbol-btn-card:hover .symbol-sub {
+    color: #78716c;
+  }
+
+  .dark .symbol-btn-card.active .symbol-sub {
+    color: #8b6914;
+  }
+
+  .symbol-btn-card.is-muted .symbol-char {
+    color: #78716c;
+  }
+
+  .symbol-btn-card.is-disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .symbol-btn-card.active::after {
+    content: none;
+  }
+
+  /* 훈민 모음 — 카드 안 이미지(흰 PNG) */
+  .symbol-btn-card .symbol-char.hunmin-vowel-img-wrap {
+    background-color: #ffffff;
+  }
+
+  /* 훈민 모음 합용자 — 구형 치수(카드 미사용 슬롯) */
   .symbol-btn-hunmin {
     @apply h-[4.25rem] w-[3.1rem] sm:h-[4.75rem] sm:w-[3.35rem];
   }
@@ -222,11 +384,11 @@
     font-size: 10px;
   }
 
-  .symbol-btn:hover .symbol-char {
+  .symbol-btn:not(.symbol-btn-card):hover .symbol-char {
     @apply text-ink-accent;
   }
 
-  .symbol-btn.active .symbol-char {
+  .symbol-btn:not(.symbol-btn-card).active .symbol-char {
     @apply text-ink-accent;
   }
 
@@ -242,8 +404,8 @@
     line-height: 1.2;
   }
 
-  .symbol-btn:hover .symbol-sub,
-  .symbol-btn.active .symbol-sub {
+  .symbol-btn:not(.symbol-btn-card):hover .symbol-sub,
+  .symbol-btn:not(.symbol-btn-card).active .symbol-sub {
     @apply text-ink;
   }
 
@@ -385,6 +547,58 @@
     opacity: 0.2;
     filter: invert(1) brightness(1.05) contrast(1.05);
     mix-blend-mode: screen;
+  }
+
+  /*
+   * 연구 소개 카드 — 조음 단면 실루엣 워터마크 (우측, 은은한 은색)
+   * 위치·스케일 → ResearchCardWatermark.tsx
+   */
+  .research-watermark-feather {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(0, 0, 0, 0.35) 18%,
+      #000 38%,
+      #000 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(0, 0, 0, 0.35) 18%,
+      #000 38%,
+      #000 100%
+    );
+  }
+
+  @media (max-width: 639px) {
+    .research-watermark-feather--mobile {
+      -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(0, 0, 0, 0.4) 10%,
+        #000 24%,
+        #000 100%
+      );
+      mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(0, 0, 0, 0.4) 10%,
+        #000 24%,
+        #000 100%
+      );
+    }
+  }
+
+  .research-watermark-img {
+    opacity: 0.1;
+    mix-blend-mode: multiply;
+    filter: invert(1) grayscale(1) contrast(1.15) brightness(0.85);
+  }
+
+  .dark .research-watermark-img {
+    opacity: 0.14;
+    mix-blend-mode: screen;
+    filter: invert(1) grayscale(1) contrast(1.1) brightness(1.05);
   }
 
   /* 세부 목표 카드 — 배경색 고정이므로 본문 색도 테마와 무관하게 고정 */

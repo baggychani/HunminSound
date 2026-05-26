@@ -24,7 +24,7 @@ export async function sendContactEmail(payload: ContactEmailPayload) {
     auth: { user: smtpUser, pass: smtpPass },
   })
 
-  const to = process.env.CONTACT_TO ?? 'baggychani@gmail.com'
+  const to = process.env.CONTACT_TO ?? 'sejong@sejongkorea.org'
   const prefix = payload.prefix ?? '[세종말소리 문의]'
   const meta = [
     payload.affiliation ? `소속: ${payload.affiliation}` : null,
