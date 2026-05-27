@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useRef, useEffect } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { useSiteMessages } from '@/hooks/useSiteMessages'
-import { SITE_BRAND_NAME } from '@/lib/i18n'
+import { SITE_BRAND_NAME, type Lang } from '@/lib/i18n'
 import { ScrollColorWash } from '@/components/ui/ScrollColorWash'
 import { HeroActBackdrop } from '@/components/ui/HeroActBackdrop'
 import { HaeryebonCardWatermark } from '@/components/showcase/HaeryebonCardWatermark'
@@ -12,6 +12,14 @@ import { HunminBookViewer } from '@/components/showcase/HunminBookViewer'
 import { HomeResearchAct } from '@/components/home/HomeResearchAct'
 import { HomeContactSection } from '@/components/home/HomeContactSection'
 import { useHomeActScroll } from '@/hooks/useHomeActScroll'
+
+/** 2막 카드 제목 — 한국어만 font-jamo, 외국어는 sans(힌디어는 devanagari) */
+function homeNavCardLabelClass(lang: Lang, compact?: boolean): string {
+  const size = compact ? 'text-3xl lg:text-4xl' : 'text-4xl'
+  const font =
+    lang === 'ko' ? 'font-jamo' : lang === 'hi' ? 'font-devanagari font-sans' : 'font-sans'
+  return `${font} ${size} text-ink group-hover:text-ink-accent transition-colors`
+}
 
 /* ── 자석 기호 컴포넌트 ────────────────────────────────────────────────── */
 function MagneticGlyph({ children, className }: { children: string; className: string }) {
@@ -141,6 +149,7 @@ export default function HomePage() {
         <div className="grid min-h-0 w-full grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:gap-5">
         <NavCard
           compact
+          lang={lang}
           href="/consonants"
           label={m.consonants}
           count={m.consonantsCount}
@@ -150,6 +159,7 @@ export default function HomePage() {
         />
         <NavCard
           compact
+          lang={lang}
           href="/vowels"
           label={m.vowels}
           count={m.vowelsCount}
@@ -159,6 +169,7 @@ export default function HomePage() {
         />
         <HunminjeongeumCard
           compact
+          lang={lang}
           href="/hunminjeongeum"
           label={m.hunminjeongeum}
           caption={m.hunminjeongeumCaption}
@@ -189,6 +200,7 @@ interface HunminjeongeumCardProps {
   caption: string
   description: string
   explore: string
+  lang: Lang
   compact?: boolean
 }
 
@@ -199,6 +211,7 @@ function HunminjeongeumCard({
   caption,
   description,
   explore,
+  lang,
   compact = false,
 }: HunminjeongeumCardProps) {
   const baseShapes = ['ㄱ', 'ㄴ', 'ㅁ', 'ㅅ', 'ㅇ']
@@ -214,11 +227,7 @@ function HunminjeongeumCard({
 
       <div className="relative z-10">
         <div className="flex items-baseline gap-3 mb-1">
-          <span
-            className={`font-jamo text-ink group-hover:text-ink-accent transition-colors ${
-              compact ? 'text-3xl lg:text-4xl' : 'text-4xl'
-            }`}
-          >
+          <span className={homeNavCardLabelClass(lang, compact)}>
             {label}
           </span>
         </div>
@@ -260,6 +269,7 @@ interface NavCardProps {
   preview: string[]
   description: string
   explore: string
+  lang: Lang
   compact?: boolean
 }
 
@@ -270,6 +280,7 @@ function NavCard({
   preview,
   description,
   explore,
+  lang,
   compact = false,
 }: NavCardProps) {
   return (
@@ -281,11 +292,7 @@ function NavCard({
     >
       <div>
         <div className="flex items-baseline gap-3 mb-1">
-          <span
-            className={`font-jamo text-ink group-hover:text-ink-accent transition-colors ${
-              compact ? 'text-3xl lg:text-4xl' : 'text-4xl'
-            }`}
-          >
+          <span className={homeNavCardLabelClass(lang, compact)}>
             {label}
           </span>
         </div>

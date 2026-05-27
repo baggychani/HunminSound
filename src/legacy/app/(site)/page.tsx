@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic'
 import { useRef, useEffect } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
-import { getMessages, SITE_BRAND_NAME } from '@/lib/i18n'
+import { getMessages, SITE_BRAND_NAME, type Lang } from '@/lib/i18n'
 import { ScrollColorWash } from '@/components/ui/ScrollColorWash'
 import { HaeryebonCardWatermark } from '@/legacy/components/showcase/HaeryebonCardWatermark'
 
@@ -58,6 +58,12 @@ function MagneticGlyph({ children, className }: { children: string; className: s
       {children}
     </motion.span>
   )
+}
+
+function homeNavCardLabelClass(lang: Lang): string {
+  const font =
+    lang === 'ko' ? 'font-jamo' : lang === 'hi' ? 'font-devanagari font-sans' : 'font-sans'
+  return `${font} text-4xl text-ink group-hover:text-ink-accent transition-colors`
 }
 
 export default function HomePage() {
@@ -147,6 +153,7 @@ export default function HomePage() {
        * 카드 사이 1px 라인 대신 살짝 띄워 와이드한 호흡감을 살린다(워시가 사이로 비침). */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
         <NavCard
+          lang={lang}
           href="/consonants"
           label={m.consonants}
           count={m.consonantsCount}
@@ -155,6 +162,7 @@ export default function HomePage() {
           explore={m.explore}
         />
         <NavCard
+          lang={lang}
           href="/vowels"
           label={m.vowels}
           count={m.vowelsCount}
@@ -163,6 +171,7 @@ export default function HomePage() {
           explore={m.explore}
         />
         <HunminjeongeumCard
+          lang={lang}
           href="/hunminjeongeum"
           label={m.hunminjeongeum}
           caption={m.hunminjeongeumCaption}
@@ -244,10 +253,11 @@ interface HunminjeongeumCardProps {
   caption: string
   description: string
   explore: string
+  lang: Lang
 }
 
 /** 자음/모음 격자 아래 전 너비 — 동급 중요도로 크게 표시 */
-function HunminjeongeumCard({ href, label, caption, description, explore }: HunminjeongeumCardProps) {
+function HunminjeongeumCard({ href, label, caption, description, explore, lang }: HunminjeongeumCardProps) {
   const baseShapes = ['ㄱ', 'ㄴ', 'ㅁ', 'ㅅ', 'ㅇ']
 
   return (
@@ -259,7 +269,7 @@ function HunminjeongeumCard({ href, label, caption, description, explore }: Hunm
 
       <div className="relative z-10">
         <div className="flex items-baseline gap-3 mb-1">
-          <span className="font-jamo text-4xl text-ink group-hover:text-ink-accent transition-colors">
+          <span className={homeNavCardLabelClass(lang)}>
             {label}
           </span>
         </div>
@@ -296,9 +306,10 @@ interface NavCardProps {
   preview: string[]
   description: string
   explore: string
+  lang: Lang
 }
 
-function NavCard({ href, label, count, preview, description, explore }: NavCardProps) {
+function NavCard({ href, label, count, preview, description, explore, lang }: NavCardProps) {
   return (
     <Link
       href={href}
@@ -306,7 +317,7 @@ function NavCard({ href, label, count, preview, description, explore }: NavCardP
     >
       <div>
         <div className="flex items-baseline gap-3 mb-1">
-          <span className="font-jamo text-4xl text-ink group-hover:text-ink-accent transition-colors">
+          <span className={homeNavCardLabelClass(lang)}>
             {label}
           </span>
         </div>
