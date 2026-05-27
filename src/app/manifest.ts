@@ -1,8 +1,9 @@
 import type { MetadataRoute } from 'next'
+import { SITE_TAB_TITLE } from '@/lib/siteMeta'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: '세종말소리 · Sejong Speech Sounds',
+    name: SITE_TAB_TITLE,
     short_name: '세종말소리',
     description: '훈민정음 창제 원리의 과학적 재조명',
     start_url: '/',

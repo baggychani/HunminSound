@@ -7,6 +7,7 @@ import {
   Gowun_Batang,
 } from 'next/font/google'
 import { Providers } from '@/components/theme/Providers'
+import { SITE_TAB_TITLE } from '@/lib/siteMeta'
 import './globals.css'
 
 const notoSerifKr = Noto_Serif_KR({
@@ -49,10 +50,11 @@ const gowunBatang = Gowun_Batang({
   preload: false,
 })
 
+/** 브라우저 탭·PWA 이름 — 가운데점(·) 좌우 공백 없음 */
 export const metadata: Metadata = {
   title: {
-    default: '세종말소리 · Sejong Speech Sounds',
-    template: '%s · 세종말소리',
+    default: SITE_TAB_TITLE,
+    template: `%s·세종말소리`,
   },
   description:
     '1443년 세종이 훈민정음(訓民正音)으로 제시한 상형 원리를 MRI·음성공학·AI 융합으로 실증하는 세종말소리.',

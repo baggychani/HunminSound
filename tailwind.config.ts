@@ -14,6 +14,8 @@ const config: Config = {
         'hanji-warm': 'rgb(var(--hanji-warm-rgb) / <alpha-value>)',
         'hanji-border': 'rgb(var(--hanji-border-rgb) / <alpha-value>)',
         'hanji-hover': 'rgb(var(--hanji-hover-rgb) / <alpha-value>)',
+        'hanji-card': 'rgb(var(--hanji-card-rgb) / <alpha-value>)',
+        'hanji-card-hover': 'rgb(var(--hanji-card-hover-rgb) / <alpha-value>)',
         header: 'rgb(var(--header-bg-rgb) / <alpha-value>)',
         ink: 'rgb(var(--ink-rgb) / <alpha-value>)',
         'ink-soft': 'rgb(var(--ink-soft-rgb) / <alpha-value>)',

@@ -224,7 +224,7 @@ function HunminjeongeumCard({
   return (
     <Link
       href={href}
-      className={`group col-span-1 sm:col-span-2 relative overflow-hidden rounded-sm border border-hanji-border/60 bg-hanji/75 backdrop-blur-md transition-colors hover:bg-hanji/90 hover:border-hanji-border flex flex-col dark:bg-hanji/65 dark:hover:bg-hanji/80 ${
+      className={`home-act2-nav-card group col-span-1 sm:col-span-2 rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color] hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] flex flex-col ${
         compact ? 'gap-4 p-6 sm:gap-5 sm:p-7 lg:p-8' : 'gap-6 p-10 sm:p-12'
       }`}
     >
@@ -291,7 +291,7 @@ function NavCard({
   return (
     <Link
       href={href}
-      className={`group flex flex-col rounded-sm border border-hanji-border/60 bg-hanji/75 backdrop-blur-md transition-colors hover:bg-hanji/90 hover:border-hanji-border dark:bg-hanji/65 dark:hover:bg-hanji/80 ${
+      className={`home-act2-nav-card group flex flex-col rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color] hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] ${
         compact ? 'min-h-0 gap-4 p-6 sm:gap-5 sm:p-7 lg:p-8' : 'gap-6 p-10 sm:p-12'
       }`}
     >

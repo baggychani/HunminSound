@@ -17,11 +17,11 @@ const DEFAULT_BOUNDS: ActBounds = { t2: 800, t3: 1600, fade: 480 }
 
 const ACT_TONES: Record<'light' | 'dark', { act1: ActTone; act2: ActTone; act3: ActTone }> = {
   light: {
-    /* 1·3막 — globals.css :root 기본 한지 (원래 사이트 배경) */
-    act1: { hanji: [253, 253, 249], warm: [247, 243, 236], border: [226, 221, 213] },
-    /* 2막 — 기본 대비 아주 옅은 세피아만 */
-    act2: { hanji: [251, 249, 244], warm: [248, 244, 236], border: [224, 218, 208] },
-    act3: { hanji: [253, 253, 249], warm: [247, 243, 236], border: [226, 221, 213] },
+    /* 1·3막 — 중성 아이보리 (노란기 최소) */
+    act1: { hanji: [252, 251, 248], warm: [248, 246, 242], border: [224, 220, 214] },
+    /* 2막 — 1막보다 살짝만 따뜻 (카드 대비용, 세피아 과하지 않게) */
+    act2: { hanji: [249, 247, 243], warm: [246, 243, 238], border: [222, 217, 210] },
+    act3: { hanji: [252, 251, 248], warm: [248, 246, 242], border: [224, 220, 214] },
   },
   dark: {
     act1: { hanji: [28, 25, 23], warm: [34, 30, 27], border: [72, 66, 60] },
