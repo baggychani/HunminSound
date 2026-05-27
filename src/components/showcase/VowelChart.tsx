@@ -671,6 +671,7 @@ function VowelDetailPanel({
       <TranslatedDescription
         item={item as unknown as { description: string; [key: string]: unknown }}
         lang={lang}
+        phonemeType="vowel"
       />
 
       <div className="mt-6">

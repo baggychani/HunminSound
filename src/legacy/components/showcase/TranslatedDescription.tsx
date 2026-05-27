@@ -1,13 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import type { Lang } from '@/lib/i18n'
+import { useEffect, useMemo, useState } from 'react'
+import type { GetDescriptionOptions, Lang } from '@/lib/i18n'
 import { getDescription } from '@/lib/i18n'
 import {
   MT_LS_PREFIX,
   buildMtKey,
   getBundledMachineTranslation,
 } from '@/lib/mtCache'
+import { usePublicOverridesStore } from '@/hooks/useSiteMessages'
 import { JamoText } from '@/components/ui/JamoText'
 
 type DescItem = { description: string; [key: string]: unknown }
@@ -30,36 +31,58 @@ function writeLs(key: string, value: string) {
   }
 }
 
-/** 번들만 사용 SSR 초기값(localStorage는 마운트 후 적용해 hydration 불일치 방지) */
-function bundledOrCms(item: DescItem, lang: Lang, itemId: string): string {
-  const { text: cmsText, isFallback: fb } = getDescription(item, lang)
+function buildDescOptions(
+  store: ReturnType<typeof usePublicOverridesStore>,
+  phonemeType: 'consonant' | 'vowel' | undefined,
+  itemId: string,
+): GetDescriptionOptions | undefined {
+  if (!phonemeType || !itemId) return undefined
+  return { store, phonemeType, itemId }
+}
+
+function bundledOrCms(
+  item: DescItem,
+  lang: Lang,
+  itemId: string,
+  descOptions: GetDescriptionOptions | undefined,
+): string {
+  const { text: cmsText, isFallback: fb } = getDescription(item, lang, descOptions)
   if (!fb || lang === 'ko') return cmsText
   if (!itemId) return cmsText
-  const key = buildMtKey(itemId, lang, item.description)
+  const koreanSource = getDescription(item, 'ko', descOptions).text
+  const key = buildMtKey(itemId, lang, koreanSource)
   return getBundledMachineTranslation(key) ?? cmsText
 }
 
 export function TranslatedDescription({
   item,
   lang,
+  phonemeType,
   className = 'font-sans text-sm text-ink-soft leading-loose mb-6',
 }: {
   item: DescItem
   lang: Lang
+  phonemeType?: 'consonant' | 'vowel'
   className?: string
 }) {
+  const store = usePublicOverridesStore()
   const itemId = '_id' in item && typeof item._id === 'string' ? item._id : ''
+  const descOptions = useMemo(
+    () => buildDescOptions(store, phonemeType, itemId),
+    [store, phonemeType, itemId],
+  )
 
-  const [text, setText] = useState(() => bundledOrCms(item, lang, itemId))
+  const [text, setText] = useState(() => bundledOrCms(item, lang, itemId, descOptions))
 
   useEffect(() => {
-    const base = bundledOrCms(item, lang, itemId)
+    const base = bundledOrCms(item, lang, itemId, descOptions)
     setText(base)
 
-    const { isFallback: fb } = getDescription(item, lang)
+    const { isFallback: fb } = getDescription(item, lang, descOptions)
     if (!fb || lang === 'ko' || !itemId) return
 
-    const key = buildMtKey(itemId, lang, item.description)
+    const koreanSource = getDescription(item, 'ko', descOptions).text
+    const key = buildMtKey(itemId, lang, koreanSource)
     const bundled = getBundledMachineTranslation(key)
     const ls = readLs(key)
 
@@ -77,7 +100,7 @@ export function TranslatedDescription({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        text: item.description,
+        text: koreanSource,
         target: lang,
         itemId,
       }),
@@ -93,10 +116,8 @@ export function TranslatedDescription({
       .catch(() => {})
 
     return () => ac.abort()
-  }, [lang, item.description, itemId])
+  }, [lang, item, itemId, descOptions])
 
-  /* 설명문 안에 끼어 있는 단독 자모(예: 'ㄷ[읃]')는 교수님 지정 폰트로 통일.
-   * 자모가 없으면 JamoText 가 추가 마크업을 생성하지 않으므로 비용은 0. */
   return (
     <p className={className}>
       <JamoText text={text} />

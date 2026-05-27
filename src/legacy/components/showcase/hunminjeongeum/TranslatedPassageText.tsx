@@ -12,7 +12,7 @@ import {
   isSupportedTranslationLang,
   type SupportedTranslationLang,
 } from '@/lib/i18n-overrides'
-import { useOverridesStore } from '@/lib/overrides-store'
+import { usePublicOverridesStore } from '@/hooks/useSiteMessages'
 import { HunminPassageText } from './HunminPassageText'
 import type { HunminPassage } from '@/data/hunminjeongeumPassages'
 
@@ -73,7 +73,7 @@ interface TranslatedPassageTextProps {
  *  4) `/api/translate` 자동 번역 호출 (source = 'en', text = 영어 출처)
  */
 export function TranslatedPassageText({ passage, lang, className }: TranslatedPassageTextProps) {
-  const store = useOverridesStore()
+  const store = usePublicOverridesStore()
 
   /* 영어 출처(오버라이드 > 기본) — 다른 언어 번역의 source. */
   const enOverrideKey = makeHunminPassageOverrideKey(passage.number, 'en')

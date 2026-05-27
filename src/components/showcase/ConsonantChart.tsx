@@ -610,6 +610,7 @@ function DetailPanel({
       <TranslatedDescription
         item={item as unknown as { description: string; [key: string]: unknown }}
         lang={lang}
+        phonemeType="consonant"
       />
       <div className="mt-6">
         <DualVideoPlayer

@@ -1,4 +1,9 @@
 import { HOME_RESEARCH_BY_LANG } from './homeResearch-i18n'
+import {
+  isSupportedTranslationLang,
+  makeOverrideKey,
+  type OverridesStore,
+} from './i18n-overrides'
 
 export type Lang = 'ko' | 'en' | 'zh' | 'ja' | 'fr' | 'de' | 'es' | 'hi' | 'vi' | 'ru' | 'ar'
 
@@ -1216,16 +1221,46 @@ export function getMessages(lang: Lang): Messages {
   return { ...messages[lang], ...HOME_RESEARCH_BY_LANG[lang] }
 }
 
+export type GetDescriptionOptions = {
+  store?: OverridesStore
+  phonemeType?: 'consonant' | 'vowel'
+  itemId?: string
+}
+
+function resolveKoreanDescription(
+  item: { description: string },
+  options?: GetDescriptionOptions,
+): string {
+  const { store, phonemeType, itemId } = options ?? {}
+  if (store && phonemeType && itemId) {
+    const koOverride = store[`${phonemeType}:${itemId}:description:ko`]?.value
+    if (typeof koOverride === 'string' && koOverride.trim()) return koOverride
+  }
+  return item.description
+}
+
 /** 현재 언어에 맞는 설명 텍스트를 반환. 번역 없으면 한국어 원문을 fallback. */
 export function getDescription(
   item: { description: string; [key: string]: unknown },
   lang: Lang,
+  options?: GetDescriptionOptions,
 ): { text: string; isFallback: boolean } {
-  if (lang === 'ko') return { text: item.description, isFallback: false }
+  const koreanText = resolveKoreanDescription(item, options)
+
+  if (lang === 'ko') return { text: koreanText, isFallback: false }
+
+  const { store, phonemeType, itemId } = options ?? {}
+  if (store && phonemeType && itemId && isSupportedTranslationLang(lang)) {
+    const overrideVal = store[makeOverrideKey(phonemeType, itemId, lang)]?.value
+    if (typeof overrideVal === 'string' && overrideVal.trim()) {
+      return { text: overrideVal, isFallback: false }
+    }
+  }
+
   const key = `description_${lang}`
   const translated = item[key]
   if (typeof translated === 'string' && translated.trim()) {
     return { text: translated, isFallback: false }
   }
-  return { text: item.description, isFallback: true }
+  return { text: koreanText, isFallback: true }
 }
