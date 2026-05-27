@@ -58,25 +58,25 @@ export function HomeContactSection() {
     <div id="contact" className="w-full">
       <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
         <div>
-          <p className="font-sans text-xs tracking-[0.25em] text-gold uppercase">{v2.contactLabel}</p>
-          <h2 className="mt-3 font-serif text-2xl text-ink sm:text-[1.65rem]">{v2.contactTitle}</h2>
-          <p className="mt-3 max-w-md font-serif text-sm leading-relaxed text-ink-soft">{v2.contactDesc}</p>
+          <p className="font-sans text-xs font-medium tracking-[0.25em] text-gold uppercase">{v2.contactLabel}</p>
+          <h2 className="mt-3 font-serif text-2xl font-bold text-ink sm:text-[1.65rem]">{v2.contactTitle}</h2>
+          <p className="mt-3 max-w-md font-serif text-sm font-medium leading-relaxed text-ink-soft">{v2.contactDesc}</p>
 
           <dl className="mt-8 space-y-4 font-sans text-sm">
             <div>
-              <dt className="text-xs text-ink-muted">{v2.contactEmail}</dt>
-              <dd className="mt-1 text-ink">
+              <dt className="text-xs font-medium text-ink-muted">{v2.contactEmail}</dt>
+              <dd className="mt-1 font-medium text-ink">
                 <a href="mailto:sejong@sejongkorea.org" className="text-ink-accent hover:text-gold">
                   sejong@sejongkorea.org
                 </a>
               </dd>
             </div>
             <div>
-              <dt className="text-xs text-ink-muted">{v2.contactPhone}</dt>
-              <dd className="mt-1 text-ink">+82-2-969-8851</dd>
+              <dt className="text-xs font-medium text-ink-muted">{v2.contactPhone}</dt>
+              <dd className="mt-1 font-medium text-ink">+82-2-969-8851</dd>
             </div>
             <div>
-              <dt className="text-xs text-ink-muted">{v2.contactAddress}</dt>
+              <dt className="text-xs font-medium text-ink-muted">{v2.contactAddress}</dt>
               <dd className="mt-1 text-ink-soft">서울 동대문구 회기로 56</dd>
             </div>
           </dl>
@@ -97,12 +97,12 @@ export function HomeContactSection() {
           onSubmit={onSubmit}
           className="rounded-sm border border-hanji-border/60 bg-hanji/75 p-6 backdrop-blur-md sm:p-8 dark:bg-hanji/65"
         >
-          <h3 className="font-serif text-lg text-ink">{v2.contactFormTitle}</h3>
+          <h3 className="font-serif text-lg font-bold text-ink">{v2.contactFormTitle}</h3>
           <p className="mt-2 font-sans text-xs text-ink-muted">{v2.contactFormDesc}</p>
 
           <div className="mt-6 space-y-4">
             <label className="block">
-              <span className="font-sans text-xs text-ink-muted">{v2.contactName} *</span>
+              <span className="font-sans text-xs font-medium text-ink-muted">{v2.contactName} *</span>
               <input
                 required
                 value={form.name}
@@ -111,7 +111,7 @@ export function HomeContactSection() {
               />
             </label>
             <label className="block">
-              <span className="font-sans text-xs text-ink-muted">{v2.contactEmailField} *</span>
+              <span className="font-sans text-xs font-medium text-ink-muted">{v2.contactEmailField} *</span>
               <input
                 required
                 type="email"
@@ -121,7 +121,7 @@ export function HomeContactSection() {
               />
             </label>
             <label className="block">
-              <span className="font-sans text-xs text-ink-muted">{v2.contactAffiliation}</span>
+              <span className="font-sans text-xs font-medium text-ink-muted">{v2.contactAffiliation}</span>
               <input
                 value={form.affiliation}
                 onChange={(e) => setForm((f) => ({ ...f, affiliation: e.target.value }))}
@@ -129,7 +129,7 @@ export function HomeContactSection() {
               />
             </label>
             <label className="block">
-              <span className="font-sans text-xs text-ink-muted">{v2.contactType}</span>
+              <span className="font-sans text-xs font-medium text-ink-muted">{v2.contactType}</span>
               <select
                 value={form.inquiryType}
                 onChange={(e) => setForm((f) => ({ ...f, inquiryType: e.target.value }))}
@@ -144,7 +144,7 @@ export function HomeContactSection() {
               </select>
             </label>
             <label className="block">
-              <span className="font-sans text-xs text-ink-muted">{v2.contactMessage} *</span>
+              <span className="font-sans text-xs font-medium text-ink-muted">{v2.contactMessage} *</span>
               <textarea
                 required
                 rows={4}

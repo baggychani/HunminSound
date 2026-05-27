@@ -164,7 +164,7 @@ export function Header() {
                   <span
                     className={`font-sans tracking-korean transition-colors ${
                       lang === 'hi' ? 'text-[15px] leading-snug' : 'text-sm'
-                    } ${lang === 'ko' ? 'font-semibold' : 'font-normal'} ${
+                    } ${lang === 'ko' ? 'font-bold' : 'font-normal'} ${
                       isActive ? 'text-ink' : 'text-ink-muted group-hover:text-ink'
                     }`}
                   >
@@ -173,7 +173,7 @@ export function Header() {
                   <span
                     className={`font-sans tracking-widest leading-none transition-colors ${
                       lang === 'hi' ? 'text-[11.5px]' : 'text-[10.5px]'
-                    } ${lang !== 'ko' ? 'font-semibold' : 'font-normal'} ${
+                    } ${lang !== 'ko' ? 'font-bold' : 'font-normal'} ${
                       isActive ? 'text-ink' : 'text-ink-muted group-hover:text-ink'
                     }`}
                   >
@@ -199,7 +199,7 @@ export function Header() {
               <span
                 className={`font-sans tracking-korean leading-tight transition-colors ${
                   lang === 'hi' ? 'text-[15px]' : 'text-sm'
-                } ${lang === 'ko' ? 'font-semibold' : 'font-normal'} ${
+                } ${lang === 'ko' ? 'font-bold' : 'font-normal'} ${
                   langOpen
                     ? 'text-ink-accent'
                     : 'text-ink-muted group-hover:text-ink'
@@ -210,7 +210,7 @@ export function Header() {
               <span
                 className={`font-sans tracking-widest leading-none transition-colors ${
                   lang === 'hi' ? 'text-[11.5px]' : 'text-[10.5px]'
-                } ${lang !== 'ko' ? 'font-semibold' : 'font-normal'} ${
+                } ${lang !== 'ko' ? 'font-bold' : 'font-normal'} ${
                   langOpen
                     ? 'text-ink-accent'
                     : 'text-ink-muted group-hover:text-ink'
@@ -300,7 +300,7 @@ export function Header() {
                     }`}
                   >
                     <span
-                      className={`font-sans tracking-korean ${lang === 'ko' ? 'font-semibold' : 'font-normal'}`}
+                      className={`font-sans tracking-korean ${lang === 'ko' ? 'font-bold' : 'font-normal'}`}
                     >
                       {label}
                     </span>

@@ -16,9 +16,10 @@ import { useHomeActScroll } from '@/hooks/useHomeActScroll'
 /** 2막 카드 제목 — 한국어만 font-jamo, 외국어는 sans(힌디어는 devanagari) */
 function homeNavCardLabelClass(lang: Lang, compact?: boolean): string {
   const size = compact ? 'text-3xl lg:text-4xl' : 'text-4xl'
+  const weight = lang === 'ko' ? '' : 'font-medium'
   const font =
     lang === 'ko' ? 'font-jamo' : lang === 'hi' ? 'font-devanagari font-sans' : 'font-sans'
-  return `${font} ${size} text-ink group-hover:text-ink-accent transition-colors`
+  return `${font} ${weight} ${size} text-ink group-hover:text-ink-accent transition-colors`
 }
 
 /* ── 자석 기호 컴포넌트 ────────────────────────────────────────────────── */
@@ -98,7 +99,7 @@ export default function HomePage() {
 
           <div className="flex flex-col items-center text-center translate-x-[clamp(0.25rem,2vw,0.75rem)] sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] lg:translate-x-0">
             <p
-              className={`font-serif text-[15px] text-ink-muted tracking-wide sm:text-[17px] ${
+              className={`font-serif font-medium text-[15px] text-ink-muted tracking-wide sm:text-[17px] ${
                 lang === 'hi' ? 'font-devanagari normal-case tracking-normal' : ''
               }`}
               lang={lang === 'hi' ? 'hi' : undefined}
@@ -127,7 +128,7 @@ export default function HomePage() {
             </div>
 
             <p
-              className={`relative mt-3 w-full max-w-[min(100%,45rem)] shrink-0 break-keep px-1 font-serif text-base leading-loose text-ink-soft [overflow-wrap:break-word] sm:mt-4 sm:px-0 sm:max-w-[46rem] sm:text-[17px] ${
+              className={`relative mt-3 w-full max-w-[min(100%,45rem)] shrink-0 break-keep px-1 font-serif font-medium text-base leading-loose text-ink-soft [overflow-wrap:break-word] sm:mt-4 sm:px-0 sm:max-w-[46rem] sm:text-[17px] ${
                 lang === 'hi' ? 'font-devanagari' : ''
               }`}
               lang={lang === 'hi' ? 'hi' : undefined}
@@ -257,7 +258,7 @@ function HunminjeongeumCard({
       </p>
 
       <div className="relative z-10 flex items-center gap-2 mt-auto">
-        <span className="font-sans text-xs text-gold tracking-wider">{explore}</span>
+        <span className="font-sans text-xs font-medium text-gold tracking-wider">{explore}</span>
         <span className="text-gold group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform inline-block">
           →
         </span>
@@ -300,7 +301,7 @@ function NavCard({
             {label}
           </span>
         </div>
-        <span className="font-sans text-xs text-ink-muted">{count}</span>
+        <span className="font-sans text-xs font-medium text-ink-muted">{count}</span>
       </div>
 
       <div className="flex gap-2 flex-wrap sm:gap-3" dir="ltr" lang="ko">
@@ -326,7 +327,7 @@ function NavCard({
       </p>
 
       <div className="flex items-center gap-2 mt-auto">
-        <span className="font-sans text-xs text-gold tracking-wider">{explore}</span>
+        <span className="font-sans text-xs font-medium text-gold tracking-wider">{explore}</span>
         <span className="text-gold group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform inline-block">
           →
         </span>

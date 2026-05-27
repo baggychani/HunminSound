@@ -117,7 +117,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true, margin: '-20px' }}
-                  className="mt-5 font-serif text-[clamp(1.65rem,4.5vw,2.5rem)] leading-[1.24] tracking-tight text-white sm:mt-6"
+                  className="mt-5 font-serif text-[clamp(1.65rem,4.5vw,2.5rem)] font-bold leading-[1.24] tracking-tight text-white sm:mt-6"
                 >
                   {m.homeResearchTitle}
                 </motion.h2>
@@ -150,7 +150,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
                     key={titleKey}
                     className="rounded-md border border-white/[0.11] bg-gradient-to-br from-white/[0.08] to-white/[0.02] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] backdrop-blur-sm sm:px-5 sm:py-[1.125rem]"
                   >
-                    <p className="font-sans text-sm font-semibold text-white sm:text-[15px]">
+                    <p className="font-sans text-sm font-bold text-white sm:text-[15px]">
                       {m[titleKey]}
                     </p>
                     <p className="mt-1.5 font-sans text-xs leading-snug text-slate-400 sm:text-[13px]">
@@ -169,7 +169,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
               >
                 <Link
                   href="/research"
-                  className="group inline-flex items-center gap-2.5 rounded-md border border-sky-200/25 bg-sky-400/[0.08] px-6 py-3 font-sans text-sm tracking-wide text-sky-50 shadow-[0_0_24px_rgba(56,120,180,0.12)] transition-all hover:border-sky-200/45 hover:bg-sky-400/[0.14] hover:shadow-[0_0_32px_rgba(56,120,180,0.2)]"
+                  className="group inline-flex items-center gap-2.5 rounded-md border border-sky-200/25 bg-sky-400/[0.08] px-6 py-3 font-sans text-sm font-medium tracking-wide text-sky-50 shadow-[0_0_24px_rgba(56,120,180,0.12)] transition-all hover:border-sky-200/45 hover:bg-sky-400/[0.14] hover:shadow-[0_0_32px_rgba(56,120,180,0.2)]"
                 >
                   {m.homeResearchCta}
                   <span
@@ -212,10 +212,10 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
                 <MriScanOverlay />
 
                 <div className="absolute left-4 top-[58%] z-10 rounded-md border border-sky-200/15 bg-[#0c1828]/88 px-4 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.35)] backdrop-blur-md sm:left-5 sm:px-4 sm:py-3.5">
-                  <p className="font-sans text-[10px] tracking-[0.14em] text-sky-300/75 sm:text-[11px]">
+                  <p className="font-sans text-[10px] font-medium tracking-[0.14em] text-sky-300/75 sm:text-[11px]">
                     {m.homeResearchStatLabel}
                   </p>
-                  <p className="mt-1 font-serif text-[1.35rem] leading-none text-white sm:text-2xl">
+                  <p className="mt-1 font-serif text-[1.35rem] font-bold leading-none text-white sm:text-2xl">
                     {m.homeResearchStatValue}
                   </p>
                   <p className="mt-1.5 font-sans text-[10px] leading-snug text-slate-400 sm:text-[11px]">
