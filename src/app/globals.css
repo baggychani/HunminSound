@@ -39,6 +39,10 @@
     --gold-rgb: 180 83 9;
     --gold-light-rgb: 217 119 6;
 
+    /** sticky 헤더 — 본문(hanji)과 대비 */
+    --header-bg-rgb: 255 255 255;
+    --header-shadow: 0 1px 0 rgb(var(--hanji-border-rgb) / 0.85);
+
     /* 메인 페이지 “한지에 번지는” 색감 워시 — 부드러운 블롭 배경에 사용.
      * warm: 황톳빛(자음·모음 구간), deep: 흙·먹빛(훈민정음), cool: 시원한 한지(연구·하단) */
     --wash-warm-rgb: 232 213 178;
@@ -60,6 +64,9 @@
     --ink-accent-rgb: 251 191 36;
     --gold-rgb: 245 158 11;
     --gold-light-rgb: 251 191 36;
+
+    --header-bg-rgb: 41 37 36;
+    --header-shadow: 0 1px 0 rgb(0 0 0 / 0.35), 0 4px 12px -4px rgb(0 0 0 / 0.45);
 
     /* 다크 모드 워시 — 한지 위 잉크가 머금는 결을 모티프.
      *   warm  : 따뜻한 호박/세피아(촛불빛에 비친 종이)

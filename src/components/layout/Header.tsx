@@ -117,7 +117,7 @@ export function Header() {
   return (
     <header
       ref={headerRef}
-      className="sticky top-0 z-50 relative border-b border-hanji-border bg-hanji"
+      className="sticky top-0 z-[10001] relative isolate border-b border-hanji-border bg-header shadow-[var(--header-shadow)]"
     >
       <div className="site-container min-h-[3.5rem] py-3 sm:min-h-[4rem] flex flex-nowrap items-center justify-between gap-2 sm:gap-3">
         <Link
@@ -164,7 +164,7 @@ export function Header() {
                   <span
                     className={`font-sans tracking-korean transition-colors ${
                       lang === 'hi' ? 'text-[15px] leading-snug' : 'text-sm'
-                    } ${
+                    } ${lang === 'ko' ? 'font-semibold' : 'font-normal'} ${
                       isActive ? 'text-ink' : 'text-ink-muted group-hover:text-ink'
                     }`}
                   >
@@ -173,7 +173,7 @@ export function Header() {
                   <span
                     className={`font-sans tracking-widest leading-none transition-colors ${
                       lang === 'hi' ? 'text-[11.5px]' : 'text-[10.5px]'
-                    } ${
+                    } ${lang !== 'ko' ? 'font-semibold' : 'font-normal'} ${
                       isActive ? 'text-ink' : 'text-ink-muted group-hover:text-ink'
                     }`}
                   >
@@ -199,7 +199,7 @@ export function Header() {
               <span
                 className={`font-sans tracking-korean leading-tight transition-colors ${
                   lang === 'hi' ? 'text-[15px]' : 'text-sm'
-                } ${
+                } ${lang === 'ko' ? 'font-semibold' : 'font-normal'} ${
                   langOpen
                     ? 'text-ink-accent'
                     : 'text-ink-muted group-hover:text-ink'
@@ -210,7 +210,7 @@ export function Header() {
               <span
                 className={`font-sans tracking-widest leading-none transition-colors ${
                   lang === 'hi' ? 'text-[11.5px]' : 'text-[10.5px]'
-                } ${
+                } ${lang !== 'ko' ? 'font-semibold' : 'font-normal'} ${
                   langOpen
                     ? 'text-ink-accent'
                     : 'text-ink-muted group-hover:text-ink'
@@ -284,7 +284,7 @@ export function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15, ease: 'easeOut' }}
-            className="absolute start-0 end-0 top-full z-[65] border-b border-hanji-border bg-hanji shadow-[0_12px_24px_-8px_rgb(0_0_0_/0.18)] dark:shadow-[0_16px_32px_-10px_rgb(0_0_0_/0.65)] sm:hidden"
+            className="absolute start-0 end-0 top-full z-[65] border-b border-hanji-border bg-header shadow-[0_12px_24px_-8px_rgb(0_0_0_/0.18)] dark:shadow-[0_16px_32px_-10px_rgb(0_0_0_/0.65)] sm:hidden"
           >
             <div className="site-container py-2">
               {NAV_LINKS.map(({ href, topKey }) => {
@@ -299,7 +299,11 @@ export function Header() {
                       isActive ? 'text-ink' : 'text-ink-muted'
                     }`}
                   >
-                    <span className="font-sans tracking-korean">{label}</span>
+                    <span
+                      className={`font-sans tracking-korean ${lang === 'ko' ? 'font-semibold' : 'font-normal'}`}
+                    >
+                      {label}
+                    </span>
                   </Link>
                 )
               })}
@@ -318,7 +322,7 @@ export function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15, ease: 'easeOut' }}
-            className="absolute start-0 end-0 top-full z-[70] border-b border-hanji-border bg-hanji shadow-[0_12px_24px_-8px_rgb(0_0_0_/0.18)] dark:shadow-[0_16px_32px_-10px_rgb(0_0_0_/0.65)]"
+            className="absolute start-0 end-0 top-full z-[70] border-b border-hanji-border bg-header shadow-[0_12px_24px_-8px_rgb(0_0_0_/0.18)] dark:shadow-[0_16px_32px_-10px_rgb(0_0_0_/0.65)]"
           >
             <div className="site-container py-4 sm:py-5">
               <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5">
