@@ -3,8 +3,7 @@
 import Link from 'next/link'
 import { useRef, useEffect } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
-import { useLang } from '@/contexts/LanguageContext'
-import { getMessages } from '@/lib/i18n'
+import { useSiteMessages } from '@/hooks/useSiteMessages'
 import { ScrollColorWash } from '@/components/ui/ScrollColorWash'
 import { HeroActBackdrop } from '@/components/ui/HeroActBackdrop'
 import { HaeryebonCardWatermark } from '@/components/showcase/HaeryebonCardWatermark'
@@ -57,8 +56,7 @@ function MagneticGlyph({ children, className }: { children: string; className: s
 }
 
 export default function HomePage() {
-  const { lang } = useLang()
-  const m = getMessages(lang)
+  const { m, lang } = useSiteMessages()
   const act1Ref = useRef<HTMLElement>(null)
   const act2Ref = useRef<HTMLElement>(null)
   const act3Ref = useRef<HTMLElement>(null)
@@ -118,43 +116,14 @@ export default function HomePage() {
               </div>
             </div>
 
-            {lang === 'ko' ? (
-              <p className="relative mt-3 w-full max-w-[min(100%,42rem)] shrink-0 break-keep px-1 font-serif text-base leading-loose text-ink-soft [overflow-wrap:break-word] sm:mt-4 sm:px-0 sm:text-[17px]">
-                <span className="sm:hidden whitespace-normal">
-                  {m.homeIntroPart1} {m.homeIntroPart2}
-                </span>
-                <span className="hidden sm:block sm:whitespace-nowrap">{m.homeIntroPart1}</span>
-                <span className="hidden sm:block sm:whitespace-nowrap">{m.homeIntroPart2}</span>
-              </p>
-            ) : m.homeDescription.trim() ? (
-              <p
-                className={`relative mt-3 w-full max-w-[min(100%,42rem)] shrink-0 px-1 font-serif text-base leading-loose text-ink-soft sm:mt-4 sm:px-0 sm:text-[17px] ${
-                  lang === 'hi' ? 'font-devanagari' : ''
-                }`}
-                lang={lang === 'hi' ? 'hi' : undefined}
-              >
-                <span className="sm:hidden whitespace-normal">
-                  {m.homeDescription.replace(/\n/g, ' ')}
-                </span>
-                <span className="hidden sm:inline whitespace-pre-line">{m.homeDescription}</span>
-              </p>
-            ) : (
-              <p
-                className={`relative mt-3 w-full max-w-[min(100%,42rem)] shrink-0 px-1 font-serif text-base leading-loose text-ink-soft sm:mt-4 sm:px-0 sm:text-[17px] ${
-                  lang === 'hi' ? 'font-devanagari' : ''
-                }`}
-                lang={lang === 'hi' ? 'hi' : undefined}
-              >
-                <span className="sm:hidden whitespace-normal">
-                  {m.homeIntroPart1} {m.homeIntroPart2}
-                </span>
-                <span className="hidden sm:block sm:whitespace-pre-line">
-                  {m.homeIntroPart1}
-                  {'\n'}
-                  {m.homeIntroPart2}
-                </span>
-              </p>
-            )}
+            <p
+              className={`relative mt-3 w-full max-w-[min(100%,42rem)] shrink-0 break-keep px-1 font-serif text-base leading-loose text-ink-soft [overflow-wrap:break-word] sm:mt-4 sm:px-0 sm:text-[17px] whitespace-pre-line ${
+                lang === 'hi' ? 'font-devanagari' : ''
+              }`}
+              lang={lang === 'hi' ? 'hi' : undefined}
+            >
+              {m.homeIntro}
+            </p>
           </div>
 
           <div className="hidden min-h-[12rem] lg:block" aria-hidden />

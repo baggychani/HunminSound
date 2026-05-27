@@ -6,6 +6,7 @@ import { useRef, useState } from 'react'
 import { vowelsData } from '@/data/vowels'
 import { TranslationDrawer } from '@/components/admin/TranslationDrawer'
 import { useOverridesStore, patchOverride, makeKoreanKey, getCurrentKorean } from '@/lib/overrides-store'
+import { buildPhonemeDescriptionBaseValues } from '@/lib/cms-base-values'
 import type { Vowel } from '@/types'
 
 const fadeUp = {
@@ -106,12 +107,7 @@ function VowelRow({ vowel, index }: { vowel: Vowel; index: number }) {
       <TranslationDrawer
         type="vowel" id={vowel._id} displayName={vowel.name}
         koreanSource={koreanSource}
-        baseValues={{
-          en: vowel.description_en, zh: vowel.description_zh,
-          ja: vowel.description_ja, fr: vowel.description_fr,
-          hi: vowel.description_hi, vi: vowel.description_vi,
-          ru: vowel.description_ru, ar: vowel.description_ar,
-        }}
+        baseValues={buildPhonemeDescriptionBaseValues(vowel)}
       />
     </motion.div>
   )

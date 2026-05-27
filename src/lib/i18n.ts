@@ -144,17 +144,17 @@ const ko = {
 export type Messages = typeof ko
 
 const en: Messages = {
-  siteTitle: '세종말소리',
+  siteTitle: 'Sejong Speech Sounds',
   consonants: 'Consonants',
   vowels: 'Vowels',
-  homeSubtitle: 'Korean Articulatory Phonetics Research Archive',
+  homeSubtitle: 'A Scientific Reillumination of the Creation Principles of Hunminjeongeum',
   homeDescription:
     'A research archive exploring the articulation of\nKorean consonants and vowels through MRI imaging.',
   homeSub: 'Hunminjeongeum Research Project · King Sejong, 1443',
   homeIntroPart1:
-    'Re-examining the principles of Hunminjeongeum (訓民正音) through the lens of modern phonetics,',
+    'The principles of Sanghyeong proposed by King Sejong during the creation of Hunminjeongeum in 1443—',
   homeIntroPart2:
-    'we visualize the movement of articulatory organs using MRI imaging.',
+    'are empirically validated today, after 580 years, through the convergence of MRI, speech engineering, and AI.',
   navSubConsonants: 'Consonants',
   navSubVowels: 'Vowels',
   navSubLanguage: 'Language',
@@ -262,14 +262,14 @@ const en: Messages = {
 }
 
 const zh: Messages = {
-  siteTitle: '세종말소리',
+  siteTitle: '世宗语音',
   consonants: '辅音',
   vowels: '元音',
-  homeSubtitle: '韩语发音音声学研究档案',
+  homeSubtitle: '科学再探训民正音的创制原理',
   homeDescription: '通过MRI影像探索韩语辅音和元音\n发音过程的音声学研究档案。',
   homeSub: '训民正音研究项目 · 世宗大王 1443年',
-  homeIntroPart1: '以现代语音学的视角重新审视《训民正音》的创制原理，',
-  homeIntroPart2: '并通过MRI影像技术呈现发音器官的运动。',
+  homeIntroPart1: '1443年世宗大王创制《训民正音》时所提出的"象形原理"，',
+  homeIntroPart2: '历经580余年后的今天，通过MRI图像、语音工程及AI融合技术得以科学实证。',
   navSubConsonants: '辅音',
   navSubVowels: '元音',
   navSubLanguage: '语言',
@@ -372,14 +372,14 @@ const zh: Messages = {
 }
 
 const ja: Messages = {
-  siteTitle: '세종말소리',
+  siteTitle: '世宗の音声',
   consonants: '子音',
   vowels: '母音',
-  homeSubtitle: '韓国語調音音声学研究アーカイブ',
+  homeSubtitle: '訓民正音創製原理の科学的再照明',
   homeDescription: 'MRI映像で韓国語の子音と母音の\n調音過程を探求する音声学研究アーカイブ。',
   homeSub: '訓民正音研究プロジェクト · 世宗大王 1443年',
-  homeIntroPart1: '訓民正音の創製原理を現代音声学の視点から再照明し、',
-  homeIntroPart2: 'MRI映像技術を通じて調音器官の動きを可視化します。',
+  homeIntroPart1: '1443年に世宗大王が『訓民正音』を創製する際に提示した「象形の原理」を、',
+  homeIntroPart2: '580余年が経過した今日、MRI画像・音声工学・AIの融合技術によって実証します。',
   navSubConsonants: '子音',
   navSubVowels: '母音',
   navSubLanguage: '言語',
@@ -483,17 +483,17 @@ const ja: Messages = {
 }
 
 const fr: Messages = {
-  siteTitle: '세종말소리',
+  siteTitle: 'Sejong Speech Sounds',
   consonants: 'Consonnes',
   vowels: 'Voyelles',
-  homeSubtitle: 'Archive de phonétique articulatoire coréenne',
+  homeSubtitle: 'Nouvel éclairage scientifique sur les principes de création du Hunminjeongeum',
   homeDescription:
     "Une archive de recherche explorant l'articulation\ndes consonnes et voyelles coréennes par IRM.",
   homeSub: 'Projet Hunminjeongeum · Roi Sejong, 1443',
   homeIntroPart1:
-    'Nous réexaminons les principes de création du Hunminjeongeum (訓民正音) du point de vue de la phonétique moderne,',
+    'Les principes de Sanghyeong (imitation des formes) proposés par le roi Sejong lors de la création du Hunminjeongeum en 1443,',
   homeIntroPart2:
-    "et nous visualisons les mouvements des organes articulatoires grâce à l'imagerie par IRM.",
+    "sont validés empiriquement aujourd'hui, plus de 580 ans après, par la convergence de l'imagerie RM, de la technologie vocale et de l'IA.",
   navSubConsonants: 'Consonnes',
   navSubVowels: 'Voyelles',
   navSubLanguage: 'Langue',
@@ -601,17 +601,17 @@ const fr: Messages = {
 }
 
 const de: Messages = {
-  siteTitle: '세종말소리',
+  siteTitle: 'Sejong Speech Sounds',
   consonants: 'Konsonanten',
   vowels: 'Vokale',
-  homeSubtitle: 'Forschungsarchiv zur koreanischen artikulatorischen Phonetik',
+  homeSubtitle: 'Wissenschaftliche Neubeleuchtung der Entstehungsprinzipien des Hunminjeongeum',
   homeDescription:
     'Ein Forschungsarchiv zur Artikulation koreanischer Konsonanten und Vokale\nmithilfe von MRT-Bildgebung.',
   homeSub: 'Hunminjeongeum-Forschungsprojekt · König Sejong, 1443',
   homeIntroPart1:
-    'Wir beleuchten die Schöpfungsprinzipien des Hunminjeongeum (訓民正音) neu aus der Perspektive der modernen Phonetik,',
+    'Die von König Sejong bei der Erschaffung des Hunminjeongeum im Jahr 1443 vorgeschlagenen Prinzipien des Sanghyeong —',
   homeIntroPart2:
-    'und visualisieren die Bewegungen der Artikulationsorgane mit MRT-Bildgebung.',
+    'werden heute, mehr als 580 Jahre später, durch die Konvergenz von MRT-Bildgebung, Sprachtechnologie und KI empirisch nachgewiesen.',
   navSubConsonants: 'Konsonanten',
   navSubVowels: 'Vokale',
   navSubLanguage: 'Sprache',
@@ -720,17 +720,17 @@ const de: Messages = {
 }
 
 const es: Messages = {
-  siteTitle: '세종말소리',
+  siteTitle: 'Sejong Speech Sounds',
   consonants: 'Consonantes',
   vowels: 'Vocales',
-  homeSubtitle: 'Archivo de investigación de fonética articulatoria coreana',
+  homeSubtitle: 'Una nueva perspectiva científica sobre los principios de creación del Hunminjeongeum',
   homeDescription:
     'Un archivo de investigación que explora la articulación de las consonantes\ny vocales coreanas mediante imágenes por resonancia magnética.',
   homeSub: 'Proyecto Hunminjeongeum · Rey Sejong, 1443',
   homeIntroPart1:
-    'Reexaminamos los principios de creación del Hunminjeongeum (訓民正音) desde la perspectiva de la fonética moderna,',
+    'Los principios de Sanghyeong (imitación de formas) propuestos por el rey Sejong al crear el Hunminjeongeum en 1443,',
   homeIntroPart2:
-    'y visualizamos el movimiento de los órganos articulatorios mediante tecnología de imagen por RM.',
+    'se validan empíricamente hoy, más de 580 años después, mediante la convergencia de imágenes de RM, ingeniería de la voz e IA.',
   navSubConsonants: 'Consonantes',
   navSubVowels: 'Vocales',
   navSubLanguage: 'Idioma',
@@ -839,17 +839,17 @@ const es: Messages = {
 }
 
 const hi: Messages = {
-  siteTitle: '세종말소리',
+  siteTitle: 'सेजोंग स्पीच साउंड्स',
   consonants: 'व्यंजन',
   vowels: 'स्वर',
-  homeSubtitle: 'कोरियाई उच्चारण स्वर विज्ञान शोध संग्रह',
+  homeSubtitle: 'हुनमिंजेओंगम के निर्माण सिद्धांतों पर वैज्ञानिक पुनर्दृष्टि',
   homeDescription:
     'MRI इमेजिंग के माध्यम से कोरियाई व्यंजनों और\nस्वरों के उच्चारण की खोज करने वाला शोध संग्रह।',
   homeSub: 'हुनमिनजोंगऊम शोध परियोजना · राजा सेजोंग, 1443',
   homeIntroPart1:
-    'हुनमिनजोंगअम् (訓民正音) की रचना के सिद्धांतों को आधुनिक स्वरविज्ञान की दृष्टि से पुनः प्रकाशित करते हुए,',
+    "1443 में राजा सेजोंग द्वारा 'हुनमिंजे오ंगम' के निर्माण के समय प्रस्तुत किए गए 'सांघियोंग' के सिद्धांतों को,",
   homeIntroPart2:
-    'MRI इमेजिंग के माध्यम से उच्चारण अंगों की गति का दृश्यीकरण करते हैं।',
+    '580 से अधिक वर्षों बाद आज, एमआरआई छवियों, वाक्-इंजीनियरिंग और एआई संलयन तकनीक से सिद्ध किया जा रहा है।',
   navSubConsonants: 'व्यंजन',
   navSubVowels: 'स्वर',
   navSubLanguage: 'भाषा',
@@ -960,13 +960,15 @@ const vi: Messages = {
   navSubConsonants: 'Phụ âm',
   navSubVowels: 'Nguyên âm',
   navSubLanguage: 'Ngôn ngữ',
-  homeSubtitle: 'Lưu trữ nghiên cứu âm học điều âm tiếng Hàn',
+  siteTitle: 'Sejong Speech Sounds',
+  homeSubtitle: 'Tái chiếu rọi khoa học về nguyên lý cấu tạo của Hunminjeongeum',
   homeDescription:
     'Lưu trữ nghiên cứu khám phá quá trình điều âm\nnguyên âm và phụ âm tiếng Hàn qua hình ảnh MRI.',
   homeSub: 'Dự án Hunminjeongeum · Vua Sejong, 1443',
   homeIntroPart1:
-    'Làm nổi bật lại nguyên lý sáng tạo Hunminjeongeum (訓民正音) dưới góc nhìn ngữ âm học hiện đại,',
-  homeIntroPart2: 'chúng tôi trực quan hóa chuyển động của cơ quan điều âm bằng hình ảnh MRI.',
+    "Nguyên lý 'Sanghyeong' (Tượng hình) được vua Sejong đề xuất khi sáng tạo Hunminjeongeum vào năm 1443,",
+  homeIntroPart2:
+    'sau hơn 580 năm, nay được thực nghiệm hóa thông qua công nghệ kết hợp giữa hình ảnh MRI, công nghệ giọng nói và AI.',
   language: 'Ngôn ngữ',
   footerRight: 'Lưu trữ nghiên cứu âm học điều âm tiếng Hàn',
   themeLight: 'Sáng',
@@ -1052,13 +1054,15 @@ const ru: Messages = {
   navSubConsonants: 'Согласные',
   navSubVowels: 'Гласные',
   navSubLanguage: 'Язык',
-  homeSubtitle: 'Архив исследований корейской артикуляторной фонетики',
+  siteTitle: 'Звуки речи Седжона',
+  homeSubtitle: 'Научное переосмысление принципов создания Хунмин чёныма',
   homeDescription:
     'Исследовательский архив, изучающий артикуляцию\nкорейских согласных и гласных с помощью МРТ.',
   homeSub: 'Проект Хунминчонъым · король Сечжон, 1443',
   homeIntroPart1:
-    'Мы заново освещаем принципы создания Хунминчонъыма (訓民正音) с точки зрения современной фонетики,',
-  homeIntroPart2: 'и визуализируем движение органов артикуляции с помощью МРТ.',
+    'Принципы «Санхёна» (подражания формам), предложенные королем Седжоном при создании «Хунмин чёныма» в 1443 году,',
+  homeIntroPart2:
+    'спустя более 580 лет эмпирически подтверждаются сегодня с помощью конвергенции МРТ-визуализации, речевых технологий и ИИ.',
   language: 'Язык',
   footerRight: 'Архив исследований корейской артикуляторной фонетики',
   themeLight: 'Светлая',
@@ -1126,13 +1130,15 @@ const ar: Messages = {
   navSubConsonants: 'الصّوامت',
   navSubVowels: 'الحروف المتحركة',
   navSubLanguage: 'اللغة',
-  homeSubtitle: 'أرشيف أبحاث الصوتيات التعبيرية الكورية',
+  siteTitle: 'أصوات كلام سيجونغ',
+  homeSubtitle: 'إعادة تسليط الضوء العلمي على مبادئ إنشاء الهونمين جيونغوم',
   homeDescription:
     'أرشيف بحثي يستكشف ارتباط\nالمقاطع والحركات الكورية من خلال تصوير الرنين المغناطيسي.',
   homeSub: 'مشروع هونمينجونغئوم · الملك سيجونغ، 1443',
   homeIntroPart1:
-    'نعيد تسليط الضوء على مبادئ إنشاء هونمينجونغئوم (訓民正音) من منظور الصوتيات الحديثة،',
-  homeIntroPart2: 'ونُظهر حركة أعضاء النطق باستخدام تصوير الرنين المغناطيسي.',
+    'إن مبادئ "سانغهيونغ" (محاكاة الأشكال) التي طرحها الملك سيجونغ عند إنشاء "الهونمين جيونغوم" عام 1443،',
+  homeIntroPart2:
+    'نثبتها اليوم تجريبيًا، بعد مرور أكثر من 580 عامًا، عبر تكامل تقنيات صور الرنين المغناطيسي (MRI)، وهندسة الصوت، والذكاء الاصطناعي (AI).',
   language: 'اللغة',
   footerRight: 'أرشيف أبحاث الصوتيات التعبيرية الكورية',
   themeLight: 'فاتح',

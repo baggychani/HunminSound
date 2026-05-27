@@ -29,6 +29,10 @@ export async function patchOverride(body: object): Promise<OverridesStore> {
   const data = (await res.json()) as { ok: boolean; store: OverridesStore }
   _globalStore = data.store
   notify()
+  try {
+    const { resetPublicOverridesCache } = await import('@/hooks/useSiteMessages')
+    resetPublicOverridesCache()
+  } catch {}
   return data.store
 }
 
@@ -50,14 +54,18 @@ export function useOverridesStore() {
 }
 
 /** 한국어 오버라이드 키 */
-export function makeKoreanKey(type: 'consonant' | 'vowel', id: string) {
+export function makeKoreanKey(type: 'consonant' | 'vowel' | 'home', id: string) {
   return `${type}:${id}:description:ko`
+}
+
+export function makeHomeKoreanKey(id: string) {
+  return makeKoreanKey('home', id)
 }
 
 /** 현재 한국어 텍스트 (오버라이드 있으면 우선) */
 export function getCurrentKorean(
   store: OverridesStore,
-  type: 'consonant' | 'vowel',
+  type: 'consonant' | 'vowel' | 'home',
   id: string,
   baseKorean: string,
 ): string {

@@ -7,7 +7,11 @@ import {
   buildMtKey,
   getBundledMachineTranslation,
 } from '@/lib/mtCache'
-import { makeHunminPassageOverrideKey, type SupportedTranslationLang } from '@/lib/i18n-overrides'
+import {
+  makeHunminPassageOverrideKey,
+  isSupportedTranslationLang,
+  type SupportedTranslationLang,
+} from '@/lib/i18n-overrides'
 import { useOverridesStore } from '@/lib/overrides-store'
 import { HunminPassageText } from './HunminPassageText'
 import type { HunminPassage } from '@/data/hunminjeongeumPassages'
@@ -78,12 +82,9 @@ export function TranslatedPassageText({ passage, lang, className }: TranslatedPa
 
   /* SupportedTranslationLang에 들지 않는 언어(예: de, es)는 오버라이드 키가 없으므로
    * undefined로 안전 처리. */
-  const overrideLangCode: SupportedTranslationLang | null =
-    (['en', 'zh', 'ja', 'fr', 'hi', 'vi', 'ru', 'ar'] as const).includes(
-      lang as SupportedTranslationLang,
-    )
-      ? (lang as SupportedTranslationLang)
-      : null
+  const overrideLangCode: SupportedTranslationLang | null = isSupportedTranslationLang(lang)
+    ? lang
+    : null
 
   const overrideKey = overrideLangCode
     ? makeHunminPassageOverrideKey(passage.number, overrideLangCode)

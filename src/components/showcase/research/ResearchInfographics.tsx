@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion, useInView } from 'framer-motion'
 import { teamPhotoSrc } from '@/lib/teamSlugs'
@@ -219,7 +219,7 @@ export function AchievementsShowcase({
 
 function MemberAvatarFallback() {
   return (
-    <div className="flex h-full items-center justify-center bg-gradient-to-b from-hanji/55 to-hanji-warm/45">
+    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-hanji/55 to-hanji-warm/45">
       <div
         className="flex aspect-square w-[38%] min-w-[3.25rem] max-w-[4.5rem] items-center justify-center rounded-full bg-ink/[0.05] ring-1 ring-ink/[0.09]"
         aria-hidden
@@ -236,20 +236,22 @@ function MemberPhoto({ name }: { name: string }) {
   const [failed, setFailed] = useState(false)
   const src = teamPhotoSrc(name)
 
-  if (src && !failed) {
-    return (
-      <Image
-        src={src}
-        alt=""
-        fill
-        sizes="(max-width: 640px) 50vw, 25vw"
-        className="object-cover object-[center_14%]"
-        onError={() => setFailed(true)}
-      />
-    )
-  }
-
-  return <MemberAvatarFallback />
+  return (
+    <div className="absolute inset-0">
+      {src && !failed ? (
+        <Image
+          src={src}
+          alt=""
+          fill
+          sizes="(max-width: 640px) 50vw, 25vw"
+          className="object-cover object-[center_14%]"
+          onError={() => setFailed(true)}
+        />
+      ) : (
+        <MemberAvatarFallback />
+      )}
+    </div>
+  )
 }
 
 function TeamMemberCard({
@@ -263,7 +265,7 @@ function TeamMemberCard({
   const displayName = member.name.replace(/\s*\n\s*/g, ', ').replace(/\s+/g, ' ').trim()
 
   return (
-    <motion.article
+    <motion.div
       variants={{
         hidden: { opacity: 0, y: 22 },
         visible: {
@@ -272,8 +274,9 @@ function TeamMemberCard({
           transition: { duration: 0.52, ease: [0.22, 1, 0.36, 1] },
         },
       }}
-      className="team-member-card flex h-full flex-col overflow-hidden rounded-lg border border-hanji-border/75 bg-hanji/25 shadow-[0_1px_0_rgb(var(--ink-rgb)/0.03)]"
+      className="h-full"
     >
+      <article className="team-member-card flex h-full flex-col overflow-hidden rounded-lg border border-hanji-border/75 bg-hanji/25 shadow-[0_1px_0_rgb(var(--ink-rgb)/0.03)]">
       <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden border-b border-hanji-border/60 bg-hanji/40">
         <MemberPhoto name={member.name} />
       </div>
@@ -313,7 +316,8 @@ function TeamMemberCard({
           </div>
         </div>
       </div>
-    </motion.article>
+      </article>
+    </motion.div>
   )
 }
 
@@ -324,13 +328,20 @@ export function TeamCardGrid({
 }) {
   const gridRef = useRef<HTMLDivElement>(null)
   const inView = useInView(gridRef, { once: true, margin: '-60px' })
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const animateState = mounted && inView ? 'visible' : 'hidden'
 
   return (
     <motion.div
       ref={gridRef}
       className="grid grid-cols-2 items-stretch gap-2 sm:gap-2.5 lg:grid-cols-4 lg:gap-3"
       initial="hidden"
-      animate={inView ? 'visible' : 'hidden'}
+      animate={animateState}
       variants={{
         hidden: {},
         visible: {

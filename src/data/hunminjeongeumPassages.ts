@@ -42,6 +42,8 @@ export interface HunminPassage {
     de?: string
     es?: string
     hi?: string
+    vi?: string
+    ru?: string
     ar?: string
   }
   /** 차트 페이지로 보낼 한글 자모. 카드 푸터에 작은 링크로 노출. */

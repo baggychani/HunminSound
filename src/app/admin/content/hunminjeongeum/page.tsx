@@ -11,6 +11,7 @@ import {
 import { TranslationDrawer } from '@/components/admin/TranslationDrawer'
 import { useOverridesStore, patchOverride } from '@/lib/overrides-store'
 import { makeOverrideKey } from '@/lib/i18n-overrides'
+import { buildHunminPassageBaseValues } from '@/lib/cms-base-values'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 8 },
@@ -210,13 +211,7 @@ function PassageRow({ passage, index }: { passage: HunminPassage; index: number 
         koreanSource={englishSource}
         sourceLabel="영어"
         excludeLangs={['en']}
-        baseValues={{
-          zh: passage.translations.zh,
-          ja: passage.translations.ja,
-          fr: passage.translations.fr,
-          hi: passage.translations.hi,
-          ar: passage.translations.ar,
-        }}
+        baseValues={buildHunminPassageBaseValues(passage.translations, ['en'])}
       />
     </motion.div>
   )

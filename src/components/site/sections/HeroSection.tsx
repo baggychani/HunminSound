@@ -9,6 +9,7 @@ import { JamoText } from '@/components/ui/JamoText'
 import { useSnapScrollContext } from '@/components/site/SnapScrollLayout'
 import { HeroFloatingOrbs } from '@/components/site/effects/HeroFloatingOrbs'
 import { MagneticGlyph } from '@/components/site/effects/MagneticGlyph'
+import { joinHomeLines } from '@/data/home-content'
 import { fadeUp } from '@/components/site/effects/v2Motion'
 
 const HunminBookViewer = dynamic(
@@ -74,16 +75,10 @@ export function HeroSection() {
             </span>
           </h1>
 
-          <p className="v2-body mt-5 max-w-xl text-white/75">
-            {lang === 'ko' ? (
-              <>
-                {m.homeIntroPart1}
-                <br />
-                {m.homeIntroPart2}
-              </>
-            ) : (
-              v2.heroDesc
-            )}
+          <p className="v2-body mt-5 max-w-xl whitespace-pre-line text-white/75">
+            {lang === 'ko'
+              ? joinHomeLines(m.homeIntroPart1, m.homeIntroPart2)
+              : v2.heroDesc}
           </p>
 
           <div className="mt-6 flex flex-wrap gap-x-3 gap-y-1" dir="ltr" lang="ko">

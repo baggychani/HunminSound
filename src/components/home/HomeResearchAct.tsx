@@ -4,8 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { forwardRef, useRef } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
-import { useLang } from '@/contexts/LanguageContext'
-import { getMessages } from '@/lib/i18n'
+import { useSiteMessages } from '@/hooks/useSiteMessages'
 
 const MRI_HERO = '/images/research/mri-hero-v2.webp'
 const MRI_W = 1536
@@ -42,8 +41,7 @@ function MriScanOverlay() {
 /** 메인 3막 — 연구 소개 히어로 (다크 · 정확히 1뷰포트) */
 export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(_, ref) {
   const sectionRef = useRef<HTMLElement | null>(null)
-  const { lang } = useLang()
-  const m = getMessages(lang)
+  const { m, lang } = useSiteMessages()
   const reduceMotion = useReducedMotion()
 
   const { scrollYProgress } = useScroll({
@@ -130,10 +128,12 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true, margin: '-20px' }}
-                  className="mt-5 space-y-3 font-sans text-[clamp(13px,1.75vw,15px)] leading-[1.78] text-slate-300/90 sm:mt-6"
+                  className={`mt-5 font-sans text-[clamp(13px,1.75vw,15px)] leading-[1.78] text-slate-300/90 sm:mt-6 whitespace-pre-line ${
+                    lang === 'hi' ? 'font-devanagari' : ''
+                  }`}
+                  lang={lang === 'hi' ? 'hi' : undefined}
                 >
-                  <p>{m.homeResearchDesc1}</p>
-                  <p>{m.homeResearchDesc2}</p>
+                  {m.homeResearchDesc}
                 </motion.div>
               </div>
 

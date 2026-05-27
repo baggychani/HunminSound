@@ -2,8 +2,7 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
-import { useLang } from '@/contexts/LanguageContext'
-import { getV2Messages } from '@/lib/v2-i18n'
+import { useSiteMessages } from '@/hooks/useSiteMessages'
 
 const INQUIRY_TYPES = [
   'contactTypeCollab',
@@ -14,8 +13,7 @@ const INQUIRY_TYPES = [
 ] as const
 
 export function HomeContactSection() {
-  const { lang } = useLang()
-  const v2 = getV2Messages(lang)
+  const { v2 } = useSiteMessages()
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
   const [errorDetail, setErrorDetail] = useState<string | null>(null)
   const [form, setForm] = useState({

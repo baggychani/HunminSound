@@ -10,18 +10,26 @@
  *  - 이후 원본 한국어가 바뀌었을 때 → stale 상태로 감지
  */
 
-export type SupportedTranslationLang = 'en' | 'zh' | 'ja' | 'fr' | 'hi' | 'vi' | 'ru' | 'ar'
+export type SupportedTranslationLang = 'en' | 'zh' | 'ja' | 'fr' | 'de' | 'es' | 'hi' | 'vi' | 'ru' | 'ar'
 
 export const TRANSLATION_LANGS: { code: SupportedTranslationLang; name: string; script: string }[] = [
   { code: 'en', name: 'English',      script: 'Latin'    },
   { code: 'zh', name: '中文',          script: 'Hanzi'    },
   { code: 'ja', name: '日本語',         script: 'Kana'     },
   { code: 'fr', name: 'Français',     script: 'Latin'    },
+  { code: 'de', name: 'Deutsch',      script: 'Latin'    },
+  { code: 'es', name: 'Español',      script: 'Latin'    },
   { code: 'hi', name: 'हिन्दी',        script: 'Devanagari'},
   { code: 'vi', name: 'Tiếng Việt',   script: 'Latin'    },
   { code: 'ru', name: 'Русский',      script: 'Cyrillic' },
   { code: 'ar', name: 'العربية',      script: 'Arabic'   },
 ]
+
+const SUPPORTED_SET = new Set<string>(TRANSLATION_LANGS.map((l) => l.code))
+
+export function isSupportedTranslationLang(lang: string): lang is SupportedTranslationLang {
+  return SUPPORTED_SET.has(lang)
+}
 
 export interface TranslationOverride {
   /** 편집된 번역 텍스트 */
@@ -40,8 +48,9 @@ export type OverridesStore = Record<string, TranslationOverride>
  * 오버라이드 대상 콘텐츠 타입.
  * - consonant / vowel : 자·모음 차트 항목 (단일 description 필드)
  * - hunminPassage     : 훈민정음 해례본 한 단락(id = 일련번호, 예: '52')
+ * - home              : 홈 페이지 텍스트(id = field key, 예: 'homeSubtitle')
  */
-export type OverrideContentType = 'consonant' | 'vowel' | 'hunminPassage'
+export type OverrideContentType = 'consonant' | 'vowel' | 'hunminPassage' | 'home'
 
 // ── 키 헬퍼 ──────────────────────────────────────────────────────────────────
 

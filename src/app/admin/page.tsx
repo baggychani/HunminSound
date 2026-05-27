@@ -29,16 +29,6 @@ const SECTIONS = [
     ready: true,
   },
   {
-    id: 'home',
-    href: '/admin/content/home',
-    glyph: '主',
-    title: '홈 페이지',
-    en: 'Home',
-    desc: '히어로 문구, 섹션 설명, 카드 내용 등 홈 화면의 텍스트를 관리합니다.',
-    meta: '',
-    ready: false,
-  },
-  {
     id: 'hunminjeongeum',
     href: '/admin/content/hunminjeongeum',
     glyph: '訓',
@@ -46,6 +36,16 @@ const SECTIONS = [
     en: 'Hunminjeongeum',
     desc: '≪훈민정음≫ 해례본 28자 제자 원리·정인지서 단락별 다국어 번역을 편집합니다.',
     meta: '3개 섹션',
+    ready: true,
+  },
+  {
+    id: 'home',
+    href: '/admin/content/home',
+    glyph: '主',
+    title: '홈 페이지',
+    en: 'Home',
+    desc: '히어로 문구, 섹션 설명, 카드 내용 등 홈 화면의 텍스트를 관리합니다.',
+    meta: '',
     ready: true,
   },
   {

@@ -6,6 +6,7 @@ import { useRef, useState } from 'react'
 import { consonantsData } from '@/data/consonants'
 import { TranslationDrawer } from '@/components/admin/TranslationDrawer'
 import { useOverridesStore, patchOverride, makeKoreanKey, getCurrentKorean } from '@/lib/overrides-store'
+import { buildPhonemeDescriptionBaseValues } from '@/lib/cms-base-values'
 import type { Consonant } from '@/types'
 
 const fadeUp = {
@@ -117,12 +118,7 @@ function ConsonantRow({ consonant, index }: { consonant: Consonant; index: numbe
       <TranslationDrawer
         type="consonant" id={consonant._id} displayName={consonant.name}
         koreanSource={koreanSource}
-        baseValues={{
-          en: consonant.description_en, zh: consonant.description_zh,
-          ja: consonant.description_ja, fr: consonant.description_fr,
-          hi: consonant.description_hi, vi: consonant.description_vi,
-          ru: consonant.description_ru, ar: consonant.description_ar,
-        }}
+        baseValues={buildPhonemeDescriptionBaseValues(consonant)}
       />
     </motion.div>
   )

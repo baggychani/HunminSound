@@ -2,6 +2,30 @@
   {
     "username": "hunmin",
     "action": "remove",
+    "key": "home:homeSubtitle:description:ko",
+    "type": "home",
+    "itemId": "homeSubtitle",
+    "itemName": "부제",
+    "lang": "ko",
+    "oldValue": "훈민정음 창제 원리의 과학적 재조명ㅇ",
+    "id": "1779854007607-vk28r",
+    "timestamp": "2026-05-27T03:53:27.607Z"
+  },
+  {
+    "username": "hunmin",
+    "action": "save",
+    "key": "home:homeSubtitle:description:ko",
+    "type": "home",
+    "itemId": "homeSubtitle",
+    "itemName": "부제",
+    "lang": "ko",
+    "newValue": "훈민정음 창제 원리의 과학적 재조명ㅇ",
+    "id": "1779854005207-c8kzt",
+    "timestamp": "2026-05-27T03:53:25.207Z"
+  },
+  {
+    "username": "hunmin",
+    "action": "remove",
     "key": "consonant:b:description:ko",
     "type": "consonant",
     "itemId": "b",

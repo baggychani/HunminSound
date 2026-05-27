@@ -14,7 +14,7 @@ export interface HistoryEntry {
   username: string        // 로그인한 관리자 ID
   action: HistoryAction
   key: string             // "consonant:b:description:en"
-  type: 'consonant' | 'vowel' | 'hunminPassage'
+  type: 'consonant' | 'vowel' | 'hunminPassage' | 'home'
   itemId: string          // e.g. "b" / "52"
   itemName: string        // e.g. "ㅂ (비읍)" / "[52] 正音二十八字…"
   lang: string            // e.g. "en"
@@ -36,14 +36,14 @@ export function makeHistoryEntry(
 
 /** 키에서 type / itemId / lang 파싱 */
 export function parseOverrideKey(key: string): {
-  type: 'consonant' | 'vowel' | 'hunminPassage'
+  type: 'consonant' | 'vowel' | 'hunminPassage' | 'home'
   itemId: string
   lang: string
 } | null {
   const parts = key.split(':')
   if (parts.length !== 4) return null
   const [type, itemId, , lang] = parts
-  if (type !== 'consonant' && type !== 'vowel' && type !== 'hunminPassage') return null
+  if (type !== 'consonant' && type !== 'vowel' && type !== 'hunminPassage' && type !== 'home') return null
   return { type, itemId: itemId!, lang: lang! }
 }
 
@@ -58,7 +58,9 @@ export function describeAction(entry: HistoryEntry): string {
       ? '자음'
       : entry.type === 'vowel'
         ? '모음'
-        : '훈민정음'
+        : entry.type === 'home'
+          ? '홈'
+          : '훈민정음'
   const langLabel = langMap[entry.lang] ?? entry.lang
   if (entry.action === 'save') {
     if (entry.lang === 'ko') return `${typeLabel} ${entry.itemName} · 한국어 설명 수정`
