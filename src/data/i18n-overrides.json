@@ -298,5 +298,65 @@
     "sourceSnapshot": "한국어 음성학, MRI 음성 과학, 언어 유산 연구에 관심 있는 연구자·기관과의 협력을 환영합니다.",
     "staleDismissed": false,
     "updatedAt": "2026-05-27T03:57:51.376Z"
+  },
+  "vowel:a:description:en": {
+    "value": "'ㅏ' is an open central unrounded vowel. It is pronounced by lowering the lower jaw as much as possible to open the mouth wide, dropping the tongue body far down from the palate, and retracting the tongue root backward. At this time, the tip of the tongue is positioned behind the lower teeth but does not touch them. The sides of the tongue are completely separated from the upper molars.",
+    "sourceSnapshot": "평순 중설 저모음입니다. 아래턱을 최대한 내려 입을 크게 벌리고, 혓몸을 입천장으로부터 많이 떨어뜨리고, 혀뿌리를 뒤로 당겨 발음합니다. 이때 혀끝은 아랫니의 뒤쪽에 위치하나 아랫니에는 닿지 않습니다. 혀의 양옆은 윗 어금니로부터 완전히 떨어뜨립니다.",
+    "staleDismissed": false,
+    "updatedAt": "2026-05-27T12:00:00.000Z"
+  },
+  "vowel:a:description:zh": {
+    "value": "'ㅏ' 是央低不圆唇元音（开央不圆唇元音）。发音时，尽量放下下颌以把嘴张大，使舌身远离硬腭，并将舌根向后拉。此时，舌尖位于下齿后方，但不接触下齿。舌头两侧与上磨牙完全分离。",
+    "sourceSnapshot": "평순 중설 저모음입니다. 아래턱을 최대한 내려 입을 크게 벌리고, 혓몸을 입천장으로부터 많이 떨어뜨리고, 혀뿌리를 뒤로 당겨 발음합니다. 이때 혀끝은 아랫니의 뒤쪽에 위치하나 아랫니에는 닿지 않습니다. 혀의 양옆은 윗 어금니로부터 완전히 떨어뜨립니다.",
+    "staleDismissed": false,
+    "updatedAt": "2026-05-27T12:00:00.000Z"
+  },
+  "vowel:a:description:ja": {
+    "value": "'ㅏ' は非円唇中舌低母音（開中舌非円唇母音）です。下顎をできるだけ下げて口を大きく開け、舌身を口蓋から大きく離し、舌根を後ろに引いて発音します。この時、舌先は下の歯の裏側に位置しますが、下の歯には触れません。舌の両側は上の奥歯から完全に離します。",
+    "sourceSnapshot": "평순 중설 저모음입니다. 아래턱을 최대한 내려 입을 크게 벌리고, 혓몸을 입천장으로부터 많이 떨어뜨리고, 혀뿌리를 뒤로 당겨 발음합니다. 이때 혀끝은 아랫니의 뒤쪽에 위치하나 아랫니에는 닿지 않습니다. 혀의 양옆은 윗 어금니로부터 완전히 떨어뜨립니다.",
+    "staleDismissed": false,
+    "updatedAt": "2026-05-27T12:00:00.000Z"
+  },
+  "vowel:a:description:fr": {
+    "value": "'ㅏ' est une voyelle ouverte centrale non arrondie. Elle se prononce en abaissant la mâchoire inférieure au maximum pour ouvrir grand la bouche, en éloignant considérablement le corps de la langue du palais et en rétractant la racine de la langue vers l'arrière. À ce moment, la pointe de la langue se situe derrière les dents inférieures mais ne les touche pas. Les côtés de la langue sont complètement séparés des molaires supérieures.",
+    "sourceSnapshot": "평순 중설 저모음입니다. 아래턱을 최대한 내려 입을 크게 벌리고, 혓몸을 입천장으로부터 많이 떨어뜨리고, 혀뿌리를 뒤로 당겨 발음합니다. 이때 혀끝은 아랫니의 뒤쪽에 위치하나 아랫니에는 닿지 않습니다. 혀의 양옆은 윗 어금니로부터 완전히 떨어뜨립니다.",
+    "staleDismissed": false,
+    "updatedAt": "2026-05-27T12:00:00.000Z"
+  },
+  "vowel:a:description:de": {
+    "value": "'ㅏ' ist ein ungerundeter zentraler offener Vokal. Zur Aussprache wird der Unterkiefer so weit wie möglich abgesenkt, um den Mund weit zu öffnen, der Zungenkörper weit vom Gaumen entfernt und die Zungenwurzel nach hinten gezogen. Dabei befindet sich die Zungenspitze hinter den unteren Zähnen, berührt diese jedoch nicht. Die Seiten der Zunge werden vollständig von den oberen Backenzähnen gelöst.",
+    "sourceSnapshot": "평순 중설 저모음입니다. 아래턱을 최대한 내려 입을 크게 벌리고, 혓몸을 입천장으로부터 많이 떨어뜨리고, 혀뿌리를 뒤로 당겨 발음합니다. 이때 혀끝은 아랫니의 뒤쪽에 위치하나 아랫니에는 닿지 않습니다. 혀의 양옆은 윗 어금니로부터 완전히 떨어뜨립니다.",
+    "staleDismissed": false,
+    "updatedAt": "2026-05-27T12:00:00.000Z"
+  },
+  "vowel:a:description:es": {
+    "value": "'ㅏ' es una vocal abierta central no redondeada. Se pronuncia bajando la mandíbula inferior tanto como sea posible para abrir bien la boca, alejando considerablemente el cuerpo de la lengua del paladar y retrayendo la raíz de la lengua hacia atrás. En este momento, la punta de la lengua se sitúa detrás de los dientes inferiores, pero no los toca. Los lados de la lengua se separan por completo de los molares superiores.",
+    "sourceSnapshot": "평순 중설 저모음입니다. 아래턱을 최대한 내려 입을 크게 벌리고, 혓몸을 입천장으로부터 많이 떨어뜨리고, 혀뿌리를 뒤로 당겨 발음합니다. 이때 혀끝은 아랫니의 뒤쪽에 위치하나 아랫니에는 닿지 않습니다. 혀의 양옆은 윗 어금니로부터 완전히 떨어뜨립니다.",
+    "staleDismissed": false,
+    "updatedAt": "2026-05-27T12:00:00.000Z"
+  },
+  "vowel:a:description:hi": {
+    "value": "'ㅏ' एक अवृत्तमुखी मध्य विवृत स्वर (open central unrounded vowel) है। इसका उच्चारण निचले जबड़े को यथासंभव नीचे करके मुंह को चौड़ा खोलकर, जिह्वा-पिंड (tongue body) को तालु से काफी दूर रखकर और जिह्वा-मूल (tongue root) को पीछे खींचकर किया जाता है। इस समय, जिह्वा की नोक (tongue tip) निचले दांतों के पीछे स्थित होती है लेकिन निचले दांतों को छूती नहीं है। जिह्वा के दोनों हिस्से ऊपरी दाढ़ों (upper molars) से पूरी तरह अलग रहते हैं।",
+    "sourceSnapshot": "평순 중설 저모음입니다. 아래턱을 최대한 내려 입을 크게 벌리고, 혓몸을 입천장으로부터 많이 떨어뜨리고, 혀뿌리를 뒤로 당겨 발음합니다. 이때 혀끝은 아랫니의 뒤쪽에 위치하나 아랫니에는 닿지 않습니다. 혀의 양옆은 윗 어금니로부터 완전히 떨어뜨립니다.",
+    "staleDismissed": false,
+    "updatedAt": "2026-05-27T12:00:00.000Z"
+  },
+  "vowel:a:description:vi": {
+    "value": "'ㅏ' là nguyên âm rộng giữa không tròn môi. Âm này được phát âm bằng cách hạ hàm dưới xuống mức tối đa để mở rộng miệng, để thân lưỡi cách xa vòm miệng và kéo gốc lưỡi về phía sau. Lúc này, đầu lưỡi nằm ở phía sau răng dưới nhưng không chạm vào răng dưới. Hai bên cạnh lưỡi hoàn toàn tách rời khỏi răng hàm trên.",
+    "sourceSnapshot": "평순 중설 저모음입니다. 아래턱을 최대한 내려 입을 크게 벌리고, 혓몸을 입천장으로부터 많이 떨어뜨리고, 혀뿌리를 뒤로 당겨 발음합니다. 이때 혀끝은 아랫니의 뒤쪽에 위치하나 아랫니에는 닿지 않습니다. 혀의 양옆은 윗 어금니로부터 완전히 떨어뜨립니다.",
+    "staleDismissed": false,
+    "updatedAt": "2026-05-27T12:00:00.000Z"
+  },
+  "vowel:a:description:ru": {
+    "value": "'ㅏ' — это открытый центральный неогубленный гласный (неогубленный гласный среднего ряда нижнего подъёма). Он произносится при максимальном опускании нижней челюсти для широкого раскрытия рта, значительном отдалении тела языка от нёба и оттягивании корня языка назад. При этом кончик языка располагается за нижними зубами, но не касается их. Боковые края языка полностью отделены от верхних коренных зубов.",
+    "sourceSnapshot": "평순 중설 저모음입니다. 아래턱을 최대한 내려 입을 크게 벌리고, 혓몸을 입천장으로부터 많이 떨어뜨리고, 혀뿌리를 뒤로 당겨 발음합니다. 이때 혀끝은 아랫니의 뒤쪽에 위치하나 아랫니에는 닿지 않습니다. 혀의 양옆은 윗 어금니로부터 완전히 떨어뜨립니다.",
+    "staleDismissed": false,
+    "updatedAt": "2026-05-27T12:00:00.000Z"
+  },
+  "vowel:a:description:ar": {
+    "value": "إنّ 'ㅏ' هو صائت مركزي منخفض غير مستدير (صائت مفتوح مركزي غير مستدير). يُنطق بخفض الفك السفلي قدر الإمكان لفتح الفم على اتساعه، وإبعاد جسم اللسان تمامًا عن الحنك، وسحب جذر اللسان إلى الخلف. في هذا الوقت، يكون طرف اللسان خلف الأسنان السفلية ولكنه لا يلمسها. ويكون جانبا اللسان منفصلين تمامًا عن الأضراس العلوية.",
+    "sourceSnapshot": "평순 중설 저모음입니다. 아래턱을 최대한 내려 입을 크게 벌리고, 혓몸을 입천장으로부터 많이 떨어뜨리고, 혀뿌리를 뒤로 당겨 발음합니다. 이때 혀끝은 아랫니의 뒤쪽에 위치하나 아랫니에는 닿지 않습니다. 혀의 양옆은 윗 어금니로부터 완전히 떨어뜨립니다.",
+    "staleDismissed": false,
+    "updatedAt": "2026-05-27T12:00:00.000Z"
   }
 }
