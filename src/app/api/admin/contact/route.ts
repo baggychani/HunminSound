@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
       subject,
       body,
       prefix: '[세종말소리 관리자 문의]',
+      to: process.env.ADMIN_CONTACT_TO ?? process.env.SMTP_USER,
     })
     return NextResponse.json({ ok: true })
   } catch (err) {
