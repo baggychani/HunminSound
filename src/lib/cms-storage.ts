@@ -26,15 +26,37 @@ const FILE_PATHS = {
 
 let _redis: Redis | null | undefined
 
+function resolveRedisCredentials(): { url: string; token: string } | null {
+  const pairs: [string, string][] = [
+    ['KV_REST_API_URL', 'KV_REST_API_TOKEN'],
+    ['UPSTASH_REDIS_REST_URL', 'UPSTASH_REDIS_REST_TOKEN'],
+    ['STORAGE_KV_REST_API_URL', 'STORAGE_KV_REST_API_TOKEN'],
+    ['STORAGE_REST_API_URL', 'STORAGE_REST_API_TOKEN'],
+    ['STORAGE_URL', 'STORAGE_TOKEN'],
+  ]
+  for (const [urlKey, tokenKey] of pairs) {
+    const url = process.env[urlKey]
+    const token = process.env[tokenKey]
+    if (url && token) return { url, token }
+  }
+  // Vercel Custom Prefix (예: STORAGE → STORAGE_KV_REST_API_URL)
+  for (const [key, url] of Object.entries(process.env)) {
+    if (!key.endsWith('_REST_API_URL') || !url) continue
+    const tokenKey = key.replace('_REST_API_URL', '_REST_API_TOKEN')
+    const token = process.env[tokenKey]
+    if (token) return { url, token }
+  }
+  return null
+}
+
 function getRedis(): Redis | null {
   if (_redis !== undefined) return _redis
-  const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL
-  const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN
-  if (!url || !token) {
+  const creds = resolveRedisCredentials()
+  if (!creds) {
     _redis = null
     return null
   }
-  _redis = new Redis({ url, token })
+  _redis = new Redis(creds)
   return _redis
 }
 
