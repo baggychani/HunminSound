@@ -7,36 +7,20 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import fs from 'fs'
-import path from 'path'
 import { ADMIN_SESSION_COOKIE, getAdminSessionSecret, verifyAdminSessionToken } from '@/lib/adminSession'
-import type { OverridesStore, TranslationOverride } from '@/lib/i18n-overrides'
+import type { TranslationOverride } from '@/lib/i18n-overrides'
 import {
   makeHistoryEntry, parseOverrideKey, MAX_HISTORY,
   type HistoryEntry,
 } from '@/lib/admin-history'
+import {
+  readOverridesStore,
+  writeOverridesStore,
+  readAdminHistory,
+  writeAdminHistory,
+} from '@/lib/cms-storage'
 
 export const runtime = 'nodejs'
-
-const OVERRIDES_PATH = path.join(process.cwd(), 'src', 'data', 'i18n-overrides.json')
-const HISTORY_PATH   = path.join(process.cwd(), 'src', 'data', 'admin-history.json')
-
-function readStore(): OverridesStore {
-  try { return JSON.parse(fs.readFileSync(OVERRIDES_PATH, 'utf8')) as OverridesStore }
-  catch { return {} }
-}
-function writeStore(store: OverridesStore) {
-  fs.writeFileSync(OVERRIDES_PATH, JSON.stringify(store, null, 2), 'utf8')
-}
-
-function readHistory(): HistoryEntry[] {
-  try { return JSON.parse(fs.readFileSync(HISTORY_PATH, 'utf8')) as HistoryEntry[] }
-  catch { return [] }
-}
-function appendHistory(entry: HistoryEntry) {
-  const history = [entry, ...readHistory()].slice(0, MAX_HISTORY)
-  fs.writeFileSync(HISTORY_PATH, JSON.stringify(history, null, 2), 'utf8')
-}
 
 async function getAuthUser(): Promise<string | null> {
   const cookieStore = await cookies()
@@ -45,12 +29,29 @@ async function getAuthUser(): Promise<string | null> {
   return verifyAdminSessionToken(secret, token)
 }
 
+function cmsErrorResponse(err: unknown) {
+  const message = err instanceof Error ? err.message : '저장 실패'
+  if (message.includes('CMS_CLOUD_STORAGE_REQUIRED')) {
+    return NextResponse.json(
+      {
+        error: 'storage_not_configured',
+        message:
+          'Vercel 프로덕션에서 CMS 저장하려면 Upstash Redis 연동이 필요합니다. ' +
+          'Vercel 대시보드 → Storage → Upstash Redis를 이 프로젝트에 연결한 뒤 재배포하세요.',
+      },
+      { status: 503 },
+    )
+  }
+  console.error('[cms] overrides write failed:', err)
+  return NextResponse.json({ error: 'write_failed', message: '저장에 실패했습니다.' }, { status: 500 })
+}
+
 /* ── GET ──────────────────────────────────────────────────────────────────── */
 export async function GET() {
   if (!(await getAuthUser())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  return NextResponse.json(readStore())
+  return NextResponse.json(await readOverridesStore())
 }
 
 /* ── PATCH ────────────────────────────────────────────────────────────────── */
@@ -80,56 +81,72 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'key required' }, { status: 400 })
   }
 
-  const store = readStore()
-  const parsed = parseOverrideKey(key)
-  const existing = store[key]
+  try {
+    const store = await readOverridesStore()
+    const parsed = parseOverrideKey(key)
+    const existing = store[key]
 
-  if (remove) {
-    if (parsed) {
-      appendHistory(makeHistoryEntry({
-        username, action: 'remove', key,
-        type: parsed.type, itemId: parsed.itemId,
-        itemName: displayName ?? parsed.itemId,
-        lang: parsed.lang,
-        oldValue: existing?.value,
-      }))
-    }
-    delete store[key]
-  } else if (staleDismissed === true) {
-    if (existing) {
-      store[key] = { ...existing, staleDismissed: true, updatedAt: new Date().toISOString() }
+    if (remove) {
       if (parsed) {
-        appendHistory(makeHistoryEntry({
-          username, action: 'dismiss', key,
-          type: parsed.type, itemId: parsed.itemId,
-          itemName: displayName ?? parsed.itemId,
-          lang: parsed.lang,
-        }))
+        const history = [
+          makeHistoryEntry({
+            username, action: 'remove', key,
+            type: parsed.type, itemId: parsed.itemId,
+            itemName: displayName ?? parsed.itemId,
+            lang: parsed.lang,
+            oldValue: existing?.value,
+          }),
+          ...(await readAdminHistory()),
+        ].slice(0, MAX_HISTORY)
+        await writeAdminHistory(history)
+      }
+      delete store[key]
+    } else if (staleDismissed === true) {
+      if (existing) {
+        store[key] = { ...existing, staleDismissed: true, updatedAt: new Date().toISOString() }
+        if (parsed) {
+          const history = [
+            makeHistoryEntry({
+              username, action: 'dismiss', key,
+              type: parsed.type, itemId: parsed.itemId,
+              itemName: displayName ?? parsed.itemId,
+              lang: parsed.lang,
+            }),
+            ...(await readAdminHistory()),
+          ].slice(0, MAX_HISTORY)
+          await writeAdminHistory(history)
+        }
+      }
+    } else {
+      if (typeof value !== 'string' || typeof sourceSnapshot !== 'string') {
+        return NextResponse.json({ error: 'value and sourceSnapshot required' }, { status: 400 })
+      }
+      const entry: TranslationOverride = {
+        value,
+        sourceSnapshot,
+        staleDismissed: false,
+        updatedAt: new Date().toISOString(),
+      }
+      store[key] = entry
+      if (parsed) {
+        const history = [
+          makeHistoryEntry({
+            username, action: 'save', key,
+            type: parsed.type, itemId: parsed.itemId,
+            itemName: displayName ?? parsed.itemId,
+            lang: parsed.lang,
+            oldValue: existing?.value,
+            newValue: value,
+          }),
+          ...(await readAdminHistory()),
+        ].slice(0, MAX_HISTORY)
+        await writeAdminHistory(history)
       }
     }
-  } else {
-    if (typeof value !== 'string' || typeof sourceSnapshot !== 'string') {
-      return NextResponse.json({ error: 'value and sourceSnapshot required' }, { status: 400 })
-    }
-    const entry: TranslationOverride = {
-      value,
-      sourceSnapshot,
-      staleDismissed: false,
-      updatedAt: new Date().toISOString(),
-    }
-    store[key] = entry
-    if (parsed) {
-      appendHistory(makeHistoryEntry({
-        username, action: 'save', key,
-        type: parsed.type, itemId: parsed.itemId,
-        itemName: displayName ?? parsed.itemId,
-        lang: parsed.lang,
-        oldValue: existing?.value,
-        newValue: value,
-      }))
-    }
-  }
 
-  writeStore(store)
-  return NextResponse.json({ ok: true, store })
+    await writeOverridesStore(store)
+    return NextResponse.json({ ok: true, store })
+  } catch (err) {
+    return cmsErrorResponse(err)
+  }
 }

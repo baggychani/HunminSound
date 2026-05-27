@@ -1,13 +1,9 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import fs from 'fs'
-import path from 'path'
 import { ADMIN_SESSION_COOKIE, getAdminSessionSecret, verifyAdminSessionToken } from '@/lib/adminSession'
-import type { HistoryEntry } from '@/lib/admin-history'
+import { readAdminHistory } from '@/lib/cms-storage'
 
 export const runtime = 'nodejs'
-
-const HISTORY_PATH = path.join(process.cwd(), 'src', 'data', 'admin-history.json')
 
 export async function GET() {
   const cookieStore = await cookies()
@@ -18,8 +14,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
   try {
-    const history = JSON.parse(fs.readFileSync(HISTORY_PATH, 'utf8')) as HistoryEntry[]
-    return NextResponse.json(history)
+    return NextResponse.json(await readAdminHistory())
   } catch {
     return NextResponse.json([])
   }

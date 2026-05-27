@@ -2,7 +2,7 @@
  * 관리자가 편집한 번역 오버라이드 시스템
  *
  * 구조:
- *  - 오버라이드 저장소: src/data/i18n-overrides.json
+ *  - 오버라이드 저장소: Upstash Redis (Vercel) 또는 src/data/i18n-overrides.json (로컬)
  *  - 키 형식:  "{type}:{id}:description:{lang}"
  *             예)  "consonant:b:description:en"
  *                 "vowel:a:description:fr"

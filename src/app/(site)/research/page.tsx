@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
-import fs from 'fs'
-import path from 'path'
 import { ResearchPageClient } from '@/components/showcase/ResearchPageClient'
-import type { ResearchContent } from '@/lib/research-content'
+import { loadResearchContent } from '@/lib/loadResearchContent'
 
 export const metadata: Metadata = {
   title: '연구 소개',
@@ -11,13 +9,8 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic'
 
-function loadContent(): ResearchContent {
-  const filePath = path.join(process.cwd(), 'src', 'data', 'research-content.json')
-  return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as ResearchContent
-}
-
-export default function ResearchPage() {
-  const content = loadContent()
+export default async function ResearchPage() {
+  const content = await loadResearchContent()
   return (
     <div className="site-container">
       <ResearchPageClient content={content} />
