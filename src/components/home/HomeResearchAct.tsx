@@ -60,7 +60,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
     <section
       ref={setRefs}
       id="home-act3"
-      className={`home-scroll-margin relative z-10 ${ACT_H} min-h-0 max-h-[calc(100dvh-var(--site-header-h,4rem))] overflow-hidden bg-[#070e1a] text-white`}
+      className={`home-scroll-margin relative z-10 min-h-0 max-sm:h-auto max-sm:max-h-none max-sm:overflow-visible max-sm:py-10 ${ACT_H} sm:max-h-[calc(100dvh-var(--site-header-h,4rem))] sm:overflow-hidden bg-[#070e1a] text-white`}
     >
       <div
         aria-hidden
@@ -91,8 +91,8 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
         className="pointer-events-none absolute right-[10%] top-[14%] h-2.5 w-2.5 rotate-45 border border-sky-200/15"
       />
 
-      <div className="site-container relative h-full min-h-0 px-6 sm:px-10 lg:px-14">
-        <div className="grid h-full min-h-0 grid-cols-1 grid-rows-[minmax(0,1fr)_auto] gap-5 py-[clamp(0.75rem,2dvh,1.25rem)] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:grid-rows-1 lg:items-stretch lg:gap-12 xl:gap-14">
+      <div className="site-container relative max-sm:h-auto sm:h-full min-h-0 px-6 sm:px-10 lg:px-14">
+        <div className="grid max-sm:h-auto sm:h-full min-h-0 grid-cols-1 grid-rows-[minmax(0,1fr)_auto] gap-5 py-[clamp(0.75rem,2dvh,1.25rem)] max-sm:py-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:grid-rows-1 lg:items-stretch lg:gap-12 xl:gap-14">
           {/* 좌 — 텍스트·카드 한 덩어리로 세로 중앙 */}
           <div className="flex min-h-0 items-center justify-center lg:h-full">
             <div className="flex w-full min-w-0 max-w-xl flex-col gap-7 sm:gap-8 lg:gap-9">

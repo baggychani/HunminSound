@@ -15,6 +15,7 @@ import {
   consonantSegmentSeparatorKind,
   HUNMIN_GLYPH_RAIL_CLASS,
   HUNMIN_LABEL_BLOCK_CLASS,
+  HUNMIN_VOWEL_SPAN_HEADER_CLASS,
   HunminColumnSeparator,
   HunminZoneHeading,
 } from '@/components/showcase/hunmin/HunminChartParts'
@@ -180,13 +181,13 @@ function HunminRowBody({
     <div>
       <div
         ref={hasActive ? detailScrollRef : undefined}
-        className="flex flex-wrap items-end gap-y-5"
+        className="flex max-w-full flex-nowrap items-stretch gap-x-4 sm:gap-x-6 lg:gap-x-8"
         dir={lang === 'ar' ? 'ltr' : undefined}
         lang={lang === 'ar' ? 'ko' : undefined}
       >
         <div
           ref={basicColRef}
-          className="min-w-0 shrink"
+          className="flex min-w-0 shrink-0 flex-col"
           style={basicColumnMinWidthPx > 0 ? { minWidth: basicColumnMinWidthPx } : undefined}
         >
           <HunminZoneHeading title="기본자" />
@@ -202,8 +203,8 @@ function HunminRowBody({
         </div>
         {row.extendedSegments.length > 0 && (
           <>
-            <div className="mx-10 shrink-0 sm:mx-14 md:mx-20" aria-hidden />
-            <div className="min-w-0 shrink">
+            <div className="w-px shrink-0 self-stretch bg-hanji-border/75" aria-hidden />
+            <div className="flex min-w-0 shrink-0 flex-col">
               <HunminZoneHeading title="확장자" />
               <HunminZone
                 row={row}
@@ -244,6 +245,26 @@ function HunminRowBody({
   )
 }
 
+type ConsonantSegmentGroup = { spanLabel?: string; segments: HunminSegment[] }
+
+function groupConsonantSegments(segments: HunminSegment[]): ConsonantSegmentGroup[] {
+  const groups: ConsonantSegmentGroup[] = []
+  let current: ConsonantSegmentGroup | null = null
+
+  for (const seg of segments) {
+    if (seg.label?.trim()) {
+      if (current) groups.push(current)
+      current = { spanLabel: seg.label.trim(), segments: [seg] }
+    } else if (current) {
+      current.segments.push(seg)
+    } else {
+      groups.push({ segments: [seg] })
+    }
+  }
+  if (current) groups.push(current)
+  return groups
+}
+
 interface HunminZoneProps {
   row: HunminRow
   zoneKey: string
@@ -252,6 +273,56 @@ interface HunminZoneProps {
   activeId: string | null
   onToggle: (id: string) => void
   symbolFontClass: string
+}
+
+function HunminConsonantSegmentColumn({
+  seg,
+  row,
+  zoneKey,
+  segIdx,
+  spanGroup,
+  consonants,
+  activeId,
+  onToggle,
+  symbolFontClass,
+}: {
+  seg: HunminSegment
+  row: HunminRow
+  zoneKey: string
+  segIdx: number
+  spanGroup: ConsonantSegmentGroup
+  consonants: Consonant[]
+  activeId: string | null
+  onToggle: (id: string) => void
+  symbolFontClass: string
+}) {
+  const hasSpanHeader = Boolean(spanGroup.spanLabel)
+  const showColumnLabel = !hasSpanHeader && seg.label?.trim()
+
+  return (
+    <div className="flex min-w-0 shrink-0 flex-col">
+      {showColumnLabel ? (
+        <div className={HUNMIN_LABEL_BLOCK_CLASS}>
+          <span className="hunmin-vowel-segment-label">{seg.label}</span>
+        </div>
+      ) : null}
+      <div className={`${HUNMIN_GLYPH_RAIL_CLASS} flex flex-nowrap justify-center gap-2 sm:gap-3`}>
+        {seg.symbols.map((sym) => {
+          const c = findConsonantBySymbol(consonants, sym)
+          if (!c) return <GlyphPlaceholder key={sym} symbol={sym} symbolFontClass={symbolFontClass} />
+          return (
+            <GlyphButton
+              key={c._id}
+              consonant={c}
+              isActive={activeId === c._id}
+              onClick={() => onToggle(c._id)}
+              symbolFontClass={symbolFontClass}
+            />
+          )
+        })}
+      </div>
+    </div>
+  )
 }
 
 function HunminZone({
@@ -263,41 +334,58 @@ function HunminZone({
   onToggle,
   symbolFontClass,
 }: HunminZoneProps) {
+  if (segments.length === 0) return null
+
+  const groups = groupConsonantSegments(segments)
+
   return (
     <div className="flex flex-nowrap items-stretch gap-2 sm:gap-3">
-      {segments.map((seg, segIdx) => (
-        <Fragment key={`${row.id}-${zoneKey}-${seg.label}-${segIdx}`}>
-          {segIdx > 0 && (
-            <HunminColumnSeparator
-              kind={consonantSegmentSeparatorKind(segments[segIdx - 1], seg)}
-            />
-          )}
-          <div className="flex min-w-0 shrink-0 flex-col items-center">
-            <div className={HUNMIN_LABEL_BLOCK_CLASS}>
-              {seg.label ? (
-                <span className="font-sans text-xs leading-snug tracking-wide text-ink-muted sm:text-[13px]">
-                  {seg.label}
-                </span>
+      {groups.map((group, groupIdx) => {
+        const hasSpanHeader = Boolean(group.spanLabel)
+
+        return (
+          <Fragment key={`${row.id}-${zoneKey}-g-${groupIdx}`}>
+            {groupIdx > 0 ? (
+              <HunminColumnSeparator
+                kind={consonantSegmentSeparatorKind(
+                  groups[groupIdx - 1].segments[groups[groupIdx - 1].segments.length - 1],
+                  group.segments[0],
+                )}
+              />
+            ) : null}
+            <div className="flex shrink-0 flex-col items-stretch">
+              {hasSpanHeader ? (
+                <div className={HUNMIN_VOWEL_SPAN_HEADER_CLASS}>
+                  <span className="hunmin-vowel-segment-label">{group.spanLabel}</span>
+                  <div className="mt-1.5 h-px w-full min-w-[5.5rem] bg-hanji-border/80" aria-hidden />
+                </div>
               ) : null}
+              <div className="flex flex-nowrap items-stretch gap-2 sm:gap-3">
+                {group.segments.map((seg, segIdx) => (
+                  <Fragment key={`${row.id}-${zoneKey}-${seg.label}-${segIdx}`}>
+                    {segIdx > 0 ? (
+                      <HunminColumnSeparator
+                        kind={consonantSegmentSeparatorKind(group.segments[segIdx - 1], seg)}
+                      />
+                    ) : null}
+                    <HunminConsonantSegmentColumn
+                      seg={seg}
+                      row={row}
+                      zoneKey={zoneKey}
+                      segIdx={segIdx}
+                      spanGroup={group}
+                      consonants={consonants}
+                      activeId={activeId}
+                      onToggle={onToggle}
+                      symbolFontClass={symbolFontClass}
+                    />
+                  </Fragment>
+                ))}
+              </div>
             </div>
-            <div className={`${HUNMIN_GLYPH_RAIL_CLASS} flex flex-wrap justify-center gap-2 sm:gap-3`}>
-              {seg.symbols.map((sym) => {
-                const c = findConsonantBySymbol(consonants, sym)
-                if (!c) return <GlyphPlaceholder key={sym} symbol={sym} symbolFontClass={symbolFontClass} />
-                return (
-                  <GlyphButton
-                    key={c._id}
-                    consonant={c}
-                    isActive={activeId === c._id}
-                    onClick={() => onToggle(c._id)}
-                    symbolFontClass={symbolFontClass}
-                  />
-                )
-              })}
-            </div>
-          </div>
-        </Fragment>
-      ))}
+          </Fragment>
+        )
+      })}
     </div>
   )
 }

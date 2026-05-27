@@ -73,7 +73,11 @@ export default function HomePage() {
 
   useHomeActScroll(act1Ref, act2Ref, act3Ref, act4Ref)
 
-  const heroHeightClass = 'h-[calc(100dvh-var(--site-header-h,4rem))] min-h-0'
+  const heroHeightDesktop =
+    'sm:h-[calc(100dvh-var(--site-header-h,4rem))] sm:min-h-0 sm:overflow-hidden'
+  /** 모바일 — 1뷰포트 고정·클립 없이 자연 스크롤 */
+  const heroHeightMobile =
+    'max-sm:h-auto max-sm:min-h-0 max-sm:overflow-visible max-sm:py-8'
   /** 4막만 1뷰포트 고정 포기 — 내용 높이만큼 늘어나고, 최소 1화면은 유지 */
   const act4SectionClass = 'min-h-[calc(100dvh-var(--site-header-h,4rem))]'
 
@@ -85,11 +89,11 @@ export default function HomePage() {
       <section
         ref={act1Ref}
         id="home-act1"
-        className={`relative z-10 ${heroHeightClass} overflow-hidden isolation-isolate`}
+        className={`relative z-10 ${heroHeightMobile} ${heroHeightDesktop} isolation-isolate`}
       >
         <HeroActBackdrop heroRef={act1Ref} />
 
-        <div className="relative z-10 mx-auto grid h-full w-full max-w-6xl grid-cols-1 items-center px-6 sm:px-8 sm:ps-[4vw] lg:grid-cols-[0.32fr_1.38fr_0.80fr] lg:px-10 lg:ps-[5vw]">
+        <div className="relative z-10 mx-auto grid max-sm:h-auto sm:h-full w-full max-w-6xl grid-cols-1 items-center px-6 sm:px-8 sm:ps-[4vw] lg:grid-cols-[0.32fr_1.38fr_0.80fr] lg:px-10 lg:ps-[5vw]">
           <div className="hidden lg:block" aria-hidden />
 
           <div className="flex flex-col items-center text-center translate-x-[clamp(0.25rem,2vw,0.75rem)] sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] lg:translate-x-0">
@@ -115,7 +119,7 @@ export default function HomePage() {
 
             <div className="mx-auto -mt-1 w-full max-w-lg shrink-0 sm:mt-0 lg:max-w-xl">
               <div
-                className="relative h-[min(clamp(12rem,24vw,19.5rem),max(8rem,calc(100dvh-var(--site-header-h,4rem)-22rem)))] w-full"
+                className="relative h-[min(clamp(10rem,42vw,16rem),max(8rem,calc(100dvh-var(--site-header-h,4rem)-20rem)))] sm:h-[min(clamp(12rem,24vw,19.5rem),max(8rem,calc(100dvh-var(--site-header-h,4rem)-22rem)))] w-full"
                 aria-hidden
               >
                 <HunminBookViewer className="absolute inset-0" />
@@ -144,7 +148,7 @@ export default function HomePage() {
       <section
         ref={act2Ref}
         id="home-act2"
-        className={`home-scroll-margin site-container relative z-10 flex ${heroHeightClass} flex-col justify-center overflow-hidden py-[clamp(0.75rem,2dvh,1.5rem)]`}
+        className={`home-scroll-margin site-container relative z-10 flex max-sm:h-auto max-sm:min-h-0 max-sm:overflow-visible max-sm:py-8 ${heroHeightDesktop} flex-col sm:justify-center py-[clamp(0.75rem,2dvh,1.5rem)] sm:py-[clamp(0.75rem,2dvh,1.5rem)]`}
       >
         <div className="grid min-h-0 w-full grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:gap-5">
         <NavCard

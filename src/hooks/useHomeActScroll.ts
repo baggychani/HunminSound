@@ -47,7 +47,8 @@ export function useHomeActScroll(
 ) {
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    if (mq.matches) return undefined
+    const desktopMq = window.matchMedia('(min-width: 640px)')
+    if (mq.matches || !desktopMq.matches) return undefined
 
     let locked = false
     let wheelAcc = 0
