@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic'
 import { useRef, useEffect } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
-import { getMessages } from '@/lib/i18n'
+import { getMessages, SITE_BRAND_NAME } from '@/lib/i18n'
 import { ScrollColorWash } from '@/components/ui/ScrollColorWash'
 import { HaeryebonCardWatermark } from '@/legacy/components/showcase/HaeryebonCardWatermark'
 
@@ -86,8 +86,8 @@ export default function HomePage() {
           {m.homeSubtitle}
         </p>
 
-        <h1 className="font-jamo text-6xl sm:text-7xl md:text-8xl text-ink leading-none tracking-wide">
-          {m.siteTitle}
+        <h1 className="font-jamo text-6xl sm:text-7xl md:text-8xl text-ink leading-none tracking-wide" lang="ko">
+          {SITE_BRAND_NAME}
         </h1>
 
         <p

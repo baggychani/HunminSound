@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useLang } from '@/contexts/LanguageContext'
-import { LANGUAGES, NAV_LABEL_KO, getMessages } from '@/lib/i18n'
+import { LANGUAGES, NAV_LABEL_KO, getMessages, SITE_BRAND_NAME } from '@/lib/i18n'
 
 const NAV_LINKS = [
   { href: '/consonants', topKey: 'consonants' as const, subKey: 'navSubConsonants' as const },
@@ -107,15 +107,15 @@ export function Header() {
           className="group flex min-w-0 flex-1 items-baseline gap-2 sm:flex-initial sm:shrink-0 sm:gap-3"
           onClick={closePanels}
         >
-          <span className="font-jamo text-lg sm:text-xl tracking-wide text-ink group-hover:text-ink-accent transition-colors truncate">
-            {m.siteTitle}
+          <span className="font-jamo text-lg sm:text-xl tracking-wide text-ink group-hover:text-ink-accent transition-colors truncate" lang="ko">
+            {SITE_BRAND_NAME}
           </span>
           <span className="hidden sm:inline font-sans text-xs text-ink-muted tracking-widest uppercase shrink-0">
             Sejong Speech Sounds
           </span>
         </Link>
 
-        {/* ?�스?�톱: 기존 가�??�비 */}
+        {/* ??????: ?? ?????? */}
         <nav className="scrollbar-none hidden min-w-0 flex-1 flex-nowrap items-center justify-end overflow-x-auto overflow-y-hidden sm:flex">
           <div
             ref={navTrackRef}
@@ -213,7 +213,7 @@ export function Header() {
           </button>
         </nav>
 
-        {/* 모바?? 메뉴 + ?�어 (가�??�열 ?�림 방�?) */}
+        {/* ???? ?? + ??? (?????? ??? ???) */}
         <div className="flex shrink-0 items-center gap-0.5 sm:hidden">
           <button
             type="button"
@@ -253,7 +253,7 @@ export function Header() {
         </div>
       </div>
 
-      {/* 모바???�이??메뉴 (?�음 / 모음) */}
+      {/* ??????????? (??? / ??) */}
       <AnimatePresence initial={false}>
         {mobileNavOpen && (
           <motion.div
@@ -293,7 +293,7 @@ export function Header() {
           <motion.div
             key="lang-panel"
             role="region"
-            aria-label="?�어 목록"
+            aria-label="??? ??"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRef, useEffect } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { useSiteMessages } from '@/hooks/useSiteMessages'
+import { SITE_BRAND_NAME } from '@/lib/i18n'
 import { ScrollColorWash } from '@/components/ui/ScrollColorWash'
 import { HeroActBackdrop } from '@/components/ui/HeroActBackdrop'
 import { HaeryebonCardWatermark } from '@/components/showcase/HaeryebonCardWatermark'
@@ -80,7 +81,7 @@ export default function HomePage() {
       >
         <HeroActBackdrop heroRef={act1Ref} />
 
-        <div className="relative z-10 mx-auto grid h-full w-full max-w-6xl grid-cols-1 items-center px-6 sm:px-8 sm:ps-[4vw] lg:grid-cols-[0.42fr_1.18fr_0.88fr] lg:px-10 lg:ps-[5vw]">
+        <div className="relative z-10 mx-auto grid h-full w-full max-w-6xl grid-cols-1 items-center px-6 sm:px-8 sm:ps-[4vw] lg:grid-cols-[0.32fr_1.38fr_0.80fr] lg:px-10 lg:ps-[5vw]">
           <div className="hidden lg:block" aria-hidden />
 
           <div className="flex flex-col items-center text-center translate-x-[clamp(0.25rem,2vw,0.75rem)] sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] lg:translate-x-0">
@@ -94,13 +95,10 @@ export default function HomePage() {
             </p>
 
             <h1
-              className={`mt-4 font-jamo leading-none tracking-wide text-ink sm:mt-5 ${
-                lang === 'ko'
-                  ? 'text-[4rem] sm:text-[4.75rem] md:text-[6.35rem] lg:text-[5.85rem]'
-                  : 'text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem]'
-              }`}
+              className="mt-4 font-jamo leading-none tracking-wide text-ink sm:mt-5 text-[4rem] sm:text-[4.75rem] md:text-[6.35rem] lg:text-[5.85rem]"
+              lang="ko"
             >
-              {m.siteTitle}
+              {SITE_BRAND_NAME}
             </h1>
 
             <p className="mt-4 font-sans text-sm tracking-[0.2em] text-ink-muted sm:mt-5">
@@ -117,12 +115,16 @@ export default function HomePage() {
             </div>
 
             <p
-              className={`relative mt-3 w-full max-w-[min(100%,42rem)] shrink-0 break-keep px-1 font-serif text-base leading-loose text-ink-soft [overflow-wrap:break-word] sm:mt-4 sm:px-0 sm:text-[17px] whitespace-pre-line ${
+              className={`relative mt-3 w-full max-w-[min(100%,45rem)] shrink-0 break-keep px-1 font-serif text-base leading-loose text-ink-soft [overflow-wrap:break-word] sm:mt-4 sm:px-0 sm:max-w-[46rem] sm:text-[17px] ${
                 lang === 'hi' ? 'font-devanagari' : ''
               }`}
               lang={lang === 'hi' ? 'hi' : undefined}
             >
-              {m.homeIntro}
+              {m.homeIntro.split('\n').map((line, i) => (
+                <span key={i} className="block">
+                  {line}
+                </span>
+              ))}
             </p>
           </div>
 

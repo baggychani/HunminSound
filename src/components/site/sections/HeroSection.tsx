@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
-import { getMessages } from '@/lib/i18n'
+import { getMessages, SITE_BRAND_NAME } from '@/lib/i18n'
 import { getV2Messages } from '@/lib/v2-i18n'
 import { JamoText } from '@/components/ui/JamoText'
 import { useSnapScrollContext } from '@/components/site/SnapScrollLayout'
@@ -69,9 +69,9 @@ export function HeroSection() {
             {v2.heroSubtitle}
           </motion.p>
 
-          <h1 className="font-jamo text-[clamp(3.5rem,9vw,6.5rem)] leading-[0.95] tracking-tight">
+          <h1 className="font-jamo text-[clamp(3.5rem,9vw,6.5rem)] leading-[0.95] tracking-tight" lang="ko">
             <span className="v2-shimmer-text inline-block">
-              <JamoText text={m.siteTitle} />
+              <JamoText text={SITE_BRAND_NAME} />
             </span>
           </h1>
 

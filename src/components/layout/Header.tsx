@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useLang } from '@/contexts/LanguageContext'
-import { LANGUAGES, NAV_LABEL_KO, getMessages } from '@/lib/i18n'
+import { LANGUAGES, NAV_LABEL_KO, getMessages, SITE_BRAND_NAME } from '@/lib/i18n'
 
 const NAV_LINKS = [
   { href: '/consonants', topKey: 'consonants' as const, subKey: 'navSubConsonants' as const },
@@ -125,8 +125,8 @@ export function Header() {
           className="group flex min-w-0 flex-1 items-baseline gap-2 sm:flex-initial sm:shrink-0 sm:gap-3"
           onClick={closePanels}
         >
-          <span className="font-jamo text-lg sm:text-xl tracking-wide text-ink group-hover:text-ink-accent transition-colors truncate">
-            {m.siteTitle}
+          <span className="font-jamo text-lg sm:text-xl tracking-wide text-ink group-hover:text-ink-accent transition-colors truncate" lang="ko">
+            {SITE_BRAND_NAME}
           </span>
           <span className="hidden sm:inline font-sans text-xs text-ink-muted tracking-widest uppercase shrink-0">
             Sejong Speech Sounds

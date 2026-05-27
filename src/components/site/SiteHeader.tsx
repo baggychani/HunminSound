@@ -3,7 +3,7 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
-import { getMessages, LANGUAGES } from '@/lib/i18n'
+import { LANGUAGES, SITE_BRAND_NAME } from '@/lib/i18n'
 import { getV2Messages, type SectionId } from '@/lib/v2-i18n'
 
 const NAV_ITEMS: { id: SectionId; labelKey: keyof ReturnType<typeof getV2Messages> }[] = [
@@ -23,7 +23,6 @@ interface SiteHeaderProps {
 
 export function SiteHeader({ activeSection, onNavigate }: SiteHeaderProps) {
   const { lang, setLang } = useLang()
-  const m = getMessages(lang)
   const v2 = getV2Messages(lang)
   const [langOpen, setLangOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -70,8 +69,9 @@ export function SiteHeader({ activeSection, onNavigate }: SiteHeaderProps) {
           type="button"
           onClick={() => onNavigate('hero')}
           className="font-jamo text-xl tracking-wide text-white sm:text-2xl"
+          lang="ko"
         >
-          {m.siteTitle}
+          {SITE_BRAND_NAME}
         </button>
 
         <nav ref={navTrackRef} className="relative hidden items-center gap-1 lg:flex" aria-label="Main">
