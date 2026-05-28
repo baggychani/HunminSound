@@ -368,7 +368,6 @@ function HunminVowelRowBody({
               mriLabel={mriLabel}
               pictogramLabel={pictogramLabel}
               categoryLabel={activeHunminRowTitle}
-              hideModernDescription
             />
           </div>
         )}
@@ -631,8 +630,6 @@ interface VowelDetailPanelProps {
   pictogramLabel: string
   categoryLabel: string
   vowelArticulationSymbol?: string
-  /** 훈민 제자해 모드 — 현대 음성학 조음 설명 숨김 */
-  hideModernDescription?: boolean
 }
 
 function VowelDetailPanel({
@@ -643,7 +640,6 @@ function VowelDetailPanel({
   pictogramLabel,
   categoryLabel,
   vowelArticulationSymbol,
-  hideModernDescription = false,
 }: VowelDetailPanelProps) {
   return (
     <>
@@ -664,15 +660,13 @@ function VowelDetailPanel({
         </div>
       </div>
 
-      {!hideModernDescription ? (
-        <TranslatedDescription
-          item={item as unknown as { description: string; [key: string]: unknown }}
-          lang={lang}
-          phonemeType="vowel"
-        />
-      ) : null}
+      <TranslatedDescription
+        item={item as unknown as { description: string; [key: string]: unknown }}
+        lang={lang}
+        phonemeType="vowel"
+      />
 
-      <div className={hideModernDescription ? 'mt-0' : 'mt-6'}>
+      <div className="mt-6">
         <DualVideoPlayer
           animationFileName={item.animationFileName}
           mriFileName={item.mriFileName}
