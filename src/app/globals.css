@@ -420,6 +420,11 @@
     @apply font-sans text-[11px] leading-snug tracking-wide text-ink-muted sm:text-xs;
   }
 
+  /* 훈민 차트 — 상형기본자→일반 가획·합성자 */
+  .hunmin-gaheuk-arrow {
+    color: rgb(var(--gold-rgb) / 0.62);
+  }
+
   .symbol-btn .hunmin-vowel-ipa {
     @apply font-sans tracking-normal normal-case;
     font-size: 10px;

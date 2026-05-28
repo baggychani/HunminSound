@@ -49,24 +49,30 @@ export function HunminZoneHeading({ title }: { title: string }) {
   )
 }
 
-export function HunminSegmentSeparator({ kind }: { kind: 'gaheuk-arrow' | 'pipe' }) {
-  if (kind === 'gaheuk-arrow') {
-    return (
-      <svg
-        width="26"
-        height="20"
-        viewBox="0 0 28 20"
-        fill="none"
+/** 상형기본자 → 일반 가획·합성자 관계 표시 */
+function GaheukArrow() {
+  return (
+    <svg
+      viewBox="0 0 36 16"
+      fill="none"
+      className="hunmin-gaheuk-arrow h-3.5 w-9 sm:h-4 sm:w-10"
+      aria-hidden
+    >
+      <path d="M1.5 8h24" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+      <path
+        d="M22 4.25 29.5 8 22 11.75"
         stroke="currentColor"
-        strokeWidth="2.35"
+        strokeWidth="1.25"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="text-ink-muted/60 sm:h-[22px] sm:w-[30px]"
-        aria-hidden
-      >
-        <path d="M2 10h19M17 5.5l6.5 4.5-6.5 4.5" />
-      </svg>
-    )
+      />
+    </svg>
+  )
+}
+
+export function HunminSegmentSeparator({ kind }: { kind: 'gaheuk-arrow' | 'pipe' }) {
+  if (kind === 'gaheuk-arrow') {
+    return <GaheukArrow />
   }
   return (
     <span className="text-lg leading-none text-ink-muted/45 sm:text-xl" aria-hidden>
@@ -77,21 +83,34 @@ export function HunminSegmentSeparator({ kind }: { kind: 'gaheuk-arrow' | 'pipe'
 
 const HUNMIN_COMPACT_RAIL_CLASS = 'flex h-[4.625rem] shrink-0 items-center justify-center sm:h-[4.875rem]'
 
+/** span 라벨+가로선 높이 — 가획 화살표를 글리프 행과 맞출 때 사용 */
+const HUNMIN_SPAN_HEADER_SPACER_CLASS = `${HUNMIN_VOWEL_SPAN_HEADER_CLASS} pointer-events-none select-none`
+
 /** 모음·자음 훈민 — 열 전체 높이 세로 구분선 (라벨~카드) */
 export function HunminColumnSeparator({ kind = 'pipe' }: { kind?: 'gaheuk-arrow' | 'pipe' }) {
+  if (kind === 'gaheuk-arrow') {
+    return (
+      <div
+        className="flex w-5 shrink-0 flex-col self-stretch sm:w-6"
+        aria-hidden
+        title="가획"
+      >
+        <div className={HUNMIN_SPAN_HEADER_SPACER_CLASS}>
+          <span className="invisible hunmin-vowel-segment-label" aria-hidden>
+            {'\u00a0'}
+          </span>
+          <div className="mt-1.5 h-px w-full min-w-[5.5rem] opacity-0" aria-hidden />
+        </div>
+        <div className={`${HUNMIN_GLYPH_RAIL_CLASS} w-full`}>
+          <GaheukArrow />
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div
-      className={`flex w-3 shrink-0 self-stretch justify-center sm:w-3.5 ${
-        kind === 'gaheuk-arrow' ? 'items-center' : 'items-stretch'
-      }`}
-      aria-hidden
-      title={kind === 'gaheuk-arrow' ? '가획' : undefined}
-    >
-      {kind === 'gaheuk-arrow' ? (
-        <HunminSegmentSeparator kind="gaheuk-arrow" />
-      ) : (
-        <span className="w-px min-h-full self-stretch bg-hanji-border/70" />
-      )}
+    <div className="flex w-3 shrink-0 self-stretch items-stretch justify-center sm:w-3.5" aria-hidden>
+      <span className="w-px min-h-full self-stretch bg-hanji-border/70" />
     </div>
   )
 }
