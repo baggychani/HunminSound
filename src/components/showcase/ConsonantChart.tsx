@@ -3,6 +3,7 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { useScrollToSymbolDetail } from '@/hooks/useScrollToSymbolDetail'
+import { usePhoneticsDeepLink } from '@/hooks/usePhoneticsDeepLink'
 import { ScrollSection } from '@/components/ui/ScrollSection'
 import { DualVideoPlayer } from '@/components/ui/DualVideoPlayer'
 import { useLang } from '@/contexts/LanguageContext'
@@ -482,6 +483,7 @@ interface ConsonantChartProps {
 export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantChartProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const detailScrollRef = useScrollToSymbolDetail(activeId)
+  usePhoneticsDeepLink(consonants, setActiveId)
   const { lang } = useLang()
   const m = getMessages(lang)
 

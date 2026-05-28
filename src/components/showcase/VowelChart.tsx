@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { useScrollToSymbolDetail } from '@/hooks/useScrollToSymbolDetail'
+import { usePhoneticsDeepLink } from '@/hooks/usePhoneticsDeepLink'
 import { ScrollSection } from '@/components/ui/ScrollSection'
 import { DualVideoPlayer } from '@/components/ui/DualVideoPlayer'
 import { useLang } from '@/contexts/LanguageContext'
@@ -51,6 +52,8 @@ interface GlyphButtonProps {
   onClick: () => void
   symbolFontClass: string
   variant?: 'default' | 'card'
+  /** 훈민 차트 — 중세 IPA 등. 없으면 vowel.name에서 추출 */
+  subLabel?: string | null
 }
 
 function vowelButtonSubLabel(name: string): string | null {
@@ -68,8 +71,9 @@ function GlyphButton({
   onClick,
   symbolFontClass,
   variant = 'card',
+  subLabel: subLabelOverride,
 }: GlyphButtonProps) {
-  const sub = vowelButtonSubLabel(vowel.name)
+  const sub = subLabelOverride ?? vowelButtonSubLabel(vowel.name)
   const isCard = variant === 'card'
   const cardClass = isCard ? 'symbol-btn-card' : 'symbol-btn-hunmin'
   return (
@@ -93,7 +97,7 @@ function GlyphButton({
         >
           {vowel.symbol}
         </span>
-        <span className={`symbol-sub ${sub ? '' : 'invisible'}`} aria-hidden={sub ? undefined : true}>
+        <span className={`symbol-sub ${sub ? '' : 'invisible'} ${subLabelOverride ? 'hunmin-vowel-ipa' : ''}`} aria-hidden={sub ? undefined : true}>
           {sub ?? '\u00a0'}
         </span>
       </button>
@@ -245,20 +249,6 @@ function renderVowelSlot(
   }
   const targetSymbol = slot.mapTo ?? slot.value
   const vowel = findVowelBySymbol(vowels, targetSymbol)
-  if (vowel && slot.mapTo) {
-    return (
-      <GlyphButton
-        key={vowel._id}
-        vowel={vowel}
-        isActive={activeId === vowel._id}
-        onClick={() => onToggle(vowel._id)}
-        symbolFontClass={symbolFontClass}
-      />
-    )
-  }
-  if (slot.ipa) {
-    return <HunminVowelJamoGlyph key={slotKey} symbol={slot.value} ipa={slot.ipa} />
-  }
   if (vowel) {
     return (
       <GlyphButton
@@ -267,8 +257,12 @@ function renderVowelSlot(
         isActive={activeId === vowel._id}
         onClick={() => onToggle(vowel._id)}
         symbolFontClass={symbolFontClass}
+        subLabel={slot.ipa}
       />
     )
+  }
+  if (slot.ipa) {
+    return <HunminVowelJamoGlyph key={slotKey} symbol={slot.value} ipa={slot.ipa} />
   }
   return <GlyphPlaceholder key={slotKey} symbol={slot.value} symbolFontClass={symbolFontClass} />
 }
@@ -374,9 +368,7 @@ function HunminVowelRowBody({
               mriLabel={mriLabel}
               pictogramLabel={pictogramLabel}
               categoryLabel={activeHunminRowTitle}
-              vowelArticulationSymbol={
-                activeItem.symbol in VOWEL_ARTICULATION_KO ? activeItem.symbol : undefined
-              }
+              hideModernDescription
             />
           </div>
         )}
@@ -476,6 +468,7 @@ function ModernVowelSection({
 export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const detailScrollRef = useScrollToSymbolDetail(activeId)
+  usePhoneticsDeepLink(vowels, setActiveId)
   const { lang } = useLang()
   const m = getMessages(lang)
 
@@ -638,6 +631,8 @@ interface VowelDetailPanelProps {
   pictogramLabel: string
   categoryLabel: string
   vowelArticulationSymbol?: string
+  /** 훈민 제자해 모드 — 현대 음성학 조음 설명 숨김 */
+  hideModernDescription?: boolean
 }
 
 function VowelDetailPanel({
@@ -648,6 +643,7 @@ function VowelDetailPanel({
   pictogramLabel,
   categoryLabel,
   vowelArticulationSymbol,
+  hideModernDescription = false,
 }: VowelDetailPanelProps) {
   return (
     <>
@@ -668,13 +664,15 @@ function VowelDetailPanel({
         </div>
       </div>
 
-      <TranslatedDescription
-        item={item as unknown as { description: string; [key: string]: unknown }}
-        lang={lang}
-        phonemeType="vowel"
-      />
+      {!hideModernDescription ? (
+        <TranslatedDescription
+          item={item as unknown as { description: string; [key: string]: unknown }}
+          lang={lang}
+          phonemeType="vowel"
+        />
+      ) : null}
 
-      <div className="mt-6">
+      <div className={hideModernDescription ? 'mt-0' : 'mt-6'}>
         <DualVideoPlayer
           animationFileName={item.animationFileName}
           mriFileName={item.mriFileName}

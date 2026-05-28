@@ -18,13 +18,6 @@ const STORAGE_PREFIX = 'hunmin-admin-notif-dismissed:'
 export function AdminTopBar({ sanityProjectIdConfigured }: { sanityProjectIdConfigured: boolean }) {
   const notifications = useMemo(
     (): AdminNotice[] => [
-      {
-        id: 'admin-shell',
-        level: 'info',
-        title: '관리자 화면은 단계적으로 채워집니다.',
-        detail:
-          '로그인과 이 알림은 동작합니다. 페이지 문장 편집·영상 올리기 UI는 순서대로 붙입니다. 오류 나면 프로젝트 폴더에서 .next 삭제 후 `npm run dev` 다시 켜 보세요.',
-      },
       ...(sanityProjectIdConfigured
         ? []
         : [

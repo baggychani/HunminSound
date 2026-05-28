@@ -24,12 +24,16 @@ export type HunminVowelRow = {
   combinedSegments: HunminVowelSegment[]
 }
 
-const sym = (value: string, ipa?: string, mapTo?: string): HunminVowelSlot =>
-  mapTo ? { kind: 'symbol', value, mapTo } : ipa ? { kind: 'symbol', value, ipa } : { kind: 'symbol', value }
+const sym = (value: string, ipa?: string, mapTo?: string): HunminVowelSlot => {
+  const slot: Extract<HunminVowelSlot, { kind: 'symbol' }> = { kind: 'symbol', value }
+  if (ipa !== undefined) slot.ipa = ipa
+  if (mapTo !== undefined) slot.mapTo = mapTo
+  return slot
+}
 /** 현대 모음과 연결 — 카드 아래 와·워·이 등 표시 */
 const linked = (value: string, mapTo: string = value): HunminVowelSlot => ({ kind: 'symbol', value, mapTo })
-/** 옛한글 자모 — IPA는 대응 PNG asset 명명 규칙과 동일 (파일은 유지, UI만 교체) */
-const jamo = (value: string, asset: string): HunminVowelSlot => sym(value, ipaLabel(asset))
+/** 옛한글 자모 — IPA는 중세 음가 표기, mapTo는 글자 모양(현대 동형 모음) 기준 연결 */
+const jamo = (value: string, asset: string): HunminVowelSlot => sym(value, ipaLabel(asset), value)
 const res = (): HunminVowelSlot => ({ kind: 'reserved' })
 const cmp = (jamoStr: string, mapTo?: string): HunminVowelSlot => ({ kind: 'compound', jamo: jamoStr, mapTo })
 

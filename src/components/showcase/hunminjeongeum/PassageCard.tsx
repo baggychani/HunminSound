@@ -9,9 +9,10 @@ import { HanjaText } from './HanjaText'
 import { TranslatedPassageText } from './TranslatedPassageText'
 import { HunminPassageText } from './HunminPassageText'
 import type { HunminPassage, GlyphLink } from '@/data/hunminjeongeumPassages'
+import { phoneticsChartHref } from '@/lib/phoneticsHref'
 
 function buildGlyphHref(link: GlyphLink): string {
-  return `/${link.target}`
+  return phoneticsChartHref(link.target, link.id)
 }
 
 interface PassageCardProps {

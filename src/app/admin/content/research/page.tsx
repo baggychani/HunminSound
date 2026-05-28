@@ -690,7 +690,7 @@ export default function AdminResearchPage() {
         <SectionCard title="연구진 소개">
           <TeamTableEditor
             rows={data.team.rows}
-            onChange={(v) => update({ team: { rows: v } })}
+            onChange={(v) => update({ team: { ...data.team, rows: v } })}
           />
         </SectionCard>
 

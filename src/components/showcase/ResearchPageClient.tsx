@@ -10,6 +10,7 @@ import {
   FinalGoalBlock,
   ScaleInfographic,
   TeamCardGrid,
+  TeamDirectoryList,
 } from '@/components/showcase/research/ResearchInfographics'
 import { tr } from '@/lib/research-content'
 
@@ -533,6 +534,10 @@ export function ResearchPageClient({ content }: Props) {
       ),
       ...significance.paragraphs.map((p, i) => ({ key: `significance.paragraphs.${i}`, ko: p })),
       ...team.rows.map((row, i) => ({ key: `team.rows.${i}.task`, ko: row.task })),
+      ...(team.directory ?? []).flatMap((group, i) => [
+        { key: `team.directory.${i}.role`, ko: group.role },
+        ...(group.subtitle ? [{ key: `team.directory.${i}.subtitle`, ko: group.subtitle }] : []),
+      ]),
     ]
 
     const toFetch: { key: string; ko: string }[] = []
@@ -695,6 +700,17 @@ export function ResearchPageClient({ content }: Props) {
                 task: t(`team.rows.${i}.task`, row.task),
               }))}
             />
+            {team.directory && team.directory.length > 0 ? (
+              <TeamDirectoryList
+                groups={team.directory.map((group, i) => ({
+                  role: t(`team.directory.${i}.role`, group.role),
+                  subtitle: group.subtitle
+                    ? t(`team.directory.${i}.subtitle`, group.subtitle)
+                    : undefined,
+                  names: group.names,
+                }))}
+              />
+            ) : null}
           </SubsectionReveal>
         </SplitSection>
 

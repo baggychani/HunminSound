@@ -3,6 +3,7 @@ import { ConsonantsPageClient } from '@/components/showcase/ConsonantsPageClient
 import { getConsonants } from '@/lib/queries'
 import { consonantsData } from '@/data/consonants'
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 
 export const metadata: Metadata = {
   title: '자음',
@@ -17,7 +18,9 @@ export default async function ConsonantsPage() {
   return (
     <div className="site-container">
       <PageHeader type="consonants" />
-      <ConsonantsPageClient consonants={consonants} />
+      <Suspense fallback={null}>
+        <ConsonantsPageClient consonants={consonants} />
+      </Suspense>
     </div>
   )
 }

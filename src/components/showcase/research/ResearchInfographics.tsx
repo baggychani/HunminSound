@@ -335,26 +335,85 @@ export function TeamCardGrid({
   }, [])
 
   const animateState = mounted && inView ? 'visible' : 'hidden'
+  const leadIndex = rows.findIndex((row) => row.role.includes('책임'))
+  const lead = leadIndex >= 0 ? rows[leadIndex] : null
+  const members = leadIndex >= 0 ? rows.filter((_, i) => i !== leadIndex) : rows
+
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.14,
+        delayChildren: 0.06,
+      },
+    },
+  }
 
   return (
-    <motion.div
-      ref={gridRef}
-      className="grid grid-cols-2 items-stretch gap-2 sm:gap-2.5 lg:grid-cols-4 lg:gap-3"
-      initial="hidden"
-      animate={animateState}
-      variants={{
-        hidden: {},
-        visible: {
-          transition: {
-            staggerChildren: 0.14,
-            delayChildren: 0.06,
-          },
-        },
-      }}
-    >
-      {rows.map((member, i) => (
-        <TeamMemberCard key={`${member.name}-${i}`} member={member} />
+    <div ref={gridRef} className="space-y-2 sm:space-y-2.5 lg:space-y-3">
+      {lead ? (
+        <motion.div
+          initial="hidden"
+          animate={animateState}
+          variants={containerVariants}
+          className="grid grid-cols-2 gap-2 sm:gap-2.5 lg:grid-cols-4 lg:gap-3"
+        >
+          <TeamMemberCard member={lead} />
+        </motion.div>
+      ) : null}
+
+      {members.length > 0 ? (
+        <motion.div
+          initial="hidden"
+          animate={animateState}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: {
+                staggerChildren: 0.14,
+                delayChildren: lead ? 0.2 : 0.06,
+              },
+            },
+          }}
+          className="grid grid-cols-2 items-stretch gap-2 sm:gap-2.5 lg:grid-cols-4 lg:gap-3"
+        >
+          {members.map((member, i) => (
+            <TeamMemberCard key={`${member.name}-${i}`} member={member} />
+          ))}
+        </motion.div>
+      ) : null}
+    </div>
+  )
+}
+
+/* ── 연구진 — 직급별 이름 목록 (2단) ── */
+
+export function TeamDirectoryList({
+  groups,
+}: {
+  groups: { role: string; subtitle?: string; names: string[] }[]
+}) {
+  if (groups.length === 0) return null
+
+  return (
+    <div className="mt-10 space-y-6 border-t border-hanji-border/55 pt-9 sm:mt-12 sm:space-y-7 sm:pt-10">
+      {groups.map((group, i) => (
+        <div key={`${group.role}-${i}`}>
+          <div className="mb-2.5 sm:mb-3">
+            <p className="font-sans text-[10px] font-medium tracking-[0.12em] text-ink-muted/70">
+              {group.role}
+            </p>
+            {group.subtitle?.trim() ? (
+              <p className="mt-0.5 font-sans text-[10px] leading-snug text-ink-muted/50">
+                ({group.subtitle.trim()})
+              </p>
+            ) : null}
+          </div>
+          <p className="break-keep font-serif text-[0.9rem] leading-[1.85] text-ink/90 sm:text-[0.9375rem]">
+            {group.names.join(' · ')}
+          </p>
+        </div>
       ))}
-    </motion.div>
+    </div>
   )
 }

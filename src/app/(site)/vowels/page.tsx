@@ -3,6 +3,7 @@ import { PageHeader } from '@/components/layout/PageHeader'
 import { getVowels } from '@/lib/queries'
 import { vowelsData } from '@/data/vowels'
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 
 export const metadata: Metadata = {
   title: '모음',
@@ -17,7 +18,9 @@ export default async function VowelsPage() {
   return (
     <div className="site-container">
       <PageHeader type="vowels" />
-      <VowelsPageClient vowels={vowels} />
+      <Suspense fallback={null}>
+        <VowelsPageClient vowels={vowels} />
+      </Suspense>
     </div>
   )
 }

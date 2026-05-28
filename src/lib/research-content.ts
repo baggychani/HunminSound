@@ -23,6 +23,13 @@ export interface TeamRow {
   field: string
 }
 
+export interface TeamDirectoryGroup {
+  role: string
+  /** 직급 아래 보조 설명 (예: 연구지원인력) */
+  subtitle?: string
+  names: string[]
+}
+
 export interface TaskInfoRow {
   label: string
   value: string
@@ -53,6 +60,7 @@ export interface ResearchContent {
   }
   team: {
     rows: TeamRow[]
+    directory?: TeamDirectoryGroup[]
   }
   taskInfo: {
     rows: TaskInfoRow[]

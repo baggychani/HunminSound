@@ -157,8 +157,7 @@
     },
     "significance": {
         "paragraphs": [
-            "이 연구는 훈민정음의 제자 원리가 단순히 음양오행이나 천지인과 같은 동양 철학적 상징 체계에 기반한 것이 아니라, 인체의 해부학적 구조와 발음 시 나타나는 생리학적 움직임을 정밀하게 관찰하고 이를 글자의 형태에 반영한 결과임을 현대 의학 기술을 통해 명확히 증명하였다. 훈민정음이 철학적 문자인 동시에 실용적 과학 문자로서의 성격을 함께 갖추고 있음을 입증하는 것이다.",
-            "특히 성별과 연령에 따른 생리적 차이에도 불구하고 모든 대상자에서 훈민정음 제자 원리와 일치하는 조음 양상이 관찰된 점은, 훈민정음의 제자 원리가 보편적 음성학 원리에 기반하였음을 시사한다."
+            "이 연구는 훈민정음의 제자 원리가 단순히 음양오행이나 천지인과 같은 동양 철학적 상징 체계에 기반한 것이 아니라, 인체의 해부학적 구조와 발음 시 나타나는 생리학적 움직임을 정밀하게 관찰하고 이를 글자의 형태에 반영한 결과임을 현대 의학 기술을 통해 명확히 증명하였다. 훈민정음이 철학적 문자인 동시에 실용적 과학 문자로서의 성격을 함께 갖추고 있음을 입증하는 것이다. 특히 성별과 연령에 따른 생리적 차이에도 불구하고 모든 대상자에서 훈민정음 제자 원리와 일치하는 조음 양상이 관찰된 점은, 훈민정음의 제자 원리가 보편적 음성학 원리에 기반하였음을 시사한다."
         ]
     },
     "team": {
@@ -173,11 +172,19 @@
             },
             {
                 "role": "공동연구원",
-                "name": "최홍식",
-                "affiliation": "(사)세종대왕기념사업회",
-                "task": "MRI 영상분석 · 음성의학적 검증",
-                "field": "음성의학",
-                "nameEn": "Choi Hong-sik"
+                "name": "김진아",
+                "affiliation": "연세대학교 의과대학 영상의학교실",
+                "task": "MRI 촬영 프로토콜 · 영상 획득 및 분석",
+                "field": "영상의학",
+                "nameEn": "Kim Jin-a"
+            },
+            {
+                "role": "공동연구원",
+                "name": "이은상",
+                "affiliation": "",
+                "task": "",
+                "field": "",
+                "nameEn": "Lee Eun-sang"
             },
             {
                 "role": "공동연구원",
@@ -189,43 +196,53 @@
             },
             {
                 "role": "공동연구원",
-                "name": "김진아",
-                "affiliation": "연세대학교 의과대학 영상의학교실",
-                "task": "MRI 촬영 프로토콜 · 영상 획득 및 분석",
-                "field": "영상의학",
-                "nameEn": "Kim Jin-a"
+                "name": "최홍식",
+                "affiliation": "(사)세종대왕기념사업회",
+                "task": "MRI 영상분석 · 음성의학적 검증",
+                "field": "음성의학",
+                "nameEn": "Choi Hong-sik"
+            }
+        ],
+        "directory": [
+            {
+                "role": "외부연구원",
+                "names": [
+                    "신지원",
+                    "오창균",
+                    "윤영호",
+                    "최하영",
+                    "허진선",
+                    "배승희",
+                    "이지원",
+                    "정병인",
+                    "최유진",
+                    "김소앙",
+                    "이승수",
+                    "김성배",
+                    "박희준"
+                ]
             },
             {
-                "role": "일반연구원",
-                "name": "이정민",
-                "affiliation": "천지인발성연구소",
-                "task": "MRI 데이터 측정 · 영상 분석",
-                "field": "언어병리학",
-                "nameEn": "Lee Jeong-min"
+                "role": "외부전문가",
+                "names": [
+                    "임수연",
+                    "이정민",
+                    "이호현",
+                    "신장승"
+                ]
             },
             {
-                "role": "일반연구원",
-                "name": "이승수",
-                "affiliation": "연세대학교 대학원 언어병리협동과정",
-                "task": "MRI 데이터 측정 영상 분석 및 상형도 일러스트 시각화",
-                "field": "언어병리학 / 일러스트",
-                "nameEn": "Lee Seung-su"
+                "role": "참여연구원",
+                "names": [
+                    "배기찬"
+                ]
             },
             {
-                "role": "일반연구원",
-                "name": "이호현",
-                "affiliation": "대한메디컬아티스트학회",
-                "task": "표준상형도 제작 · 첨가도 그림 · 영상 분석/시각화",
-                "field": "음성공학",
-                "nameEn": "Lee Ho-hyeon"
-            },
-            {
-                "role": "팀",
-                "name": "윤국진, 정병인, 오창균 외",
-                "affiliation": "",
-                "task": "AI 파이프라인 개발 · 2D 애니메이션 생성 ·\n웹 데모 시스템 구현",
-                "field": "음성공학 · AI/웹 개발",
-                "nameEn": "Yun Guk-jin, Jeong Byeong-in, Oh Chang-gyun et al."
+                "role": "기관담당자",
+                "subtitle": "연구지원인력",
+                "names": [
+                    "이천우"
+                ]
             }
         ]
     },
@@ -271,8 +288,7 @@
             "goals.specific.2.text": "Recreating the articulatory movements of 15th-century consonants and vowels through MRI scans and AI animation to be utilized as educational content.",
             "goals.specific.3.label": "Educational Utilization in the Era of Hallyu Korean",
             "goals.specific.3.text": "Applying the video content across various fields, including Korean pronunciation education, textbook revisions, and cultural content.",
-            "significance.paragraphs.0": "This study clearly demonstrates through modern medical technology that the creation principles of Hunminjeongeum are not merely based on Eastern philosophical symbolic systems, such as Yin-Yang and the Five Elements (Eumyang Ohaeng) or Heaven-Earth-Man (Cheonjiin). Rather, they are the result of precisely observing the anatomical structures of the human body and the physiological movements that occur during pronunciation, and reflecting these factors directly into the shapes of the letters. This validates that Hunminjeongeum possesses the character of both a philosophical script and a practical, scientific writing system.",
-            "significance.paragraphs.1": "Notably, despite physiological differences across gender and age, consistent articulatory patterns corresponding to the creation principles of Hunminjeongeum were observed across all subjects, suggesting that the creation principles of Hunminjeongeum are grounded in universal phonetic principles."
+            "significance.paragraphs.0": "This study clearly demonstrates through modern medical technology that the creation principles of Hunminjeongeum are not merely based on Eastern philosophical symbolic systems, such as Yin-Yang and the Five Elements (Eumyang Ohaeng) or Heaven-Earth-Man (Cheonjiin). Rather, they are the result of precisely observing the anatomical structures of the human body and the physiological movements that occur during pronunciation, and reflecting these factors directly into the shapes of the letters. This validates that Hunminjeongeum possesses the character of both a philosophical script and a practical, scientific writing system. Notably, despite physiological differences across gender and age, consistent articulatory patterns corresponding to the creation principles of Hunminjeongeum were observed across all subjects, suggesting that the creation principles of Hunminjeongeum are grounded in universal phonetic principles."
         },
         "zh": {
             "motivation.paragraphs.0": "尽管世界各国使用着众多文字，但韩国的\"训民正音（韩文）\"是唯一一种创制者、创制时间及创制目的均有明确记载的文字。训民正音由世宗大王于1443年创制，并于1446年通过《解例本》详细解释了其制字原理，是一门基于\"声音科学\"的文字。",
@@ -287,8 +303,7 @@
             "goals.specific.2.text": "利用MRI图像和AI动画呈现15世纪子音和母音的发音运动，将其作为教育内容加以利用。",
             "goals.specific.3.label": "韩流韩国语时代的教育应用",
             "goals.specific.3.text": "将此类视频内容广泛应用于韩国语发音教学、教科书修订、文化内容创作等诸多领域。",
-            "significance.paragraphs.0": "本研究通过现代医学技术明确证明，《训民正音》的制字原理并非仅仅基于阴阳五行或天地人等东方哲学象征体系，而是对人体解剖学结构以及发音时出现的生理学运动进行精密观察，并将其反映在文字形态上的结果。这证实了《训民正音》兼具哲学文字与实用科学文字的双重属性。",
-            "significance.paragraphs.1": "特别是，尽管存在性别和年龄带来的生理差异，但在所有受试者中均观察到了与《训民正音》制字原理相吻合的调音（发音）模式，这表明《训民正音》的制字原理是基于普遍的语音学原理。"
+            "significance.paragraphs.0": "本研究通过现代医学技术明确证明，《训民正音》的制字原理并非仅仅基于阴阳五行或天地人等东方哲学象征体系，而是对人体解剖学结构以及发音时出现的生理学运动进行精密观察，并将其反映在文字形态上的结果。这证实了《训民正音》兼具哲学文字与实用科学文字的双重属性。 特别是，尽管存在性别和年龄带来的生理差异，但在所有受试者中均观察到了与《训民正音》制字原理相吻合的调音（发音）模式，这表明《训民正音》的制字原理是基于普遍的语音学原理。"
         },
         "ja": {
             "motivation.paragraphs.0": "世界の様々な国で多くの文字が使用されているが、創製者、創製時期、そして創製目的が明らかになっている文字は、我が国の「訓民正音（ハングル）」が唯一である。1443年に世宗大王によって創製され、1446年に『解例本（ヘレボン）』を通じてその製作原理が詳細に説明された訓民正音は、「音声科学」に基づいた文字である。",
@@ -303,8 +318,7 @@
             "goals.specific.2.text": "15世紀の子音と母音の発音時の動きをMRI画像とAIアニメーションで具現化し、教育用コンテンツとして活用する。",
             "goals.specific.3.label": "韓流韓国語時代における教育的活用",
             "goals.specific.3.text": "映像コンテンツを韓国語発音教育、教科書の改訂、文化コンテンツなど、多角的な用途に活用する。",
-            "significance.paragraphs.0": "本研究は、訓民正音の制字原理が単に陰陽五行や天地人のような東洋哲学的な象徴体系に基づいたものではなく、人体の解剖学的構造と発音時に現れる生理学的な動きを精密に観察し、それを文字の形態に反映させた結果であることを、現代の医学技術を通じて明確に証明した。これは、訓民正音系统が哲学的な文字であると同時に、実用的な科学文字としての性格を併せ持っていることを立証するものである。",
-            "significance.paragraphs.1": "特に、性別や年齢による生理的な違いがあるにもかかわらず、すべての被験者において訓民正音の制字原理と一致する調音様相が観察された点は、訓民正音の制字原理が普遍的な音声学の原理に基づいていることを示唆している。"
+            "significance.paragraphs.0": "本研究は、訓民正音の制字原理が単に陰陽五行や天地人のような東洋哲学的な象徴体系に基づいたものではなく、人体の解剖学的構造と発音時に現れる生理学的な動きを精密に観察し、それを文字の形態に反映させた結果であることを、現代の医学技術を通じて明確に証明した。これは、訓民正音系统が哲学的な文字であると同時に、実用的な科学文字としての性格を併せ持っていることを立証するものである。 特に、性別や年齢による生理的な違いがあるにもかかわらず、すべての被験者において訓民正音の制字原理と一致する調音様相が観察された点は、訓民正音の制字原理が普遍的な音声学の原理に基づいていることを示唆している。"
         },
         "fr": {
             "motivation.paragraphs.0": "Bien que de nombreux systèmes d'écriture soient utilisés à travers le monde, le « Hunminjeongeum (Hangeul) » de Corée est le seul dont le créateur, l'époque de création et l'objectif de création sont historiquement attestés. Créé par le roi Sejong en 1443 et explicité en détail quant à ses principes de fabrication à travers le Haeryebon (Édition explicative) en 1446, le Hunminjeongeum est une écriture fondée sur la « science acoustique ».",
@@ -319,8 +333,7 @@
             "goals.specific.2.text": "Restituer les mouvements articulatoires des consonnes et des voyelles du XVe siècle à l'aide d'images IRM et d'animations de l'IA pour les exploiter comme contenus pédagogiques.",
             "goals.specific.3.label": "Utilisation pédagogique à l'ère du coréen de la Hallyu",
             "goals.specific.3.text": "Employer les contenus vidéo à des fins diverses, notamment pour l'enseignement de la prononciation du coréen, la révision des manuels scolaires et la création de contenus culturels.",
-            "significance.paragraphs.0": "Cette étude démontre clairement, grâce aux technologies médicales modernes, que les principes de création du Hunminjeongeum ne reposent pas simplement sur des systèmes de symboles philosophiques orientaux tels que le Yin-Yang et les Cinq Éléments (Eumyang Ohaeng) ou le Ciel-Terre-Homme (Cheonjiin). Ils sont plutôt le résultat d'une observation précise de la structure anatomique du corps humain et des mouvements physiologiques qui se produisent lors de la prononciation, reflétés dans la forme même des lettres. Cela prouve que le Hunminjeongeum possède à la fois le caractère d'une écriture philosophique et d'un système d'écriture scientifique et pratique.",
-            "significance.paragraphs.1": "En particulier, malgré les différences physiologiques liées au sexe et à l'âge, des profils articulatoires concordant avec les principes de création du Hunminjeongeum ont été observés chez tous les sujets, ce qui suggère que les principes de création du Hunminjeongeum sont fondés sur des principes phonétiques universels."
+            "significance.paragraphs.0": "Cette étude démontre clairement, grâce aux technologies médicales modernes, que les principes de création du Hunminjeongeum ne reposent pas simplement sur des systèmes de symboles philosophiques orientaux tels que le Yin-Yang et les Cinq Éléments (Eumyang Ohaeng) ou le Ciel-Terre-Homme (Cheonjiin). Ils sont plutôt le résultat d'une observation précise de la structure anatomique du corps humain et des mouvements physiologiques qui se produisent lors de la prononciation, reflétés dans la forme même des lettres. Cela prouve que le Hunminjeongeum possède à la fois le caractère d'une écriture philosophique et d'un système d'écriture scientifique et pratique. En particulier, malgré les différences physiologiques liées au sexe et à l'âge, des profils articulatoires concordant avec les principes de création du Hunminjeongeum ont été observés chez tous les sujets, ce qui suggère que les principes de création du Hunminjeongeum sont fondés sur des principes phonétiques universels."
         },
         "de": {
             "motivation.paragraphs.0": "Obwohl weltweit in vielen Ländern zahlreiche Schriftsysteme verwendet werden, ist Koreas „Hunminjeongeum (Hangeul)\" die einzige Schrift, deren Schöpfer, Entstehungszeit und Entstehungszweck vollständig dokumentiert und bekannt sind. Das Hunminjeongeum, das 1443 von König Sejong geschaffen und 1446 durch das Haeryebon (Erläuternde Ausgabe) in seinen Konstruktionsprinzipien detailliert erklärt wurde, ist eine auf der „Klangwissenschaft\" basierende Schrift.",
@@ -335,8 +348,7 @@
             "goals.specific.2.text": "Darstellung der Artikulationsbewegungen von Konsonanten und Vokalen aus dem 15. Jahrhundert durch MRT-Bilder und KI-Animationen zur Nutzung als pädagogische Inhalte.",
             "goals.specific.3.label": "Pädagogische Nutzung in der Ära des Hallyu-Koreanischen",
             "goals.specific.3.text": "Verwendung der Videoinhalte für verschiedene Zwecke wie den koreanischen Ausspracheunterricht, Lehrbuchrevisionen und kulturelle Inhalte.",
-            "significance.paragraphs.0": "Diese Studie beweist mithilfe moderner Medizintechnik eindeutig, dass die Entstehungsprinzipien des Hunminjeongeum nicht bloß auf fernöstlichen philosophischen Symbolsystemen wie Yin-Yang und den Fünf Elementen (Eumyang Ohaeng) oder Himmel-Erde-Mensch (Cheonjiin) basieren. Vielmehr sind sie das Ergebnis einer präzisen Beobachtung der anatomischen Struktur des menschlichen Körpers und der physiologischen Bewegungen bei der Aussprache, die in den Formen der Buchstaben verankert wurden. Dies belegt, dass das Hunminjeongeum sowohl den Charakter einer philosophischen Schrift als auch eines praktischen, wissenschaftlichen Schriftsystems besitzt.",
-            "significance.paragraphs.1": "Insbesondere die Tatsache, dass trotz physiologischer Unterschiede nach Geschlecht und Alter bei allen Probanden Artikulationsmuster beobachtet wurden, die mit den Entstehungsprinzipien des Hunminjeongeum übereinstimmen, legt nahe, dass die Entstehungsprinzipien des Hunminjeongeum auf universellen phonetischen Prinzipien beruhen."
+            "significance.paragraphs.0": "Diese Studie beweist mithilfe moderner Medizintechnik eindeutig, dass die Entstehungsprinzipien des Hunminjeongeum nicht bloß auf fernöstlichen philosophischen Symbolsystemen wie Yin-Yang und den Fünf Elementen (Eumyang Ohaeng) oder Himmel-Erde-Mensch (Cheonjiin) basieren. Vielmehr sind sie das Ergebnis einer präzisen Beobachtung der anatomischen Struktur des menschlichen Körpers und der physiologischen Bewegungen bei der Aussprache, die in den Formen der Buchstaben verankert wurden. Dies belegt, dass das Hunminjeongeum sowohl den Charakter einer philosophischen Schrift als auch eines praktischen, wissenschaftlichen Schriftsystems besitzt. Insbesondere die Tatsache, dass trotz physiologischer Unterschiede nach Geschlecht und Alter bei allen Probanden Artikulationsmuster beobachtet wurden, die mit den Entstehungsprinzipien des Hunminjeongeum übereinstimmen, legt nahe, dass die Entstehungsprinzipien des Hunminjeongeum auf universellen phonetischen Prinzipien beruhen."
         },
         "es": {
             "motivation.paragraphs.0": "Aunque se utilizan numerosos sistemas de escritura en varios países del mundo, el \"Hunminjeongeum (Hangeul)\" de Corea es la única escritura cuyo creador, época y propósito de creación están plenamente documentados. Creado por el Gran Rey Sejong en 1443 y explicado en detalle en cuanto a sus principios de construcción a través del Haeryebon (Edición Explicativa) en 1446, el Hunminjeongeum es un sistema de escritura profundamente basado en la \"ciencia del sonido\".",
@@ -351,8 +363,7 @@
             "goals.specific.2.text": "Recrear los movimientos articulatorios de las consonantes y vocales del siglo XV mediante imágenes de RM y animación de IA para su uso como contenidos pedagógicos.",
             "goals.specific.3.label": "Uso educativo en la era del coreano de la Hallyu",
             "goals.specific.3.text": "Utilizar los contenidos de video para diversos fines, incluyendo la enseñanza de la pronunciación del coreano, la revisión de libros de texto y la creación de contenidos culturales.",
-            "significance.paragraphs.0": "Este estudio demuestra claramente, a través de la tecnología médica moderna, que los principios de creación del Hunminjeongeum no se basan simplemente en sistemas simbólicos de la filosofía oriental como el Yin y el Yang y los Cinco Elementos (Eumyang Ohaeng) o el Cielo-Tierra-Hombre (Cheonjiin). Más bien, son el resultado de observar con precisión la estructura anatómica del cuerpo humano y los movimientos fisiológicos que ocurren durante la pronunciación, reflejándolos en la forma de las letras. Esto demuestra que el Hunminjeongeum posee el carácter tanto de una escritura filosófica como de un sistema de escritura científico y práctico.",
-            "significance.paragraphs.1": "En particular, a pesar de las diferencias fisiológicas asociadas con el género y la edad, se observaron patrones articulatorios consistentes con los principios de creación del Hunminjeongeum en todos los sujetos, lo que sugiere que los principios de creación del Hunminjeongeum están fundamentados en principios fonéticos universales."
+            "significance.paragraphs.0": "Este estudio demuestra claramente, a través de la tecnología médica moderna, que los principios de creación del Hunminjeongeum no se basan simplemente en sistemas simbólicos de la filosofía oriental como el Yin y el Yang y los Cinco Elementos (Eumyang Ohaeng) o el Cielo-Tierra-Hombre (Cheonjiin). Más bien, son el resultado de observar con precisión la estructura anatómica del cuerpo humano y los movimientos fisiológicos que ocurren durante la pronunciación, reflejándolos en la forma de las letras. Esto demuestra que el Hunminjeongeum posee el carácter tanto de una escritura filosófica como de un sistema de escritura científico y práctico. En particular, a pesar de las diferencias fisiológicas asociadas con el género y la edad, se observaron patrones articulatorios consistentes con los principios de creación del Hunminjeongeum en todos los sujetos, lo que sugiere que los principios de creación del Hunminjeongeum están fundamentados en principios fonéticos universales."
         },
         "hi": {
             "motivation.paragraphs.0": "हालांकि दुनिया के विभिन्न देशों में कई लेखन प्रणालियों का उपयोग किया जाता है, लेकिन कोरिया की 'हुनमिंजेओंगम (हंगुल)' (Hunminjeongeum (Hangeul)) एकमात्र ऐसी लिपि है जिसके निर्माता, निर्माण का समय और निर्माण का उद्देश्य पूरी तरह से प्रलेखित हैं। 1443 में राजा सेजोंग (King Sejong) द्वारा बनाई गई और 1446 में 'हेरीबोन' (Haeryebon) के माध्यम से इसके निर्माण के सिद्धांतों को विस्तार से समझाने वाली हुनमिंजेओंगम 'ध्वनि विज्ञान' (sound science) पर आधारित एक लिपि है।",
@@ -367,8 +378,7 @@
             "goals.specific.2.text": "एमआरआई छवियों और एआई (AI) एनिमेशन के माध्यम से 15वीं सदी के व्यंजनों और स्वरों के उच्चारण आंदोलनों को साकार करना और शैक्षणिक सामग्री के रूप में उनका उपयोग करना।",
             "goals.specific.3.label": "हलीउ (Hallyu) कोरियाई युग में शैक्षणिक उपयोग",
             "goals.specific.3.text": "वीडियो सामग्री का उपयोग कोरियाई उच्चारण शिक्षा, पाठ्यपुस्तकों के संशोधन और सांस्कृतिक सामग्री जैसे विभिन्न उद्देश्यों के लिए करना।",
-            "significance.paragraphs.0": "इस अध्ययन ने आधुनिक चिकित्सा तकनीक के माध्यम से स्पष्ट रूप से सिद्ध किया है कि 'हुनमिंजेओंगम' (Hunminjeongeum) के निर्माण सिद्धांत केवल यिन-यांग और पांच तत्व (ईमयांग ओहाेंग) या आकाश-पृथ्वी-मानव (चियोनजीइन) जैसी पूर्वी दार्शनिक प्रतीक प्रणालियों पर आधारित नहीं हैं। बल्कि, ये मानव शरीर की शारीरिक संरचना और उच्चारण के दौरान होने वाले शारीरिक आंदोलनों के सटीक अवलोकन और उन्हें अक्षरों के आकार में प्रतिबिंबित करने का परिणाम हैं। यह प्रमाणित करता है कि हुनमिंजेओंगम में एक दार्शनिक लिपि और एक व्यावहारिक, वैज्ञानिक लिपि दोनों की विशेषताएं हैं।",
-            "significance.paragraphs.1": "विशेष रूप से, लिंग और आयु के आधार पर शारीरिक अंतर होने के बावजूद, सभी प्रतिभागियों में हुनमिंजेओंगम के निर्माण सिद्धांतों के अनुरूप उच्चारण पैटर्न देखे गए, जो यह दर्शाता है कि हुनमिंजेओंगम के निर्माण सिद्धांत सार्वभौमिक ध्वन्यात्मक सिद्धांतों पर आधारित हैं।"
+            "significance.paragraphs.0": "इस अध्ययन ने आधुनिक चिकित्सा तकनीक के माध्यम से स्पष्ट रूप से सिद्ध किया है कि 'हुनमिंजेओंगम' (Hunminjeongeum) के निर्माण सिद्धांत केवल यिन-यांग और पांच तत्व (ईमयांग ओहाेंग) या आकाश-पृथ्वी-मानव (चियोनजीइन) जैसी पूर्वी दार्शनिक प्रतीक प्रणालियों पर आधारित नहीं हैं। बल्कि, ये मानव शरीर की शारीरिक संरचना और उच्चारण के दौरान होने वाले शारीरिक आंदोलनों के सटीक अवलोकन और उन्हें अक्षरों के आकार में प्रतिबिंबित करने का परिणाम हैं। यह प्रमाणित करता है कि हुनमिंजेओंगम में एक दार्शनिक लिपि और एक व्यावहारिक, वैज्ञानिक लिपि दोनों की विशेषताएं हैं। विशेष रूप से, लिंग और आयु के आधार पर शारीरिक अंतर होने के बावजूद, सभी प्रतिभागियों में हुनमिंजेओंगम के निर्माण सिद्धांतों के अनुरूप उच्चारण पैटर्न देखे गए, जो यह दर्शाता है कि हुनमिंजेओंगम के निर्माण सिद्धांत सार्वभौमिक ध्वन्यात्मक सिद्धांतों पर आधारित हैं।"
         },
         "vi": {
             "motivation.paragraphs.0": "Mặc dù nhiều hệ thống chữ viết đang được sử dụng ở các quốc gia khác nhau trên thế giới, 'Hunminjeongeum (Hangeul)' của Hàn Quốc là văn bản duy nhất có người sáng tạo, thời gian sáng tạo và mục đích sáng tạo được ghi chép rõ ràng. Được vua Sejong sáng tạo vào năm 1443 và được giải thích chi tiết về nguyên lý cấu tạo thông qua Haeryebon (解例本) vào năm 1446, Hunminjeongeum là một hệ thống chữ viết dựa trên 'khoa học âm thanh'.",
@@ -383,8 +393,7 @@
             "goals.specific.2.text": "Tái hiện các chuyển động phát âm của phụ âm và nguyên âm thế kỷ 15 bằng hình ảnh MRI và hoạt hình AI để sử dụng làm nội dung giáo dục.",
             "goals.specific.3.label": "Ứng dụng giáo dục trong kỷ nguyên tiếng Hàn Hallyu",
             "goals.specific.3.text": "Sử dụng nội dung video cho nhiều mục đích khác nhau như giáo dục phát âm tiếng Hàn, sửa đổi sách giáo khoa và phát triển nội dung văn hóa.",
-            "significance.paragraphs.0": "Nghiên cứu này đã chứng minh rõ ràng thông qua công nghệ y tế hiện đại rằng các nguyên lý cấu tạo của Hunminjeongeum không chỉ đơn thuần dựa trên các hệ thống ký hiệu triết học phương Đông như Âm dương Ngũ hành hay Thiên-Địa-Nhân. Thay vào đó, chúng là kết quả của việc quan sát tỉ mỉ cấu trúc giải phẫu của cơ thể người và các chuyển động sinh lý xảy ra trong quá trình phát âm, rồi phản ánh trực tiếp vào hình dạng của các chữ cái. Điều này minh chứng rằng Hunminjeongeum vừa mang tính chất của một bộ chữ triết học, vừa là một hệ thống chữ viết khoa học và thực tiễn.",
-            "significance.paragraphs.1": "Đặc biệt, bất chấp những khác biệt sinh lý theo giới tính và độ tuổi, các mô hình cấu âm nhất quán với nguyên lý cấu tạo của Hunminjeongeum đã được quan sát thấy ở tất cả các đối tượng nghiên cứu, gợi ý rằng các nguyên lý cấu tạo của Hunminjeongeum được xây dựng dựa trên các nguyên lý ngữ âm học phổ quát."
+            "significance.paragraphs.0": "Nghiên cứu này đã chứng minh rõ ràng thông qua công nghệ y tế hiện đại rằng các nguyên lý cấu tạo của Hunminjeongeum không chỉ đơn thuần dựa trên các hệ thống ký hiệu triết học phương Đông như Âm dương Ngũ hành hay Thiên-Địa-Nhân. Thay vào đó, chúng là kết quả của việc quan sát tỉ mỉ cấu trúc giải phẫu của cơ thể người và các chuyển động sinh lý xảy ra trong quá trình phát âm, rồi phản ánh trực tiếp vào hình dạng của các chữ cái. Điều này minh chứng rằng Hunminjeongeum vừa mang tính chất của một bộ chữ triết học, vừa là một hệ thống chữ viết khoa học và thực tiễn. Đặc biệt, bất chấp những khác biệt sinh lý theo giới tính và độ tuổi, các mô hình cấu âm nhất quán với nguyên lý cấu tạo của Hunminjeongeum đã được quan sát thấy ở tất cả các đối tượng nghiên cứu, gợi ý rằng các nguyên lý cấu tạo của Hunminjeongeum được xây dựng dựa trên các nguyên lý ngữ âm học phổ quát."
         },
         "ru": {
             "motivation.paragraphs.0": "Хотя во многих странах мира используются многочисленные системы письменности, корейский «Хунмин чёным (Хангыль)» является единственной письменностью, создатель, время и цель создания которой полностью задокументированы и известны. Созданный великим королем Седжоном в 1443 году и подробно разъясненный в принципах своего построения в трактате «Хэребон» (Пояснительное издание) в 1446 году, Хунмин чёным представляет собой письменность, глубоко основанную на «науке о звуке».",
@@ -399,8 +408,7 @@
             "goals.specific.2.text": "Воспроизведение артикуляционных движений согласных и гласных букв XV века с помощью МРТ-изображений и ИИ-анимации для последующего использования в качестве обучающего контента.",
             "goals.specific.3.label": "Образовательное использование в эпоху Халлю и популяризации корейского языка",
             "goals.specific.3.text": "Применение видеоконтента в различных целях, включая обучение корейскому произношению, пересмотр учебников и создание культурного контента.",
-            "significance.paragraphs.0": "Данное исследование с помощью современных медицинских технологий наглядно доказало, что принципы создания «Хунмин чёныма» основаны не просто на восточных философских символических системах, таких как Инь-Ян и Пять элементов (Ымъян Охэн) или Небо-Земля-Человек (Чхонджиин). Напротив, они стали результатом точного наблюдения за анатомической структурой человеческого тела и физиологическими движениями, происходящими при произношении, и отражения этих данных в форме букв. Это подтверждает, что «Хунмин чёным» сочетает в себе свойства как философской, так и практической, научной письменности.",
-            "significance.paragraphs.1": "В частности, несмотря на физиологические различия, обусловленные полом и возрастом, у всех испытуемых наблюдались артикуляционные паттерны, соответствующие принципам создания «Хунмин чёныма», что свидетельствует о том, что принципы создания «Хунмин чёныма» основаны на универсальных фонетических принципах."
+            "significance.paragraphs.0": "Данное исследование с помощью современных медицинских технологий наглядно доказало, что принципы создания «Хунмин чёныма» основаны не просто на восточных философских символических системах, таких как Инь-Ян и Пять элементов (Ымъян Охэн) или Небо-Земля-Человек (Чхонджиин). Напротив, они стали результатом точного наблюдения за анатомической структурой человеческого тела и физиологическими движениями, происходящими при произношении, и отражения этих данных в форме букв. Это подтверждает, что «Хунмин чёным» сочетает в себе свойства как философской, так и практической, научной письменности. В частности, несмотря на физиологические различия, обусловленные полом и возрастом, у всех испытуемых наблюдались артикуляционные паттерны, соответствующие принципам создания «Хунмин чёныма», что свидетельствует о том, что принципы создания «Хунмин чёныма» основаны на универсальных фонетических принципах."
         },
         "ar": {
             "motivation.paragraphs.0": "في حين تُستخدم العديد من أنظمة الكتابة في مختلف بلدان العالم، فإن نظام \"هونمين جيونغوم (الهانغول)\" (Hunminjeongeum / Hangeul) في كوريا هو الخط الوحيد الموثق بالكامل من حيث مبدعه ووقت إنشائه والغرض منه. تم إنشاء الهونمين جيونغوم على يد الملك العظيم سيجونغ في عام 1443، وتم شرح مبادئ بنائه بالتفصيل من خلال \"هيريبون\" (Haeryebon - النسخة التفسيرية) في عام 1446، وهو نظام كتابة يعتمد بشكل عميق على \"علم الصوت\".",
@@ -415,8 +423,7 @@
             "goals.specific.2.text": "تجسيد الحركات النطقية للحروف الساكنة والمتحركة في القرن الخامس عشر عبر صور الرنين المغناطيسي والرسوم المتحركة المدعومة بالذكاء الاصطناعي (AI) لاستخدامها كمحتوى تعليمي.",
             "goals.specific.3.label": "الاستخدام التعليمي في عصر موجة الهاليّو للغة الكورية",
             "goals.specific.3.text": "استخدام المحتوى المرئي في أغراض متنوعة مثل تعليم نطق اللغة الكورية، وتعديل المناهج والكتب الدراسية، وتطوير المحتوى الثقافي.",
-            "significance.paragraphs.0": "أثبتت هذه الدراسة بوضوح، من خلال التكنولوجيا الطبية الحديثة، أن مبادئ إنشاء نظام \"هونمين جيونغوم\" (Hunminjeongeum) لا تقوم مجرد على أنظمة رمزية فلسفية شرقية مثل الين واليانغ والعناصر الخمسة (إيوميانغ أوهانغ) أو السماء والأرض والإنسان (تشونجيين). بل هي نتاج مراقبة دقيقة للبنية التشريحية لجسم الإنسان والحركات الفسيولوجية التي تظهر أثناء النطق، ومن ثم عكسها في أشكال الحروف. وهذا يثبت أن الهونمين جيونغوم يمتلك طابع الخط الفلسفي ونظام الكتابة العلمي والعملي في آن واحد.",
-            "significance.paragraphs.1": "وعلى وجه الخصوص، على الرغم من الاختلافات الفسيولوجية القائمة على الجنس والعمر، فقد لوحظت أنماط نطقية تتوافق مع مبادئ إنشاء الهونمين جيونغوم لدى جميع المشاركين، مما يشير إلى أن مبادئ إنشاء الهونمين جيونغوم مبنية على مبادئ صوتية عالمية."
+            "significance.paragraphs.0": "أثبتت هذه الدراسة بوضوح، من خلال التكنولوجيا الطبية الحديثة، أن مبادئ إنشاء نظام \"هونمين جيونغوم\" (Hunminjeongeum) لا تقوم مجرد على أنظمة رمزية فلسفية شرقية مثل الين واليانغ والعناصر الخمسة (إيوميانغ أوهانغ) أو السماء والأرض والإنسان (تشونجيين). بل هي نتاج مراقبة دقيقة للبنية التشريحية لجسم الإنسان والحركات الفسيولوجية التي تظهر أثناء النطق، ومن ثم عكسها في أشكال الحروف. وهذا يثبت أن الهونمين جيونغوم يمتلك طابع الخط الفلسفي ونظام الكتابة العلمي والعملي في آن واحد. وعلى وجه الخصوص، على الرغم من الاختلافات الفسيولوجية القائمة على الجنس والعمر، فقد لوحظت أنماط نطقية تتوافق مع مبادئ إنشاء الهونمين جيونغوم لدى جميع المشاركين، مما يشير إلى أن مبادئ إنشاء الهونمين جيونغوم مبنية على مبادئ صوتية عالمية."
         }
     }
 }
