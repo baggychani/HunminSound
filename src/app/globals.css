@@ -811,6 +811,84 @@
     @apply font-sans text-[11px] leading-snug tracking-wide text-ink-muted sm:text-xs;
   }
 
+  /* ── 훈민정음 제자해 표 ── */
+  .hunmin-jejahae-row {
+    display: grid;
+    align-items: start;
+  }
+
+  .hunmin-jejahae-row--split {
+    column-gap: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .hunmin-jejahae-row--split {
+      column-gap: 1.75rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hunmin-jejahae-row--split {
+      column-gap: 2.25rem;
+    }
+  }
+
+  .hunmin-jejahae-basic {
+    min-width: 0;
+  }
+
+  .hunmin-jejahae-measure {
+    display: inline-block;
+    width: max-content;
+    max-width: 100%;
+    vertical-align: top;
+  }
+
+  .hunmin-jejahae-zone-divider {
+    width: 1px;
+    align-self: stretch;
+    background: rgb(var(--hanji-border-rgb) / 0.65);
+  }
+
+  .hunmin-jejahae-secondary {
+    min-width: 0;
+  }
+
+  .hunmin-jejahae-group {
+    position: relative;
+    padding: 0.5625rem 0.75rem 0.6875rem;
+    border: 1px solid rgb(var(--hanji-border-rgb) / 0.6);
+    border-radius: 2px;
+    background: linear-gradient(
+      180deg,
+      rgb(var(--hanji-card-rgb) / 0.55)  0%,
+      rgb(var(--hanji-card-rgb) / 0.22) 100%
+    );
+    box-shadow: 0 1px 0 rgb(var(--ink-rgb) / 0.03);
+  }
+
+  /* 그룹 안 열 구분 — 초출|재출 등 */
+  .hunmin-jejahae-inner-divider {
+    width: 1px;
+    margin-inline: 0.375rem;
+    background: rgb(var(--ink-rgb) / 0.28);
+  }
+
+  @media (min-width: 640px) {
+    .hunmin-jejahae-inner-divider {
+      margin-inline: 0.5rem;
+    }
+  }
+
+  .hunmin-jejahae-group-title {
+    @apply mb-1.5 font-sans text-xs font-medium leading-snug tracking-wide text-ink sm:mb-2 sm:text-[13px];
+    text-align: left;
+  }
+
+  .hunmin-jejahae-col-label {
+    @apply mb-1 flex min-h-[1.2rem] items-end justify-start font-sans text-[11px] leading-tight tracking-wide text-ink-muted sm:mb-1.5 sm:min-h-[1.3rem] sm:text-xs;
+  }
+
   /* 훈민 차트 — 상형기본자→일반 가획·합성자 */
   .hunmin-gaheuk-arrow {
     color: rgb(var(--gold-rgb) / 0.62);

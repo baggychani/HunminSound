@@ -676,16 +676,6 @@ export function ResearchPageClient({ content }: Props) {
       <SectionRail items={railItems} railId="research" ariaLabel="연구 페이지 섹션 이동" />
 
       <div className="relative mb-14 overflow-hidden border-b border-hanji-border pb-12 pt-16 sm:mb-16">
-        {/* 거대 배경 워터마크 — 한국어 */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute -right-4 top-1/2 -translate-y-1/2 select-none font-jamo leading-none text-ink/[0.035] dark:text-ink/[0.05]"
-          style={{ fontSize: 'clamp(5rem, 14vw, 11rem)' }}
-          lang="ko"
-        >
-          연구
-        </span>
-
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

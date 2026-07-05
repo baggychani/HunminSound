@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
 const ACTS = [
-  { id: 'home-act1', num: '01', hanja: '序' },
-  { id: 'home-act2', num: '02', hanja: '字' },
-  { id: 'home-act3', num: '03', hanja: '究' },
-  { id: 'home-act4', num: '04', hanja: '問' },
+  { id: 'home-act1' },
+  { id: 'home-act2' },
+  { id: 'home-act3' },
+  { id: 'home-act4' },
 ] as const
 
 /**
@@ -31,7 +31,6 @@ export function HomeActRail() {
           if (idx >= 0) setActive(idx)
         }
       },
-      /* 뷰포트 세로 중앙 밴드에 걸친 막을 활성으로 판정 */
       { rootMargin: '-45% 0px -45% 0px', threshold: 0 },
     )
 
@@ -53,19 +52,19 @@ export function HomeActRail() {
       className="pointer-events-none fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 mix-blend-difference lg:flex xl:right-7"
     >
       <ul className="pointer-events-auto flex flex-col items-center gap-1.5">
-        {ACTS.map(({ id, num, hanja }, idx) => {
+        {ACTS.map(({ id }, idx) => {
           const isActive = idx === active
           return (
             <li key={id} className="flex flex-col items-center gap-1.5">
               {idx > 0 && (
-                <span aria-hidden className="h-6 w-px bg-white/30" />
+                <span aria-hidden className="h-5 w-px bg-white/30" />
               )}
               <button
                 type="button"
                 onClick={() => goTo(idx)}
                 aria-label={`${idx + 1}막으로 이동`}
                 aria-current={isActive ? 'true' : undefined}
-                className="group relative flex h-9 w-9 items-center justify-center"
+                className="group relative flex h-8 w-8 items-center justify-center"
               >
                 {isActive && (
                   <motion.span
@@ -76,14 +75,13 @@ export function HomeActRail() {
                   />
                 )}
                 <span
-                  className={`font-serif text-[13px] leading-none transition-all duration-300 ${
+                  aria-hidden
+                  className={`rounded-full transition-all duration-300 ${
                     isActive
-                      ? 'text-white'
-                      : 'text-white/40 group-hover:text-white/75'
+                      ? 'h-2 w-2 bg-white'
+                      : 'h-1.5 w-1.5 bg-white/40 group-hover:bg-white/70'
                   }`}
-                >
-                  {isActive ? hanja : num}
-                </span>
+                />
               </button>
             </li>
           )

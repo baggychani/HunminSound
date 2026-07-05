@@ -30,12 +30,12 @@ export function consonantSegmentSeparatorKind(
   return hunminSegmentSeparatorKind(prev, next)
 }
 
-/** 모음 훈민 차트 — 구간 사이는 모두 | (상형기본자→합성자 포함) */
+/** 모음 — 상형기본자→합성자는 가획 화살표 (자음과 동일) */
 export function hunminVowelSegmentSeparatorKind(
-  _prev: { label?: string; groupLine?: string },
-  _next: { label?: string; groupLine?: string },
+  prev: { label?: string; groupLine?: string },
+  next: { label?: string; groupLine?: string },
 ): 'gaheuk-arrow' | 'pipe' {
-  return 'pipe'
+  return hunminSegmentSeparatorKind(prev, next)
 }
 
 export function HunminZoneHeading({ title }: { title: string }) {

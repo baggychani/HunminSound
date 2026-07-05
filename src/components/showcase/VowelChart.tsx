@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { useScrollToSymbolDetail } from '@/hooks/useScrollToSymbolDetail'
 import { usePhoneticsDeepLink } from '@/hooks/usePhoneticsDeepLink'
@@ -13,12 +13,11 @@ import { TranslatedVowelArticulation } from '@/components/showcase/TranslatedVow
 import { VOWEL_ARTICULATION_KO } from '@/lib/vowelArticulation'
 import { JamoText } from '@/components/ui/JamoText'
 import type { ChartViewMode } from '@/components/showcase/PhoneticsViewToggle'
-import { HunminZoneHeading } from '@/components/showcase/hunmin/HunminChartParts'
 import { HunminCheonJiInBanner } from '@/components/showcase/hunmin/HunminCheonJiInBanner'
+import { HunminJejahaeRow, HunminJejahaeRowHeading } from '@/components/showcase/hunmin/HunminJejahaeLayout'
 import { PhoneticsHaeryeSource } from '@/components/showcase/phonetics/PhoneticsHaeryeSource'
 import { SymbolDetailCard } from '@/components/showcase/phonetics/SymbolDetailCard'
 import {
-  HUNMIN_VOWEL_GLYPH_RAIL_CLASS,
   HUNMIN_VOWEL_CARD_CHAR_CLASS,
   HunminVowelImageGlyph,
   HunminVowelJamoGlyph,
@@ -303,62 +302,44 @@ function HunminVowelRowBody({
 }: HunminVowelRowBodyProps) {
   const hasActive = !!activeItem && hunminVowelRowContainsSymbol(row, activeItem.symbol)
   const hasCombinedZone = row.combinedSegments.length > 0
-  const basicColRef = useRef<HTMLDivElement>(null)
-
-  useLayoutEffect(() => {
-    const el = basicColRef.current
-    if (!el) return
-    const report = () => onBasicColumnWidth(rowIndex, el.getBoundingClientRect().width)
-    report()
-    const ro = new ResizeObserver(report)
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [rowIndex, onBasicColumnWidth, row.basicSegments, row.combinedSegments, vowels])
 
   return (
     <div>
-      <div
-        ref={hasActive ? detailScrollRef : undefined}
-        className="flex max-w-full flex-nowrap items-stretch gap-x-4 sm:gap-x-6 lg:gap-x-8"
+      <HunminJejahaeRow
+        scrollRef={hasActive ? detailScrollRef : undefined}
         dir={lang === 'ar' ? 'ltr' : undefined}
         lang={lang === 'ar' ? 'ko' : undefined}
-      >
-        <div
-          ref={basicColRef}
-          className="flex min-w-0 shrink-0 flex-col"
-          style={
-            basicColumnMinWidthPx > 0 ? { minWidth: basicColumnMinWidthPx } : undefined
-          }
-        >
-          <HunminZoneHeading title={HUNMIN_ZONE_BASIC} />
+        basicColumnMinWidthPx={basicColumnMinWidthPx}
+        rowIndex={rowIndex}
+        onBasicColumnWidth={onBasicColumnWidth}
+        showSecondaryZone={hasCombinedZone}
+        basicLabel={HUNMIN_ZONE_BASIC}
+        secondaryLabel={HUNMIN_ZONE_COMBINED}
+        basic={
           <HunminVowelZone
+            row={row}
+            zoneKey="b"
+            segments={row.basicSegments}
+            interactive
+            renderSlot={(slot, slotKey, interactive) =>
+              renderVowelSlot(slot, slotKey, vowels, activeId, onToggle, 'font-jamo', interactive)
+            }
+          />
+        }
+        secondary={
+          hasCombinedZone ? (
+            <HunminVowelZone
               row={row}
-              zoneKey="b"
-              segments={row.basicSegments}
+              zoneKey="c"
+              segments={row.combinedSegments}
               interactive
-              renderSlot={(slot, slotKey, interactive) =>
-                renderVowelSlot(slot, slotKey, vowels, activeId, onToggle, 'font-jamo', interactive)
+              renderSlot={(slot, slotKey) =>
+                renderVowelSlot(slot, slotKey, vowels, activeId, onToggle, 'font-jamo', true)
               }
             />
-          </div>
-        <div className="w-px shrink-0 self-stretch bg-hanji-border/75" aria-hidden />
-        <div className="flex min-w-0 shrink-0 flex-col">
-          {hasCombinedZone ? <HunminZoneHeading title={HUNMIN_ZONE_COMBINED} /> : null}
-          {hasCombinedZone ? (
-            <HunminVowelZone
-                row={row}
-                zoneKey="c"
-                segments={row.combinedSegments}
-                interactive
-                renderSlot={(slot, slotKey) =>
-                  renderVowelSlot(slot, slotKey, vowels, activeId, onToggle, 'font-jamo', true)
-                }
-              />
-          ) : (
-            <div className={HUNMIN_VOWEL_GLYPH_RAIL_CLASS} aria-hidden />
-          )}
-        </div>
-      </div>
+          ) : null
+        }
+      />
       <ScrollSection isOpen={hasActive}>
         {activeItem && hasActive && (
           <div>
@@ -576,10 +557,7 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
           <HunminCheonJiInBanner />
           {HUNMIN_VOWEL_ROWS.map((row, rowIndex) => (
             <section key={row.id}>
-              <div className="mb-4">
-                <h3 className="font-jamo text-lg tracking-wide text-ink">{row.title}</h3>
-                <div className="mt-2 h-px w-full bg-hanji-border" aria-hidden />
-              </div>
+              <HunminJejahaeRowHeading title={row.title} index={rowIndex} />
               <HunminVowelRowBody
                 row={row}
                 rowIndex={rowIndex}
