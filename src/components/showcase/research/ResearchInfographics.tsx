@@ -68,6 +68,8 @@ export function FinalGoalBlock({ label, text }: { label: string; text: string })
             aria-hidden
             className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/[0.12] via-transparent to-transparent sm:hidden"
           />
+          {/* MRI 촬영 스캔 라인 — 홈 3막과 같은 연출 */}
+          <span className="mri-scan-sweep hidden lg:block" aria-hidden />
         </div>
 
         <figcaption className="flex flex-col justify-center px-6 py-6 sm:px-7 sm:py-7 lg:px-9 lg:py-8">

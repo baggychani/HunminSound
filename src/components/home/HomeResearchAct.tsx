@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { forwardRef, useRef } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 import { useSiteMessages } from '@/hooks/useSiteMessages'
+import { CountUpStat } from '@/components/site/effects/CountUpStat'
 
 const MRI_HERO = '/images/research/mri-hero-v2.webp'
 const MRI_W = 1536
@@ -34,6 +35,37 @@ function MriScanOverlay() {
       <span className="absolute right-[4%] top-[6%] h-4 w-4 border-r border-t border-sky-200/40 sm:h-5 sm:w-5" />
       <span className="absolute bottom-[22%] left-[6%] h-3 w-3 border border-white/20 sm:h-4 sm:w-4" />
       <span className="absolute bottom-[38%] left-[42%] h-14 w-14 rounded-full border border-dashed border-sky-200/25 sm:h-[4.5rem] sm:w-[4.5rem]" />
+      {/* MRI 촬영 중인 듯한 스캔 라인 — 데스크톱 전용 */}
+      <span className="mri-scan-sweep hidden lg:block" />
+    </div>
+  )
+}
+
+/** 스펙트로그램 이퀄라이저 — 말소리 파형 장식 (데스크톱 전용) */
+const EQ_BARS = Array.from({ length: 36 }, (_, i) => ({
+  /* sin 조합으로 유기적인 높이·타이밍 (고정값 — hydration 안전) */
+  height: 0.35 + Math.abs(Math.sin(i * 1.7) * 0.45) + Math.abs(Math.sin(i * 0.6) * 0.2),
+  delay: (i % 9) * 0.14,
+  dur: 1.2 + (i % 5) * 0.22,
+}))
+
+function SpectrogramStrip() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 items-end gap-[3px] opacity-45 lg:flex"
+    >
+      {EQ_BARS.map((bar, i) => (
+        <span
+          key={i}
+          className="eq-bar w-[2px] rounded-full bg-sky-300/70"
+          style={{
+            height: `${bar.height * 1.5}rem`,
+            animationDelay: `${bar.delay}s`,
+            animationDuration: `${bar.dur}s`,
+          }}
+        />
+      ))}
     </div>
   )
 }
@@ -216,7 +248,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
                     {m.homeResearchStatLabel}
                   </p>
                   <p className="mt-1 font-serif text-[1.35rem] font-bold leading-none text-white sm:text-2xl">
-                    {m.homeResearchStatValue}
+                    <CountUpStat value={m.homeResearchStatValue} />
                   </p>
                   <p className="mt-1.5 font-sans text-[10px] leading-snug text-slate-400 sm:text-[11px]">
                     {m.homeResearchStatSub}
@@ -232,6 +264,8 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
           </motion.div>
         </div>
       </div>
+
+      <SpectrogramStrip />
     </section>
   )
 })

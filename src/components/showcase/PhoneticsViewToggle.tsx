@@ -70,9 +70,12 @@ export function PhoneticsViewToggle({ className = '', mode, onModeChange }: Phon
         {pill !== null ? (
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-y-1 rounded-full bg-hanji-warm shadow-md ring-1 ring-hanji-border/55 transition-[left,width] duration-200 ease-out dark:bg-hanji-hover dark:ring-hanji-border/50"
+            className="pointer-events-none absolute inset-y-1 rounded-full bg-hanji-warm shadow-md ring-1 ring-gold/35 transition-[left,width] duration-200 ease-out dark:bg-hanji-hover dark:ring-gold/30"
             style={{ left: pill.left, width: pill.width }}
-          />
+          >
+            {/* 활성 알약 내부 금빛 하이라이트 */}
+            <span className="absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-gold/45 to-transparent" />
+          </div>
         ) : null}
         <button
           type="button"
@@ -80,10 +83,19 @@ export function PhoneticsViewToggle({ className = '', mode, onModeChange }: Phon
           aria-selected={activeMode === 'hunmin'}
           tabIndex={0}
           onClick={() => changeMode('hunmin')}
-          className={`relative z-10 flex flex-1 items-center justify-center rounded-full px-2 text-center text-sm transition-colors duration-200 sm:text-[15px] ${
+          className={`relative z-10 flex flex-1 items-center justify-center gap-2.5 rounded-full px-2 text-center text-sm transition-colors duration-200 sm:text-[15px] ${
             activeMode === 'hunmin' ? 'text-ink' : 'text-ink-muted hover:text-ink-soft'
           }`}
         >
+          <span
+            aria-hidden
+            className={`font-jamo text-base leading-none transition-colors duration-200 sm:text-lg ${
+              activeMode === 'hunmin' ? 'text-gold' : 'text-ink-muted/50'
+            }`}
+            lang="ko"
+          >
+            ㆍ
+          </span>
           <span className="font-serif tracking-tight">{m.chartViewHunmin}</span>
         </button>
         <button
@@ -92,10 +104,18 @@ export function PhoneticsViewToggle({ className = '', mode, onModeChange }: Phon
           aria-selected={activeMode === 'modern'}
           tabIndex={0}
           onClick={() => changeMode('modern')}
-          className={`relative z-10 flex flex-1 items-center justify-center rounded-full px-2 text-center text-sm transition-colors duration-200 sm:text-[15px] ${
+          className={`relative z-10 flex flex-1 items-center justify-center gap-2.5 rounded-full px-2 text-center text-sm transition-colors duration-200 sm:text-[15px] ${
             activeMode === 'modern' ? 'text-ink' : 'text-ink-muted hover:text-ink-soft'
           }`}
         >
+          <span
+            aria-hidden
+            className={`font-sans text-[12px] leading-none tracking-tight transition-colors duration-200 sm:text-[13px] ${
+              activeMode === 'modern' ? 'text-gold' : 'text-ink-muted/50'
+            }`}
+          >
+            [ipa]
+          </span>
           <span className="font-serif tracking-tight">{m.chartViewModern}</span>
         </button>
       </div>

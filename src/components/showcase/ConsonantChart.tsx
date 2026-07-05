@@ -12,6 +12,7 @@ import { TranslatedDescription } from '@/components/showcase/TranslatedDescripti
 import { JamoText } from '@/components/ui/JamoText'
 import type { ChartViewMode } from '@/components/showcase/PhoneticsViewToggle'
 import { PhoneticsHaeryeSource } from '@/components/showcase/phonetics/PhoneticsHaeryeSource'
+import { SymbolDetailCard } from '@/components/showcase/phonetics/SymbolDetailCard'
 import {
   consonantSegmentSeparatorKind,
   HUNMIN_GLYPH_RAIL_CLASS,
@@ -589,10 +590,19 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
         return (
           <section key={`row-${rowIndex}`} className="relative">
             <div className="mb-4">
+              {displayMode === 'modern' && !isEmpty ? (
+                <p
+                  aria-hidden
+                  className="mb-2 flex items-center gap-2.5 font-sans text-[10.5px] tracking-[0.28em] text-gold"
+                >
+                  <span className="h-px w-5 bg-gold/50" />
+                  {String(rowIndex + 1).padStart(2, '0')}
+                </p>
+              ) : null}
               <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
                 <h3
-                  className={`text-lg tracking-wide ${
-                    displayMode === 'hunmin' ? 'font-jamo' : 'font-serif'
+                  className={`tracking-wide ${
+                    displayMode === 'hunmin' ? 'font-jamo text-lg' : 'font-serif text-xl'
                   } ${isEmpty ? 'text-ink-muted' : 'text-ink'}`}
                 >
                   {titleText}
@@ -608,7 +618,14 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
                   </span>
                 ) : null}
               </div>
-              <div className="mt-2 h-px w-full bg-hanji-border" aria-hidden />
+              <div
+                className={
+                  displayMode === 'modern'
+                    ? 'mt-2.5 h-px w-full bg-gradient-to-r from-gold/40 via-hanji-border to-hanji-border/30'
+                    : 'mt-2 h-px w-full bg-hanji-border'
+                }
+                aria-hidden
+              />
             </div>
 
             {displayMode === 'hunmin' ? (
@@ -681,22 +698,28 @@ function DetailPanel({
   symbolFontClass,
 }: DetailPanelProps) {
   return (
-    <div className="mt-8 pt-8 border-t border-hanji-border">
-      <div className="flex items-baseline gap-4 mb-5">
-        <div className="flex flex-col items-center gap-3 shrink-0">
-          <span className={`${symbolFontClass} text-6xl text-ink leading-none`}>{item.symbol}</span>
-          <div className="h-px w-full bg-hanji-border" aria-hidden />
-        </div>
-        <div>
-          <p className="font-serif text-xl text-ink leading-snug">
+    <SymbolDetailCard
+      symbol={item.symbol}
+      symbolFontClass={symbolFontClass}
+      header={
+        <>
+          <p className="font-serif text-lg leading-snug text-ink sm:text-xl">
             <JamoText text={item.name} />
           </p>
-          <p className="font-sans text-xs text-gold uppercase tracking-widest mt-3">
-            {categoryLabel}
-            {categoryEnLabel && categoryEnLabel !== categoryLabel ? ` · ${categoryEnLabel}` : ''}
+          <p className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-gold/[0.07] px-3 py-1 font-sans text-[11px] uppercase tracking-[0.14em] text-gold">
+              <span aria-hidden className="h-1 w-1 rounded-full bg-gold" />
+              {categoryLabel}
+            </span>
+            {categoryEnLabel && categoryEnLabel !== categoryLabel ? (
+              <span className="font-sans text-[11px] uppercase tracking-[0.14em] text-ink-muted/80">
+                {categoryEnLabel}
+              </span>
+            ) : null}
           </p>
-        </div>
-      </div>
+        </>
+      }
+    >
       <TranslatedDescription
         item={item as unknown as { description: string; [key: string]: unknown }}
         lang={lang}
@@ -713,6 +736,6 @@ function DetailPanel({
           pictogramLabel={pictogramLabel}
         />
       </div>
-    </div>
+    </SymbolDetailCard>
   )
 }

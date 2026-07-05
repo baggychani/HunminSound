@@ -16,6 +16,7 @@ import type { ChartViewMode } from '@/components/showcase/PhoneticsViewToggle'
 import { HunminZoneHeading } from '@/components/showcase/hunmin/HunminChartParts'
 import { HunminCheonJiInBanner } from '@/components/showcase/hunmin/HunminCheonJiInBanner'
 import { PhoneticsHaeryeSource } from '@/components/showcase/phonetics/PhoneticsHaeryeSource'
+import { SymbolDetailCard } from '@/components/showcase/phonetics/SymbolDetailCard'
 import {
   HUNMIN_VOWEL_GLYPH_RAIL_CLASS,
   HUNMIN_VOWEL_CARD_CHAR_CLASS,
@@ -360,7 +361,7 @@ function HunminVowelRowBody({
       </div>
       <ScrollSection isOpen={hasActive}>
         {activeItem && hasActive && (
-          <div className="mt-8 pt-8 border-t border-hanji-border">
+          <div>
             <VowelDetailPanel
               item={activeItem}
               lang={lang}
@@ -378,6 +379,7 @@ function HunminVowelRowBody({
 
 interface ModernVowelSectionProps {
   category: (typeof CATEGORY_ORDER)[number]
+  index: number
   items: Vowel[] | undefined
   categoryLabel: string
   categoryEnLabel: string
@@ -394,6 +396,7 @@ interface ModernVowelSectionProps {
 
 function ModernVowelSection({
   category,
+  index,
   items,
   categoryLabel,
   categoryEnLabel,
@@ -413,14 +416,25 @@ function ModernVowelSection({
 
   return (
     <section>
-      <div className="mb-8 pb-3 border-b border-hanji-border">
+      <div className="mb-8">
+        <p
+          aria-hidden
+          className="mb-2 flex items-center gap-2.5 font-sans text-[10.5px] tracking-[0.28em] text-gold"
+        >
+          <span className="h-px w-5 bg-gold/50" />
+          {String(index + 1).padStart(2, '0')}
+        </p>
         <div className="flex items-baseline gap-4">
-          <h3 className="font-serif text-lg text-ink tracking-wide">{categoryLabel}</h3>
+          <h3 className="font-serif text-xl text-ink tracking-wide">{categoryLabel}</h3>
           {categoryEnLabel ? (
             <span className="font-sans text-xs text-ink-muted tracking-widest uppercase">{categoryEnLabel}</span>
           ) : null}
         </div>
         <p className="font-sans text-xs text-ink-muted mt-2.5">{categoryDesc}</p>
+        <div
+          aria-hidden
+          className="mt-3 h-px w-full bg-gradient-to-r from-gold/40 via-hanji-border to-hanji-border/30"
+        />
       </div>
 
       <div
@@ -443,7 +457,7 @@ function ModernVowelSection({
 
       <ScrollSection isOpen={hasActive}>
         {activeItem && hasActive && (
-          <div className="mt-8 pt-8 border-t border-hanji-border">
+          <div>
             <VowelDetailPanel
               item={activeItem}
               lang={lang}
@@ -586,7 +600,7 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
           ))}
         </>
       ) : (
-        CATEGORY_ORDER.map((category) => {
+        CATEGORY_ORDER.map((category, categoryIndex) => {
             const items = grouped[category]
             if (!items || items.length === 0) return null
             const categoryLabel = m.categories[category] ?? category
@@ -596,6 +610,7 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
               <ModernVowelSection
                 key={category}
                 category={category}
+                index={categoryIndex}
                 items={items}
                 categoryLabel={categoryLabel}
                 categoryEnLabel={categoryEnLabel}
@@ -642,24 +657,27 @@ function VowelDetailPanel({
   vowelArticulationSymbol,
 }: VowelDetailPanelProps) {
   return (
-    <>
-      <div className="flex items-baseline gap-4 mb-5">
-        <div className="flex flex-col items-center gap-3 shrink-0">
-          <span className="font-serif text-6xl text-ink leading-none">{item.symbol}</span>
-          <div className="h-px w-full bg-hanji-border" aria-hidden />
-        </div>
-        <div>
-          <p className="font-serif text-xl text-ink leading-snug">
+    <SymbolDetailCard
+      symbol={item.symbol}
+      symbolFontClass="font-serif"
+      header={
+        <>
+          <p className="font-serif text-lg leading-snug text-ink sm:text-xl">
             <JamoText text={item.name} />
           </p>
           {vowelArticulationSymbol ? (
             <TranslatedVowelArticulation symbol={vowelArticulationSymbol} lang={lang} />
           ) : (
-            <p className="font-sans text-xs text-gold mt-3 uppercase tracking-widest">{categoryLabel}</p>
+            <p className="mt-3">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-gold/[0.07] px-3 py-1 font-sans text-[11px] uppercase tracking-[0.14em] text-gold">
+                <span aria-hidden className="h-1 w-1 rounded-full bg-gold" />
+                {categoryLabel}
+              </span>
+            </p>
           )}
-        </div>
-      </div>
-
+        </>
+      }
+    >
       <TranslatedDescription
         item={item as unknown as { description: string; [key: string]: unknown }}
         lang={lang}
@@ -677,6 +695,6 @@ function VowelDetailPanel({
           pictogramLabel={pictogramLabel}
         />
       </div>
-    </>
+    </SymbolDetailCard>
   )
 }

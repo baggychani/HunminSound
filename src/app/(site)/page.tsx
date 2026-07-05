@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRef, useEffect } from 'react'
-import { motion, useMotionValue, useSpring } from 'framer-motion'
+import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion'
 import { useSiteMessages } from '@/hooks/useSiteMessages'
 import { SITE_BRAND_NAME, type Lang } from '@/lib/i18n'
 import { ScrollColorWash } from '@/components/ui/ScrollColorWash'
@@ -11,7 +11,44 @@ import { HaeryebonCardWatermark } from '@/components/showcase/HaeryebonCardWater
 import { HunminBookViewer } from '@/components/showcase/HunminBookViewer'
 import { HomeResearchAct } from '@/components/home/HomeResearchAct'
 import { HomeContactSection } from '@/components/home/HomeContactSection'
+import { HomeActRail } from '@/components/home/HomeActRail'
+import { HomeScrollProgress } from '@/components/home/HomeScrollProgress'
+import { HeroJamoField } from '@/components/home/HeroJamoField'
+import { HomeJamoMarquee } from '@/components/home/HomeJamoMarquee'
 import { useHomeActScroll } from '@/hooks/useHomeActScroll'
+
+/** 2막 카드 커서 스포트라이트 — CSS 변수(--spot-x/--spot-y)만 갱신 */
+function handleSpotlightMove(e: React.MouseEvent<HTMLElement>) {
+  const el = e.currentTarget
+  const rect = el.getBoundingClientRect()
+  el.style.setProperty('--spot-x', `${e.clientX - rect.left}px`)
+  el.style.setProperty('--spot-y', `${e.clientY - rect.top}px`)
+}
+
+/** 히어로 타이틀 — 글자별 먹 번짐(블러) 리빌 */
+function HeroTitleReveal({ text }: { text: string }) {
+  const reduce = useReducedMotion()
+  return (
+    <span className="inline-block" aria-label={text} role="text">
+      {Array.from(text).map((ch, i) => (
+        <motion.span
+          key={i}
+          aria-hidden
+          className="inline-block"
+          initial={reduce ? false : { opacity: 0, y: 26, filter: 'blur(12px)' }}
+          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          transition={{
+            delay: 0.15 + i * 0.09,
+            duration: 0.8,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+        >
+          {ch}
+        </motion.span>
+      ))}
+    </span>
+  )
+}
 
 /** 2막 카드 제목 — 한국어만 font-jamo, 외국어는 sans(힌디어는 devanagari) */
 function homeNavCardLabelClass(lang: Lang, compact?: boolean): string {
@@ -85,6 +122,8 @@ export default function HomePage() {
   return (
     <div className="relative w-full">
       <ScrollColorWash actRefs={{ act1: act1Ref, act2: act2Ref, act3: act3Ref }} />
+      <HomeScrollProgress />
+      <HomeActRail />
 
       {/* 1막 — 히어로 (모든 언어 동일 레이아웃·배경·3D) */}
       <section
@@ -93,9 +132,27 @@ export default function HomePage() {
         className={`relative z-10 ${heroHeightMobile} ${heroHeightDesktop} isolation-isolate`}
       >
         <HeroActBackdrop heroRef={act1Ref} />
+        <HeroJamoField />
 
         <div className="relative z-10 mx-auto grid max-sm:h-auto sm:h-full w-full max-w-6xl grid-cols-1 items-center px-6 sm:px-8 sm:ps-[4vw] lg:grid-cols-[0.32fr_1.38fr_0.80fr] lg:px-10 lg:ps-[5vw]">
-          <div className="hidden lg:block" aria-hidden />
+          {/* 좌측 세로 장식 — 訓民正音 · 世宗御製 (데스크톱 전용) */}
+          <div className="hidden h-full lg:flex lg:flex-col lg:items-center lg:justify-center lg:gap-5" aria-hidden>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.1, duration: 1.2 }}
+              className="flex flex-col items-center gap-5"
+            >
+              <span className="h-14 w-px bg-gradient-to-b from-transparent via-ink-muted/35 to-ink-muted/35" />
+              <span
+                className="font-serif text-[13px] tracking-[0.42em] text-ink-muted/65 [writing-mode:vertical-rl]"
+                lang="ko"
+              >
+                訓民正音 · 世宗御製
+              </span>
+              <span className="h-14 w-px bg-gradient-to-t from-transparent via-ink-muted/35 to-ink-muted/35" />
+            </motion.div>
+          </div>
 
           <div className="flex flex-col items-center text-center translate-x-[clamp(0.25rem,2vw,0.75rem)] sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] lg:translate-x-0">
             <p
@@ -111,10 +168,10 @@ export default function HomePage() {
               className="mt-4 font-jamo leading-none tracking-wide text-ink sm:mt-5 text-[4rem] sm:text-[4.75rem] md:text-[6.35rem] lg:text-[5.85rem]"
               lang="ko"
             >
-              {SITE_BRAND_NAME}
+              <HeroTitleReveal text={SITE_BRAND_NAME} />
             </h1>
 
-            <p className="mt-4 font-sans text-sm tracking-[0.2em] text-ink-muted sm:mt-5">
+            <p className="text-shimmer-gold mt-4 font-sans text-sm tracking-[0.2em] sm:mt-5">
               Sejong Speech Sounds
             </p>
 
@@ -143,6 +200,18 @@ export default function HomePage() {
 
           <div className="hidden min-h-[12rem] lg:block" aria-hidden />
         </div>
+
+        {/* 스크롤 큐 — 잉크 방울이 떨어지는 세로선 (데스크톱 전용) */}
+        <motion.div
+          aria-hidden
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.6, duration: 1 }}
+          className="absolute bottom-5 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2.5 lg:flex"
+        >
+          <span className="font-sans text-[10px] tracking-[0.3em] text-ink-muted/70">SCROLL</span>
+          <span className="scroll-cue-line" />
+        </motion.div>
       </section>
 
       {/* 2막 — 자음 · 모음 · 훈민정음 (1뷰포트) */}
@@ -187,6 +256,9 @@ export default function HomePage() {
       {/* 3막 — 연구 소개 (다크 풀블리드 · 1뷰포트) */}
       <HomeResearchAct ref={act3Ref} />
 
+      {/* 자모 ↔ IPA 마퀴 — 3막(연구)과 4막(문의)을 잇는 다리 (데스크톱 전용) */}
+      <HomeJamoMarquee />
+
       {/* 4막 — 문의하기 (최소 1뷰포트, 내용 많으면 세로로 확장) */}
       <section
         ref={act4Ref}
@@ -224,10 +296,12 @@ function HunminjeongeumCard({
   return (
     <Link
       href={href}
-      className={`home-act2-nav-card group col-span-1 sm:col-span-2 rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color] hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] flex flex-col ${
+      onMouseMove={handleSpotlightMove}
+      className={`home-act2-nav-card spotlight-card group col-span-1 sm:col-span-2 rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] flex flex-col ${
         compact ? 'gap-4 p-6 sm:gap-5 sm:p-7 lg:p-8' : 'gap-6 p-10 sm:p-12'
       }`}
     >
+      <span className="sheen-sweep pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden />
       <HaeryebonCardWatermark />
 
       <div className="relative z-10">
@@ -291,10 +365,12 @@ function NavCard({
   return (
     <Link
       href={href}
-      className={`home-act2-nav-card group flex flex-col rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color] hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] ${
+      onMouseMove={handleSpotlightMove}
+      className={`home-act2-nav-card spotlight-card group flex flex-col rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] ${
         compact ? 'min-h-0 gap-4 p-6 sm:gap-5 sm:p-7 lg:p-8' : 'gap-6 p-10 sm:p-12'
       }`}
     >
+      <span className="sheen-sweep pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden />
       <div>
         <div className="flex items-baseline gap-3 mb-1">
           <span className={homeNavCardLabelClass(lang, compact)}>

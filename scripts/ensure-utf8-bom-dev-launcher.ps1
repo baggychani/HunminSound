@@ -17,10 +17,9 @@ $bats = @(Get-ChildItem -LiteralPath $repoRoot -Filter '*.bat' -File | Where-Obj
 if ($bats.Count -lt 1) {
   throw "No .bat launcher found in repo root: $repoRoot"
 }
-if ($bats.Count -gt 1) {
-  throw "Multiple .bat files in repo root; keep only one launcher .bat: $($bats.Name -join ', ')"
+foreach ($batItem in $bats) {
+  $bat = $batItem.FullName
+  $batText = [System.IO.File]::ReadAllText($bat, $utf8)
+  [System.IO.File]::WriteAllText($bat, $batText, $utf8Bom)
+  Write-Host "Wrote UTF-8 BOM: $bat"
 }
-$bat = $bats[0].FullName
-$batText = [System.IO.File]::ReadAllText($bat, $utf8)
-[System.IO.File]::WriteAllText($bat, $batText, $utf8Bom)
-Write-Host "Wrote UTF-8 BOM: $bat"
