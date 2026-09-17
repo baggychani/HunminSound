@@ -1,5 +1,15 @@
 import nodemailer from 'nodemailer'
 
+/** 사용자 입력을 이메일 HTML 본문에 넣기 전 escape (HTML/링크 삽입 방지) */
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 export interface ContactEmailPayload {
   name: string
   replyTo: string
@@ -35,12 +45,18 @@ export async function sendContactEmail(payload: ContactEmailPayload) {
     .filter(Boolean)
     .join('\n')
 
+  const safeName = escapeHtml(payload.name)
+  const safeReplyTo = escapeHtml(payload.replyTo)
+  const safeAffiliation = payload.affiliation ? escapeHtml(payload.affiliation) : ''
+  const safeInquiryType = payload.inquiryType ? escapeHtml(payload.inquiryType) : ''
+  const safeBody = escapeHtml(payload.body)
+
   await transporter.sendMail({
     from: `"세종말소리" <${smtpUser}>`,
     to,
     replyTo: payload.replyTo || undefined,
     subject: `${prefix} ${payload.subject}`,
     text: `보낸 분: ${payload.name}\n답장 메일: ${payload.replyTo}\n${meta ? meta + '\n\n' : ''}${payload.body}`,
-    html: `<p><strong>보낸 분:</strong> ${payload.name}</p><p><strong>답장 메일:</strong> ${payload.replyTo}</p>${payload.affiliation ? `<p><strong>소속:</strong> ${payload.affiliation}</p>` : ''}${payload.inquiryType ? `<p><strong>문의 유형:</strong> ${payload.inquiryType}</p>` : ''}<hr/><p style="white-space:pre-wrap">${payload.body}</p>`,
+    html: `<p><strong>보낸 분:</strong> ${safeName}</p><p><strong>답장 메일:</strong> ${safeReplyTo}</p>${safeAffiliation ? `<p><strong>소속:</strong> ${safeAffiliation}</p>` : ''}${safeInquiryType ? `<p><strong>문의 유형:</strong> ${safeInquiryType}</p>` : ''}<hr/><p style="white-space:pre-wrap">${safeBody}</p>`,
   })
 }

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
+import { revalidatePath } from 'next/cache'
 import { ADMIN_SESSION_COOKIE, getAdminSessionSecret, verifyAdminSessionToken } from '@/lib/adminSession'
 import type { ResearchContent } from '@/lib/research-content'
 import { readResearchContent, writeResearchContent } from '@/lib/cms-storage'
@@ -41,6 +42,7 @@ export async function PUT(req: Request) {
   try {
     const body = (await req.json()) as ResearchContent
     await writeResearchContent(body)
+    revalidatePath('/research')
     return NextResponse.json({ ok: true })
   } catch (err) {
     return cmsErrorResponse(err)

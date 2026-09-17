@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react'
 import { useLang } from '@/contexts/LanguageContext'
 import { LANGUAGES, NAV_LABEL_KO, getMessages, SITE_BRAND_NAME } from '@/lib/i18n'
 
@@ -40,6 +40,17 @@ function MenuGlyph({ open }: { open: boolean }) {
   )
 }
 
+/** 열린 패널을 닫을 때 트리거 버튼으로 포커스를 되돌리기 위한 헬퍼(둘 중 화면에 보이는 쪽) */
+function focusFirstVisible(refs: RefObject<HTMLElement | null>[]) {
+  for (const ref of refs) {
+    const el = ref.current
+    if (el && el.offsetParent !== null) {
+      el.focus()
+      return
+    }
+  }
+}
+
 export function Header() {
   const pathname = usePathname()
   const { lang, setLang } = useLang()
@@ -49,6 +60,12 @@ export function Header() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const navTrackRef = useRef<HTMLDivElement>(null)
   const navLinkRefs = useRef<(HTMLAnchorElement | null)[]>([])
+
+  /* 열림 상태인 패널(언어/모바일 메뉴)과 그 트리거들 — Esc·바깥 클릭으로 닫기 위한 참조 */
+  const panelRef = useRef<HTMLDivElement>(null)
+  const desktopLangBtnRef = useRef<HTMLButtonElement>(null)
+  const mobileLangBtnRef = useRef<HTMLButtonElement>(null)
+  const mobileNavBtnRef = useRef<HTMLButtonElement>(null)
 
   useLayoutEffect(() => {
     const el = headerRef.current
@@ -95,6 +112,40 @@ export function Header() {
     setLangOpen(false)
     setMobileNavOpen(false)
   }, [pathname])
+
+  /* Esc로 닫기(트리거로 포커스 복귀) + 패널 바깥 클릭으로 닫기 */
+  useEffect(() => {
+    if (!langOpen && !mobileNavOpen) return undefined
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key !== 'Escape') return
+      const wasLangOpen = langOpen
+      setLangOpen(false)
+      setMobileNavOpen(false)
+      if (wasLangOpen) focusFirstVisible([desktopLangBtnRef, mobileLangBtnRef])
+      else focusFirstVisible([mobileNavBtnRef])
+    }
+
+    function onPointerDown(e: PointerEvent) {
+      const target = e.target as Node
+      const insidePanel = panelRef.current?.contains(target) ?? false
+      const insideTrigger =
+        (desktopLangBtnRef.current?.contains(target) ?? false) ||
+        (mobileLangBtnRef.current?.contains(target) ?? false) ||
+        (mobileNavBtnRef.current?.contains(target) ?? false)
+      if (!insidePanel && !insideTrigger) {
+        setLangOpen(false)
+        setMobileNavOpen(false)
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('pointerdown', onPointerDown)
+    }
+  }, [langOpen, mobileNavOpen])
 
   const openLang = () => {
     setMobileNavOpen(false)
@@ -185,6 +236,7 @@ export function Header() {
           </div>
 
           <button
+            ref={desktopLangBtnRef}
             type="button"
             onClick={toggleLang}
             className={`group relative ms-4 sm:ms-6 md:ms-8 shrink-0 flex flex-row items-end gap-1 px-0.5 pb-2 transition-colors ${
@@ -193,6 +245,8 @@ export function Header() {
                 : 'text-ink-muted hover:text-ink'
             }`}
             aria-expanded={langOpen}
+            aria-haspopup="menu"
+            aria-controls="site-lang-panel"
             aria-label={m.languagePickerAria}
           >
             <div className="flex flex-col items-center justify-center gap-0.5 text-center min-w-0">
@@ -235,23 +289,28 @@ export function Header() {
         {/* 모바일: 메뉴 + 언어 (가로 나열 잘림 방지) */}
         <div className="flex shrink-0 items-center gap-0.5 sm:hidden">
           <button
+            ref={mobileNavBtnRef}
             type="button"
             onClick={toggleMobileNav}
             className={`flex h-10 w-10 items-center justify-center rounded-md transition-colors ${
               mobileNavOpen ? 'text-ink-accent bg-hanji-warm' : 'text-ink-muted hover:bg-hanji-warm hover:text-ink'
             }`}
             aria-expanded={mobileNavOpen}
+            aria-controls="site-mobile-nav-panel"
             aria-label={m.siteNavMenuAria}
           >
             <MenuGlyph open={mobileNavOpen} />
           </button>
           <button
+            ref={mobileLangBtnRef}
             type="button"
             onClick={() => (langOpen ? setLangOpen(false) : openLang())}
             className={`flex h-10 min-w-[2.75rem] flex-row items-center justify-center gap-0.5 rounded-md px-1 transition-colors ${
               langOpen ? 'text-ink-accent bg-hanji-warm' : 'text-ink-muted hover:bg-hanji-warm hover:text-ink'
             }`}
             aria-expanded={langOpen}
+            aria-haspopup="menu"
+            aria-controls="site-lang-panel"
             aria-label={m.languagePickerAria}
           >
             <span
@@ -278,6 +337,8 @@ export function Header() {
         {mobileNavOpen && (
           <motion.div
             key="site-nav-panel"
+            id="site-mobile-nav-panel"
+            ref={panelRef}
             role="navigation"
             aria-label={m.siteNavMenuAria}
             initial={{ opacity: 0 }}
@@ -316,8 +377,10 @@ export function Header() {
         {langOpen && (
           <motion.div
             key="lang-panel"
+            id="site-lang-panel"
+            ref={panelRef}
             role="region"
-            aria-label="언어 목록"
+            aria-label={m.languagePickerAria}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -325,16 +388,23 @@ export function Header() {
             className="absolute start-0 end-0 top-full z-[70] border-b border-hanji-border bg-header shadow-[0_12px_24px_-8px_rgb(0_0_0_/0.18)] dark:shadow-[0_16px_32px_-10px_rgb(0_0_0_/0.65)]"
           >
             <div className="site-container py-4 sm:py-5">
-              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5">
+              <div
+                role="menu"
+                aria-label={m.languagePickerAria}
+                className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5"
+              >
                 {LANGUAGES.map((l) => {
                   const isActive = lang === l.code
                   return (
                     <motion.button
                       key={l.code}
                       type="button"
+                      role="menuitem"
+                      aria-current={isActive ? 'true' : undefined}
                       onClick={() => {
                         setLang(l.code)
                         setLangOpen(false)
+                        focusFirstVisible([desktopLangBtnRef, mobileLangBtnRef])
                       }}
                       className={`flex min-h-10 w-full items-center gap-2 rounded-md border border-transparent px-2.5 py-1.5 text-start font-sans text-sm leading-tight tracking-wide transition-colors ${
                         isActive
