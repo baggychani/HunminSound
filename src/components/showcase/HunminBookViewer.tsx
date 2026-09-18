@@ -3,6 +3,7 @@
 import { Suspense, useMemo, useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Bounds, useGLTF } from '@react-three/drei'
+import { useReducedMotion } from 'framer-motion'
 import type { GLTF } from 'three-stdlib'
 import * as THREE from 'three'
 
@@ -59,6 +60,7 @@ const TILT_FREQ = 0.6
 function HunminBook() {
   const gltf = useGLTF(MODEL_PATH) as unknown as GLTF
   const ref = useRef<THREE.Group>(null)
+  const reduceMotion = useReducedMotion()
 
   /* scene 자체를 매번 변형하지 않도록 한 번 clone. envMap 강도만 살짝 낮춰
    * 무광 한지 느낌을 살린다. material 자체 교체 없음(=속지 텍스처 보존). */
@@ -79,6 +81,12 @@ function HunminBook() {
 
   useFrame((state) => {
     if (!ref.current) return
+    /* 모션 최소화 선호 시 부양·흔들림 없이 고정 자세만 유지 */
+    if (reduceMotion) {
+      ref.current.position.y = 0
+      ref.current.rotation.set(BOOK_ROT_X, BOOK_ROT_Y, BOOK_ROT_Z)
+      return
+    }
     const t = state.clock.elapsedTime
     ref.current.position.y = Math.sin(t * FLOAT_FREQ) * FLOAT_AMP_Y
     ref.current.rotation.y = BOOK_ROT_Y + Math.sin(t * SWAY_FREQ) * SWAY_AMP_Y
@@ -116,7 +124,8 @@ export function HunminBookViewer({ className }: HunminBookViewerProps) {
         <directionalLight position={[3, 4, 5]} intensity={0.95} />
         <directionalLight position={[-3, 2, -2]} intensity={0.35} />
         <Suspense fallback={null}>
-          <Bounds fit margin={BOOK_BOUNDS_MARGIN}>
+          {/* maxDuration을 0에 가깝게 두어 "카메라가 날아와 자리를 잡는" 스와이프 없이 즉시 프레이밍 */}
+          <Bounds fit margin={BOOK_BOUNDS_MARGIN} maxDuration={0.001}>
             <HunminBook />
           </Bounds>
         </Suspense>
