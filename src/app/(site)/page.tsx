@@ -62,6 +62,7 @@ function homeNavCardLabelClass(lang: Lang, compact?: boolean): string {
 /* ── 자석 기호 컴포넌트 ────────────────────────────────────────────────── */
 function MagneticGlyph({ children, className }: { children: string; className: string }) {
   const ref = useRef<HTMLSpanElement>(null)
+  const reduce = useReducedMotion()
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const sx = useSpring(x, { stiffness: 150, damping: 20 })
@@ -69,7 +70,7 @@ function MagneticGlyph({ children, className }: { children: string; className: s
 
   useEffect(() => {
     const el = ref.current
-    if (!el) return
+    if (!el || reduce) return
     // 터치 기기에서는 비활성화
     if (window.matchMedia('(pointer: coarse)').matches) return
 
@@ -93,7 +94,7 @@ function MagneticGlyph({ children, className }: { children: string; className: s
 
     window.addEventListener('mousemove', onMove)
     return () => window.removeEventListener('mousemove', onMove)
-  }, [x, y])
+  }, [x, y, reduce])
 
   return (
     <motion.span ref={ref} style={{ x: sx, y: sy }} className={className}>

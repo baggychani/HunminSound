@@ -253,6 +253,7 @@ export function HomeContactSection() {
 
           {status === 'success' ? (
             <motion.p
+              role="status"
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               className="mt-4 text-center font-sans text-sm text-ink-accent"
@@ -261,7 +262,7 @@ export function HomeContactSection() {
             </motion.p>
           ) : null}
           {status === 'error' ? (
-            <p className="mt-4 text-center font-sans text-sm text-red-700 dark:text-red-400">
+            <p role="alert" className="mt-4 text-center font-sans text-sm text-red-700 dark:text-red-400">
               {errorDetail === 'SMTP_NOT_CONFIGURED'
                 ? '메일 서버(SMTP) 설정이 없습니다. 관리자에게 문의해 주세요.'
                 : errorDetail === 'RATE_LIMIT'
