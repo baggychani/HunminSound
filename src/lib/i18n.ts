@@ -121,7 +121,7 @@ const ko = {
   hunminjeongeumCardDesc: '1443년 세종이 창제한 훈민정음에 담긴 상형 원리와 조음 과학의 만남을 탐구합니다.',
   hunminjeongeumPageDesc:
     '스물여덟 자(字)의 모양에 깃든 발음 기관의 상형 원리와, 천지인(天地人) 삼재(三才)에서 비롯한 모음의 철학적 체계를, 해례본 원문과 풀이를 따라 한 단락씩 짚어 봅니다.',
-  hunminjeongeumCaption: '훈민정음 · 訓民正音 · 1443',
+  hunminjeongeumCaption: '訓民正音 · 1443 창제 · 1446 반포',
   hunminjeongeumSubtitle: '제자 원리',
   admin: '관리자 페이지',
   hunminInitialTitle: '초성자',
@@ -241,7 +241,7 @@ const en: Messages = {
   hunminjeongeumCardDesc: 'Explore the iconic principles behind Hunminjeongeum (訓民正音) — where articulation and philosophy meet.',
   hunminjeongeumPageDesc:
     'Tracing the 28 letters paragraph by paragraph through the Haerye, we examine how each form distills the shape of an articulatory organ — and how the philosophy of Heaven, Earth, and Humanity (天地人) is woven into the medial vowels.',
-  hunminjeongeumCaption: 'Hunminjeongeum · 訓民正音 · 1443',
+  hunminjeongeumCaption: '訓民正音 · Created 1443 · Promulgated 1446',
   hunminjeongeumSubtitle: 'Principles of Character Creation',
   admin: 'Admin',
   hunminInitialTitle: 'Initial Consonants',
@@ -352,7 +352,7 @@ const zh: Messages = {
   hunminjeongeumCardDesc: '探索1443年世宗大王创制的训民正音（訓民正音）所蕴含的象形原理与发音科学。',
   hunminjeongeumPageDesc:
     '依《解例本》逐段对照，探究二十八字如何将发音器官的形象凝缩于笔画，并将天地人（三才）的哲学体系融入中声的构造。',
-  hunminjeongeumCaption: '训民正音 · 訓民正音 · 1443',
+  hunminjeongeumCaption: '訓民正音 · 1443年创制 · 1446年颁布',
   hunminjeongeumSubtitle: '制字原理',
   admin: '管理员页面',
   hunminInitialTitle: '初声字',
@@ -462,7 +462,7 @@ const ja: Messages = {
   hunminjeongeumCardDesc: '1443年に世宗大王が創製した訓民正音（훈민정음）に込められた象形原理と調音科学を探求します。',
   hunminjeongeumPageDesc:
     '解例本の原文と訳を一段ずつ辿りながら、二十八字の形に宿る調音器官の象形原理と、天地人（三才）の哲学的体系がいかに中声に編み込まれているかを読み解きます。',
-  hunminjeongeumCaption: '訓民正音 · くんみんせいおん · 1443',
+  hunminjeongeumCaption: '訓民正音 · 1443年制定 · 1446年頒布',
   hunminjeongeumSubtitle: '制字原理',
   admin: '管理者ページ',
   hunminInitialTitle: '初声字',
@@ -580,7 +580,7 @@ const fr: Messages = {
   hunminjeongeumCardDesc: "Explorez les principes d'iconicité et de phonétique articulatoire du Hunminjeongeum (訓民正音) créé par le roi Sejong en 1443.",
   hunminjeongeumPageDesc:
     "Au fil des paragraphes du Haerye, nous suivons comment chacune des 28 lettres condense la forme d'un organe articulatoire — et comment la philosophie du Ciel, de la Terre et de l'Humanité (天地人) s'inscrit dans les voyelles médianes.",
-  hunminjeongeumCaption: 'Hunminjeongeum · 訓民正音 · 1443',
+  hunminjeongeumCaption: '訓民正音 · Créé en 1443 · Promulgué en 1446',
   hunminjeongeumSubtitle: 'Principes de création des caractères',
   admin: 'Page admin',
   hunminInitialTitle: 'Consonnes initiales',
@@ -699,7 +699,7 @@ const de: Messages = {
   hunminjeongeumCardDesc: 'Die Ikonizitätsprinzipien und Artikulationswissenschaft des Hunminjeongeum (訓民正音) von König Sejong (1443).',
   hunminjeongeumPageDesc:
     'Wir folgen den 28 Buchstaben Absatz für Absatz durch den Haerye und betrachten, wie jede Form ein Artikulationsorgan abbildet — und wie die Philosophie von Himmel, Erde und Mensch (天地人) in den Medialvokalen aufscheint.',
-  hunminjeongeumCaption: 'Hunminjeongeum · 訓民正音 · 1443',
+  hunminjeongeumCaption: '訓民正音 · Erschaffen 1443 · Verkündet 1446',
   hunminjeongeumSubtitle: 'Prinzipien der Zeichenschöpfung',
   admin: 'Admin-Seite',
   hunminInitialTitle: 'Anlaut-Konsonanten',
@@ -818,7 +818,7 @@ const es: Messages = {
   hunminjeongeumCardDesc: 'Explore los principios icónicos y fonéticos del Hunminjeongeum (訓民正音) creado por el rey Sejong en 1443.',
   hunminjeongeumPageDesc:
     'Recorremos el Haerye párrafo a párrafo y examinamos cómo cada una de las 28 letras condensa la forma de un órgano articulatorio — y cómo la filosofía del Cielo, la Tierra y la Humanidad (天地人) se inscribe en las vocales mediales.',
-  hunminjeongeumCaption: 'Hunminjeongeum · 訓民正音 · 1443',
+  hunminjeongeumCaption: '訓民正音 · Creado en 1443 · Promulgado en 1446',
   hunminjeongeumSubtitle: 'Principios de creación de caracteres',
   admin: 'Página de administración',
   hunminInitialTitle: 'Consonantes iniciales',
@@ -932,7 +932,7 @@ const hi: Messages = {
   hunminjeongeumCardDesc: '1443 में राजा सेजोंग द्वारा रचित हुनमिनजोंगइम में निहित प्रतीकात्मक और उच्चारण सिद्धांतों की खोज।',
   hunminjeongeumPageDesc:
     'हाएरये के अनुच्छेद-दर-अनुच्छेद के साथ चलते हुए, हम देखते हैं कि 28 अक्षरों में से प्रत्येक उच्चारण अंग की आकृति को कैसे संक्षिप्त करता है—और मध्य स्वरों में स्वर्ग, पृथ्वी और मानव (天地人) के दर्शन को कैसे बुना गया है।',
-  hunminjeongeumCaption: 'हुनमिनजोंगइम · 訓民正音 · 1443',
+  hunminjeongeumCaption: '訓民正音 · 1443 में निर्मित · 1446 में घोषित',
   hunminjeongeumSubtitle: 'वर्ण निर्माण के सिद्धांत',
   admin: 'व्यवस्थापक पृष्ठ',
   hunminInitialTitle: 'आरंभिक व्यंजन',
@@ -1022,7 +1022,7 @@ const vi: Messages = {
     'Khám phá các nguyên lý tượng hình và khoa học điều âm trong Hunminjeongeum (訓民正音) do vua Sejong tạo nên năm 1443.',
   hunminjeongeumPageDesc:
     'Lần theo từng đoạn trong Haerye, chúng ta khảo sát 28 chữ cái đã chắt lọc hình dạng các cơ quan phát âm ra sao, và triết lý Thiên–Địa–Nhân (天地人) đã được dệt vào các nguyên âm trung tâm như thế nào.',
-  hunminjeongeumCaption: 'Hunminjeongeum · 訓民正音 · 1443',
+  hunminjeongeumCaption: '訓民正音 · Ra đời năm 1443 · Ban hành năm 1446',
   hunminjeongeumSubtitle: 'Nguyên lý tạo chữ',
   hunminInitialTitle: 'Phụ âm đầu',
   hunminMedialTitle: 'Nguyên âm giữa',
@@ -1116,7 +1116,7 @@ const ru: Messages = {
     'Иконические принципы и артикуляторная наука Хунминчонъыма (訓民正音), созданного королём Сечжоном в 1443 году.',
   hunminjeongeumPageDesc:
     'Шаг за шагом по Хэрё мы прослеживаем, как каждая из 28 букв запечатлевает форму артикуляционного органа и как философия Неба, Земли и Человека (天地人) вписана в медиальные гласные.',
-  hunminjeongeumCaption: 'Хунминчонъым · 訓民正音 · 1443',
+  hunminjeongeumCaption: '訓民正音 · Создан в 1443 · Провозглашён в 1446',
   hunminjeongeumSubtitle: 'Принципы создания знаков',
   hunminInitialTitle: 'Начальные согласные',
   hunminMedialTitle: 'Медиальные гласные',
@@ -1192,7 +1192,7 @@ const ar: Messages = {
     'استكشف المبادئ التصويرية وعلم النطق المتمثلة في هونمينجونغئوم (訓民正音) الذي أنشأه الملك سيجونغ عام 1443.',
   hunminjeongeumPageDesc:
     'نتتبع الـ28 حرفًا فقرةً فقرة عبر هاريي، فنتأمل كيف يكثّف كل شكل صورة عضو نطق، وكيف تنحفر فلسفة السماء والأرض والإنسان (天地人) في الحركات الوسطية.',
-  hunminjeongeumCaption: 'هونمينجونغئوم · 訓民正音 · 1443',
+  hunminjeongeumCaption: '訓民正音 · أُنشئ عام 1443 · أُعلن عام 1446',
   hunminjeongeumSubtitle: 'مبادئ إنشاء الحروف',
   hunminInitialTitle: 'الصوامت الابتدائية',
   hunminMedialTitle: 'الحركات الوسطية',

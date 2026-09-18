@@ -324,7 +324,6 @@ function HunminjeongeumCard({
             {s}
           </span>
         ))}
-        <span className="font-sans text-xl text-ink-muted self-end pb-1">…</span>
       </div>
 
       <p className="relative z-10 break-keep font-sans text-xs text-ink-muted leading-relaxed max-w-xl line-clamp-2 sm:line-clamp-none [overflow-wrap:break-word]">
@@ -391,7 +390,6 @@ function NavCard({
             {symbol}
           </MagneticGlyph>
         ))}
-        <span className="font-sans text-xl text-ink-muted self-end pb-1">…</span>
       </div>
 
       <p
