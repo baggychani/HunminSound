@@ -559,14 +559,15 @@ function DetailPanel({
           <p className="font-serif text-lg leading-snug text-ink sm:text-xl">
             <JamoText text={item.name} />
           </p>
-          <p className="mt-3 flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-            <span className="font-sans text-[11px] uppercase tracking-[0.16em] text-gold">
-              {categoryLabel}
-            </span>
+          <p className="mt-2.5 flex flex-wrap items-baseline gap-1.5 font-sans text-[13px]">
+            <span className="font-medium text-gold">{categoryLabel}</span>
             {categoryEnLabel && categoryEnLabel !== categoryLabel ? (
-              <span className="font-sans text-[11px] uppercase tracking-[0.14em] text-ink-muted">
-                {categoryEnLabel}
-              </span>
+              <>
+                <span aria-hidden className="text-ink-muted/40">·</span>
+                <span className="text-[11px] uppercase tracking-[0.14em] text-ink-muted">
+                  {categoryEnLabel}
+                </span>
+              </>
             ) : null}
           </p>
         </>

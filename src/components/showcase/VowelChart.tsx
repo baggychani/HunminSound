@@ -639,11 +639,7 @@ function VowelDetailPanel({
           {vowelArticulationSymbol ? (
             <TranslatedVowelArticulation symbol={vowelArticulationSymbol} lang={lang} />
           ) : (
-            <p className="mt-3">
-              <span className="font-sans text-[11px] uppercase tracking-[0.16em] text-gold">
-                {categoryLabel}
-              </span>
-            </p>
+            <p className="mt-2.5 font-sans text-[13px] font-medium text-gold">{categoryLabel}</p>
           )}
         </>
       }
