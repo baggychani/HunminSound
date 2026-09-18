@@ -271,15 +271,6 @@ export function HunminjeongeumPageClient() {
               )
             })}
           </div>
-
-          {/* 장 진행 표기 — 一/三 식 */}
-          <span
-            aria-hidden
-            className="hidden pt-[1.05rem] font-serif text-xs leading-none tracking-[0.25em] text-ink-muted/70 sm:block"
-            lang="zh-Hant"
-          >
-            {['一', '二', '三'][chapter]} / 三
-          </span>
         </div>
       </div>
 
@@ -298,15 +289,6 @@ export function HunminjeongeumPageClient() {
         >
           {/* 목판본 책 페이지 — 이중 광곽 안에 장 전체가 들어감 */}
           <div className="book-page rounded-[2px] px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14">
-            {/* 판심(版心) — 옛 책 가운데 접힘 부분의 서명 + 어미 문양 */}
-            <div aria-hidden className="mb-10 flex flex-col items-center gap-1.5 select-none sm:mb-12">
-              <span className="book-fishtail" />
-              <span className="font-serif text-[10.5px] tracking-[0.5em] text-ink-muted/60" lang="zh-Hant">
-                訓民正音
-              </span>
-              <span className="book-fishtail rotate-180" />
-            </div>
-
             {/* 장 표지 */}
             <header className="relative mb-14 overflow-hidden sm:mb-16" aria-labelledby={`hunmin-${section.id}-title`}>
               {/* 세로쓰기 대형 한자 — 옛 책 표지의 제첨(題簽) 느낌 */}
