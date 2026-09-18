@@ -40,10 +40,14 @@ function MriScanOverlay() {
   )
 }
 
+/** 소수 4자리로 고정 — Math.sin 결과가 서버/클라이언트 빌드마다 마지막 자리에서
+ * 미세하게 달라져 hydration 경고가 나던 것을 방지 */
+const round4 = (n: number) => Math.round(n * 10000) / 10000
+
 /** 스펙트로그램 이퀄라이저 — 말소리 파형 장식 (데스크톱 전용) */
 const EQ_BARS = Array.from({ length: 36 }, (_, i) => ({
   /* sin 조합으로 유기적인 높이·타이밍 (고정값 — hydration 안전) */
-  height: 0.35 + Math.abs(Math.sin(i * 1.7) * 0.45) + Math.abs(Math.sin(i * 0.6) * 0.2),
+  height: round4(0.35 + Math.abs(Math.sin(i * 1.7) * 0.45) + Math.abs(Math.sin(i * 0.6) * 0.2)),
   delay: (i % 9) * 0.14,
   dur: 1.2 + (i % 5) * 0.22,
 }))
