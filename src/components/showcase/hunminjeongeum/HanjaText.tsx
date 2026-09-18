@@ -117,7 +117,7 @@ export function HanjaText({
           return (
             <span
               key={tok.key}
-              className="mx-[0.05em] inline-block align-baseline font-serif text-[0.6em] tracking-tight text-ink-muted/80"
+              className="mx-[0.05em] inline-block align-baseline font-serif text-[0.6em] tracking-tight text-ink-muted"
               lang="ko"
               aria-label={`발음 ${tok.text}`}
             >
@@ -191,7 +191,7 @@ function HanjaWithYum({ char, yum, interactive, isActive, onFocus }: HanjaWithYu
       <rt
         className={[
           'hunmin-rt font-sans tracking-tight transition-colors duration-200 ease-out',
-          isActive ? 'text-ink-accent/85' : 'text-ink-muted/85',
+          isActive ? 'text-ink-accent' : 'text-ink-muted',
         ].join(' ')}
         lang="ko"
       >

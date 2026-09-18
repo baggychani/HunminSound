@@ -59,7 +59,7 @@ function ChapterEndMark() {
   return (
     <div aria-hidden className="my-14 flex items-center justify-center gap-4 sm:my-16">
       <span className="h-px w-14 bg-hanji-border" />
-      <span className="font-serif text-sm text-ink-muted/70 select-none" lang="zh-Hant">
+      <span className="font-serif text-sm text-ink-muted select-none" lang="zh-Hant">
         終
       </span>
       <span className="h-px w-14 bg-hanji-border" />
@@ -131,7 +131,7 @@ export function HunminjeongeumPageClient() {
           variants={fadeUp}
           initial="hidden"
           animate="show"
-          className="font-sans text-[11px] uppercase tracking-[0.22em] text-ink-muted/90 mb-6"
+          className="font-sans text-[11px] uppercase tracking-[0.22em] text-ink-muted mb-6"
         >
           {m.hunminjeongeumCaption}
         </motion.p>
@@ -191,7 +191,7 @@ export function HunminjeongeumPageClient() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.55 + i * 0.07, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="font-jamo text-3xl sm:text-4xl text-ink-muted/70 dark:text-ink-muted/50 select-none"
+              className="font-jamo text-3xl sm:text-4xl text-ink-muted dark:text-ink-muted select-none"
               dir="ltr"
               lang="ko"
             >
@@ -257,7 +257,7 @@ export function HunminjeongeumPageClient() {
                 >
                   <span
                     className={`font-serif text-[10.5px] leading-none tracking-[0.2em] ${
-                      isActive ? 'text-[#f3d9b8]' : 'text-ink-muted/70'
+                      isActive ? 'text-[#f3d9b8]' : 'text-ink-muted'
                     }`}
                     lang="zh-Hant"
                     aria-hidden
@@ -314,11 +314,11 @@ export function HunminjeongeumPageClient() {
                   >
                     {label.title}
                   </h2>
-                  <p className="mt-2 font-sans text-xs tracking-[0.12em] text-ink-muted/85 sm:text-[13px]">
+                  <p className="mt-2 font-sans text-xs tracking-[0.12em] text-ink-muted sm:text-[13px]">
                     {label.sub}
                   </p>
                   {firstNum && lastNum ? (
-                    <p className="mt-4 font-serif text-[11.5px] tracking-[0.14em] text-ink-muted/70">
+                    <p className="mt-4 font-serif text-[11.5px] tracking-[0.14em] text-ink-muted">
                       [{firstNum}] – [{lastNum}] · {section.passages.length}
                     </p>
                   ) : null}
@@ -350,7 +350,7 @@ export function HunminjeongeumPageClient() {
             <ChapterEndMark />
 
             {/* 책 하단 장수(張數) — 옛 책의 쪽 표기 */}
-            <p aria-hidden className="-mb-2 text-center font-serif text-[11px] tracking-[0.4em] text-ink-muted/55 select-none" lang="zh-Hant">
+            <p aria-hidden className="-mb-2 text-center font-serif text-[11px] tracking-[0.4em] text-ink-muted select-none" lang="zh-Hant">
               第{['一', '二', '三'][chapter]}張
             </p>
           </div>
@@ -373,7 +373,7 @@ export function HunminjeongeumPageClient() {
                   ←
                 </span>
                 <span className="min-w-0 text-end">
-                  <span className="block font-serif text-[11px] tracking-[0.2em] text-ink-muted/70" lang="zh-Hant" aria-hidden>
+                  <span className="block font-serif text-[11px] tracking-[0.2em] text-ink-muted" lang="zh-Hant" aria-hidden>
                     {CHAPTER_ORDINALS[chapter - 1]}
                   </span>
                   <span className="mt-1 block truncate font-sans text-sm text-ink group-hover:text-ink-accent">
@@ -392,7 +392,7 @@ export function HunminjeongeumPageClient() {
                 className="group flex items-center justify-between gap-4 rounded-sm border border-hanji-border/80 bg-hanji-card px-5 py-4 text-start transition-all hover:border-gold/40 hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] sm:px-6 sm:py-5"
               >
                 <span className="min-w-0">
-                  <span className="block font-serif text-[11px] tracking-[0.2em] text-ink-muted/70" lang="zh-Hant" aria-hidden>
+                  <span className="block font-serif text-[11px] tracking-[0.2em] text-ink-muted" lang="zh-Hant" aria-hidden>
                     {CHAPTER_ORDINALS[chapter + 1]}
                   </span>
                   <span className="mt-1 block truncate font-sans text-sm text-ink group-hover:text-ink-accent">

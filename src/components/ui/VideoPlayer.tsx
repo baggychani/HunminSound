@@ -31,7 +31,7 @@ export function VideoPlayer({
   if (!src || missing) {
     return (
       <div className="flex aspect-video w-full items-center justify-center rounded-sm border border-hanji-border bg-hanji-warm/20">
-        <p className="font-sans text-xs text-ink-muted/50">
+        <p className="font-sans text-xs text-ink-muted">
           {videoType === 'animation' ? '애니메이션 준비 중' : 'MRI 영상 준비 중'}
         </p>
       </div>

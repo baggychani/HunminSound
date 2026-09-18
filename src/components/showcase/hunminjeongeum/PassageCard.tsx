@@ -39,7 +39,7 @@ export function PassageCard({ passage }: PassageCardProps) {
       {/* 일련번호 — 옛 책의 행두주처럼 왼쪽 여백에 세로 정렬 */}
       <span
         aria-label={`해례본 ${passage.number}번 문장`}
-        className="absolute left-0 top-3 select-none font-serif text-[10.5px] leading-none tracking-[0.06em] text-ink-muted/80 sm:text-[11.5px]"
+        className="absolute left-0 top-3 select-none font-serif text-[10.5px] leading-none tracking-[0.06em] text-ink-muted sm:text-[11.5px]"
       >
         [{passage.number}]
       </span>
@@ -60,7 +60,7 @@ export function PassageCard({ passage }: PassageCardProps) {
       {/* 호버 슬롯 — 한 줄, 카드 사이 점프 방지를 위해 항상 자리 확보 */}
       <div
         aria-live="polite"
-        className="mt-2 flex h-[1.4em] items-center gap-2 font-sans text-xs leading-none text-ink-muted/85 sm:text-[13px]"
+        className="mt-2 flex h-[1.4em] items-center gap-2 font-sans text-xs leading-none text-ink-muted sm:text-[13px]"
       >
         {gloss && hoveredChar ? (
           <>
@@ -76,7 +76,7 @@ export function PassageCard({ passage }: PassageCardProps) {
       </div>
 
       {/* 출처(해례본 위치) */}
-      <p className="mt-3 font-sans text-[10.5px] uppercase tracking-[0.18em] text-ink-muted/70 sm:text-[11px]">
+      <p className="mt-3 font-sans text-[10.5px] uppercase tracking-[0.18em] text-ink-muted sm:text-[11px]">
         {passage.reference}
       </p>
 
@@ -104,10 +104,10 @@ export function PassageCard({ passage }: PassageCardProps) {
             <Link
               key={`${link.symbol}-${idx}`}
               href={buildGlyphHref(link)}
-              className="group/link inline-flex items-baseline gap-1.5 font-sans text-[11px] tracking-[0.04em] text-ink-muted/55 transition-colors hover:text-ink-accent/85 focus-visible:text-ink-accent/85 sm:text-[12px]"
+              className="group/link inline-flex items-baseline gap-1.5 font-sans text-[11px] tracking-[0.04em] text-ink-muted transition-colors hover:text-ink-accent focus-visible:text-ink-accent sm:text-[12px]"
             >
               <span
-                className="font-jamo text-[14px] leading-none text-ink-muted/60 transition-colors group-hover/link:text-ink-accent/85 sm:text-[15px]"
+                className="font-jamo text-[14px] leading-none text-ink-muted transition-colors group-hover/link:text-ink-accent sm:text-[15px]"
                 lang="ko"
               >
                 {link.symbol}

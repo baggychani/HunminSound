@@ -49,7 +49,7 @@ export function PassageSection({
               {title}
             </h2>
             {subtitle ? (
-              <p className="mt-1.5 font-sans text-xs tracking-[0.12em] text-ink-muted/85 sm:text-[13px]">
+              <p className="mt-1.5 font-sans text-xs tracking-[0.12em] text-ink-muted sm:text-[13px]">
                 {subtitle}
               </p>
             ) : null}

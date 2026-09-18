@@ -25,7 +25,7 @@ function PictogramImage({ fileName, label }: { fileName: string; label: string }
   if (missing) {
     return (
       <div className="flex aspect-video w-full items-center justify-center rounded-sm border border-hanji-border bg-hanji-warm/20">
-        <p className="font-sans text-xs text-ink-muted/50">상형도 준비 중</p>
+        <p className="font-sans text-xs text-ink-muted">상형도 준비 중</p>
       </div>
     )
   }

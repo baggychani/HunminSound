@@ -111,7 +111,7 @@ function TechPipelineStrip() {
   const steps = ['음성 입력', 'Mel-spectrogram', 'LSTM 모델', 'MR 영상', 'Optical Flow']
   return (
     <div aria-label="AI 파이프라인" className="col-span-full mt-1 border-t border-hanji-border/50 pt-5 sm:pt-6">
-      <p className="mb-3 font-sans text-[10px] tracking-[0.16em] text-ink-muted/60">AI 파이프라인</p>
+      <p className="mb-3 font-sans text-[10px] tracking-[0.16em] text-ink-muted">AI 파이프라인</p>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-5 sm:gap-3">
         {steps.map((step, i) => (
           <div
@@ -287,7 +287,7 @@ function TeamMemberCard({
         <div className="shrink-0">
           <p
             className={`h-3.5 font-sans text-[10px] font-medium leading-[0.875rem] tracking-[0.12em] ${
-              isLead ? 'text-gold' : 'text-ink-muted/70'
+              isLead ? 'text-gold' : 'text-ink-muted'
             }`}
           >
             {member.role}
@@ -297,7 +297,7 @@ function TeamMemberCard({
           </h3>
           <p
             className={`mt-0.5 min-h-[1.75rem] line-clamp-2 break-keep font-sans text-[11px] leading-snug [overflow-wrap:break-word] sm:text-xs ${
-              showAffiliation ? 'text-ink-muted/75' : 'text-transparent select-none'
+              showAffiliation ? 'text-ink-muted' : 'text-transparent select-none'
             }`}
             aria-hidden={!showAffiliation}
           >
@@ -312,7 +312,7 @@ function TeamMemberCard({
             <RichText text={member.task} />
           </p>
           <div className="mt-2 flex h-6 items-center">
-            <span className="inline-flex max-w-full rounded-full border border-hanji-border/70 bg-hanji/40 px-2.5 py-0.5 font-sans text-[10px] leading-snug text-ink-muted/80">
+            <span className="inline-flex max-w-full rounded-full border border-hanji-border/70 bg-hanji/40 px-2.5 py-0.5 font-sans text-[10px] leading-snug text-ink-muted">
               {member.field}
             </span>
           </div>
@@ -402,11 +402,11 @@ export function TeamDirectoryList({
       {groups.map((group, i) => (
         <div key={`${group.role}-${i}`}>
           <div className="mb-2.5 sm:mb-3">
-            <p className="font-sans text-[10px] font-medium tracking-[0.12em] text-ink-muted/70">
+            <p className="font-sans text-[10px] font-medium tracking-[0.12em] text-ink-muted">
               {group.role}
             </p>
             {group.subtitle?.trim() ? (
-              <p className="mt-0.5 font-sans text-[10px] leading-snug text-ink-muted/50">
+              <p className="mt-0.5 font-sans text-[10px] leading-snug text-ink-muted">
                 ({group.subtitle.trim()})
               </p>
             ) : null}

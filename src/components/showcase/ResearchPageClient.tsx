@@ -91,14 +91,14 @@ function SectionTitle({ id, muted, children }: { id: string; muted?: boolean; ch
 }
 
 function BlockLabel({ children }: { children: React.ReactNode }) {
-  return <p className="mb-6 font-sans text-sm font-medium text-ink-muted/65">{children}</p>
+  return <p className="mb-6 font-sans text-sm font-medium text-ink-muted">{children}</p>
 }
 
 function GroupLabel({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3 mb-5">
       <span className="h-px flex-1 bg-hanji-border/70" />
-      <p className="font-sans text-sm font-normal tracking-normal text-ink-muted/60">{children}</p>
+      <p className="font-sans text-sm font-normal tracking-normal text-ink-muted">{children}</p>
       <span className="h-px flex-1 bg-hanji-border/70" />
     </div>
   )
@@ -162,7 +162,7 @@ function SplitSection({
           <p
             aria-hidden
             className={`mb-3 flex items-center gap-2.5 font-sans text-[11px] tracking-[0.26em] ${
-              muted ? 'text-ink-muted/60' : 'text-gold'
+              muted ? 'text-ink-muted' : 'text-gold'
             }`}
           >
             <span className={`h-px w-6 ${muted ? 'bg-ink-muted/30' : 'bg-gold/50'}`} />
@@ -531,7 +531,7 @@ function InfoTable({ rows }: { rows: { label: string; value: string }[] }) {
       <tbody>
         {rows.map((row) => (
           <tr key={row.label} className="border-b border-hanji-border/60 transition-colors last:border-0 hover:bg-hanji-warm/50">
-            <td className="py-3 pr-8 align-top whitespace-nowrap text-ink-muted/60 font-medium w-48">{row.label}</td>
+            <td className="py-3 pr-8 align-top whitespace-nowrap text-ink-muted font-medium w-48">{row.label}</td>
             <td className="py-3 text-ink leading-relaxed"><RichText text={row.value} /></td>
           </tr>
         ))}
@@ -714,7 +714,7 @@ export function ResearchPageClient({ content }: Props) {
                 href={`#${s.id}`}
                 className="inline-flex items-center gap-2 rounded-full border border-hanji-border/80 bg-hanji-warm/50 px-3.5 py-1.5 font-sans text-[12px] text-ink-muted transition-colors hover:border-gold/45 hover:bg-gold/[0.06] hover:text-ink"
               >
-                <span className="font-serif text-[10px] tracking-wider text-gold/80">
+                <span className="font-serif text-[10px] tracking-wider text-gold">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 {title}

@@ -20,7 +20,7 @@ export function SiteFooter() {
           <div className="hidden sm:flex shrink-0 items-center justify-center">
             <Link
               href="/admin/login"
-              className="font-sans text-[11px] text-ink-muted/70 tracking-[0.04em] transition-colors hover:text-gold dark:text-ink-muted/75 dark:hover:text-gold-light"
+              className="font-sans text-[11px] text-ink-muted tracking-[0.04em] transition-colors hover:text-gold dark:text-ink-muted dark:hover:text-gold-light"
             >
               {m.admin}
             </Link>
