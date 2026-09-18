@@ -126,11 +126,7 @@ export function HomeContactSection() {
           whileInView="show"
           viewport={{ once: true, margin: '-40px' }}
         >
-          <div className="flex items-center gap-3">
-            <span className="hidden h-px w-9 bg-gold/50 lg:block" aria-hidden />
-            <p className="font-sans text-xs font-medium tracking-[0.25em] text-gold uppercase">{v2.contactLabel}</p>
-          </div>
-          <h2 className="mt-3 font-serif text-2xl font-bold text-ink sm:text-[1.65rem]">{v2.contactTitle}</h2>
+          <h2 className="font-serif text-2xl font-bold text-ink sm:text-[1.65rem]">{v2.contactTitle}</h2>
           <p className="mt-3 max-w-md font-serif text-sm font-medium leading-relaxed text-ink-soft">
             {formatContactDesc(v2.contactDesc, lang)}
           </p>
