@@ -460,9 +460,8 @@ function ModernVowelSection({
 }
 
 export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
-  const [activeId, setActiveId] = useState<string | null>(null)
+  const { activeId, toggle } = usePhoneticsDeepLink(vowels)
   const detailScrollRef = useScrollToSymbolDetail(activeId)
-  usePhoneticsDeepLink(vowels, setActiveId)
   const { lang } = useLang()
   const m = getMessages(lang)
 
@@ -483,8 +482,6 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
 
   useEffect(() => {
     if (viewMode === displayMode) return
-
-    setActiveId(null)
 
     if (typeof window === 'undefined') return
 
@@ -531,10 +528,6 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
     const row = HUNMIN_VOWEL_ROWS.find((r) => hunminVowelRowContainsSymbol(r, activeItem.symbol))
     return row?.title ?? ''
   }, [activeItem])
-
-  const toggle = useCallback((id: string) => {
-    setActiveId((prev) => (prev === id ? null : id))
-  }, [])
 
   const categoryDesc: Record<(typeof CATEGORY_ORDER)[number], string> = {
     [VOWEL_CAT_MONO]: m.monophthongDesc,

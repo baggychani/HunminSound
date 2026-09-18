@@ -345,9 +345,8 @@ interface ConsonantChartProps {
 }
 
 export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantChartProps) {
-  const [activeId, setActiveId] = useState<string | null>(null)
+  const { activeId, toggle } = usePhoneticsDeepLink(consonants)
   const detailScrollRef = useScrollToSymbolDetail(activeId)
-  usePhoneticsDeepLink(consonants, setActiveId)
   const { lang } = useLang()
   const m = getMessages(lang)
 
@@ -376,8 +375,6 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
 
   useEffect(() => {
     if (viewMode === displayMode) return
-
-    setActiveId(null)
 
     if (typeof window === 'undefined') return
 
@@ -424,10 +421,6 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
     const row = HUNMIN_CONSONANT_ROWS.find((r) => hunminRowContainsSymbol(r, activeItem.symbol))
     return row?.title ?? ''
   }, [activeItem])
-
-  const toggle = useCallback((id: string) => {
-    setActiveId((prev) => (prev === id ? null : id))
-  }, [])
 
   const chartFadeStyle = {
     opacity: chartOpacity,
@@ -572,7 +565,7 @@ function DetailPanel({
               {categoryLabel}
             </span>
             {categoryEnLabel && categoryEnLabel !== categoryLabel ? (
-              <span className="font-sans text-[11px] uppercase tracking-[0.14em] text-ink-muted/80">
+              <span className="font-sans text-[11px] uppercase tracking-[0.14em] text-ink-muted">
                 {categoryEnLabel}
               </span>
             ) : null}

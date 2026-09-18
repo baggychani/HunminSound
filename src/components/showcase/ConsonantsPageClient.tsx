@@ -1,13 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { usePhoneticsViewMode } from '@/hooks/usePhoneticsDeepLink'
 import { ConsonantChart } from '@/components/showcase/ConsonantChart'
-import { PhoneticsViewToggle, type ChartViewMode } from '@/components/showcase/PhoneticsViewToggle'
+import { PhoneticsViewToggle } from '@/components/showcase/PhoneticsViewToggle'
 import { PhoneticsFadeIn } from '@/components/showcase/phonetics/phoneticsPageMotion'
 import type { Consonant } from '@/types'
 
 export function ConsonantsPageClient({ consonants }: { consonants: Consonant[] }) {
-  const [viewMode, setViewMode] = useState<ChartViewMode>('modern')
+  const { viewMode, setViewMode } = usePhoneticsViewMode()
 
   return (
     <>

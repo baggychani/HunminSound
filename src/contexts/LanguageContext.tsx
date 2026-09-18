@@ -1,7 +1,9 @@
 'use client'
 
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import type { Lang } from '@/lib/i18n'
+import { LANGUAGES, type Lang } from '@/lib/i18n'
+
+const LANGUAGE_KEY = 'sejong-language'
 
 interface LanguageContextType {
   lang: Lang
@@ -16,8 +18,20 @@ const LanguageContext = createContext<LanguageContextType>({
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Lang>('ko')
 
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(LANGUAGE_KEY)
+      if (LANGUAGES.some(({ code }) => code === saved)) setLangState(saved as Lang)
+    } catch {
+      // 저장소 접근 제한 시 현재 방문 동안만 유지한다.
+    }
+  }, [])
+
   const setLang = useCallback((newLang: Lang) => {
     setLangState(newLang)
+    try {
+      localStorage.setItem(LANGUAGE_KEY, newLang)
+    } catch {}
   }, [])
 
   useEffect(() => {
