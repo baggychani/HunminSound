@@ -26,6 +26,8 @@ const MYMEMORY_CODE: Record<Lang, string> = {
   ar: 'ar',
   /** 번역 미착수 — LANG_CODES에는 없어서 isLang()이 걸러내지만 Record<Lang,…> 완전성 위해 필요 */
   tr: 'tr',
+  id: 'id',
+  th: 'th',
 }
 
 const MAX_CHUNK = 420

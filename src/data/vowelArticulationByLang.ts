@@ -13,7 +13,7 @@ import type { Lang } from '@/lib/i18n'
  * - العربية: خلفي/أمامي → مستوى الارتفاع/الانفتاح → مدور/غير مدور
  */
 export const VOWEL_ARTICULATION_BY_LANG: Record<
-  Exclude<Lang, 'ko' | 'en' | 'tr'>,
+  Exclude<Lang, 'ko' | 'en' | 'tr' | 'id' | 'th'>,
   Record<string, string>
 > = {
   zh: {

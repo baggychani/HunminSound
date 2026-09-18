@@ -259,4 +259,46 @@ export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
     homeResearchStatValue: '73',
     homeResearchStatSub: 'Seoul · Jeju · Mandarin speakers',
   },
+  /** 번역 미착수 — 언어 선택지에만 노출(영문 콘텐츠로 폴백) */
+  id: {
+    homeResearchLabel: 'SCIENTIFIC APPROACH',
+    homeResearchTitle: 'The Secrets of Hunminjeongeum Revealed by MRI',
+    homeResearchDesc1:
+      'King Sejong created Hangeul 580 years ago by precisely observing the human vocal organs.',
+    homeResearchDesc2:
+      'Today, we empirically validate that remarkable scientific insight through modern 3T MRI technology and AI analysis.',
+    homeResearchFeature1Title: '3T MRI Imaging',
+    homeResearchFeature1Sub: 'High-resolution articulation',
+    homeResearchFeature2Title: 'AI Pipeline',
+    homeResearchFeature2Sub: 'LSTM-based analysis',
+    homeResearchFeature3Title: 'Speech Engineering',
+    homeResearchFeature3Sub: 'Formant analysis',
+    homeResearchFeature4Title: 'Convergence Research',
+    homeResearchFeature4Sub: 'Humanities · Medicine · Engineering',
+    homeResearchCta: 'Explore the research',
+    homeResearchStatLabel: 'Participants',
+    homeResearchStatValue: '73',
+    homeResearchStatSub: 'Seoul · Jeju · Mandarin speakers',
+  },
+  /** 번역 미착수 — 언어 선택지에만 노출(영문 콘텐츠로 폴백) */
+  th: {
+    homeResearchLabel: 'SCIENTIFIC APPROACH',
+    homeResearchTitle: 'The Secrets of Hunminjeongeum Revealed by MRI',
+    homeResearchDesc1:
+      'King Sejong created Hangeul 580 years ago by precisely observing the human vocal organs.',
+    homeResearchDesc2:
+      'Today, we empirically validate that remarkable scientific insight through modern 3T MRI technology and AI analysis.',
+    homeResearchFeature1Title: '3T MRI Imaging',
+    homeResearchFeature1Sub: 'High-resolution articulation',
+    homeResearchFeature2Title: 'AI Pipeline',
+    homeResearchFeature2Sub: 'LSTM-based analysis',
+    homeResearchFeature3Title: 'Speech Engineering',
+    homeResearchFeature3Sub: 'Formant analysis',
+    homeResearchFeature4Title: 'Convergence Research',
+    homeResearchFeature4Sub: 'Humanities · Medicine · Engineering',
+    homeResearchCta: 'Explore the research',
+    homeResearchStatLabel: 'Participants',
+    homeResearchStatValue: '73',
+    homeResearchStatSub: 'Seoul · Jeju · Mandarin speakers',
+  },
 }

@@ -5,24 +5,44 @@ import {
   type OverridesStore,
 } from './i18n-overrides'
 
-export type Lang = 'ko' | 'en' | 'zh' | 'ja' | 'fr' | 'de' | 'es' | 'hi' | 'vi' | 'ru' | 'ar' | 'tr'
+export type Lang =
+  | 'ko'
+  | 'en'
+  | 'zh'
+  | 'ja'
+  | 'fr'
+  | 'de'
+  | 'es'
+  | 'hi'
+  | 'vi'
+  | 'ru'
+  | 'ar'
+  | 'tr'
+  | 'id'
+  | 'th'
 
 /** 로고·히어로 브랜드명 — 언어 설정과 무관하게 항상 한국어 */
 export const SITE_BRAND_NAME = '세종말소리'
 
+/**
+ * 정렬 기준: 한국어 → 영어(사이트 기본 소통어) → 동아시아 인접국(중국어·일본어)
+ * → 이후 전 세계 사용 인구(1·2언어 합산 대략치) 내림차순.
+ */
 export const LANGUAGES: { code: Lang; label: string }[] = [
   { code: 'ko', label: '한국어' },
   { code: 'en', label: 'English' },
   { code: 'zh', label: '中文' },
   { code: 'ja', label: '日本語' },
-  { code: 'fr', label: 'Français' },
-  { code: 'de', label: 'Deutsch' },
-  { code: 'es', label: 'Español' },
   { code: 'hi', label: 'हिन्दी' },
-  { code: 'vi', label: 'Tiếng Việt' },
-  { code: 'ru', label: 'Русский' },
+  { code: 'es', label: 'Español' },
   { code: 'ar', label: 'العربية' },
+  { code: 'fr', label: 'Français' },
+  { code: 'ru', label: 'Русский' },
+  { code: 'id', label: 'Bahasa Indonesia' },
+  { code: 'de', label: 'Deutsch' },
+  { code: 'vi', label: 'Tiếng Việt' },
   { code: 'tr', label: 'Türkçe' },
+  { code: 'th', label: 'ภาษาไทย' },
 ]
 
 /** 헤더 네비 상단 줄 — 항상 한글 고정 */
@@ -1213,6 +1233,18 @@ const tr: Messages = {
   language: 'Dil',
 }
 
+/** 인도네시아어 — 번역 미착수, 언어 선택지에만 노출(영문 콘텐츠로 폴백) */
+const id: Messages = {
+  ...en,
+  language: 'Bahasa',
+}
+
+/** 태국어 — 번역 미착수, 언어 선택지에만 노출(영문 콘텐츠로 폴백) */
+const th: Messages = {
+  ...en,
+  language: 'ภาษา',
+}
+
 export const messages: Record<Lang, Messages> = {
   ko,
   en,
@@ -1226,6 +1258,8 @@ export const messages: Record<Lang, Messages> = {
   ru,
   ar,
   tr,
+  id,
+  th,
 }
 
 export function getMessages(lang: Lang): Messages {
