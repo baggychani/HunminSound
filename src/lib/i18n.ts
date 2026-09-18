@@ -5,7 +5,7 @@ import {
   type OverridesStore,
 } from './i18n-overrides'
 
-export type Lang = 'ko' | 'en' | 'zh' | 'ja' | 'fr' | 'de' | 'es' | 'hi' | 'vi' | 'ru' | 'ar'
+export type Lang = 'ko' | 'en' | 'zh' | 'ja' | 'fr' | 'de' | 'es' | 'hi' | 'vi' | 'ru' | 'ar' | 'tr'
 
 /** 로고·히어로 브랜드명 — 언어 설정과 무관하게 항상 한국어 */
 export const SITE_BRAND_NAME = '세종말소리'
@@ -22,6 +22,7 @@ export const LANGUAGES: { code: Lang; label: string }[] = [
   { code: 'vi', label: 'Tiếng Việt' },
   { code: 'ru', label: 'Русский' },
   { code: 'ar', label: 'العربية' },
+  { code: 'tr', label: 'Türkçe' },
 ]
 
 /** 헤더 네비 상단 줄 — 항상 한글 고정 */
@@ -1206,6 +1207,12 @@ const ar: Messages = {
   admin: 'صفحة المسؤول',
 }
 
+/** 터키어 — 번역 미착수, 언어 선택지에만 노출(영문 콘텐츠로 폴백) */
+const tr: Messages = {
+  ...en,
+  language: 'Dil',
+}
+
 export const messages: Record<Lang, Messages> = {
   ko,
   en,
@@ -1218,6 +1225,7 @@ export const messages: Record<Lang, Messages> = {
   vi,
   ru,
   ar,
+  tr,
 }
 
 export function getMessages(lang: Lang): Messages {

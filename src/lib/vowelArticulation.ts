@@ -42,5 +42,7 @@ export function getVowelArticulationText(
 ): string | undefined {
   if (lang === 'ko') return VOWEL_ARTICULATION_KO[symbol]
   if (lang === 'en') return VOWEL_ARTICULATION_EN[symbol]
+  /** 터키어: 번역 미착수 — 정적 문구 없이 한국어 원문/실시간 번역 폴백에 맡김 */
+  if (lang === 'tr') return undefined
   return VOWEL_ARTICULATION_BY_LANG[lang]?.[symbol]
 }

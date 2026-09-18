@@ -5,7 +5,6 @@ import Image from 'next/image'
 import { forwardRef, useRef } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 import { useSiteMessages } from '@/hooks/useSiteMessages'
-import { CountUpStat } from '@/components/site/effects/CountUpStat'
 
 const MRI_HERO = '/images/research/mri-hero-v2.webp'
 const MRI_W = 1536
@@ -129,33 +128,19 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
           <div className="flex min-h-0 items-center justify-center lg:h-full">
             <div className="flex w-full min-w-0 max-w-xl flex-col gap-7 sm:gap-8 lg:gap-9">
               <div>
-                <motion.div
+                <motion.h2
                   custom={0}
                   variants={fadeUp}
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true, margin: '-20px' }}
-                  className="flex items-center gap-3"
-                >
-                  <span className="h-px w-9 bg-sky-400/50" aria-hidden />
-                  <p className="font-sans text-[11px] font-medium tracking-[0.32em] text-sky-300/80 sm:text-xs">
-                    {m.homeResearchLabel}
-                  </p>
-                </motion.div>
-
-                <motion.h2
-                  custom={1}
-                  variants={fadeUp}
-                  initial="hidden"
-                  whileInView="show"
-                  viewport={{ once: true, margin: '-20px' }}
-                  className="mt-5 font-serif text-[clamp(1.65rem,4.5vw,2.5rem)] font-bold leading-[1.24] tracking-tight text-white sm:mt-6"
+                  className="font-serif text-[clamp(1.65rem,4.5vw,2.5rem)] font-bold leading-[1.24] tracking-tight text-white"
                 >
                   {m.homeResearchTitle}
                 </motion.h2>
 
                 <motion.div
-                  custom={2}
+                  custom={1}
                   variants={fadeUp}
                   initial="hidden"
                   whileInView="show"
@@ -170,7 +155,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
               </div>
 
               <motion.div
-                custom={3}
+                custom={2}
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="show"
@@ -193,7 +178,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
               </motion.div>
 
               <motion.div
-                custom={4}
+                custom={3}
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="show"
@@ -242,18 +227,6 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
                   className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#070e1a]/40 via-transparent to-[#070e1a]/10"
                 />
                 <MriScanOverlay />
-
-                <div className="absolute left-4 top-[58%] z-10 rounded-md border border-sky-200/15 bg-[#0c1828]/88 px-4 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.35)] backdrop-blur-md sm:left-5 sm:px-4 sm:py-3.5">
-                  <p className="font-sans text-[10px] font-medium tracking-[0.14em] text-sky-300/75 sm:text-[11px]">
-                    {m.homeResearchStatLabel}
-                  </p>
-                  <p className="mt-1 font-serif text-[1.35rem] font-bold leading-none text-white sm:text-2xl">
-                    <CountUpStat value={m.homeResearchStatValue} />
-                  </p>
-                  <p className="mt-1.5 font-sans text-[10px] leading-snug text-slate-400 sm:text-[11px]">
-                    {m.homeResearchStatSub}
-                  </p>
-                </div>
               </div>
 
               <div
