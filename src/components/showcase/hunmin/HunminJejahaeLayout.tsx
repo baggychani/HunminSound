@@ -60,7 +60,9 @@ export function jejahaeGroupModelsFromSegments<T extends SegmentLike>(
 ): JejahaeGroupModel[] {
   return groupJejahaeSegments(segments).map((group, groupIdx) => {
     const hasSpan = Boolean(group.spanLabel)
-    const groupKey = group.spanLabel ?? `g-${groupIdx}`
+    /* groupIdx를 항상 접두어로 둔다 — 같은 spanLabel(예: 순음 행의 '각자병서'가
+     * ㅃ·ㅶ 두 그룹으로 따로 존재)이 반복돼도 key가 겹치지 않도록 */
+    const groupKey = `g${groupIdx}${group.spanLabel ? `-${group.spanLabel}` : ''}`
     return {
       key: groupKey,
       spanLabel: hasSpan ? group.spanLabel : null,
