@@ -640,8 +640,7 @@ function VowelDetailPanel({
             <TranslatedVowelArticulation symbol={vowelArticulationSymbol} lang={lang} />
           ) : (
             <p className="mt-3">
-              <span className="inline-flex items-center gap-2 font-sans text-[11px] uppercase tracking-[0.16em] text-gold">
-                <span aria-hidden className="h-px w-3 bg-gold/60" />
+              <span className="font-sans text-[11px] uppercase tracking-[0.16em] text-gold">
                 {categoryLabel}
               </span>
             </p>
