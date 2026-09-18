@@ -464,7 +464,7 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
               ) : null}
               <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
                 <h3
-                  className={`font-serif text-xl tracking-wide ${isEmpty ? 'text-ink-muted' : 'text-ink'}`}
+                  className={`font-serif text-xl ${isEmpty ? 'text-ink-muted' : 'text-ink'}`}
                 >
                   {titleText}
                 </h3>

@@ -192,7 +192,7 @@ export function HunminJejahaeZoneLabel({ children }: { children: ReactNode }) {
   return (
     <div className="mb-3.5 flex items-center gap-2.5 sm:mb-4">
       <span className="h-px w-5 shrink-0 bg-gold/50" aria-hidden />
-      <span className="font-sans text-xs font-medium tracking-[0.16em] text-gold sm:text-[13px]">
+      <span className="font-sans text-xs font-medium text-gold sm:text-[13px]">
         {children}
       </span>
     </div>
@@ -300,11 +300,11 @@ export function HunminJejahaeRowHeading({
         </p>
       ) : null}
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <h3 className="font-jamo text-lg tracking-wide text-ink sm:text-xl" lang="ko">
+        <h3 className="font-jamo text-lg text-ink sm:text-xl" lang="ko">
           {title}
         </h3>
         {classicLabel ? (
-          <span className="font-serif text-sm tracking-wide text-ink-muted sm:text-[15px]" lang="zh-Hant">
+          <span className="font-serif text-sm text-ink-muted sm:text-[15px]" lang="zh-Hant">
             {classicLabel}
           </span>
         ) : null}

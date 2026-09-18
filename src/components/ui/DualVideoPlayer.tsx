@@ -62,7 +62,7 @@ export function DualVideoPlayer({
 
   if (!showPictogram && !showAnimation && !showMri) return null
 
-  const labelClass = 'mb-2 font-sans text-[11px] uppercase tracking-widest text-ink-muted'
+  const labelClass = 'mb-2 font-sans text-[13px] font-medium text-ink-muted'
   const slotSpacer = <div className="aspect-video w-full" aria-hidden />
   const pictogramOnly = showPictogram && !showAnimation && !showMri
 

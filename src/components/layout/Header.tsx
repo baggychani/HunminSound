@@ -222,7 +222,7 @@ export function Header() {
                     {primary}
                   </span>
                   <span
-                    className={`font-sans tracking-widest leading-none transition-colors ${
+                    className={`font-sans leading-none transition-colors ${lang === 'ko' ? 'tracking-widest' : ''} ${
                       lang === 'hi' ? 'text-[11.5px]' : 'text-[10.5px]'
                     } ${lang !== 'ko' ? 'font-bold' : 'font-normal'} ${
                       isActive ? 'text-ink' : 'text-ink-muted group-hover:text-ink'
@@ -262,7 +262,7 @@ export function Header() {
                 {lang === 'ko' ? NAV_LABEL_KO.language : m.language}
               </span>
               <span
-                className={`font-sans tracking-widest leading-none transition-colors ${
+                className={`font-sans leading-none transition-colors ${lang === 'ko' ? 'tracking-widest' : ''} ${
                   lang === 'hi' ? 'text-[11.5px]' : 'text-[10.5px]'
                 } ${lang !== 'ko' ? 'font-bold' : 'font-normal'} ${
                   langOpen

@@ -406,7 +406,7 @@ function ModernVowelSection({
           {String(index + 1).padStart(2, '0')}
         </p>
         <div className="flex items-baseline gap-4">
-          <h3 className="font-serif text-xl text-ink tracking-wide">{categoryLabel}</h3>
+          <h3 className="font-serif text-xl text-ink">{categoryLabel}</h3>
           {categoryEnLabel ? (
             <span className="font-sans text-xs text-ink-muted tracking-widest uppercase">{categoryEnLabel}</span>
           ) : null}

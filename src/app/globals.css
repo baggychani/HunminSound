@@ -881,12 +881,12 @@
   }
 
   .hunmin-jejahae-group-title {
-    @apply mb-1.5 font-sans text-xs font-medium leading-snug tracking-wide text-ink sm:mb-2 sm:text-[13px];
+    @apply mb-1.5 font-sans text-xs font-medium leading-snug text-ink sm:mb-2 sm:text-[13px];
     text-align: left;
   }
 
   .hunmin-jejahae-col-label {
-    @apply mb-1 flex min-h-[1.2rem] items-end justify-start font-sans text-[11px] leading-tight tracking-wide text-ink-muted sm:mb-1.5 sm:min-h-[1.3rem] sm:text-xs;
+    @apply mb-1 flex min-h-[1.2rem] items-end justify-start font-sans text-[11px] leading-tight text-ink-muted sm:mb-1.5 sm:min-h-[1.3rem] sm:text-xs;
   }
 
   /* 훈민 차트 — 상형기본자→일반 가획·합성자 */
