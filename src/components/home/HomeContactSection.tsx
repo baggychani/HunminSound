@@ -127,7 +127,7 @@ export function HomeContactSection() {
           viewport={{ once: true, margin: '-40px' }}
         >
           <h2 className="font-serif text-2xl font-bold text-ink sm:text-[1.65rem]">{v2.contactTitle}</h2>
-          <p className="mt-3 max-w-md font-serif text-sm font-medium leading-relaxed text-ink-soft">
+          <p className="mt-3 max-w-md font-sans text-sm font-medium leading-relaxed text-ink-soft">
             {formatContactDesc(v2.contactDesc, lang)}
           </p>
 
@@ -243,10 +243,9 @@ export function HomeContactSection() {
           <button
             type="submit"
             disabled={status === 'sending'}
-            className="group relative mt-6 w-full overflow-hidden rounded-sm border border-gold/50 bg-gradient-to-b from-gold/15 to-gold/[0.07] px-4 py-3 font-sans text-sm font-medium text-gold shadow-[inset_0_1px_0_rgb(255_255_255/0.25)] transition-all hover:border-gold/70 hover:from-gold/25 hover:to-gold/10 hover:shadow-[0_2px_14px_rgb(var(--gold-rgb)/0.2)] disabled:opacity-60 dark:shadow-none"
+            className="group relative mt-6 w-full rounded-sm bg-gold px-4 py-3 font-sans text-sm font-medium text-hanji transition-colors hover:bg-gold-light disabled:opacity-60"
           >
-            <span className="sheen-sweep pointer-events-none absolute inset-0 overflow-hidden" aria-hidden />
-            <span className="relative inline-flex items-center gap-2">
+            <span className="inline-flex items-center gap-2">
               {status === 'sending' ? v2.contactSending : v2.contactSend}
               <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
             </span>

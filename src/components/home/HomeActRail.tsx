@@ -49,38 +49,29 @@ export function HomeActRail() {
   return (
     <nav
       aria-label="페이지 구간 이동"
-      className="pointer-events-none fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 mix-blend-difference lg:flex xl:right-7"
+      className="pointer-events-none fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 mix-blend-difference lg:flex xl:right-8"
     >
-      <ul className="pointer-events-auto flex flex-col items-center gap-1.5">
+      <ul className="pointer-events-auto flex flex-col items-center">
         {ACTS.map(({ id }, idx) => {
           const isActive = idx === active
           return (
-            <li key={id} className="flex flex-col items-center gap-1.5">
-              {idx > 0 && (
-                <span aria-hidden className="h-5 w-px bg-white/30" />
-              )}
+            <li key={id} className="flex flex-col items-center">
+              {idx > 0 && <span aria-hidden className="h-4 w-px bg-white/30" />}
               <button
                 type="button"
                 onClick={() => goTo(idx)}
                 aria-label={`${idx + 1}막으로 이동`}
                 aria-current={isActive ? 'true' : undefined}
-                className="group relative flex h-8 w-8 items-center justify-center"
+                className="group relative flex h-5 w-5 items-center justify-center"
               >
-                {isActive && (
-                  <motion.span
-                    layoutId="home-act-rail-ring"
-                    transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-                    className="absolute inset-0 rounded-full border border-white/70"
-                    aria-hidden
-                  />
-                )}
-                <span
+                <motion.span
                   aria-hidden
-                  className={`rounded-full transition-all duration-300 ${
-                    isActive
-                      ? 'h-2 w-2 bg-white'
-                      : 'h-1.5 w-1.5 bg-white/40 group-hover:bg-white/70'
-                  }`}
+                  animate={{
+                    scale: isActive ? 1 : 0.6,
+                    opacity: isActive ? 1 : 0.4,
+                  }}
+                  transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+                  className="h-1.5 w-1.5 rounded-full bg-white group-hover:opacity-80"
                 />
               </button>
             </li>
