@@ -209,7 +209,6 @@ export default function HomePage() {
           transition={{ delay: 1.6, duration: 1 }}
           className="absolute bottom-5 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2.5 lg:flex"
         >
-          <span className="font-sans text-[10px] tracking-[0.3em] text-ink-muted/70">SCROLL</span>
           <span className="scroll-cue-line" />
         </motion.div>
       </section>

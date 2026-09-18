@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useMemo, useRef } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Bounds, useGLTF } from '@react-three/drei'
 import { useReducedMotion } from 'framer-motion'
@@ -57,10 +57,28 @@ const FLOAT_FREQ = 0.85
 const SWAY_FREQ = 0.5
 const TILT_FREQ = 0.6
 
-function HunminBook() {
+function HunminBook({ onSettled }: { onSettled: () => void }) {
   const gltf = useGLTF(MODEL_PATH) as unknown as GLTF
   const ref = useRef<THREE.Group>(null)
   const reduceMotion = useReducedMotion()
+
+  /* Bounds가 카메라를 정위치로 스냅하는 데 몇 프레임 걸림(아래 Bounds의 maxDuration 참고).
+   * 그 전까지는 하드코딩된 시작 카메라 위치로 그려진 "틀린 프레임"이라 화면에 내보내지 않고,
+   * 몇 프레임 지나 자리를 잡은 뒤에만 부모(DOM)에 알려 캔버스를 보여준다. */
+  useEffect(() => {
+    let raf2 = 0
+    let raf3 = 0
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        raf3 = requestAnimationFrame(onSettled)
+      })
+    })
+    return () => {
+      cancelAnimationFrame(raf1)
+      cancelAnimationFrame(raf2)
+      cancelAnimationFrame(raf3)
+    }
+  }, [onSettled])
 
   /* scene 자체를 매번 변형하지 않도록 한 번 clone. envMap 강도만 살짝 낮춰
    * 무광 한지 느낌을 살린다. material 자체 교체 없음(=속지 텍스처 보존). */
@@ -108,8 +126,12 @@ interface HunminBookViewerProps {
 }
 
 export function HunminBookViewer({ className }: HunminBookViewerProps) {
+  /* Bounds가 카메라를 정위치로 스냅하기 전까지는 캔버스를 숨긴다(트랜지션 없는 즉시 전환 —
+   * 서서히 나타나는 페이드가 아니라, 준비 안 된 프레임을 그냥 안 보여주는 것뿐). */
+  const [settled, setSettled] = useState(false)
+
   return (
-    <div className={className}>
+    <div className={className} style={{ visibility: settled ? 'visible' : 'hidden' }}>
       <Canvas
         /* 정면에서 살짝 위로 — 펼친 면을 내려다보는 듯한 시점.
          * fov 28 정도면 perspective 왜곡이 약해 책장이 평평하게 보임. */
@@ -124,9 +146,10 @@ export function HunminBookViewer({ className }: HunminBookViewerProps) {
         <directionalLight position={[3, 4, 5]} intensity={0.95} />
         <directionalLight position={[-3, 2, -2]} intensity={0.35} />
         <Suspense fallback={null}>
-          {/* maxDuration을 0에 가깝게 두어 "카메라가 날아와 자리를 잡는" 스와이프 없이 즉시 프레이밍 */}
+          {/* maxDuration을 0에 가깝게 두어 프레이밍이 잡히는 즉시(다음 프레임) 스냅 —
+           * 그 잘못된 첫 프레임은 위 visibility로 가려진다 */}
           <Bounds fit margin={BOOK_BOUNDS_MARGIN} maxDuration={0.001}>
-            <HunminBook />
+            <HunminBook onSettled={() => setSettled(true)} />
           </Bounds>
         </Suspense>
       </Canvas>
