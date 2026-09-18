@@ -7,7 +7,6 @@
 
 import fs from 'fs'
 import path from 'path'
-import crypto from 'crypto'
 import { Redis } from '@upstash/redis'
 import type { OverridesStore } from '@/lib/i18n-overrides'
 import type { HistoryEntry } from '@/lib/admin-history'
@@ -78,10 +77,6 @@ function writeFileJson(filePath: string, data: unknown): void {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8')
 }
 
-function fileContentHash(data: unknown): string {
-  return crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex')
-}
-
 async function readCloudJson<T>(key: string, seedPath: string, seedFallback: T): Promise<T> {
   const redis = getRedis()
   if (!redis) {
@@ -92,8 +87,9 @@ async function readCloudJson<T>(key: string, seedPath: string, seedFallback: T):
     return cached
   }
   const seeded = readFileJson(seedPath, seedFallback)
-  await redis.set(key, seeded)
-  return seeded
+  // 관리자 저장과 초기화가 겹쳐도 저장본을 덮어쓰지 않는다.
+  await redis.set(key, seeded, { nx: true })
+  return (await redis.get<T>(key)) ?? seeded
 }
 
 async function writeCloudJson(key: string, data: unknown, filePath: string): Promise<void> {
@@ -133,45 +129,11 @@ export async function writeAdminHistory(history: HistoryEntry[]): Promise<void> 
 
 /* ── research content ───────────────────────────────────────────────────── */
 
-/** Git JSON이 바뀌면 Redis 캐시를 덮어씀 (배포 후 CMS 불일치 방지) */
-async function readResearchCloudJson(): Promise<ResearchContent> {
-  const key = CMS_KEYS.research
-  const seedPath = FILE_PATHS.research
-  const fallback = readFileJson<ResearchContent>(seedPath, {} as ResearchContent)
-  const redis = getRedis()
-  if (!redis) {
-    return fallback
-  }
-
-  const seeded = readFileJson(seedPath, fallback)
-  const hashKey = `${key}:file-hash`
-  const fileHash = fileContentHash(seeded)
-  const storedHash = await redis.get<string>(hashKey)
-
-  if (storedHash !== fileHash) {
-    await redis.set(key, seeded)
-    await redis.set(hashKey, fileHash)
-    return seeded
-  }
-
-  const cached = await redis.get<ResearchContent>(key)
-  if (cached !== null && cached !== undefined) {
-    return cached
-  }
-
-  await redis.set(key, seeded)
-  await redis.set(hashKey, fileHash)
-  return seeded
-}
-
+/** Redis가 원본이다. Git JSON은 저장소가 비었을 때만 초기값으로 사용한다. */
 export async function readResearchContent(): Promise<ResearchContent> {
-  return readResearchCloudJson()
+  return readCloudJson(CMS_KEYS.research, FILE_PATHS.research, {} as ResearchContent)
 }
 
 export async function writeResearchContent(data: ResearchContent): Promise<void> {
   await writeCloudJson(CMS_KEYS.research, data, FILE_PATHS.research)
-  const redis = getRedis()
-  if (redis) {
-    await redis.set(`${CMS_KEYS.research}:file-hash`, fileContentHash(data))
-  }
 }
