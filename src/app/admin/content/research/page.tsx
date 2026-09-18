@@ -436,7 +436,7 @@ export default function AdminResearchPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/admin/research-content')
+    fetch('/api/admin/research-content', { cache: 'no-store' })
       .then((r) => r.json())
       .then((d: ResearchContent) => {
         setOriginal(cloneDeep(d))

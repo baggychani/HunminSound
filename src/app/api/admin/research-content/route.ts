@@ -6,6 +6,7 @@ import type { ResearchContent } from '@/lib/research-content'
 import { readResearchContent, writeResearchContent } from '@/lib/cms-storage'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 function cmsErrorResponse(err: unknown) {
   const message = err instanceof Error ? err.message : '저장 실패'
@@ -26,7 +27,9 @@ function cmsErrorResponse(err: unknown) {
 
 export async function GET() {
   try {
-    return NextResponse.json(await readResearchContent())
+    return NextResponse.json(await readResearchContent(), {
+      headers: { 'Cache-Control': 'no-store' },
+    })
   } catch {
     return NextResponse.json({ error: 'Failed to read data' }, { status: 500 })
   }
