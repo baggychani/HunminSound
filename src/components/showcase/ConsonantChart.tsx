@@ -559,9 +559,9 @@ function DetailPanel({
           <p className="font-serif text-lg leading-snug text-ink sm:text-xl">
             <JamoText text={item.name} />
           </p>
-          <p className="mt-3 flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-gold/[0.07] px-3 py-1 font-sans text-[11px] uppercase tracking-[0.14em] text-gold">
-              <span aria-hidden className="h-1 w-1 rounded-full bg-gold" />
+          <p className="mt-3 flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+            <span className="inline-flex items-center gap-2 font-sans text-[11px] uppercase tracking-[0.16em] text-gold">
+              <span aria-hidden className="h-px w-3 bg-gold/60" />
               {categoryLabel}
             </span>
             {categoryEnLabel && categoryEnLabel !== categoryLabel ? (
