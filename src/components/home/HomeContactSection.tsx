@@ -31,7 +31,7 @@ const fadeUp = {
   }),
 }
 
-/** 연락처 항목 — 아이콘 + 라벨 + 값 */
+/** 연락처 항목 — 아이콘 + 값 한 줄(라벨은 화면엔 숨기고 스크린리더용으로만) */
 function ContactItem({
   icon,
   label,
@@ -42,17 +42,15 @@ function ContactItem({
   children: React.ReactNode
 }) {
   return (
-    <div className="group flex items-start gap-3.5 rounded-sm border border-hanji-border/60 bg-hanji-card/70 px-4 py-3.5 transition-colors hover:border-gold/40">
+    <div className="flex items-center gap-2.5">
       <span
         aria-hidden
-        className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gold/40 bg-gold/[0.07] text-gold transition-colors group-hover:bg-gold/[0.14]"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-gold/40 bg-gold/[0.07] text-gold"
       >
         {icon}
       </span>
-      <span className="min-w-0">
-        <span className="block text-xs font-medium text-ink-muted">{label}</span>
-        <span className="mt-1 block font-medium text-ink">{children}</span>
-      </span>
+      <span className="sr-only">{label}</span>
+      <span className="min-w-0 font-medium text-ink">{children}</span>
     </div>
   )
 }
@@ -137,14 +135,16 @@ export function HomeContactSection() {
             {formatContactDesc(v2.contactDesc, lang)}
           </p>
 
-          <div className="mt-8 space-y-3 font-sans text-sm">
+          <div className="mt-6 space-y-2 font-sans text-sm">
             <ContactItem icon={<MailIcon />} label={v2.contactEmail}>
               <a href="mailto:sejong@sejongkorea.org" className="text-ink-accent hover:text-gold">
                 sejong@sejongkorea.org
               </a>
             </ContactItem>
             <ContactItem icon={<PhoneIcon />} label={v2.contactPhone}>
-              +82-2-969-8851
+              <a href="tel:0269698851" className="hover:text-gold">
+                02-969-8851
+              </a>
             </ContactItem>
             <ContactItem icon={<LocationIcon />} label={v2.contactAddress}>
               <span className="text-ink-soft">서울 동대문구 회기로 56</span>
