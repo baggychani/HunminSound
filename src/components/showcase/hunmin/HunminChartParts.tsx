@@ -19,7 +19,6 @@ export function hunminSegmentSeparatorKind(
   if (prev.label === '상형기본자' && (next.label === '일반 가획' || next.label === '합성자')) {
     return 'gaheuk-arrow'
   }
-  if (prev.groupLine === '초출자' && next.groupLine === '재출자') return 'pipe'
   return 'pipe'
 }
 

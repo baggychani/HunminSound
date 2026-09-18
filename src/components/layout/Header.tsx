@@ -213,7 +213,7 @@ export function Header() {
                   className="group relative flex flex-col items-center justify-center gap-0.5 pb-2"
                 >
                   <span
-                    className={`font-sans tracking-korean transition-colors ${
+                    className={`font-sans transition-colors ${lang === 'ko' ? 'tracking-korean' : ''} ${
                       lang === 'hi' ? 'text-[15px] leading-snug' : 'text-sm'
                     } ${lang === 'ko' ? 'font-bold' : 'font-normal'} ${
                       isActive ? 'text-ink' : 'text-ink-muted group-hover:text-ink'
@@ -251,7 +251,7 @@ export function Header() {
           >
             <div className="flex flex-col items-center justify-center gap-0.5 text-center min-w-0">
               <span
-                className={`font-sans tracking-korean leading-tight transition-colors ${
+                className={`font-sans leading-tight transition-colors ${lang === 'ko' ? 'tracking-korean' : ''} ${
                   lang === 'hi' ? 'text-[15px]' : 'text-sm'
                 } ${lang === 'ko' ? 'font-bold' : 'font-normal'} ${
                   langOpen
@@ -314,7 +314,7 @@ export function Header() {
             aria-label={m.languagePickerAria}
           >
             <span
-              className={`font-sans tracking-korean leading-tight ${
+              className={`font-sans leading-tight ${lang === 'ko' ? 'tracking-korean' : ''} ${
                 lang === 'hi' ? 'text-[14px]' : 'text-sm'
               }`}
             >
@@ -361,7 +361,7 @@ export function Header() {
                     }`}
                   >
                     <span
-                      className={`font-sans tracking-korean ${lang === 'ko' ? 'font-bold' : 'font-normal'}`}
+                      className={`font-sans ${lang === 'ko' ? 'tracking-korean font-bold' : 'font-normal'}`}
                     >
                       {label}
                     </span>

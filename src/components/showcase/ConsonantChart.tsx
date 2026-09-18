@@ -468,7 +468,7 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
                 >
                   {titleText}
                 </h3>
-                {!isEmpty && categoryEnLabel ? (
+                {!isEmpty && categoryEnLabel && categoryEnLabel !== categoryLabel ? (
                   <span className="font-sans text-xs uppercase tracking-widest text-ink-muted">
                     {categoryEnLabel}
                   </span>

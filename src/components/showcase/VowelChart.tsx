@@ -407,7 +407,7 @@ function ModernVowelSection({
         </p>
         <div className="flex items-baseline gap-4">
           <h3 className="font-serif text-xl text-ink">{categoryLabel}</h3>
-          {categoryEnLabel ? (
+          {categoryEnLabel && categoryEnLabel !== categoryLabel ? (
             <span className="font-sans text-xs text-ink-muted tracking-widest uppercase">{categoryEnLabel}</span>
           ) : null}
         </div>
