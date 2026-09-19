@@ -315,14 +315,14 @@ function HunminjeongeumCard({
 
       <div className="relative z-10 flex gap-2 flex-wrap sm:gap-3" dir="ltr" lang="ko">
         {baseShapes.map((s) => (
-          <span
+          <MagneticGlyph
             key={s}
-            className={`font-jamo text-ink-muted group-hover:text-ink transition-colors ${
+            className={`font-jamo text-ink-muted group-hover:text-ink transition-colors inline-block ${
               compact ? 'text-xl sm:text-2xl' : 'text-2xl'
             }`}
           >
             {s}
-          </span>
+          </MagneticGlyph>
         ))}
       </div>
 
