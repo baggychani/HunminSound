@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { MEDIA_MANIFEST } from '@/data/mediaManifest'
 import { VideoPlayer } from './VideoPlayer'
 
 interface DualVideoPlayerProps {
@@ -14,21 +15,20 @@ interface DualVideoPlayerProps {
   pictogramLabel?: string
 }
 
+/** 실제로 준비된 파일만 있다고 취급 — 아직 없는 건 "준비 중" 대신 그 영역 자체를 노출하지 않는다 */
+function hasFile(list: readonly string[], fileName?: string): fileName is string {
+  return Boolean(fileName) && list.includes(fileName as string)
+}
+
 function PictogramImage({ fileName, label }: { fileName: string; label: string }) {
-  const [missing, setMissing] = useState(false)
+  const [broken, setBroken] = useState(false)
   const src = `/images/pictograms/${encodeURIComponent(fileName)}`
 
   useEffect(() => {
-    setMissing(false)
+    setBroken(false)
   }, [src])
 
-  if (missing) {
-    return (
-      <div className="flex aspect-video w-full items-center justify-center rounded-sm border border-hanji-border bg-hanji-warm/20">
-        <p className="font-sans text-xs text-ink-muted">상형도 준비 중</p>
-      </div>
-    )
-  }
+  if (broken) return null
 
   return (
     <div className="relative aspect-video w-full overflow-hidden rounded-sm bg-black/90">
@@ -38,14 +38,15 @@ function PictogramImage({ fileName, label }: { fileName: string; label: string }
         fill
         className="object-contain"
         sizes="(max-width: 640px) 100vw, 33vw"
-        onError={() => setMissing(true)}
+        onError={() => setBroken(true)}
       />
     </div>
   )
 }
 
 /**
- * 상형도(있을 때) · 조음 애니메이션 · MRI 영상을 한 줄에 표시
+ * 상형도 · 조음 애니메이션 · MRI 영상 — 실제로 준비된 것만 균등한 열로 표시.
+ * 준비 안 된 항목은 자리 자체를 만들지 않는다(스포일러성 "준비 중" 문구 없음).
  */
 export function DualVideoPlayer({
   animationFileName,
@@ -56,59 +57,36 @@ export function DualVideoPlayer({
   mriLabel,
   pictogramLabel = '상형도',
 }: DualVideoPlayerProps) {
-  const showPictogram = Boolean(pictogramFileName)
-  const showAnimation = Boolean(animationFileName)
-  const showMri = Boolean(mriFileName)
+  const showPictogram = hasFile(MEDIA_MANIFEST.pictograms, pictogramFileName)
+  const showAnimation = hasFile(MEDIA_MANIFEST[type].animation, animationFileName)
+  const showMri = hasFile(MEDIA_MANIFEST[type].mri, mriFileName)
 
-  if (!showPictogram && !showAnimation && !showMri) return null
+  const count = [showPictogram, showAnimation, showMri].filter(Boolean).length
+  if (count === 0) return null
 
   const labelClass = 'mb-2 font-sans text-[13px] font-medium text-ink-muted'
-  const slotSpacer = <div className="aspect-video w-full" aria-hidden />
-  const pictogramOnly = showPictogram && !showAnimation && !showMri
-
-  if (pictogramOnly) {
-    return (
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div>
-          <p className={labelClass}>{pictogramLabel}</p>
-          <PictogramImage fileName={pictogramFileName!} label={pictogramLabel} />
-        </div>
-      </div>
-    )
-  }
-
-  const gridClass = showPictogram
-    ? 'grid grid-cols-1 gap-4 sm:grid-cols-3'
-    : 'grid grid-cols-1 gap-4 sm:grid-cols-2'
+  const gridColsClass = count >= 3 ? 'sm:grid-cols-3' : count === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-1'
 
   return (
-    <div className={gridClass}>
+    <div className={`grid grid-cols-1 gap-4 ${gridColsClass}`}>
       {showPictogram ? (
         <div>
           <p className={labelClass}>{pictogramLabel}</p>
-          <PictogramImage fileName={pictogramFileName!} label={pictogramLabel} />
+          <PictogramImage fileName={pictogramFileName as string} label={pictogramLabel} />
         </div>
       ) : null}
-      <div>
-        <p className={`${labelClass} ${showAnimation ? '' : 'invisible'}`} aria-hidden={!showAnimation}>
-          {animationLabel}
-        </p>
-        {showAnimation ? (
+      {showAnimation ? (
+        <div>
+          <p className={labelClass}>{animationLabel}</p>
           <VideoPlayer fileName={animationFileName} type={type} videoType="animation" />
-        ) : (
-          slotSpacer
-        )}
-      </div>
-      <div>
-        <p className={`${labelClass} ${showMri ? '' : 'invisible'}`} aria-hidden={!showMri}>
-          {mriLabel}
-        </p>
-        {showMri ? (
+        </div>
+      ) : null}
+      {showMri ? (
+        <div>
+          <p className={labelClass}>{mriLabel}</p>
           <VideoPlayer fileName={mriFileName} type={type} videoType="mri" />
-        ) : (
-          slotSpacer
-        )}
-      </div>
+        </div>
+      ) : null}
     </div>
   )
 }

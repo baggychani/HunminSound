@@ -49,3 +49,7 @@ Thumbs.db
 .dev-server.pid
 .dev-server.log
 .dev-server.err.log
+
+# 자동 생성 — scripts/generate-media-manifest.mjs가 public/videos·images/pictograms를
+# 스캔해서 predev/prebuild마다 다시 씀 (수동 편집·커밋 대상 아님)
+src/data/mediaManifest.ts

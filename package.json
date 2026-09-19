@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/generate-media-manifest.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/generate-media-manifest.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\"",
-    "check-env": "node scripts/check-deploy-env.mjs"
+    "check-env": "node scripts/check-deploy-env.mjs",
+    "media-manifest": "node scripts/generate-media-manifest.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^9.122.0",
