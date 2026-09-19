@@ -96,7 +96,7 @@ export function PhoneticsViewToggle({ className = '', mode, onModeChange }: Phon
           >
             ㆍ
           </span>
-          <span className="font-serif tracking-tight">{m.chartViewHunmin}</span>
+          <span className="font-serif font-semibold tracking-tight">{m.chartViewHunmin}</span>
         </button>
         <button
           type="button"
@@ -116,7 +116,7 @@ export function PhoneticsViewToggle({ className = '', mode, onModeChange }: Phon
           >
             [ipa]
           </span>
-          <span className="font-serif tracking-tight">{m.chartViewModern}</span>
+          <span className="font-serif font-semibold tracking-tight">{m.chartViewModern}</span>
         </button>
       </div>
     </div>

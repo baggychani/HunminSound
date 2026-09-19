@@ -281,24 +281,13 @@ export function HunminJejahaeRow({
 /** 행 제목(양성·음성·아음…) — font-jamo 유지 + 한자 부제는 옆에 */
 export function HunminJejahaeRowHeading({
   title,
-  index,
   classicLabel,
 }: {
   title: string
-  index?: number
   classicLabel?: string
 }) {
   return (
     <div className="mb-5 sm:mb-6">
-      {index !== undefined ? (
-        <p
-          aria-hidden
-          className="mb-2 flex items-center gap-2.5 font-sans text-[10.5px] tracking-[0.28em] text-gold"
-        >
-          <span className="h-px w-5 bg-gold/50" />
-          {String(index + 1).padStart(2, '0')}
-        </p>
-      ) : null}
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
         <h3 className="font-jamo text-lg text-ink sm:text-xl" lang="ko">
           {title}

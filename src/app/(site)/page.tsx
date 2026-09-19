@@ -106,6 +106,7 @@ function MagneticGlyph({ children, className }: { children: string; className: s
 
 export default function HomePage() {
   const { m, lang } = useSiteMessages()
+  const pageRef = useRef<HTMLDivElement>(null)
   const act1Ref = useRef<HTMLElement>(null)
   const act2Ref = useRef<HTMLElement>(null)
   const act3Ref = useRef<HTMLElement>(null)
@@ -122,9 +123,9 @@ export default function HomePage() {
   const act4SectionClass = 'min-h-[calc(100dvh-var(--site-header-h,4rem))]'
 
   return (
-    <div className="relative w-full">
+    <div ref={pageRef} className="relative w-full">
       <ScrollColorWash actRefs={{ act1: act1Ref, act2: act2Ref, act3: act3Ref }} />
-      <HomeScrollProgress />
+      <HomeScrollProgress containerRef={pageRef} />
       <HomeActRail />
 
       {/* 1막 — 히어로 (모든 언어 동일 레이아웃·배경·3D) */}

@@ -448,20 +448,10 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
             {displayMode === 'hunmin' ? (
               <HunminJejahaeRowHeading
                 title={titleText}
-                index={rowIndex}
                 classicLabel={hunminClassicLabel}
               />
             ) : (
             <div className="mb-4">
-              {!isEmpty ? (
-                <p
-                  aria-hidden
-                  className="mb-2 flex items-center gap-2.5 font-sans text-[10.5px] tracking-[0.28em] text-gold"
-                >
-                  <span className="h-px w-5 bg-gold/50" />
-                  {String(rowIndex + 1).padStart(2, '0')}
-                </p>
-              ) : null}
               <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
                 <h3
                   className={`font-serif text-xl ${isEmpty ? 'text-ink-muted' : 'text-ink'}`}

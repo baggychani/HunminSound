@@ -360,7 +360,6 @@ function HunminVowelRowBody({
 
 interface ModernVowelSectionProps {
   category: (typeof CATEGORY_ORDER)[number]
-  index: number
   items: Vowel[] | undefined
   categoryLabel: string
   categoryEnLabel: string
@@ -377,7 +376,6 @@ interface ModernVowelSectionProps {
 
 function ModernVowelSection({
   category,
-  index,
   items,
   categoryLabel,
   categoryEnLabel,
@@ -398,13 +396,6 @@ function ModernVowelSection({
   return (
     <section>
       <div className="mb-8">
-        <p
-          aria-hidden
-          className="mb-2 flex items-center gap-2.5 font-sans text-[10.5px] tracking-[0.28em] text-gold"
-        >
-          <span className="h-px w-5 bg-gold/50" />
-          {String(index + 1).padStart(2, '0')}
-        </p>
         <div className="flex items-baseline gap-4">
           <h3 className="font-serif text-xl text-ink">{categoryLabel}</h3>
           {categoryEnLabel && categoryEnLabel !== categoryLabel ? (
@@ -550,7 +541,7 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
           <HunminCheonJiInBanner />
           {HUNMIN_VOWEL_ROWS.map((row, rowIndex) => (
             <section key={row.id}>
-              <HunminJejahaeRowHeading title={row.title} index={rowIndex} />
+              <HunminJejahaeRowHeading title={row.title} />
               <HunminVowelRowBody
                 row={row}
                 rowIndex={rowIndex}
@@ -571,7 +562,7 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
           ))}
         </>
       ) : (
-        CATEGORY_ORDER.map((category, categoryIndex) => {
+        CATEGORY_ORDER.map((category) => {
             const items = grouped[category]
             if (!items || items.length === 0) return null
             const categoryLabel = m.categories[category] ?? category
@@ -581,7 +572,6 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
               <ModernVowelSection
                 key={category}
                 category={category}
-                index={categoryIndex}
                 items={items}
                 categoryLabel={categoryLabel}
                 categoryEnLabel={categoryEnLabel}
