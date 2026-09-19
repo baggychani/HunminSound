@@ -104,7 +104,7 @@ export function HomeContactSection() {
   }
 
   const inputClass =
-    'mt-1 w-full rounded-sm border border-hanji-border/70 bg-hanji/90 px-3 py-2.5 font-sans text-sm text-ink outline-none transition-[border-color,box-shadow] duration-200 focus:border-gold/70 focus:shadow-[0_0_0_3px_rgb(var(--gold-rgb)/0.12)] dark:bg-hanji/50'
+    'mt-1 w-full rounded-sm border border-hanji-border/70 bg-hanji/90 px-3 py-2 font-sans text-sm text-ink outline-none transition-[border-color,box-shadow] duration-200 focus:border-gold/70 focus:shadow-[0_0_0_3px_rgb(var(--gold-rgb)/0.12)] dark:bg-hanji/50'
 
   return (
     <div id="contact" className="relative w-full">
@@ -149,14 +149,14 @@ export function HomeContactSection() {
             </ContactItem>
           </div>
 
-          <div className="mt-8 w-full max-w-[20rem] rounded-sm border border-hanji-border/60 bg-white px-5 py-4 sm:max-w-[25rem] sm:px-6 sm:py-5">
+          <div className="mt-6 w-full max-w-[15rem] rounded-sm border border-hanji-border/60 bg-white px-5 py-4 sm:max-w-[19rem] sm:px-6 sm:py-5">
             <Image
               src="/images/sejongorg.png"
               alt="세종대왕기념사업회"
               width={485}
               height={512}
               className="h-auto w-full"
-              sizes="(max-width: 640px) 320px, 400px"
+              sizes="(max-width: 640px) 240px, 304px"
             />
           </div>
         </motion.div>
@@ -168,12 +168,12 @@ export function HomeContactSection() {
           whileInView="show"
           viewport={{ once: true, margin: '-40px' }}
           onSubmit={onSubmit}
-          className="corner-brackets relative rounded-sm border border-hanji-border/60 bg-hanji/75 p-6 backdrop-blur-md sm:p-8 dark:bg-hanji/65"
+          className="corner-brackets relative rounded-sm border border-hanji-border/60 bg-hanji/75 p-6 backdrop-blur-md sm:p-7 dark:bg-hanji/65"
         >
           <h3 className="font-serif text-lg font-bold text-ink">{v2.contactFormTitle}</h3>
           <p className="mt-2 font-sans text-xs text-ink-muted">{v2.contactFormDesc}</p>
 
-          <div className="mt-6 space-y-4">
+          <div className="mt-5 space-y-3">
             <label className="block">
               <span className="font-sans text-xs font-medium text-ink-muted">{v2.contactName} *</span>
               <input
@@ -245,7 +245,7 @@ export function HomeContactSection() {
           <button
             type="submit"
             disabled={status === 'sending'}
-            className="group relative mt-6 w-full rounded-sm bg-gold px-4 py-3 font-sans text-sm font-medium text-hanji transition-colors hover:bg-gold-light disabled:opacity-60"
+            className="group relative mt-5 w-full rounded-sm bg-gold px-4 py-3 font-sans text-sm font-medium text-hanji transition-colors hover:bg-gold-light disabled:opacity-60"
           >
             <span className="inline-flex items-center gap-2">
               {status === 'sending' ? v2.contactSending : v2.contactSend}
