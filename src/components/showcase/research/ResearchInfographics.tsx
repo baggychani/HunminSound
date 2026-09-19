@@ -111,7 +111,7 @@ function TechPipelineStrip() {
   const steps = ['음성 입력', 'Mel-spectrogram', 'LSTM 모델', 'MR 영상', 'Optical Flow']
   return (
     <div aria-label="AI 파이프라인" className="col-span-full mt-1 border-t border-hanji-border/50 pt-5 sm:pt-6">
-      <p className="mb-3 font-sans text-[10px] tracking-[0.16em] text-ink-muted">AI 파이프라인</p>
+      <p className="mb-3 font-sans text-[10px] text-ink-muted">AI 파이프라인</p>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-5 sm:gap-3">
         {steps.map((step, i) => (
           <div
@@ -286,7 +286,7 @@ function TeamMemberCard({
       <div className="flex min-h-0 flex-1 flex-col px-3.5 py-3.5 sm:px-4 sm:py-4">
         <div className="shrink-0">
           <p
-            className={`h-3.5 font-sans text-[10px] font-medium leading-[0.875rem] tracking-[0.12em] ${
+            className={`h-3.5 font-sans text-[10px] font-medium leading-[0.875rem] ${
               isLead ? 'text-gold' : 'text-ink-muted'
             }`}
           >
@@ -402,7 +402,7 @@ export function TeamDirectoryList({
       {groups.map((group, i) => (
         <div key={`${group.role}-${i}`}>
           <div className="mb-2.5 sm:mb-3">
-            <p className="font-sans text-[10px] font-medium tracking-[0.12em] text-ink-muted">
+            <p className="font-sans text-[10px] font-medium text-ink-muted">
               {group.role}
             </p>
             {group.subtitle?.trim() ? (
