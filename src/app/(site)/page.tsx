@@ -14,6 +14,7 @@ import { HomeContactSection } from '@/components/home/HomeContactSection'
 import { HomeActRail } from '@/components/home/HomeActRail'
 import { HomeScrollProgress } from '@/components/home/HomeScrollProgress'
 import { HeroJamoField } from '@/components/home/HeroJamoField'
+import { HomeNavJamoField } from '@/components/home/HomeNavJamoField'
 import { HomeJamoMarquee } from '@/components/home/HomeJamoMarquee'
 import { useHomeActScroll } from '@/hooks/useHomeActScroll'
 
@@ -220,7 +221,8 @@ export default function HomePage() {
         id="home-act2"
         className={`home-scroll-margin site-container relative z-10 flex max-sm:h-auto max-sm:min-h-0 max-sm:overflow-visible max-sm:py-8 ${heroHeightDesktop} flex-col sm:justify-center py-[clamp(0.75rem,2dvh,1.5rem)] sm:py-[clamp(0.75rem,2dvh,1.5rem)]`}
       >
-        <div className="grid min-h-0 w-full grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:gap-5">
+        <HomeNavJamoField />
+        <div className="relative z-10 grid min-h-0 w-full grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:gap-5">
         <NavCard
           compact
           lang={lang}
