@@ -65,10 +65,12 @@ export function DualVideoPlayer({
   if (count === 0) return null
 
   const labelClass = 'mb-2 font-sans text-[13px] font-medium text-ink-muted'
-  const gridColsClass = count >= 3 ? 'sm:grid-cols-3' : count === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-1'
+  /* 열 개수는 항상 3 고정 — 1~2개만 있어도 3개 다 있을 때와 같은 칸 크기(1/3)를 유지.
+   * 개수에 맞춰 열을 줄이면 남은 항목이 넓어지며(특히 세로로 aspect-video 비율 때문에)
+   * 커져 보이는 문제가 생김(2026-09-20 사용자 지적). */
 
   return (
-    <div className={`grid grid-cols-1 gap-4 ${gridColsClass}`}>
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
       {showPictogram ? (
         <div>
           <p className={labelClass}>{pictogramLabel}</p>
