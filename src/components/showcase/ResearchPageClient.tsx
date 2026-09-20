@@ -202,6 +202,28 @@ function SplitSection({
   )
 }
 
+/**
+ * 엠블럼(인문학/의학/공학 원)과 그 사이 연결선을 "같은 시각에 같은 값을 읽게"
+ * 만들어서 동기화한다. 왜 이렇게 했는지 기록해둠 — 흔히 빠지는 함정이 있어서.
+ *
+ * 흔한 접근(그리고 예전에 이 파일이 쓰던 방식): 원은 framer-motion
+ * keyframe 애니메이션([0,-amp,0] 반복)으로 제멋대로 움직이게 두고,
+ * 연결선은 매 프레임 원의 실제 DOM 위치를 getBoundingClientRect()로
+ * "재측정"해서 따라가게 만드는 것. 문제는 이게 항상 한 박자 늦다는 점 —
+ * ① 브라우저가 원을 화면에 그리고(paint) → ② 다음 프레임에 우리 코드가
+ * 그 결과 위치를 읽어서 선을 다시 그림. 이 "그리기→읽기" 간격이 매
+ * 프레임 미세하게 어긋나며 쌓이면 눈에 보이는 떨림(지터)이 된다.
+ * 그래서 예전엔 아예 연결선을 고정값(y=50)으로 박아뒀었다.
+ *
+ * 지금 방식: DOM을 전혀 측정하지 않는다. 원의 위치도 연결선의 끝점도
+ * 전부 "지금 몇 ms째인지"(useTime())만 입력받는 순수 함수
+ * floatOffsetPx(t, index)의 결과값일 뿐이다. 즉 선이 원을 "보고
+ * 따라가는" 게 아니라, 원과 선이 각자 같은 시계를 보고 각자 계산한다.
+ * 같은 t·같은 index를 넣으면 항상 같은 값이 나오는 순수 함수이므로,
+ * 측정 지연이 낄 자리 자체가 없다 — 동기화를 프레임 타이밍에 기대는
+ * 게 아니라 수학적으로 보장하는 셈.
+ */
+
 /** 엠블럼 부유 — 분야마다 진폭(px)·주기(s)·위상(s)을 달리해 살짝 어긋나게 */
 const EMBLEM_FLOAT = [
   { amp: 5, duration: 4.4, delay: 0 },
@@ -213,8 +235,15 @@ const EMBLEM_FLOAT = [
  * 기준 높이가 필요 — 컨테이너의 min-h-[10.5rem]과 맞춤 */
 const EMBLEM_ROW_REF_HEIGHT_PX = 168
 
-/** t(ms) 시점에 index번째 원이 떠 있는 오프셋(px, 0~-amp 사이를 코사인으로 왕복) —
- * 원과 연결선이 이 동일한 함수로 값을 얻어야 서로 어긋나지 않음 */
+/**
+ * t(ms) 시점에 index번째 원이 떠 있는 오프셋(px). 0 → -amp → 0을 코사인으로
+ * 왕복하는 곡선이라 기존 keyframe [0,-amp,0] + easeInOut과 눈으로는 거의
+ * 똑같이 보이지만, 결정적 차이가 있다: keyframe 애니메이션은 "지금 이
+ * 순간의 값"을 임의로 물어볼 수 없다(framer-motion 내부 타이밍에 갇혀
+ * 있음) — 그래서 연결선이 그 값을 알려면 결국 DOM을 재측정하는 수밖에
+ * 없었다. 이 함수는 반대로 순수 계산이라 원·연결선 어디서든 같은 t만
+ * 넣으면 즉시 같은 값을 구할 수 있다.
+ */
 function floatOffsetPx(t: number, index: number): number {
   const { amp, duration, delay } = EMBLEM_FLOAT[index % EMBLEM_FLOAT.length]
   const phase = ((t - delay * 1000) / (duration * 1000)) * Math.PI * 2
@@ -230,9 +259,9 @@ type MethodTone = {
   tagClass: string
 }
 
-/** 엠블럼 연결선 — 양 끝이 각자 연결된 원의 부유(floatOffsetPx)를 그대로 따라감.
- * DOM 위치를 RAF로 재측정하는 대신 원과 똑같은 시간 기반 함수 값을 읽기만 해서
- * 동기화되므로, 예전에 문제였던 측정발 일렁임(jitter)이 생기지 않음 */
+/** 엠블럼 연결선 — 동기화 원리는 위 floatOffsetPx 설명 참고.
+ * y0/y1/y2는 각각 1·2·3번 원의 현재 오프셋(%)이고, 두 선분(1↔2, 2↔3)은
+ * 그 중 자기와 연결된 두 원의 값만 양 끝에 물려 각자 따로 움직인다. */
 function MethodEmblemConnections() {
   const reduceMotion = useReducedMotion()
   const time = useTime()
