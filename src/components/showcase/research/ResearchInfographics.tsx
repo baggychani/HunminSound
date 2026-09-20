@@ -302,7 +302,7 @@ function TeamMemberCard({
           >
             {member.role}
           </p>
-          <h3 className="mt-1 min-h-[2.125rem] line-clamp-2 break-keep font-serif text-[0.95rem] leading-snug text-ink [overflow-wrap:break-word] sm:text-base">
+          <h3 className="mt-1 min-h-[2.375rem] line-clamp-2 break-keep font-serif text-base font-semibold leading-snug text-ink [overflow-wrap:break-word] sm:text-lg">
             {displayName}
           </h3>
           <p
@@ -411,14 +411,10 @@ export function TeamDirectoryList({
     <div className="mt-10 space-y-6 border-t border-hanji-border/55 pt-9 sm:mt-12 sm:space-y-7 sm:pt-10">
       {groups.map((group, i) => (
         <div key={`${group.role}-${i}`}>
-          <div className="mb-2.5 sm:mb-3">
-            <p className="font-sans text-[10px] font-medium text-ink-muted">
-              {group.role}
-            </p>
+          <div className="mb-2.5 flex flex-wrap items-baseline gap-x-1.5 sm:mb-3">
+            <p className="font-sans text-[10px] font-medium text-ink-muted">{group.role}</p>
             {group.subtitle?.trim() ? (
-              <p className="mt-0.5 font-sans text-[10px] leading-snug text-ink-muted">
-                ({group.subtitle.trim()})
-              </p>
+              <p className="font-sans text-[10px] leading-snug text-ink-muted">({group.subtitle.trim()})</p>
             ) : null}
           </div>
           <p className="break-keep font-serif text-[0.9rem] leading-[1.85] text-ink/90 sm:text-[0.9375rem]">
