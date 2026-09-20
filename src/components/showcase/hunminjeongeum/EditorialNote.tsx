@@ -15,7 +15,7 @@ export function EditorialNote() {
 
   return (
     <div className="pt-1">
-      <p className="mb-3 font-sans text-[11px] uppercase tracking-[0.18em] text-ink-muted">
+      <p className="mb-3 font-sans text-[11px] text-ink-muted">
         {m.hunminEditorialNote ?? '일러두기'}
       </p>
       <ul className="space-y-2 text-[12px] leading-relaxed text-ink-muted sm:text-[13px]">
