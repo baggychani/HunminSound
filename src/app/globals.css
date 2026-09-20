@@ -891,7 +891,7 @@
 
   /* 훈민 차트 — 상형기본자→일반 가획·합성자 */
   .hunmin-gaheuk-arrow {
-    color: rgb(var(--gold-rgb) / 0.62);
+    color: rgb(var(--gold-rgb) / 0.85);
   }
 
   .symbol-btn .hunmin-vowel-ipa {

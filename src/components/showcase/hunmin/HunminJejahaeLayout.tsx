@@ -287,7 +287,10 @@ export function HunminJejahaeRowHeading({
   return (
     <div className="mb-5 sm:mb-6">
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <h3 className="font-jamo text-lg text-ink sm:text-xl" lang="ko">
+        {/* font-jamo(EunpyeongSagaDogseo)는 같은 px에서도 실제 글자 잉크 크기가
+         * 현대 음성학 쪽 font-serif보다 작게 나와서(실측 ~18px vs ~20px @20px),
+         * 시각적으로 맞춰 보이도록 text-[1.3125rem](21px) 사용 */}
+        <h3 className="font-jamo text-[1.3125rem] text-ink" lang="ko">
           {title}
         </h3>
         {classicLabel ? (
