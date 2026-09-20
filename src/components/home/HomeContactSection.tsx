@@ -7,17 +7,19 @@ import { useLang } from '@/contexts/LanguageContext'
 import { useSiteMessages } from '@/hooks/useSiteMessages'
 import { MailIcon, PhoneIcon, LocationIcon } from '@/components/ui/ContactIcons'
 
-/** 한국어 협력 안내 — '연구자·' 뒤에서 의도적으로 줄바꿈 */
+/** 한국어 협력 안내 — '연구자·기관과의 협력을...'이 한 덩어리로 읽히도록
+ * '연구자' 앞에서 줄바꿈(전에는 '연구자·' 뒤에서 끊어서 '연구자·'와 '기관'이
+ * 갈라져 어색했음) */
 function formatContactDesc(desc: string, lang: string): ReactNode {
   if (lang !== 'ko') return desc
-  const marker = '연구자·'
+  const marker = '연구자'
   const idx = desc.indexOf(marker)
   if (idx === -1) return desc
   return (
     <>
-      {desc.slice(0, idx + marker.length)}
+      {desc.slice(0, idx)}
       <br />
-      {desc.slice(idx + marker.length)}
+      {desc.slice(idx)}
     </>
   )
 }

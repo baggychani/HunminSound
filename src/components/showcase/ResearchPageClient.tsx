@@ -307,10 +307,6 @@ function FloatingMethodEmblem({
         <span className={`font-serif text-[1.08rem] leading-none tracking-wide ${tone.fieldColor}`}>
           {field}
         </span>
-        <span
-          aria-hidden
-          className={`absolute -bottom-1.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full ${tone.dotColor}`}
-        />
       </div>
     </motion.div>
   )
