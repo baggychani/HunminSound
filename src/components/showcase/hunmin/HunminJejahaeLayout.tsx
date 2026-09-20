@@ -110,24 +110,22 @@ function JejahaeGroupPanel({
           const prevCol = colIdx > 0 ? group.columns[colIdx - 1] : null
           const dividerKind =
             colIdx > 0 && prevCol ? columnDividerKind(prevCol, col) : null
-          const showColLabel =
-            Boolean(col.subLabel) || (group.columns.length > 1 && !group.spanLabel)
 
           return (
             <Fragment key={col.key}>
               {dividerKind ? <JejahaeColumnDivider /> : null}
               <div className="hunmin-jejahae-column shrink-0">
-                {showColLabel ? (
-                  <div className="hunmin-jejahae-col-label">
-                    {col.subLabel ? (
-                      <span>{col.subLabel}</span>
-                    ) : (
-                      <span className="invisible select-none" aria-hidden>
-                        {'\u00a0'}
-                      </span>
-                    )}
-                  </div>
-                ) : null}
+                {/* \ub77c\ubca8 \uc720\ubb34\uc640 \uc0c1\uad00\uc5c6\uc774 \ud56d\uc0c1 \ub80c\ub354\ub9c1 \u2014 \uac19\uc740 \uad6c\uc5ed(track) \uc548 \ud615\uc81c \ubc15\uc2a4\ub07c\ub9ac
+                 * (\uc608: \ubaa8\uc74c "\uc0c1\ud615\uae30\ubcf8\uc790" vs "\ud569\uc131\uc790") \ub77c\ubca8 \uc720\ubb34\ub85c \ub192\uc774\uac00 \ub2ec\ub77c\uc9c0\uc9c0 \uc54a\uac8c */}
+                <div className="hunmin-jejahae-col-label">
+                  {col.subLabel ? (
+                    <span>{col.subLabel}</span>
+                  ) : (
+                    <span className="invisible select-none" aria-hidden>
+                      {'\u00a0'}
+                    </span>
+                  )}
+                </div>
                 <div className={`${glyphRailClass} flex flex-nowrap items-center justify-start gap-2 sm:gap-2.5`}>
                   {col.glyphs}
                 </div>
