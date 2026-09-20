@@ -7,7 +7,7 @@ import {
   Gowun_Batang,
 } from 'next/font/google'
 import { Providers } from '@/components/theme/Providers'
-import { SITE_TAB_TITLE } from '@/lib/siteMeta'
+import { SITE_TAB_TITLE, SITE_URL } from '@/lib/siteMeta'
 import './globals.css'
 
 const notoSerifKr = Noto_Serif_KR({
@@ -52,6 +52,7 @@ const gowunBatang = Gowun_Batang({
 
 /** 브라우저 탭·PWA 이름 — 가운데점(·) 좌우 공백 없음 */
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: SITE_TAB_TITLE,
     template: `%s·세종말소리`,
