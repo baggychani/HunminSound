@@ -744,8 +744,12 @@
     color: #8b6914;
   }
 
-  .symbol-btn-card .symbol-sub,
-  .symbol-btn-card .symbol-sub.hunmin-vowel-ipa {
+  /* .symbol-btn.symbol-btn-card 로 명시(대신 .symbol-btn-card 단독)해서 specificity를
+   * (0,3,0)으로 올림 — 안 그러면 뒤의 범용 .symbol-btn .symbol-sub 규칙(동일
+   * specificity, 소스 순서상 나중)에 밀려서, 카드 중 hunmin-vowel-ipa 클래스가
+   * 없는(한글 읽기 라벨) 것만 다른 font-size/line-height/margin-top을 받아
+   * 글자 위치가 카드마다 어긋나던 문제가 있었음 */
+  .symbol-btn.symbol-btn-card .symbol-sub {
     flex-shrink: 0;
     margin-top: 0;
     padding-bottom: 0;

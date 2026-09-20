@@ -56,8 +56,8 @@ function GaheukArrow() {
       className="hunmin-gaheuk-arrow h-3.5 w-9 sm:h-4 sm:w-10"
       aria-hidden
     >
-      <path d="M1 8h16" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
-      <path d="M16 4 L34 8 L16 12 Z" fill="currentColor" />
+      <path d="M1 8h23" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
+      <path d="M24 3 L34 8 L24 13 Z" fill="currentColor" />
     </svg>
   )
 }
