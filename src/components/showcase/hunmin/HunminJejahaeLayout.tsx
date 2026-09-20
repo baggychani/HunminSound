@@ -82,7 +82,10 @@ function JejahaeColumnDivider() {
 function JejahaeBridge({ kind, glyphRailClass }: { kind: JejahaeBridgeKind; glyphRailClass: string }) {
   return (
     <div
-      className={`${glyphRailClass} flex shrink-0 items-center justify-center px-0.5 sm:px-1`}
+      /* 다리(화살표)는 트랙 안에서 items-end로 그룹 패널의 "바깥" 바닥선에 맞춰지는데,
+       * 실제 카드는 .hunmin-jejahae-group의 하단 패딩(0.6875rem)만큼 안쪽에 있어서
+       * 그만큼 mb로 끌어올려야 카드 세로 중앙과 화살표가 맞음 */
+      className={`${glyphRailClass} mb-[0.6875rem] flex shrink-0 items-center justify-center px-0.5 sm:px-1`}
       aria-hidden
       title={kind === 'gaheuk-arrow' ? '가획' : undefined}
     >

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion, useTime, useTransform } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import type { ResearchContent } from '@/lib/research-content'
@@ -202,12 +202,24 @@ function SplitSection({
   )
 }
 
-/** 엠블럼 부유 — 분야마다 진폭·주기·위상을 달리해 살짝 어긋나게 */
+/** 엠블럼 부유 — 분야마다 진폭(px)·주기(s)·위상(s)을 달리해 살짝 어긋나게 */
 const EMBLEM_FLOAT = [
-  { y: [0, -5, 0], duration: 4.4, delay: 0 },
-  { y: [0, -7, 0], duration: 5.15, delay: 0.38 },
-  { y: [0, -4, 0], duration: 3.85, delay: 0.72 },
+  { amp: 5, duration: 4.4, delay: 0 },
+  { amp: 7, duration: 5.15, delay: 0.38 },
+  { amp: 4, duration: 3.85, delay: 0.72 },
 ] as const
+
+/** 연결선 SVG는 viewBox 0~100(preserveAspectRatio none)이라 px 오프셋을 %로 환산할
+ * 기준 높이가 필요 — 컨테이너의 min-h-[10.5rem]과 맞춤 */
+const EMBLEM_ROW_REF_HEIGHT_PX = 168
+
+/** t(ms) 시점에 index번째 원이 떠 있는 오프셋(px, 0~-amp 사이를 코사인으로 왕복) —
+ * 원과 연결선이 이 동일한 함수로 값을 얻어야 서로 어긋나지 않음 */
+function floatOffsetPx(t: number, index: number): number {
+  const { amp, duration, delay } = EMBLEM_FLOAT[index % EMBLEM_FLOAT.length]
+  const phase = ((t - delay * 1000) / (duration * 1000)) * Math.PI * 2
+  return -amp * (0.5 - 0.5 * Math.cos(phase))
+}
 
 type MethodTone = {
   emblemBg: string
@@ -218,8 +230,16 @@ type MethodTone = {
   tagClass: string
 }
 
-/** 엠블럼 연결선 — 열 중앙 고정, 필터·RAF 없음(부유 원과 분리해 일렁임 방지) */
+/** 엠블럼 연결선 — 양 끝이 각자 연결된 원의 부유(floatOffsetPx)를 그대로 따라감.
+ * DOM 위치를 RAF로 재측정하는 대신 원과 똑같은 시간 기반 함수 값을 읽기만 해서
+ * 동기화되므로, 예전에 문제였던 측정발 일렁임(jitter)이 생기지 않음 */
 function MethodEmblemConnections() {
+  const reduceMotion = useReducedMotion()
+  const time = useTime()
+  const y0 = useTransform(time, (t) => 50 + (reduceMotion ? 0 : (floatOffsetPx(t, 0) / EMBLEM_ROW_REF_HEIGHT_PX) * 100))
+  const y1 = useTransform(time, (t) => 50 + (reduceMotion ? 0 : (floatOffsetPx(t, 1) / EMBLEM_ROW_REF_HEIGHT_PX) * 100))
+  const y2 = useTransform(time, (t) => 50 + (reduceMotion ? 0 : (floatOffsetPx(t, 2) / EMBLEM_ROW_REF_HEIGHT_PX) * 100))
+
   return (
     <svg
       aria-hidden
@@ -227,10 +247,10 @@ function MethodEmblemConnections() {
       viewBox="0 0 100 100"
       preserveAspectRatio="none"
     >
-      <line x1="16.67" y1="50" x2="50" y2="50" className="method-link-halo" />
-      <line x1="50" y1="50" x2="83.33" y2="50" className="method-link-halo" />
-      <line x1="16.67" y1="50" x2="50" y2="50" className="method-link-core" />
-      <line x1="50" y1="50" x2="83.33" y2="50" className="method-link-core" />
+      <motion.line x1={16.67} y1={y0} x2={50} y2={y1} className="method-link-halo" />
+      <motion.line x1={50} y1={y1} x2={83.33} y2={y2} className="method-link-halo" />
+      <motion.line x1={16.67} y1={y0} x2={50} y2={y1} className="method-link-core" />
+      <motion.line x1={50} y1={y1} x2={83.33} y2={y2} className="method-link-core" />
     </svg>
   )
 }
@@ -247,32 +267,14 @@ function FloatingMethodEmblem({
   innerRef: (el: HTMLDivElement | null) => void
 }) {
   const reduceMotion = useReducedMotion()
-  const preset = EMBLEM_FLOAT[index % EMBLEM_FLOAT.length]
+  const time = useTime()
+  const y = useTransform(time, (t) => (reduceMotion ? 0 : floatOffsetPx(t, index)))
 
   return (
-    <motion.div
-      ref={innerRef}
-      className="relative z-10 will-change-transform"
-      animate={reduceMotion ? undefined : { y: [...preset.y] }}
-      transition={
-        reduceMotion
-          ? undefined
-          : {
-              duration: preset.duration,
-              delay: preset.delay,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }
-      }
-    >
+    <motion.div ref={innerRef} className="relative z-10 will-change-transform" style={{ y }}>
       <div
         className={`relative flex h-[9rem] w-[9rem] items-center justify-center rounded-full border ${tone.emblemBg} ${tone.emblemBorder}`}
       >
-        <span
-          className={`absolute -top-3 left-1/2 -translate-x-1/2 font-sans text-[0.62rem] tracking-[0.22em] ${tone.indexColor}`}
-        >
-          {String(index + 1).padStart(2, '0')}
-        </span>
         <span className={`font-serif text-[1.08rem] leading-none tracking-wide ${tone.fieldColor}`}>
           {field}
         </span>
