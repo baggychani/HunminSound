@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import { Fragment, useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion, useInView } from 'framer-motion'
 import { teamPhotoSrc } from '@/lib/teamSlugs'
@@ -109,22 +109,32 @@ function AchievementCell({ title, lines }: { title: string; lines: string[] }) {
 
 function TechPipelineStrip() {
   const steps = ['음성 입력', 'Mel-spectrogram', 'LSTM 모델', 'MR 영상', 'Optical Flow']
+  const boxClass =
+    'rounded border border-hanji-border/70 bg-hanji/25 px-3 py-2.5 text-center font-sans text-[11px] leading-snug text-ink-soft sm:text-xs'
   return (
     <div aria-label="AI 파이프라인" className="col-span-full mt-1 border-t border-hanji-border/50 pt-5 sm:pt-6">
       <p className="mb-3 font-sans text-[10px] text-ink-muted">AI 파이프라인</p>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-5 sm:gap-3">
-        {steps.map((step, i) => (
-          <div
-            key={step}
-            className="relative rounded border border-hanji-border/70 bg-hanji/25 px-3 py-2.5 text-center font-sans text-[11px] leading-snug text-ink-soft sm:text-xs"
-          >
+      {/* 모바일 — 2열 그리드, 화살표 없음(줄바꿈되면 방향이 애매해짐) */}
+      <div className="grid grid-cols-2 gap-2 sm:hidden">
+        {steps.map((step) => (
+          <div key={step} className={boxClass}>
             {step}
-            {i < steps.length - 1 ? (
-              <span className="absolute -right-2 top-1/2 hidden -translate-y-1/2 text-ink-muted/30 sm:inline" aria-hidden>
-                →
-              </span>
-            ) : null}
           </div>
+        ))}
+      </div>
+      {/* 데스크톱 — 한 줄, 화살표를 절대위치 트릭 대신 실제 flex 아이템으로 둬서
+       * 박스 사이 간격 한가운데 정확히 오게(예전엔 -right-2로 눈대중 배치해서
+       * 박스 쪽으로 치우쳐 있었음), 색도 30%→진하게 올려 잘 보이게 */}
+      <div className="hidden items-stretch sm:flex">
+        {steps.map((step, i) => (
+          <Fragment key={step}>
+            <div className={`flex-1 ${boxClass}`}>{step}</div>
+            {i < steps.length - 1 ? (
+              <div className="flex w-7 shrink-0 items-center justify-center text-sm text-ink-muted" aria-hidden>
+                →
+              </div>
+            ) : null}
+          </Fragment>
         ))}
       </div>
     </div>
@@ -221,7 +231,7 @@ export function AchievementsShowcase({
 
 function MemberAvatarFallback() {
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-hanji/55 to-hanji-warm/45">
+    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-hanji/55 to-hanji-warm/45 transition-transform duration-500 ease-out group-hover:scale-110">
       <div
         className="flex aspect-square w-[38%] min-w-[3.25rem] max-w-[4.5rem] items-center justify-center rounded-full bg-ink/[0.05] ring-1 ring-ink/[0.09]"
         aria-hidden
@@ -246,7 +256,7 @@ function MemberPhoto({ name }: { name: string }) {
           alt=""
           fill
           sizes="(max-width: 640px) 50vw, 25vw"
-          className="object-cover object-[center_14%]"
+          className="object-cover object-[center_14%] transition-transform duration-500 ease-out group-hover:scale-110"
           onError={() => setFailed(true)}
         />
       ) : (
@@ -278,7 +288,7 @@ function TeamMemberCard({
       }}
       className="h-full"
     >
-      <article className="team-member-card flex h-full flex-col overflow-hidden rounded-lg border border-hanji-border/75 bg-hanji/25 shadow-[0_1px_0_rgb(var(--ink-rgb)/0.03)]">
+      <article className="team-member-card group flex h-full flex-col overflow-hidden rounded-lg border border-hanji-border/75 bg-hanji/25 shadow-[0_1px_0_rgb(var(--ink-rgb)/0.03)] transition-shadow duration-300 hover:shadow-[0_6px_20px_-6px_rgb(var(--ink-rgb)/0.18)]">
       <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden border-b border-hanji-border/60 bg-hanji/40">
         <MemberPhoto name={member.name} />
       </div>
