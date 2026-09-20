@@ -2,8 +2,12 @@ import { NextResponse } from 'next/server'
 import type { Lang } from '@/lib/i18n'
 import { buildMtKey, getBundledMachineTranslation } from '@/lib/mtCache'
 import { translateKoreanWithPlaceholders, translateLongWithFixedChunk } from '@/lib/mtProtectedKorean'
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 
 export const dynamic = 'force-dynamic'
+
+/** 무료 MyMemory API 일일 한도를 한 IP가 소진시키지 못하게 하는 상한 */
+const MAX_TEXT_LEN = 2000
 
 const LANG_CODES: Lang[] = ['ko', 'en', 'zh', 'ja', 'fr', 'de', 'es', 'hi', 'vi', 'ru', 'ar']
 
@@ -34,13 +38,17 @@ const MAX_CHUNK = 420
 
 export async function POST(req: Request) {
   try {
+    if (!checkRateLimit('translate', getClientIp(req), 40, 10 * 60 * 1000)) {
+      return NextResponse.json({ translated: null, error: 'RATE_LIMIT' }, { status: 429 })
+    }
+
     const body = (await req.json()) as {
       text?: unknown
       target?: unknown
       source?: unknown
       itemId?: unknown
     }
-    const text = typeof body.text === 'string' ? body.text : ''
+    const text = typeof body.text === 'string' ? body.text.slice(0, MAX_TEXT_LEN) : ''
     const target = body.target
     const sourceLang: Lang = isLang(body.source) ? body.source : 'ko'
     const itemId = typeof body.itemId === 'string' ? body.itemId : ''

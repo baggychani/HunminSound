@@ -1,26 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendContactEmail } from '@/lib/sendContactEmail'
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 
 export const runtime = 'nodejs'
 
-const rateLimit = new Map<string, { count: number; resetAt: number }>()
-const MAX_PER_HOUR = 5
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now()
-  const entry = rateLimit.get(ip)
-  if (!entry || now > entry.resetAt) {
-    rateLimit.set(ip, { count: 1, resetAt: now + 60 * 60 * 1000 })
-    return true
-  }
-  if (entry.count >= MAX_PER_HOUR) return false
-  entry.count += 1
-  return true
-}
-
 export async function POST(req: NextRequest) {
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
-  if (!checkRateLimit(ip)) {
+  const ip = getClientIp(req)
+  if (!checkRateLimit('contact', ip, 5, 60 * 60 * 1000)) {
     return NextResponse.json({ error: 'RATE_LIMIT' }, { status: 429 })
   }
 

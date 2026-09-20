@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server'
 import { findAdmin, getAdminAccounts } from '@/lib/adminAccounts'
 import { ADMIN_SESSION_COOKIE, createAdminSessionToken, getAdminSessionSecret } from '@/lib/adminSession'
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 
 export async function POST(request: Request) {
+  if (!checkRateLimit('admin-login', getClientIp(request), 10, 15 * 60 * 1000)) {
+    return NextResponse.json({ ok: false, message: 'rate_limited' }, { status: 429 })
+  }
+
   const secret = getAdminSessionSecret()
   if (!secret || secret.length < 16 || getAdminAccounts().length === 0) {
     return NextResponse.json({ ok: false, message: 'not_configured' }, { status: 503 })
