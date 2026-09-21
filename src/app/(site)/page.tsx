@@ -13,8 +13,7 @@ import { HomeResearchAct } from '@/components/home/HomeResearchAct'
 import { HomeContactSection } from '@/components/home/HomeContactSection'
 import { HomeActRail } from '@/components/home/HomeActRail'
 import { HomeScrollProgress } from '@/components/home/HomeScrollProgress'
-import { HeroJamoField } from '@/components/home/HeroJamoField'
-import { HomeNavJamoField } from '@/components/home/HomeNavJamoField'
+import { HomeJamoField } from '@/components/home/HomeJamoField'
 import { HomeJamoMarquee } from '@/components/home/HomeJamoMarquee'
 import { useHomeActScroll } from '@/hooks/useHomeActScroll'
 
@@ -127,6 +126,7 @@ export default function HomePage() {
       <ScrollColorWash actRefs={{ act1: act1Ref, act2: act2Ref, act3: act3Ref }} />
       <HomeScrollProgress containerRef={pageRef} />
       <HomeActRail />
+      <HomeJamoField fadeBeforeRef={act3Ref} />
 
       {/* 1막 — 히어로 (모든 언어 동일 레이아웃·배경·3D) */}
       <section
@@ -135,7 +135,6 @@ export default function HomePage() {
         className={`relative z-10 ${heroHeightMobile} ${heroHeightDesktop} isolation-isolate`}
       >
         <HeroActBackdrop heroRef={act1Ref} />
-        <HeroJamoField />
 
         <div className="relative z-10 mx-auto grid max-sm:h-auto sm:h-full w-full max-w-6xl grid-cols-1 items-center px-6 sm:px-8 sm:ps-[4vw] lg:grid-cols-[0.32fr_1.38fr_0.80fr] lg:px-10 lg:ps-[5vw]">
           {/* 좌측 세로 장식 — 訓民正音 · 世宗御製 (데스크톱 전용) */}
@@ -222,7 +221,6 @@ export default function HomePage() {
         id="home-act2"
         className={`home-scroll-margin site-container relative z-10 flex max-sm:h-auto max-sm:min-h-0 max-sm:overflow-visible max-sm:py-8 ${heroHeightDesktop} flex-col sm:justify-center py-[clamp(0.75rem,2dvh,1.5rem)] sm:py-[clamp(0.75rem,2dvh,1.5rem)]`}
       >
-        <HomeNavJamoField />
         <div className="relative z-10 grid min-h-0 w-full grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:gap-5">
         <NavCard
           compact

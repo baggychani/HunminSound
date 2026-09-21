@@ -1,9 +1,13 @@
 'use client'
 
+import type { RefObject } from 'react'
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
+
 /**
- * 1막 배경 — 한지 위에 은은히 떠 있는 자모(옛글자 포함) 장식. 데스크톱 전용.
- * 중앙(제목·3D 책)과 우측(세종상)을 피해 좌측·가장자리에 배치.
- * 위치·타이밍은 고정값 — SSR/hydration 안전.
+ * 홈 1·2막 배경 — 한지 위에 은은히 떠 있는 자모(옛글자 포함) 장식. 데스크톱 전용.
+ * `fixed`로 뷰포트에 고정해서, 1막에서 2막으로 스크롤해도 흩뿌린 위치가 그대로 유지된다
+ * (예전엔 막마다 따로 자기 자리에 절대배치돼서 2막에서 배치가 확 바뀌어 보였음).
+ * 3막(다크 풀블리드) 진입 전엔 스크롤에 맞춰 페이드아웃 — 밝은 톤 장식이라 다크 배경과 안 맞음.
  */
 const GLYPHS = [
   { ch: 'ㆍ', left: '6%', top: '16%', size: '1.5rem', dur: 16, delay: 0, rot: 4, op: 0.16 },
@@ -18,11 +22,30 @@ const GLYPHS = [
   { ch: 'ㆁ', left: '93%', top: '78%', size: '1.5rem', dur: 15, delay: 3.0, rot: -6, op: 0.09 },
 ] as const
 
-export function HeroJamoField() {
+interface HomeJamoFieldProps {
+  /** 이 영역이 시작되기 전에 자모 장식을 페이드아웃한다 (3막 진입 경계) */
+  fadeBeforeRef: RefObject<HTMLElement | null>
+}
+
+export function HomeJamoField({ fadeBeforeRef }: HomeJamoFieldProps) {
+  const reduce = useReducedMotion()
+  const { scrollY } = useScroll()
+
+  const fieldOpacity = useTransform(scrollY, (y) => {
+    if (reduce) return 1
+    const boundary = fadeBeforeRef.current?.offsetTop ?? Infinity
+    if (!Number.isFinite(boundary)) return 1
+    const fadeStart = boundary - (typeof window !== 'undefined' ? window.innerHeight * 0.5 : 400)
+    if (y <= fadeStart) return 1
+    if (y >= boundary) return 0
+    return 1 - (y - fadeStart) / (boundary - fadeStart)
+  })
+
   return (
-    <div
+    <motion.div
       aria-hidden
-      className="pointer-events-none absolute inset-0 z-[1] hidden overflow-hidden lg:block"
+      className="pointer-events-none fixed inset-0 z-0 hidden overflow-hidden lg:block"
+      style={{ opacity: fieldOpacity }}
     >
       {GLYPHS.map((g, i) => (
         <span
@@ -42,6 +65,6 @@ export function HeroJamoField() {
           {g.ch}
         </span>
       ))}
-    </div>
+    </motion.div>
   )
 }
