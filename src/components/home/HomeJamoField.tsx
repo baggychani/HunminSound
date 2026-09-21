@@ -8,6 +8,17 @@ import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion
  * `fixed`로 뷰포트에 고정해서, 1막에서 2막으로 스크롤해도 흩뿌린 위치가 그대로 유지된다
  * (예전엔 막마다 따로 자기 자리에 절대배치돼서 2막에서 배치가 확 바뀌어 보였음).
  * 3막(다크 풀블리드) 진입 전엔 스크롤에 맞춰 페이드아웃 — 밝은 톤 장식이라 다크 배경과 안 맞음.
+ *
+ * @stacking-context-note — 반드시 1막 `<section>` 안, `HeroActBackdrop` 바로 다음에
+ * 렌더할 것(페이지 루트로 옮기지 말 것). 1막 section은 `relative z-10`로 자체
+ * 스태킹 컨텍스트를 만들기 때문에, 이 필드를 페이지 루트로 빼면 1막 내부의
+ * z-[1]<->z-0(backdrop) 관계가 아니라 "1막 section(z-10) 전체" 대 "필드"로
+ * 비교가 바뀌어서, backdrop의 불투명한 feather 오버레이가 필드를 통째로 덮어버린다
+ * (실제로 한 번 이렇게 배치했다가 1막에서 안 보이는 회귀가 났었음). `fixed`는
+ * 위치만 뷰포트 기준이고 페인트 순서는 원래 DOM 위치의 스태킹 규칙을 그대로 따르므로,
+ * 1막 안에 그대로 두면 1막에서는 backdrop 위·본문 아래로, 2막으로 스크롤해도 화면에
+ * 남아있으면서 2막의 불투명 카드 아래로 자연스럽게 깔린다(2막 section이 DOM에서
+ * 나중이라 같은 z-10끼리는 2막이 위에 그려짐).
  */
 const GLYPHS = [
   { ch: 'ㆍ', left: '6%', top: '16%', size: '1.5rem', dur: 16, delay: 0, rot: 4, op: 0.16 },
@@ -44,7 +55,7 @@ export function HomeJamoField({ fadeBeforeRef }: HomeJamoFieldProps) {
   return (
     <motion.div
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-0 hidden overflow-hidden lg:block"
+      className="pointer-events-none fixed inset-0 z-[1] hidden overflow-hidden lg:block"
       style={{ opacity: fieldOpacity }}
     >
       {GLYPHS.map((g, i) => (

@@ -126,7 +126,6 @@ export default function HomePage() {
       <ScrollColorWash actRefs={{ act1: act1Ref, act2: act2Ref, act3: act3Ref }} />
       <HomeScrollProgress containerRef={pageRef} />
       <HomeActRail />
-      <HomeJamoField fadeBeforeRef={act3Ref} />
 
       {/* 1막 — 히어로 (모든 언어 동일 레이아웃·배경·3D) */}
       <section
@@ -135,6 +134,7 @@ export default function HomePage() {
         className={`relative z-10 ${heroHeightMobile} ${heroHeightDesktop} isolation-isolate`}
       >
         <HeroActBackdrop heroRef={act1Ref} />
+        <HomeJamoField fadeBeforeRef={act3Ref} />
 
         <div className="relative z-10 mx-auto grid max-sm:h-auto sm:h-full w-full max-w-6xl grid-cols-1 items-center px-6 sm:px-8 sm:ps-[4vw] lg:grid-cols-[0.32fr_1.38fr_0.80fr] lg:px-10 lg:ps-[5vw]">
           {/* 좌측 세로 장식 — 訓民正音 · 世宗御製 (데스크톱 전용) */}
