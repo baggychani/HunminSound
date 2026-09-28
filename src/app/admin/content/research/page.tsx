@@ -406,11 +406,32 @@ function TaskInfoEditor({ rows, onChange }: { rows: TaskInfoRow[]; onChange: (v:
 }
 
 /* ── 저장 버튼 ───────────────────────────────────────────────────────── */
-function SaveBar({ dirty, saving, onSave, onReset }: { dirty: boolean; saving: boolean; onSave: () => void; onReset: () => void }) {
-  if (!dirty && !saving) return null
+function SaveBar({
+  dirty,
+  saving,
+  notice,
+  onSave,
+  onReset,
+}: {
+  dirty: boolean
+  saving: boolean
+  notice: { ok: boolean; text: string } | null
+  onSave: () => void
+  onReset: () => void
+}) {
+  if (!dirty && !saving) {
+    if (!notice) return null
+    return (
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[90vw] bg-hanji border border-hanji-border shadow-xl rounded-2xl px-5 py-3">
+        <p className={`font-sans text-sm ${notice.ok ? 'text-ink-muted' : 'text-red-500'}`}>{notice.text}</p>
+      </div>
+    )
+  }
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-hanji border border-hanji-border shadow-xl rounded-2xl px-5 py-3">
-      <p className="font-sans text-sm text-ink-muted">저장되지 않은 변경사항이 있습니다.</p>
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex max-w-[90vw] items-center gap-3 bg-hanji border border-hanji-border shadow-xl rounded-2xl px-5 py-3">
+      <p className={`font-sans text-sm ${notice && !notice.ok ? 'text-red-500' : 'text-ink-muted'}`}>
+        {notice && !notice.ok ? notice.text : '저장되지 않은 변경사항이 있습니다.'}
+      </p>
       <button
         onClick={onReset}
         className="font-sans text-sm text-ink-muted/60 hover:text-ink transition-colors"
@@ -434,13 +455,20 @@ export default function AdminResearchPage() {
   const [data, setData] = useState<ResearchContent | null>(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  /** 저장 시 동시 수정 감지용 — 불러온 시점의 파일 버전 */
+  const [sha, setSha] = useState<string | null>(null)
+  const [saveNotice, setSaveNotice] = useState<{ ok: boolean; text: string } | null>(null)
 
   useEffect(() => {
     fetch('/api/admin/research-content', { cache: 'no-store' })
-      .then((r) => r.json())
-      .then((d: ResearchContent) => {
-        setOriginal(cloneDeep(d))
-        setData(cloneDeep(d))
+      .then((r) => {
+        if (!r.ok) throw new Error()
+        return r.json()
+      })
+      .then((d: { data: ResearchContent; sha: string | null }) => {
+        setOriginal(cloneDeep(d.data))
+        setData(cloneDeep(d.data))
+        setSha(d.sha)
       })
       .catch(() => setError('데이터를 불러오지 못했습니다.'))
   }, [])
@@ -450,23 +478,24 @@ export default function AdminResearchPage() {
   const save = useCallback(async () => {
     if (!data) return
     setSaving(true)
+    setSaveNotice(null)
     try {
       const res = await fetch('/api/admin/research-content', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ data, sha }),
       })
-      if (!res.ok) {
-        const body = (await res.json().catch(() => null)) as { message?: string } | null
-        throw new Error(body?.message ?? '저장에 실패했습니다.')
-      }
+      const body = (await res.json().catch(() => null)) as { message?: string; sha?: string | null } | null
+      if (!res.ok) throw new Error(body?.message ?? '저장에 실패했습니다.')
+      setSha(body?.sha ?? null)
       setOriginal(cloneDeep(data))
+      setSaveNotice({ ok: true, text: '저장했습니다. 1~2분 뒤 사이트에 반영됩니다.' })
     } catch (err) {
-      setError(err instanceof Error ? err.message : '저장에 실패했습니다.')
+      setSaveNotice({ ok: false, text: err instanceof Error ? err.message : '저장에 실패했습니다.' })
     } finally {
       setSaving(false)
     }
-  }, [data])
+  }, [data, sha])
 
   const reset = useCallback(() => {
     if (original) setData(cloneDeep(original))
@@ -709,7 +738,7 @@ export default function AdminResearchPage() {
       </main>
 
       <AdminFooter />
-      <SaveBar dirty={dirty} saving={saving} onSave={save} onReset={reset} />
+      <SaveBar dirty={dirty} saving={saving} notice={saveNotice} onSave={save} onReset={reset} />
     </div>
   )
 }

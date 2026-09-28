@@ -12,6 +12,12 @@ import type { OverridesStore } from '@/lib/i18n-overrides'
 import type { HistoryEntry } from '@/lib/admin-history'
 import type { ResearchContent } from '@/lib/research-content'
 import researchContentJson from '@/data/research-content.json'
+import {
+  GithubConflictError,
+  isGithubContentEnabled,
+  readGithubFile,
+  writeGithubFile,
+} from '@/lib/githubContent'
 
 const CMS_KEYS = {
   overrides: 'hunminsound:cms:i18n-overrides',
@@ -130,17 +136,52 @@ export async function writeAdminHistory(history: HistoryEntry[]): Promise<void> 
 /* ── research content ───────────────────────────────────────────────────── */
 
 /**
- * 코드의 research-content.json이 원본이다 — 코드로 고치고 푸시하면 그대로 반영된다.
- * TODO(2026-10): 관리자 페이지 저장이 이 JSON을 갱신하도록 구조 보강 후 저장 재개.
+ * 원본은 코드의 research-content.json 하나다.
+ * - 코드로 고치고 푸시 → 재배포로 반영
+ * - 관리자 페이지 저장 → 같은 파일을 GitHub에 커밋 → 재배포로 반영
  */
+const RESEARCH_REPO_PATH = 'src/data/research-content.json'
+
+/** 공개 페이지용 — 배포에 포함된 JSON */
 export async function readResearchContent(): Promise<ResearchContent> {
   return researchContentJson as ResearchContent
 }
 
-/** 로컬 개발에서만 JSON 파일에 저장된다. 프로덕션(Vercel)에서는 임시로 막아둔다. */
-export async function writeResearchContent(data: ResearchContent): Promise<void> {
-  if (process.env.VERCEL === '1') {
-    throw new Error('RESEARCH_CONTENT_IS_CODE')
+/** 기존 파일 형식(4칸 들여쓰기 + 끝 줄바꿈)과 같게 — 관리자 저장 커밋의 diff가 바뀐 줄만 나오도록 */
+function serializeResearch(data: ResearchContent): string {
+  return JSON.stringify(data, null, 4) + '\n'
+}
+
+/**
+ * 관리자 편집용 — GitHub 최신본(재배포 전이라도 방금 저장한 내용이 보이도록).
+ * sha는 저장 시 동시 수정 감지에 쓴다. 로컬(토큰 없음)에서는 파일을 읽고 sha는 null.
+ */
+export async function readResearchContentForAdmin(): Promise<{ data: ResearchContent; sha: string | null }> {
+  if (isGithubContentEnabled()) {
+    const { text, sha } = await readGithubFile(RESEARCH_REPO_PATH)
+    return { data: JSON.parse(text) as ResearchContent, sha }
   }
-  writeFileJson(FILE_PATHS.research, data)
+  return { data: readFileJson(FILE_PATHS.research, researchContentJson as ResearchContent), sha: null }
+}
+
+/** 성공 시 새 sha(로컬은 null). 그 사이 코드로 수정됐으면 GithubConflictError */
+export async function writeResearchContent(
+  data: ResearchContent,
+  sha: string | null,
+  editor: string,
+): Promise<string | null> {
+  if (isGithubContentEnabled()) {
+    if (!sha) throw new GithubConflictError()
+    return writeGithubFile(
+      RESEARCH_REPO_PATH,
+      serializeResearch(data),
+      sha,
+      `content: 관리자 페이지에서 연구 소개 수정 (${editor})`,
+    )
+  }
+  if (process.env.VERCEL === '1') {
+    throw new Error('GITHUB_NOT_CONFIGURED')
+  }
+  fs.writeFileSync(FILE_PATHS.research, serializeResearch(data), 'utf8')
+  return null
 }
