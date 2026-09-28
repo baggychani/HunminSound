@@ -186,7 +186,7 @@ const INITIAL: HunminPassage[] = [
     translations: {
       en: 'The guttural sound (laryngeal consonant) letter ㅇ /ɦ/ resembles the shape of the throat.',
     },
-    glyphLinks: [{ symbol: 'ㅇ', target: 'consonants' }],
+    glyphLinks: [{ symbol: 'ㅇ', id: 'ng', target: 'consonants' }],
   },
   {
     number: '59',
