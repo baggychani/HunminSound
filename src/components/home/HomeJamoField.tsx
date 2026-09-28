@@ -1,5 +1,7 @@
 'use client'
 
+import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion'
+
 /**
  * 홈 배경 — 한지 위에 은은히 떠 있는 자모(옛글자 포함) 장식. 데스크톱 전용.
  * `fixed`로 뷰포트에 고정해서, 막을 넘나들어도 흩뿌린 위치가 그대로 유지된다
@@ -19,18 +21,48 @@
  * 남아있으면서 2막의 불투명 카드 아래로 자연스럽게 깔린다(2막 section이 DOM에서
  * 나중이라 같은 z-10끼리는 2막이 위에 그려짐).
  */
+/**
+ * `depth` — 스크롤 시차(px / 스크롤 px). 글자마다 속도를 달리해서 막이 바뀔 때 배치가 은근히 달라진다.
+ * 화면 밖으로 빠지지 않게 위쪽 글자는 +(아래로), 아래쪽 글자는 −(위로) 흐른다.
+ */
 const GLYPHS = [
-  { ch: 'ㆍ', left: '6%', top: '16%', size: '1.5rem', dur: 16, delay: 0, rot: 4, op: 0.16 },
-  { ch: 'ㅿ', left: '11%', top: '34%', size: '2.1rem', dur: 19, delay: 2.4, rot: -6, op: 0.11 },
-  { ch: 'ㆁ', left: '4%', top: '55%', size: '1.7rem', dur: 14, delay: 1.1, rot: 5, op: 0.13 },
-  { ch: 'ㆆ', left: '13%', top: '72%', size: '1.4rem', dur: 17, delay: 3.6, rot: -4, op: 0.12 },
-  { ch: 'ㄱ', left: '8%', top: '88%', size: '1.2rem', dur: 15, delay: 0.8, rot: 7, op: 0.1 },
-  { ch: 'ㅅ', left: '19%', top: '12%', size: '1.15rem', dur: 18, delay: 4.2, rot: -5, op: 0.1 },
-  { ch: 'ㅁ', left: '24%', top: '82%', size: '1.3rem', dur: 20, delay: 2.0, rot: 3, op: 0.09 },
-  { ch: 'ㆍ', left: '30%', top: '7%', size: '1rem', dur: 13, delay: 5.0, rot: -3, op: 0.12 },
-  { ch: 'ㄴ', left: '86%', top: '9%', size: '1.25rem', dur: 17, delay: 1.6, rot: 5, op: 0.08 },
-  { ch: 'ㆁ', left: '93%', top: '78%', size: '1.5rem', dur: 15, delay: 3.0, rot: -6, op: 0.09 },
+  { ch: 'ㆍ', left: '6%', top: '16%', size: '1.5rem', dur: 16, delay: 0, rot: 4, op: 0.16, depth: 0.045 },
+  { ch: 'ㅿ', left: '11%', top: '34%', size: '2.1rem', dur: 19, delay: 2.4, rot: -6, op: 0.11, depth: 0.025 },
+  { ch: 'ㆁ', left: '4%', top: '55%', size: '1.7rem', dur: 14, delay: 1.1, rot: 5, op: 0.13, depth: -0.035 },
+  { ch: 'ㆆ', left: '13%', top: '72%', size: '1.4rem', dur: 17, delay: 3.6, rot: -4, op: 0.12, depth: -0.02 },
+  { ch: 'ㄱ', left: '8%', top: '88%', size: '1.2rem', dur: 15, delay: 0.8, rot: 7, op: 0.1, depth: -0.05 },
+  { ch: 'ㅅ', left: '19%', top: '12%', size: '1.15rem', dur: 18, delay: 4.2, rot: -5, op: 0.1, depth: 0.02 },
+  { ch: 'ㅁ', left: '95%', top: '32%', size: '1.3rem', dur: 20, delay: 2.0, rot: 3, op: 0.09, depth: 0.03 },
+  { ch: 'ㆍ', left: '30%', top: '7%', size: '1rem', dur: 13, delay: 5.0, rot: -3, op: 0.12, depth: 0.05 },
+  { ch: 'ㄴ', left: '86%', top: '9%', size: '1.25rem', dur: 17, delay: 1.6, rot: 5, op: 0.08, depth: 0.035 },
+  { ch: 'ㆁ', left: '93%', top: '78%', size: '1.5rem', dur: 15, delay: 3.0, rot: -6, op: 0.09, depth: -0.04 },
 ] as const
+
+type Glyph = (typeof GLYPHS)[number]
+
+/** 시차 이동은 바깥 래퍼(y), 둥실거림(hero-jamo-drift)은 안쪽 글자 — transform이 서로 덮어쓰지 않게 분리 */
+function JamoGlyph({ g, inverse, scrollY }: { g: Glyph; inverse: boolean; scrollY: MotionValue<number> }) {
+  const reduce = useReducedMotion()
+  const y = useTransform(scrollY, (v) => (reduce ? 0 : v * g.depth))
+  const op = inverse ? Math.min(g.op * 1.4, 0.24) : g.op
+  return (
+    <motion.div className="absolute" style={{ left: g.left, top: g.top, y }}>
+      <span
+        className={`hero-jamo-drift block select-none font-jamo ${inverse ? 'text-white' : 'text-ink'}`}
+        style={{
+          fontSize: g.size,
+          ['--drift-dur' as string]: `${g.dur}s`,
+          ['--drift-delay' as string]: `${g.delay}s`,
+          ['--drift-rot' as string]: `${g.rot}deg`,
+          ['--drift-op' as string]: op,
+          opacity: op,
+        }}
+      >
+        {g.ch}
+      </span>
+    </motion.div>
+  )
+}
 
 interface HomeJamoFieldProps {
   /** ink: 한지 배경용(기본). inverse: 3막 다크 배경용 — 같은 자리에 흰 글자로 */
@@ -38,30 +70,12 @@ interface HomeJamoFieldProps {
 }
 
 export function HomeJamoField({ tone = 'ink' }: HomeJamoFieldProps) {
-  const inverse = tone === 'inverse'
+  const { scrollY } = useScroll()
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 z-[1] hidden overflow-hidden lg:block">
-      {GLYPHS.map((g, i) => {
-        const op = inverse ? Math.min(g.op * 1.4, 0.24) : g.op
-        return (
-          <span
-            key={i}
-            className={`hero-jamo-drift absolute select-none font-jamo ${inverse ? 'text-white' : 'text-ink'}`}
-            style={{
-              left: g.left,
-              top: g.top,
-              fontSize: g.size,
-              ['--drift-dur' as string]: `${g.dur}s`,
-              ['--drift-delay' as string]: `${g.delay}s`,
-              ['--drift-rot' as string]: `${g.rot}deg`,
-              ['--drift-op' as string]: op,
-              opacity: op,
-            }}
-          >
-            {g.ch}
-          </span>
-        )
-      })}
+      {GLYPHS.map((g, i) => (
+        <JamoGlyph key={i} g={g} inverse={tone === 'inverse'} scrollY={scrollY} />
+      ))}
     </div>
   )
 }
