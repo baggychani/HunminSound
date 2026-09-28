@@ -1,11 +1,13 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { useState, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { useSiteMessages } from '@/hooks/useSiteMessages'
 import { MailIcon, PhoneIcon, LocationIcon } from '@/components/ui/ContactIcons'
+import { getPrivacyMessages } from '@/lib/privacy-i18n'
 
 /** 한국어 협력 안내 — '연구자·기관과의 협력을...'이 한 덩어리로 읽히도록
  * '연구자' 앞에서 줄바꿈(전에는 '연구자·' 뒤에서 끊어서 '연구자·'와 '기관'이
@@ -77,7 +79,9 @@ export function HomeContactSection() {
     inquiryType: '',
     message: '',
     website: '',
+    consent: false,
   })
+  const pm = getPrivacyMessages(lang)
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -95,11 +99,13 @@ export function HomeContactSection() {
           setErrorDetail('SMTP_NOT_CONFIGURED')
         } else if (data.error === 'RATE_LIMIT') {
           setErrorDetail('RATE_LIMIT')
+        } else if (data.error === 'CONSENT_REQUIRED') {
+          setErrorDetail('CONSENT_REQUIRED')
         }
         throw new Error(data.error ?? 'failed')
       }
       setStatus('success')
-      setForm({ name: '', email: '', affiliation: '', inquiryType: '', message: '', website: '' })
+      setForm({ name: '', email: '', affiliation: '', inquiryType: '', message: '', website: '', consent: false })
     } catch {
       setStatus('error')
     }
@@ -244,6 +250,31 @@ export function HomeContactSection() {
             />
           </div>
 
+          {/* 개인정보 수집·이용 동의(개인정보 보호법 제15조 — 항목·목적·기간·거부권 고지) */}
+          <div className="mt-5 rounded-sm border border-hanji-border/70 bg-hanji/60 px-4 py-3 font-sans text-[11.5px] leading-[1.75] text-ink-muted dark:bg-hanji/40">
+            <p className="font-medium text-ink-soft">{pm.consentTitle}</p>
+            <ul className="mt-1.5 space-y-0.5">
+              <li>{pm.consentItems}</li>
+              <li>{pm.consentPurpose}</li>
+              <li>{pm.consentRetention}</li>
+              <li>{pm.consentOverseas}</li>
+              <li>{pm.consentRefuse}</li>
+            </ul>
+            <Link href="/privacy" className="mt-1.5 inline-block text-ink-accent underline underline-offset-2 hover:text-gold">
+              {pm.policyLink}
+            </Link>
+            <label className="mt-2.5 flex cursor-pointer items-start gap-2 text-[12.5px] text-ink">
+              <input
+                type="checkbox"
+                required
+                checked={form.consent}
+                onChange={(e) => setForm((f) => ({ ...f, consent: e.target.checked }))}
+                className="mt-[3px] h-3.5 w-3.5 shrink-0 accent-[rgb(var(--gold-rgb))]"
+              />
+              <span>{pm.consentAgree}</span>
+            </label>
+          </div>
+
           <button
             type="submit"
             disabled={status === 'sending'}
@@ -271,7 +302,9 @@ export function HomeContactSection() {
                 ? '메일 서버(SMTP) 설정이 없습니다. 관리자에게 문의해 주세요.'
                 : errorDetail === 'RATE_LIMIT'
                   ? '잠시 후 다시 시도해 주세요. (시간당 전송 한도)'
-                  : v2.contactError}
+                  : errorDetail === 'CONSENT_REQUIRED'
+                    ? pm.consentRequired
+                    : v2.contactError}
             </p>
           ) : null}
         </motion.form>

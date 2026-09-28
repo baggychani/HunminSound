@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
     inquiryType?: string
     message?: string
     website?: string
+    consent?: boolean
   }
 
   try {
@@ -35,6 +36,10 @@ export async function POST(req: NextRequest) {
 
   if (!name || !email || !message) {
     return NextResponse.json({ error: 'MISSING_FIELDS' }, { status: 400 })
+  }
+  // 개인정보 수집·이용 동의 없이는 받지 않는다(/privacy 참고)
+  if (body.consent !== true) {
+    return NextResponse.json({ error: 'CONSENT_REQUIRED' }, { status: 400 })
   }
   if (message.length > 500) {
     return NextResponse.json({ error: 'MESSAGE_TOO_LONG' }, { status: 400 })

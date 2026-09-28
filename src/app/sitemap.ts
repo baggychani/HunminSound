@@ -7,6 +7,7 @@ const PUBLIC_ROUTES: { path: string; priority: number }[] = [
   { path: '/vowels', priority: 0.8 },
   { path: '/hunminjeongeum', priority: 0.8 },
   { path: '/research', priority: 0.6 },
+  { path: '/privacy', priority: 0.2 },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
