@@ -38,10 +38,18 @@ function smoothScrollTo(top: number): Promise<void> {
   })
 }
 
-function wheelDeltaPx(e: WheelEvent) {
-  if (e.deltaMode === 1) return e.deltaY * 16
-  if (e.deltaMode === 2) return e.deltaY * window.innerHeight
-  return e.deltaY
+/** 휠 방향으로 아직 더 스크롤할 수 있는 내부 요소(메시지 칸 등) 위인지 */
+function canScrollInside(target: EventTarget | null, deltaY: number) {
+  let el = target instanceof Element ? target : null
+  while (el && el !== document.body && el !== document.documentElement) {
+    const { overflowY } = getComputedStyle(el)
+    if ((overflowY === 'auto' || overflowY === 'scroll') && el.scrollHeight > el.clientHeight) {
+      if (deltaY > 0 && el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true
+      if (deltaY < 0 && el.scrollTop > 0) return true
+    }
+    el = el.parentElement
+  }
+  return false
 }
 
 function isTypingTarget(target: EventTarget | null) {
@@ -51,11 +59,11 @@ function isTypingTarget(target: EventTarget | null) {
 }
 
 /**
- * 홈 1~4막 — 1~3막(과 3·4막 사이 자모 띠)은 "스냅 구간"이라 막 시작점에만 머물 수 있다.
- * - 휠: 스냅 구간에서는 작은 델타도 네이티브 스크롤을 막고, 누적이 기준을 넘으면 다음/이전 막으로.
- * - 키보드(↓ PageDown Space / ↑ PageUp Shift+Space): 한 번에 한 막.
- * - 그 밖의 모든 경로(스크롤바 드래그, 막대 클릭 등): 스크롤이 멈췄을 때 막 사이면 가장 가까운 막으로 붙인다.
- * 4막은 내용(문의 폼) 높이만큼 늘어날 수 있어서 4막 안쪽은 자연 스크롤, 4막 상단에서 위로 가면 3막으로.
+ * 홈 전체를 계단식으로만 이동 — 머물 수 있는 곳은 1·2·3·4막 시작점과 페이지 맨 아래(꼬리말까지) 다섯 칸뿐.
+ * (3·4막 사이 자모 띠, 4막과 꼬리말 사이 등 칸 사이에는 멈출 수 없다)
+ * - 휠: 작은 델타도 네이티브 스크롤을 막고, 누적이 기준을 넘으면 다음/이전 칸으로.
+ * - 키보드(↓ PageDown Space / ↑ PageUp Shift+Space): 한 번에 한 칸.
+ * - 그 밖의 모든 경로(스크롤바 드래그 등): 스크롤이 멈췄을 때 칸 사이면 가장 가까운 칸으로 붙인다.
  */
 export function useHomeActScroll(
   _act1Ref: RefObject<HTMLElement | null>,
@@ -74,13 +82,17 @@ export function useHomeActScroll(
     let cooldownUntil = 0
     let settleTimer = 0
 
-    /** 막 시작 스크롤 위치들 [1막, 2막, 3막, 4막] */
+    /** 머물 수 있는 스크롤 위치 [1막, 2막, 3막, 4막, 페이지 맨 아래(꼬리말까지)] */
     const snapPoints = (): number[] | null => {
       const act2 = act2Ref.current
       const act3 = act3Ref.current
       const act4 = act4Ref.current
       if (!act2 || !act3 || !act4) return null
-      return [0, actScrollTop(act2), actScrollTop(act3), actScrollTop(act4)]
+      const act4Top = actScrollTop(act4)
+      const bottom = document.documentElement.scrollHeight - window.innerHeight
+      const points = [0, actScrollTop(act2), actScrollTop(act3), act4Top]
+      if (bottom > act4Top + TOLERANCE) points.push(bottom)
+      return points
     }
 
     const nextPoint = (y: number, dir: number, points: number[]) =>
@@ -112,24 +124,13 @@ export function useHomeActScroll(
         e.preventDefault()
         return
       }
+      // 메시지 칸처럼 안에서 스크롤되는 요소 위에서는 그 요소가 스크롤되게 둔다
+      if (canScrollInside(e.target, e.deltaY)) return
       const points = snapPoints()
       if (!points) return
       const y = window.scrollY
-      const act4Top = points[points.length - 1]
 
-      // 4막 안쪽 — 아래로는 자연 스크롤
-      if (y >= act4Top - TOLERANCE && e.deltaY > 0) return
-      // 4막 안쪽에서 위로 — 4막 상단을 넘어 띠 쪽으로 들어가려 하면 4막 상단에 붙인다
-      if (y > act4Top + TOLERANCE && e.deltaY < 0) {
-        if (y + wheelDeltaPx(e) < act4Top) {
-          e.preventDefault()
-          window.scrollTo({ top: act4Top, behavior: 'auto' })
-          cooldownUntil = performance.now() + COOLDOWN_GAP_MS
-        }
-        return
-      }
-
-      // 스냅 구간 — 아무리 작은 델타도 네이티브 스크롤을 막는다(막 사이에 멈출 수 없게)
+      // 아무리 작은 델타도 네이티브 스크롤을 막는다(칸 사이에 멈출 수 없게)
       e.preventDefault()
       const now = performance.now()
       if (now < cooldownUntil) {
@@ -156,9 +157,6 @@ export function useHomeActScroll(
       const points = snapPoints()
       if (!points) return
       const y = window.scrollY
-      const act4Top = points[points.length - 1]
-      if (down && y >= act4Top - TOLERANCE) return
-      if (up && y > act4Top + TOLERANCE) return
 
       e.preventDefault()
       if (locked) return
@@ -166,13 +164,12 @@ export function useHomeActScroll(
       if (target !== undefined) void snapTo(target)
     }
 
-    /** 스크롤이 멈췄는데 스냅 구간의 막 사이라면 가장 가까운 막으로 */
+    /** 스크롤이 멈췄는데 칸 사이라면 가장 가까운 칸으로 */
     const settle = () => {
       if (locked) return
       const points = snapPoints()
       if (!points) return
       const y = window.scrollY
-      if (y >= points[points.length - 1] - TOLERANCE) return
       if (points.some((t) => Math.abs(t - y) <= TOLERANCE)) return
       const nearest = points.reduce((a, b) => (Math.abs(b - y) < Math.abs(a - y) ? b : a))
       void snapTo(nearest)
