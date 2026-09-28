@@ -134,7 +134,7 @@ export default function HomePage() {
         className={`relative z-10 ${heroHeightMobile} ${heroHeightDesktop} isolation-isolate`}
       >
         <HeroActBackdrop heroRef={act1Ref} />
-        <HomeJamoField fadeBeforeRef={act3Ref} />
+        <HomeJamoField />
 
         <div className="relative z-10 mx-auto grid max-sm:h-auto sm:h-full w-full max-w-6xl grid-cols-1 items-center px-6 sm:px-8 sm:ps-[4vw] lg:grid-cols-[0.32fr_1.38fr_0.80fr] lg:px-10 lg:ps-[5vw]">
           {/* 좌측 세로 장식 — 訓民正音 · 世宗御製 (데스크톱 전용) */}

@@ -1,13 +1,12 @@
 'use client'
 
-import type { RefObject } from 'react'
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
-
 /**
- * 홈 1·2막 배경 — 한지 위에 은은히 떠 있는 자모(옛글자 포함) 장식. 데스크톱 전용.
- * `fixed`로 뷰포트에 고정해서, 1막에서 2막으로 스크롤해도 흩뿌린 위치가 그대로 유지된다
+ * 홈 배경 — 한지 위에 은은히 떠 있는 자모(옛글자 포함) 장식. 데스크톱 전용.
+ * `fixed`로 뷰포트에 고정해서, 막을 넘나들어도 흩뿌린 위치가 그대로 유지된다
  * (예전엔 막마다 따로 자기 자리에 절대배치돼서 2막에서 배치가 확 바뀌어 보였음).
- * 3막(다크 풀블리드) 진입 전엔 스크롤에 맞춰 페이드아웃 — 밝은 톤 장식이라 다크 배경과 안 맞음.
+ * 1·2·4막은 이 ink 필드가 그대로 보이고, 3막은 불투명한 다크 배경이 이 필드를 덮는 대신
+ * 3막 안에 같은 좌표의 inverse(흰 글자) 필드를 3막 영역으로 clip해서 깐다 — 스크롤하면
+ * 3막 경계선을 따라 같은 글자가 흑백 반전돼 보인다(HomeResearchAct 참고).
  *
  * @stacking-context-note — 반드시 1막 `<section>` 안, `HeroActBackdrop` 바로 다음에
  * 렌더할 것(페이지 루트로 옮기지 말 것). 1막 section은 `relative z-10`로 자체
@@ -34,48 +33,35 @@ const GLYPHS = [
 ] as const
 
 interface HomeJamoFieldProps {
-  /** 이 영역이 시작되기 전에 자모 장식을 페이드아웃한다 (3막 진입 경계) */
-  fadeBeforeRef: RefObject<HTMLElement | null>
+  /** ink: 한지 배경용(기본). inverse: 3막 다크 배경용 — 같은 자리에 흰 글자로 */
+  tone?: 'ink' | 'inverse'
 }
 
-export function HomeJamoField({ fadeBeforeRef }: HomeJamoFieldProps) {
-  const reduce = useReducedMotion()
-  const { scrollY } = useScroll()
-
-  const fieldOpacity = useTransform(scrollY, (y) => {
-    if (reduce) return 1
-    const boundary = fadeBeforeRef.current?.offsetTop ?? Infinity
-    if (!Number.isFinite(boundary)) return 1
-    const fadeStart = boundary - (typeof window !== 'undefined' ? window.innerHeight * 0.5 : 400)
-    if (y <= fadeStart) return 1
-    if (y >= boundary) return 0
-    return 1 - (y - fadeStart) / (boundary - fadeStart)
-  })
-
+export function HomeJamoField({ tone = 'ink' }: HomeJamoFieldProps) {
+  const inverse = tone === 'inverse'
   return (
-    <motion.div
-      aria-hidden
-      className="pointer-events-none fixed inset-0 z-[1] hidden overflow-hidden lg:block"
-      style={{ opacity: fieldOpacity }}
-    >
-      {GLYPHS.map((g, i) => (
-        <span
-          key={i}
-          className="hero-jamo-drift absolute font-jamo text-ink select-none"
-          style={{
-            left: g.left,
-            top: g.top,
-            fontSize: g.size,
-            ['--drift-dur' as string]: `${g.dur}s`,
-            ['--drift-delay' as string]: `${g.delay}s`,
-            ['--drift-rot' as string]: `${g.rot}deg`,
-            ['--drift-op' as string]: g.op,
-            opacity: g.op,
-          }}
-        >
-          {g.ch}
-        </span>
-      ))}
-    </motion.div>
+    <div aria-hidden className="pointer-events-none fixed inset-0 z-[1] hidden overflow-hidden lg:block">
+      {GLYPHS.map((g, i) => {
+        const op = inverse ? Math.min(g.op * 1.4, 0.24) : g.op
+        return (
+          <span
+            key={i}
+            className={`hero-jamo-drift absolute select-none font-jamo ${inverse ? 'text-white' : 'text-ink'}`}
+            style={{
+              left: g.left,
+              top: g.top,
+              fontSize: g.size,
+              ['--drift-dur' as string]: `${g.dur}s`,
+              ['--drift-delay' as string]: `${g.delay}s`,
+              ['--drift-rot' as string]: `${g.rot}deg`,
+              ['--drift-op' as string]: op,
+              opacity: op,
+            }}
+          >
+            {g.ch}
+          </span>
+        )
+      })}
+    </div>
   )
 }

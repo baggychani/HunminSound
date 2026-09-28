@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { forwardRef, useRef } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 import { useSiteMessages } from '@/hooks/useSiteMessages'
+import { HomeJamoField } from '@/components/home/HomeJamoField'
 
 const MRI_HERO = '/images/research/mri-hero-v2.webp'
 const MRI_W = 1536
@@ -125,6 +126,11 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
         aria-hidden
         className="pointer-events-none absolute right-[10%] top-[14%] h-2.5 w-2.5 rotate-45 border border-sky-200/15"
       />
+
+      {/* 1·2·4막 자모 장식의 흑백 반전판 — fixed 필드를 clip-path로 3막 영역 안에서만 보이게 */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 [clip-path:inset(0)]">
+        <HomeJamoField tone="inverse" />
+      </div>
 
       <div className="site-container relative max-sm:h-auto sm:h-full min-h-0 px-6 sm:px-10 lg:px-14">
         <div className="grid max-sm:h-auto sm:h-full min-h-0 grid-cols-1 grid-rows-[minmax(0,1fr)_auto] gap-5 py-[clamp(0.75rem,2dvh,1.25rem)] max-sm:py-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:grid-rows-1 lg:items-stretch lg:gap-12 xl:gap-14">

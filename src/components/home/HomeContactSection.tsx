@@ -82,6 +82,7 @@ export function HomeContactSection() {
     consent: false,
   })
   const pm = getPrivacyMessages(lang)
+  const [consentOpen, setConsentOpen] = useState(false)
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -181,7 +182,7 @@ export function HomeContactSection() {
           <h3 className="font-serif text-lg font-bold text-ink">{v2.contactFormTitle}</h3>
           <p className="mt-2 font-sans text-xs text-ink-muted">{v2.contactFormDesc}</p>
 
-          <div className="mt-5 space-y-3">
+          <div className="mt-5 space-y-2.5">
             <label className="block">
               <span className="font-sans text-xs font-medium text-ink-muted">{v2.contactName} *</span>
               <input
@@ -225,18 +226,18 @@ export function HomeContactSection() {
               </select>
             </label>
             <label className="block">
-              <span className="font-sans text-xs font-medium text-ink-muted">{v2.contactMessage} *</span>
+              <span className="flex items-baseline justify-between gap-3 font-sans text-xs font-medium text-ink-muted">
+                <span>{v2.contactMessage} *</span>
+                <span className="text-[10px] font-normal">{v2.contactMessageLimit}</span>
+              </span>
               <textarea
                 required
-                rows={4}
+                rows={3}
                 maxLength={500}
                 value={form.message}
                 onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-                className={`${inputClass} resize-y min-h-[6rem]`}
+                className={`${inputClass} resize-y min-h-[5.5rem]`}
               />
-              <span className="mt-1 block text-end font-sans text-[10px] text-ink-muted">
-                {v2.contactMessageLimit}
-              </span>
             </label>
             <input
               type="text"
@@ -250,29 +251,43 @@ export function HomeContactSection() {
             />
           </div>
 
-          {/* 개인정보 수집·이용 동의(개인정보 보호법 제15조 — 항목·목적·기간·거부권 고지) */}
-          <div className="mt-5 rounded-sm border border-hanji-border/70 bg-hanji/60 px-4 py-3 font-sans text-[11.5px] leading-[1.75] text-ink-muted dark:bg-hanji/40">
-            <p className="font-medium text-ink-soft">{pm.consentTitle}</p>
-            <ul className="mt-1.5 space-y-0.5">
-              <li>{pm.consentItems}</li>
-              <li>{pm.consentPurpose}</li>
-              <li>{pm.consentRetention}</li>
-              <li>{pm.consentOverseas}</li>
-              <li>{pm.consentRefuse}</li>
-            </ul>
-            <Link href="/privacy" className="mt-1.5 inline-block text-ink-accent underline underline-offset-2 hover:text-gold">
-              {pm.policyLink}
-            </Link>
-            <label className="mt-2.5 flex cursor-pointer items-start gap-2 text-[12.5px] text-ink">
-              <input
-                type="checkbox"
-                required
-                checked={form.consent}
-                onChange={(e) => setForm((f) => ({ ...f, consent: e.target.checked }))}
-                className="mt-[3px] h-3.5 w-3.5 shrink-0 accent-[rgb(var(--gold-rgb))]"
-              />
-              <span>{pm.consentAgree}</span>
-            </label>
+          {/* 개인정보 수집·이용 동의 — 한 줄로 두고, 고지 항목(개인정보 보호법 제15조)은 '보기'로 펼침 */}
+          <div className="mt-4 font-sans text-[12px] text-ink-muted">
+            <div className="flex items-start justify-between gap-3">
+              <label className="flex cursor-pointer items-start gap-2 text-ink-soft">
+                <input
+                  type="checkbox"
+                  required
+                  checked={form.consent}
+                  onChange={(e) => setForm((f) => ({ ...f, consent: e.target.checked }))}
+                  className="mt-[2px] h-3.5 w-3.5 shrink-0 accent-[rgb(var(--gold-rgb))]"
+                />
+                <span>{pm.consentAgree}</span>
+              </label>
+              <button
+                type="button"
+                onClick={() => setConsentOpen((v) => !v)}
+                aria-expanded={consentOpen}
+                aria-controls="contact-consent-detail"
+                className="shrink-0 underline underline-offset-2 hover:text-gold"
+              >
+                {pm.consentView}
+              </button>
+            </div>
+            {consentOpen ? (
+              <ul id="contact-consent-detail" className="mt-2 space-y-0.5 ps-[1.375rem] text-[11.5px] leading-[1.7]">
+                <li>{pm.consentItems}</li>
+                <li>{pm.consentPurpose}</li>
+                <li>{pm.consentRetention}</li>
+                <li>{pm.consentOverseas}</li>
+                <li>{pm.consentRefuse}</li>
+                <li>
+                  <Link href="/privacy" className="text-ink-accent underline underline-offset-2 hover:text-gold">
+                    {pm.policyLink}
+                  </Link>
+                </li>
+              </ul>
+            ) : null}
           </div>
 
           <button
