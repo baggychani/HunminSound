@@ -22,40 +22,33 @@ import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } f
  * 나중이라 같은 z-10끼리는 2막이 위에 그려짐).
  */
 /**
- * 스크롤 시차 — 글자마다 가로·세로로 각자 다른 파장(λ, 스크롤 px)·위상(φ)의 물결을 탄다.
- * 한 방향으로 쭉 흐르면 전체가 한쪽으로 모이기만 하므로, 제자리 근처를 불규칙하게 오가게 했다.
- * ax·ay는 최대 이동 폭(px) — 화면 가장자리에 가까운 글자일수록 그 방향 폭을 작게 잡았다.
- * 페이지 맨 위(scrollY=0)에서는 이동이 0이라 1막 배치는 그대로다.
+ * 스크롤 시차 — `depth`(px / 스크롤 px)만큼 세로로만 일정하게 흐른다(페이지 끝까지 최대 약 60px).
+ * 방향(+아래/−위)을 화면 위치와 무관하게 섞어서, 전체가 한쪽으로 모이지 않고 막마다 배치만 조금씩 바뀐다.
+ * 가로 이동·곡선 궤적은 정신없어 보여서 뺐다. 맨 위(scrollY=0)에서는 이동 0 — 1막 배치 그대로.
  */
 const GLYPHS = [
-  { ch: 'ㆍ', left: '6%', top: '16%', size: '1.5rem', dur: 16, delay: 0, rot: 4, op: 0.16, ax: 30, ay: 55, lx: 2300, ly: 1700, px: 0.4, py: 2.1 },
-  { ch: 'ㅿ', left: '11%', top: '34%', size: '2.1rem', dur: 19, delay: 2.4, rot: -6, op: 0.11, ax: 45, ay: 85, lx: 3100, ly: 2600, px: 4.2, py: 0.9 },
-  { ch: 'ㆁ', left: '4%', top: '55%', size: '1.7rem', dur: 14, delay: 1.1, rot: 5, op: 0.13, ax: 25, ay: 90, lx: 1900, ly: 3400, px: 1.7, py: 5.0 },
-  { ch: 'ㆆ', left: '13%', top: '72%', size: '1.4rem', dur: 17, delay: 3.6, rot: -4, op: 0.12, ax: 50, ay: 70, lx: 2700, ly: 2000, px: 3.3, py: 3.9 },
-  { ch: 'ㄱ', left: '8%', top: '88%', size: '1.2rem', dur: 15, delay: 0.8, rot: 7, op: 0.1, ax: 40, ay: 45, lx: 1600, ly: 2900, px: 5.6, py: 1.4 },
-  { ch: 'ㅅ', left: '19%', top: '12%', size: '1.15rem', dur: 18, delay: 4.2, rot: -5, op: 0.1, ax: 55, ay: 50, lx: 3600, ly: 1800, px: 2.5, py: 4.6 },
-  { ch: 'ㅁ', left: '95%', top: '32%', size: '1.3rem', dur: 20, delay: 2.0, rot: 3, op: 0.09, ax: 22, ay: 85, lx: 2100, ly: 2400, px: 0.9, py: 2.8 },
-  { ch: 'ㆍ', left: '30%', top: '7%', size: '1rem', dur: 13, delay: 5.0, rot: -3, op: 0.12, ax: 65, ay: 35, lx: 2500, ly: 3200, px: 4.8, py: 0.2 },
-  { ch: 'ㄴ', left: '86%', top: '9%', size: '1.25rem', dur: 17, delay: 1.6, rot: 5, op: 0.08, ax: 45, ay: 40, lx: 1750, ly: 2200, px: 3.0, py: 5.5 },
-  { ch: 'ㆁ', left: '93%', top: '78%', size: '1.5rem', dur: 15, delay: 3.0, rot: -6, op: 0.09, ax: 28, ay: 75, lx: 3000, ly: 1650, px: 1.2, py: 3.5 },
+  { ch: 'ㆍ', left: '6%', top: '16%', size: '1.5rem', dur: 16, delay: 0, rot: 4, op: 0.16, depth: -0.012 },
+  { ch: 'ㅿ', left: '11%', top: '34%', size: '2.1rem', dur: 19, delay: 2.4, rot: -6, op: 0.11, depth: 0.02 },
+  { ch: 'ㆁ', left: '4%', top: '55%', size: '1.7rem', dur: 14, delay: 1.1, rot: 5, op: 0.13, depth: -0.018 },
+  { ch: 'ㆆ', left: '13%', top: '72%', size: '1.4rem', dur: 17, delay: 3.6, rot: -4, op: 0.12, depth: 0.012 },
+  { ch: 'ㄱ', left: '8%', top: '88%', size: '1.2rem', dur: 15, delay: 0.8, rot: 7, op: 0.1, depth: -0.022 },
+  { ch: 'ㅅ', left: '19%', top: '12%', size: '1.15rem', dur: 18, delay: 4.2, rot: -5, op: 0.1, depth: 0.016 },
+  { ch: 'ㅁ', left: '95%', top: '32%', size: '1.3rem', dur: 20, delay: 2.0, rot: 3, op: 0.09, depth: -0.02 },
+  { ch: 'ㆍ', left: '30%', top: '7%', size: '1rem', dur: 13, delay: 5.0, rot: -3, op: 0.12, depth: 0.018 },
+  { ch: 'ㄴ', left: '86%', top: '9%', size: '1.25rem', dur: 17, delay: 1.6, rot: 5, op: 0.08, depth: 0.01 },
+  { ch: 'ㆁ', left: '93%', top: '78%', size: '1.5rem', dur: 15, delay: 3.0, rot: -6, op: 0.09, depth: -0.014 },
 ] as const
 
 type Glyph = (typeof GLYPHS)[number]
 
-/** 0에서 시작해 [-amp, amp] 안을 오가는 물결 */
-function wave(v: number, amp: number, wavelength: number, phase: number) {
-  return (amp / 2) * (Math.sin((v / wavelength) * 2 * Math.PI + phase) - Math.sin(phase))
-}
-
-/** 시차 이동은 바깥 래퍼(x·y), 둥실거림(hero-jamo-drift)은 안쪽 글자 — transform이 서로 덮어쓰지 않게 분리 */
+/** 시차 이동은 바깥 래퍼(y), 둥실거림(hero-jamo-drift)은 안쪽 글자 — transform이 서로 덮어쓰지 않게 분리 */
 function JamoGlyph({ g, inverse, scrollY }: { g: Glyph; inverse: boolean; scrollY: MotionValue<number> }) {
   const reduce = useReducedMotion()
-  const x = useTransform(scrollY, (v) => (reduce ? 0 : wave(v, g.ax, g.lx, g.px)))
-  const y = useTransform(scrollY, (v) => (reduce ? 0 : wave(v, g.ay, g.ly, g.py)))
+  const y = useTransform(scrollY, (v) => (reduce ? 0 : v * g.depth))
   // 3막(다크)에서는 존재감을 낮춰 더 연하게
   const op = inverse ? g.op * 0.7 : g.op
   return (
-    <motion.div className="absolute" style={{ left: g.left, top: g.top, x, y }}>
+    <motion.div className="absolute" style={{ left: g.left, top: g.top, y }}>
       <span
         className={`hero-jamo-drift block select-none font-jamo ${inverse ? 'text-white' : 'text-ink'}`}
         style={{
