@@ -10,6 +10,15 @@ export const dynamic = 'force-dynamic'
 
 function cmsErrorResponse(err: unknown) {
   const message = err instanceof Error ? err.message : '저장 실패'
+  if (message.includes('RESEARCH_CONTENT_IS_CODE')) {
+    return NextResponse.json(
+      {
+        error: 'research_content_is_code',
+        message: '연구 소개 관리자 저장은 점검 중입니다(10월 중 재개). 수정이 필요하면 개발자에게 요청해 주세요.',
+      },
+      { status: 409 },
+    )
+  }
   if (message.includes('CMS_CLOUD_STORAGE_REQUIRED')) {
     return NextResponse.json(
       {

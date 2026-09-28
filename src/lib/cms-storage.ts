@@ -11,11 +11,11 @@ import { Redis } from '@upstash/redis'
 import type { OverridesStore } from '@/lib/i18n-overrides'
 import type { HistoryEntry } from '@/lib/admin-history'
 import type { ResearchContent } from '@/lib/research-content'
+import researchContentJson from '@/data/research-content.json'
 
 const CMS_KEYS = {
   overrides: 'hunminsound:cms:i18n-overrides',
   history: 'hunminsound:cms:admin-history',
-  research: 'hunminsound:cms:research-content',
 } as const
 
 const FILE_PATHS = {
@@ -129,11 +129,18 @@ export async function writeAdminHistory(history: HistoryEntry[]): Promise<void> 
 
 /* ── research content ───────────────────────────────────────────────────── */
 
-/** Redis가 원본이다. Git JSON은 저장소가 비었을 때만 초기값으로 사용한다. */
+/**
+ * 코드의 research-content.json이 원본이다 — 코드로 고치고 푸시하면 그대로 반영된다.
+ * TODO(2026-10): 관리자 페이지 저장이 이 JSON을 갱신하도록 구조 보강 후 저장 재개.
+ */
 export async function readResearchContent(): Promise<ResearchContent> {
-  return readCloudJson(CMS_KEYS.research, FILE_PATHS.research, {} as ResearchContent)
+  return researchContentJson as ResearchContent
 }
 
+/** 로컬 개발에서만 JSON 파일에 저장된다. 프로덕션(Vercel)에서는 임시로 막아둔다. */
 export async function writeResearchContent(data: ResearchContent): Promise<void> {
-  await writeCloudJson(CMS_KEYS.research, data, FILE_PATHS.research)
+  if (process.env.VERCEL === '1') {
+    throw new Error('RESEARCH_CONTENT_IS_CODE')
+  }
+  writeFileJson(FILE_PATHS.research, data)
 }

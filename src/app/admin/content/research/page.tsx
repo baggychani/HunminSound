@@ -456,10 +456,13 @@ export default function AdminResearchPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       })
-      if (!res.ok) throw new Error('저장 실패')
+      if (!res.ok) {
+        const body = (await res.json().catch(() => null)) as { message?: string } | null
+        throw new Error(body?.message ?? '저장에 실패했습니다.')
+      }
       setOriginal(cloneDeep(data))
-    } catch {
-      setError('저장에 실패했습니다.')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '저장에 실패했습니다.')
     } finally {
       setSaving(false)
     }
