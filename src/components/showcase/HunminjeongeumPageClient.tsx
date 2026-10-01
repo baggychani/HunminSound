@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import { HUNMIN_PASSAGE_SECTIONS } from '@/data/hunminjeongeumPassages'
@@ -25,7 +25,7 @@ const INITIAL_SECTION_IMAGE = '/images/hunmin/sejong-statue-gwanghwamun.jpg'
 /** 장(章) 번호 — 한자 표기, 언어 무관 장식 */
 const CHAPTER_ORDINALS = ['第一章', '第二章', '第三章'] as const
 
-/** 페이지 넘김 전환 — 3D 책장: 다음 장은 오른쪽에서 넘어오고, 이전 장은 왼쪽에서 */
+/* 3D 책장 넘김 전환 — 시도 보관 (2026-10-01: 훈민정음 리더는 깔끔하게 그냥 전환)
 const pageTurn = {
   enter: (dir: number) => ({
     opacity: 0,
@@ -39,6 +39,7 @@ const pageTurn = {
     rotateY: dir >= 0 ? 7 : -7,
   }),
 }
+*/
 
 /** 구절 넘김 전환 — 장 넘김보다 얕게, 좌우로 미끄러지듯 */
 const passageTurn = {
@@ -84,15 +85,10 @@ export function HunminjeongeumPageClient() {
   const m = getMessages(lang)
 
   const [chapter, setChapter] = useState(0)
-  const [direction, setDirection] = useState(1)
   /* 장 안에서 한 번에 한 문장만 — 고정 박스에서 넘겨 보기 */
   const [passageIdx, setPassageIdx] = useState(0)
   const [passageDir, setPassageDir] = useState(1)
   const readerTopRef = useRef<HTMLDivElement>(null)
-
-  const { scrollY } = useScroll()
-  const bgY = useTransform(scrollY, [0, 700], [0, -90])
-  const bgOpacity = useTransform(scrollY, [0, 500], [1, 0.4])
 
   const sectionLabels: Record<
     (typeof HUNMIN_PASSAGE_SECTIONS)[number]['id'],
@@ -103,13 +99,12 @@ export function HunminjeongeumPageClient() {
     appraisal: { title: m.hunminAppraisalTitle, sub: m.hunminAppraisalSub },
   }
 
+  /* 장 이동 — 스크롤 위치는 그대로 유지 */
   const goToChapter = (idx: number) => {
     if (idx === chapter || idx < 0 || idx >= HUNMIN_PASSAGE_SECTIONS.length) return
-    setDirection(idx > chapter ? 1 : -1)
     setChapter(idx)
     setPassageIdx(0)
     setPassageDir(1)
-    readerTopRef.current?.scrollIntoView({ behavior: 'instant', block: 'start' })
   }
 
   /* 같은 장 안에서 문장 이동 — 박스 위쪽으로 시선을 되돌림 */
@@ -128,17 +123,6 @@ export function HunminjeongeumPageClient() {
     <>
       {/* ── 헤더 (책 표지) ─────────────────────────────────────────────── */}
       <div className="relative overflow-hidden pt-16 pb-10 border-b border-hanji-border mb-6 sm:mb-8">
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.2, ease: 'easeOut' }}
-          style={{ fontSize: 'clamp(3.25rem, 11vw, 8.5rem)', y: bgY, opacity: bgOpacity }}
-          className="pointer-events-none absolute -right-4 top-1/2 -translate-y-1/2 select-none font-serif leading-none text-ink/[0.028] dark:text-ink/[0.038]"
-          aria-hidden
-        >
-          訓民正音
-        </motion.span>
-
         <h1
           className="font-jamo leading-none text-ink mb-6 flex"
           style={{ fontSize: 'clamp(3rem, 9vw, 5.5rem)' }}
@@ -174,7 +158,7 @@ export function HunminjeongeumPageClient() {
 
       {/* ── 본문 — 왼쪽 장 목차 + 오른쪽 리더 ─────────────────────────── */}
       <div ref={readerTopRef} className="home-scroll-margin" />
-      <div className="lg:grid lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-x-10 xl:gap-x-14">
+      <div className="lg:grid lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-x-6 xl:gap-x-8">
         {/* 장 목차 — 모바일은 가로, 데스크톱은 왼쪽 세로 */}
         <nav aria-label="훈민정음 장 목차" className="mb-10 lg:mb-0">
           <div className="scrollbar-none flex gap-2 overflow-x-auto lg:sticky lg:top-[calc(var(--site-header-h,4rem)+1.5rem)] lg:flex-col lg:overflow-visible">
@@ -187,14 +171,14 @@ export function HunminjeongeumPageClient() {
                   type="button"
                   aria-current={isActive ? 'true' : undefined}
                   onClick={() => goToChapter(idx)}
-                  className={`flex shrink-0 items-center gap-3 rounded-sm border px-4 py-3 text-start transition-all sm:px-5 lg:w-full ${
+                  className={`flex shrink-0 items-center gap-2.5 rounded-sm border px-4 py-3 text-start transition-all sm:px-4 lg:w-full ${
                     isActive
                       ? 'border-[#a6432e] bg-[#a6432e] text-[#fdf3e7] dark:border-[#93402c] dark:bg-[#93402c]'
                       : 'border-hanji-border/80 bg-hanji-card text-ink-muted hover:border-gold/40 hover:text-ink'
                   }`}
                 >
                   <span
-                    className={`font-serif text-[11px] leading-none tracking-[0.2em] ${
+                    className={`shrink-0 whitespace-nowrap font-serif text-[10px] leading-none tracking-[0.12em] ${
                       isActive ? 'text-[#f3d9b8]' : 'text-ink-muted'
                     }`}
                     lang="zh-Hant"
@@ -202,7 +186,7 @@ export function HunminjeongeumPageClient() {
                   >
                     {s.classicLabel}
                   </span>
-                  <span className="whitespace-nowrap font-sans text-[13px] leading-tight">
+                  <span className="whitespace-nowrap font-sans text-[12.5px] leading-tight">
                     {sLabel.title}
                   </span>
                 </button>
@@ -211,33 +195,12 @@ export function HunminjeongeumPageClient() {
           </div>
         </nav>
 
-        {/* ── 장 본문 — 3D 페이지 넘김 전환 ──────────────────────────── */}
-        <div style={{ perspective: '1800px' }} className="min-w-0">
-      <AnimatePresence mode="wait" custom={direction} initial={false}>
-        <motion.div
-          key={section.id}
-          custom={direction}
-          variants={pageTurn}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{ duration: 0.46, ease: [0.22, 1, 0.36, 1] }}
-          style={{ transformStyle: 'preserve-3d', transformOrigin: direction >= 0 ? 'left center' : 'right center' }}
-        >
+        {/* ── 장 본문 ───────────────────────────────────────────────── */}
+        <div className="min-w-0">
           {/* 목판본 책 페이지 — 이중 광곽 안에 장 전체가 들어감 */}
           <div className="book-page rounded-[2px] px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14">
             {/* 장 표지 */}
             <header className="relative mb-14 overflow-hidden sm:mb-16" aria-labelledby={`hunmin-${section.id}-title`}>
-              {/* 세로쓰기 대형 한자 — 옛 책 표지의 제첨(題簽) 느낌 */}
-              <span
-                aria-hidden
-                className="pointer-events-none absolute -top-2 right-0 hidden select-none font-serif leading-none text-ink/[0.06] dark:text-ink/[0.09] [writing-mode:vertical-rl] lg:block"
-                style={{ fontSize: 'clamp(4rem, 8vw, 7rem)' }}
-                lang="zh-Hant"
-              >
-                {section.classicLabel}
-              </span>
-
               <div className="flex items-start gap-5 sm:gap-7">
                 <SealStamp />
                 <div className="min-w-0">
@@ -342,9 +305,6 @@ export function HunminjeongeumPageClient() {
               第{['一', '二', '三'][chapter]}張
             </p>
           </div>
-
-        </motion.div>
-      </AnimatePresence>
         </div>
       </div>
 
