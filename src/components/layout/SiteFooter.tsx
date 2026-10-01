@@ -10,7 +10,7 @@ export function SiteFooter() {
   const pm = getPrivacyMessages(lang)
 
   return (
-    <footer className="border-t border-hanji-border mt-12">
+    <footer className="relative z-10 mt-12 border-t border-hanji-border bg-hanji">
       <div className="site-container py-8">
         <div className="grid grid-cols-1 items-center gap-4 sm:grid-cols-2 sm:gap-x-4 sm:items-center">
           <div className="flex flex-col items-center gap-1.5 sm:flex-row sm:items-baseline sm:gap-5 sm:justify-self-start">
