@@ -6,7 +6,6 @@ import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import { HUNMIN_PASSAGE_SECTIONS } from '@/data/hunminjeongeumPassages'
 import { PassageCard } from './hunminjeongeum/PassageCard'
-import { HunminSectionParallaxAside } from './hunminjeongeum/HunminSectionParallaxAside'
 import { EditorialNote } from './hunminjeongeum/EditorialNote'
 
 const fadeUp = {
@@ -19,8 +18,6 @@ const fadeUp = {
 }
 
 const TITLE_CHARS = ['훈', '민', '정', '음']
-
-const INITIAL_SECTION_IMAGE = '/images/hunmin/sejong-statue-gwanghwamun.jpg'
 
 /** 장(章) 번호 — 한자 표기, 언어 무관 장식 */
 const CHAPTER_ORDINALS = ['第一章', '第二章', '第三章'] as const
@@ -67,7 +64,7 @@ function SealStamp() {
   )
 }
 
-/** 장 사이 구분 장식 — ◇ 문양 */
+/** 장 사이 구분 장식 — 보관 (2026-10-01: 본문 하단 장식 제거)
 function ChapterEndMark() {
   return (
     <div aria-hidden className="my-14 flex items-center justify-center gap-4 sm:my-16">
@@ -79,6 +76,7 @@ function ChapterEndMark() {
     </div>
   )
 }
+*/
 
 export function HunminjeongeumPageClient() {
   const { lang } = useLang()
@@ -177,6 +175,9 @@ export function HunminjeongeumPageClient() {
                       : 'border-hanji-border/80 bg-hanji-card text-ink-muted hover:border-gold/40 hover:text-ink'
                   }`}
                 >
+                  <span className="whitespace-nowrap font-sans text-[12.5px] leading-tight">
+                    {sLabel.title}
+                  </span>
                   <span
                     className={`shrink-0 whitespace-nowrap font-serif text-[10px] leading-none tracking-[0.12em] ${
                       isActive ? 'text-[#f3d9b8]' : 'text-ink-muted'
@@ -185,9 +186,6 @@ export function HunminjeongeumPageClient() {
                     aria-hidden
                   >
                     {s.classicLabel}
-                  </span>
-                  <span className="whitespace-nowrap font-sans text-[12.5px] leading-tight">
-                    {sLabel.title}
                   </span>
                 </button>
               )
@@ -223,14 +221,8 @@ export function HunminjeongeumPageClient() {
               <div className="mt-8 h-px w-full bg-gradient-to-r from-hanji-border via-hanji-border/40 to-transparent" />
             </header>
 
-            {/* 구절 리더 — 한 번에 한 문장만 고정 박스에 (+ 초성 장은 우측 패럴랙스 이미지) */}
-            <div
-              className={
-                section.id === 'initial'
-                  ? 'lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(11rem,17rem)] lg:items-start lg:gap-x-10 xl:grid-cols-[minmax(0,1fr)_minmax(13rem,19rem)] xl:gap-x-14'
-                  : undefined
-              }
-            >
+            {/* 구절 리더 — 한 번에 한 문장만 고정 박스에 */}
+            <div>
               <div className="min-w-0">
                 {/* 고정 박스 + 좌우 독립 버튼 — 버튼은 박스 세로 중앙 양 끝에 고정 */}
                 <div className="relative">
@@ -272,7 +264,7 @@ export function HunminjeongeumPageClient() {
                 </div>
 
                 {/* 번호 점프 — 원하는 문장으로 바로 이동 */}
-                <div className="mt-8 flex flex-wrap gap-1.5" role="group" aria-label="문장 번호로 이동">
+                <div className="mt-10 flex flex-wrap justify-center gap-1.5" role="group" aria-label="문장 번호로 이동">
                   {section.passages.map((p, i) => {
                     const isActive = i === passageIdx
                     return (
@@ -293,23 +285,13 @@ export function HunminjeongeumPageClient() {
                   })}
                 </div>
               </div>
-              {section.id === 'initial' ? (
-                <HunminSectionParallaxAside src={INITIAL_SECTION_IMAGE} alt="광화문 세종대왕 동상" />
-              ) : null}
             </div>
-
-            <ChapterEndMark />
-
-            {/* 책 하단 장수(張數) — 옛 책의 쪽 표기 */}
-            <p aria-hidden className="-mb-2 text-center font-serif text-[11px] tracking-[0.4em] text-ink-muted select-none" lang="zh-Hant">
-              第{['一', '二', '三'][chapter]}張
-            </p>
           </div>
         </div>
       </div>
 
-      {/* ── 일러두기 — 본문 박스 바깥 아래 ─────────────────────────────── */}
-      <div className="mb-24 sm:mb-32">
+      {/* ── 일러두기 — 본문 박스 바깥 아래, 여백 넉넉히 ─────────────── */}
+      <div className="mt-20 mb-24 sm:mt-24 sm:mb-32">
         <EditorialNote />
       </div>
     </>
