@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: '자음',
   description:
     '한국어 19개 자음의 조음 위치, 조음 방법, MRI 영상을 통해 탐구합니다.',
+  keywords: ['자음', '한국어 자음', '조음 위치', '조음 방법', 'MRI', 'Korean consonants'],
 }
 
 export default async function ConsonantsPage() {

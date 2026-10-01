@@ -222,7 +222,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
               <div className="relative w-full overflow-hidden rounded-lg border border-white/[0.1] bg-[#050a12] shadow-[0_20px_50px_rgba(0,0,0,0.45),0_0_0_1px_rgba(120,170,220,0.08)_inset] ring-1 ring-sky-200/[0.06]">
                 <Image
                   src={MRI_HERO}
-                  alt=""
+                  alt="발음 중 성도의 실시간 MRI 영상"
                   width={MRI_W}
                   height={MRI_H}
                   sizes="(max-width: 1024px) 92vw, 44vw"

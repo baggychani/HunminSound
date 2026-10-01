@@ -198,6 +198,24 @@ export default function HomePage() {
                 </span>
               ))}
             </p>
+
+            {/* 히어로 CTA — 첫 화면에서 탐구·연구로 바로 이동 (B12 발견성 보완) */}
+            <div className="relative mt-5 flex flex-wrap items-center justify-center gap-2.5 sm:mt-6">
+              <Link
+                href="#home-act2"
+                className="inline-flex items-center gap-2 rounded-sm bg-ink px-5 py-2.5 font-sans text-[13px] font-medium text-hanji transition-opacity hover:opacity-[0.9] dark:bg-gold dark:text-stone-900"
+              >
+                {m.explore}
+                <span aria-hidden>↓</span>
+              </Link>
+              <Link
+                href="/research"
+                className="inline-flex items-center gap-2 rounded-sm border border-hanji-border px-5 py-2.5 font-sans text-[13px] font-medium text-ink-soft transition-colors hover:border-gold/50 hover:text-gold"
+              >
+                {m.researchCta}
+                <span aria-hidden>→</span>
+              </Link>
+            </div>
           </div>
 
           <div className="hidden min-h-[12rem] lg:block" aria-hidden />

@@ -22,7 +22,7 @@ function MemberAvatar({ name }: { name: string }) {
     return (
       <Image
         src={src}
-        alt=""
+        alt={`${name} 연구원 사진`}
         width={56}
         height={56}
         className="h-14 w-14 shrink-0 rounded-full object-cover ring-2 ring-indigo-200"

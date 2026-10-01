@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { useLang } from '@/contexts/LanguageContext'
 import { SITE_BRAND_NAME } from '@/lib/i18n'
 import { getV2Messages } from '@/lib/v2-i18n'
@@ -20,14 +19,8 @@ export function SiteFooter() {
         <p className="text-center text-sm sm:justify-self-center">
           서울대학교 · MRI 음성 연구
         </p>
-        <div className="flex justify-center sm:justify-end">
-          <Link
-            href="/admin/login"
-            className="text-xs text-white/50 transition hover:text-amber-300"
-          >
-            {v2.footerAdmin}
-          </Link>
-        </div>
+        {/* 공개 꼬리말에는 관리자 링크를 노출하지 않음(A8) — 직접 주소로 접근 */}
+        <div className="flex justify-center sm:justify-end" aria-hidden />
       </div>
     </footer>
   )

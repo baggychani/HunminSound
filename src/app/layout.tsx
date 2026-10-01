@@ -59,7 +59,23 @@ export const metadata: Metadata = {
   },
   description:
     '1443년 세종이 훈민정음(訓民正音)으로 제시한 상형 원리를 MRI·음성공학·AI 융합으로 실증하는 세종말소리.',
-  keywords: ['한국어', '음성학', '조음', 'MRI', '자음', '모음', 'phonetics', 'Korean', 'articulation'],
+  keywords: ['세종말소리', '훈민정음', '한글', '한국어 발음', '조음 MRI', '음성학', 'Sejong Speech Sounds', 'Hunminjeongeum', 'Korean phonetics'],
+  openGraph: {
+    type: 'website',
+    locale: 'ko_KR',
+    url: SITE_URL,
+    siteName: SITE_TAB_TITLE,
+    title: SITE_TAB_TITLE,
+    description:
+      '1443년 세종이 훈민정음(訓民正音)으로 제시한 상형 원리를 MRI·음성공학·AI 융합으로 실증하는 세종말소리.',
+    images: [{ url: '/icons/icon-512.png', width: 512, height: 512, alt: '세종말소리' }],
+  },
+  twitter: {
+    card: 'summary',
+    title: SITE_TAB_TITLE,
+    description:
+      '1443년 세종이 훈민정음(訓民正音)으로 제시한 상형 원리를 MRI·음성공학·AI 융합으로 실증하는 세종말소리.',
+  },
   icons: {
     icon: [
       { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },

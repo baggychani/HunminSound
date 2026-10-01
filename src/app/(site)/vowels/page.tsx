@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: '모음',
   description:
     '한국어 21개 모음의 조음 위치, 혀 높이와 전후 위치, MRI 영상을 통해 탐구합니다.',
+  keywords: ['모음', '한국어 모음', '단모음', '이중모음', '혀 위치', 'MRI', 'Korean vowels'],
 }
 
 export default async function VowelsPage() {

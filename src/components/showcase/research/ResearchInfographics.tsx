@@ -253,7 +253,7 @@ function MemberPhoto({ name }: { name: string }) {
       {src && !failed ? (
         <Image
           src={src}
-          alt=""
+          alt={`${name} 연구원 사진`}
           fill
           sizes="(max-width: 640px) 50vw, 25vw"
           className="object-cover object-[center_14%] transition-transform duration-500 ease-out group-hover:scale-110"
