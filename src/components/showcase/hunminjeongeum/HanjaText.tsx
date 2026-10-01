@@ -63,10 +63,10 @@ interface HanjaTextProps {
   text: string
   /** 한자 → 한국어 훈음 매핑(예: 正 → "바를 정"). */
   charGlosses: Record<string, string>
-  /** 호버 중인 한자(없으면 null). */
-  activeChar: string | null
+  /** 호버 중인 한자 토큰 키(없으면 null) — 같은 글자가 여러 번 나와도 건드린 것만 오름. */
+  activeKey: string | null
   /** 한자 hover/focus 진입·이탈 콜백. */
-  onCharFocus: (char: string | null) => void
+  onCharFocus: (key: string | null, char: string | null) => void
   className?: string
 }
 
@@ -82,7 +82,7 @@ interface HanjaTextProps {
 export function HanjaText({
   text,
   charGlosses,
-  activeChar,
+  activeKey,
   onCharFocus,
   className,
 }: HanjaTextProps) {
@@ -94,10 +94,11 @@ export function HanjaText({
         if (tok.kind === 'hanja') {
           const yum = extractYum(charGlosses[tok.char])
           const interactive = !!charGlosses[tok.char]
-          const isActive = activeChar === tok.char
+          const isActive = activeKey === tok.key
           return (
             <HanjaWithYum
               key={tok.key}
+              focusKey={tok.key}
               char={tok.char}
               yum={yum}
               interactive={interactive}
@@ -143,11 +144,12 @@ export function HanjaText({
 }
 
 interface HanjaWithYumProps {
+  focusKey: string
   char: string
   yum: string | null
   interactive: boolean
   isActive: boolean
-  onFocus: (char: string | null) => void
+  onFocus: (key: string | null, char: string | null) => void
 }
 
 /**
@@ -155,7 +157,7 @@ interface HanjaWithYumProps {
  * `<ruby>` 태그로 글자별 가운데 정렬 보장. 호버 시 base 한자만 살짝 떠오르고 ruby
  * annotation(rt)은 위치 고정(rt에는 transform 적용 안 함)으로 안정감을 준다.
  */
-function HanjaWithYum({ char, yum, interactive, isActive, onFocus }: HanjaWithYumProps) {
+function HanjaWithYum({ focusKey, char, yum, interactive, isActive, onFocus }: HanjaWithYumProps) {
   const hanjaCls = [
     'hunmin-hanja inline-block transition-[transform,color] duration-200 ease-out',
     interactive
@@ -169,12 +171,12 @@ function HanjaWithYum({ char, yum, interactive, isActive, onFocus }: HanjaWithYu
   /* ruby에 onMouseEnter/Leave를 걸어두면 rt(독음) 영역에서도 호버가 유지된다. */
   const handlers = interactive
     ? {
-        onMouseEnter: () => onFocus(char),
-        onMouseLeave: () => onFocus(null),
-        onFocus: () => onFocus(char),
-        onBlur: () => onFocus(null),
+        onMouseEnter: () => onFocus(focusKey, char),
+        onMouseLeave: () => onFocus(null, null),
+        onFocus: () => onFocus(focusKey, char),
+        onBlur: () => onFocus(null, null),
         onKeyDown: (e: React.KeyboardEvent) => {
-          if (e.key === 'Escape') onFocus(null)
+          if (e.key === 'Escape') onFocus(null, null)
         },
         tabIndex: 0,
         role: 'button',

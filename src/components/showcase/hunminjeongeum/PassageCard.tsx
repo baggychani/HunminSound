@@ -21,9 +21,9 @@ interface PassageCardProps {
 export function PassageCard({ passage }: PassageCardProps) {
   const { lang } = useLang()
   const m = getMessages(lang)
-  const [hoveredChar, setHoveredChar] = useState<string | null>(null)
+  const [hovered, setHovered] = useState<{ key: string; char: string } | null>(null)
 
-  const gloss = hoveredChar ? passage.charGlosses[hoveredChar] ?? null : null
+  const gloss = hovered ? passage.charGlosses[hovered.char] ?? null : null
   const linkLabel = m.hunminPronunciationLink ?? 'See pronunciation'
   const showExtraTranslation = lang !== 'ko'
 
@@ -45,20 +45,20 @@ export function PassageCard({ passage }: PassageCardProps) {
         <HanjaText
           text={passage.originalText}
           charGlosses={passage.charGlosses}
-          activeChar={hoveredChar}
-          onCharFocus={setHoveredChar}
+          activeKey={hovered?.key ?? null}
+          onCharFocus={(key, char) => setHovered(key && char ? { key, char } : null)}
         />
       </p>
 
       {/* 호버 슬롯 — 한 줄, 카드 사이 점프 방지를 위해 항상 자리 확보 */}
       <div
         aria-live="polite"
-        className="mt-1 flex h-[1.4em] items-center gap-2 font-sans text-[13px] leading-none text-ink-muted sm:text-sm"
+        className="mt-1 flex h-[1.4em] items-center gap-2 font-sans text-[15px] leading-none text-ink-muted sm:text-base"
       >
-        {gloss && hoveredChar ? (
+        {gloss && hovered ? (
           <>
             <span className="font-serif text-[0.95em] text-ink-accent" lang="zh-Hant">
-              {hoveredChar}
+              {hovered.char}
             </span>
             <span className="text-ink-muted/40">·</span>
             <span lang="ko">{gloss}</span>

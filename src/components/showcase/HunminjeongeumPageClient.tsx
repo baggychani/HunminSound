@@ -154,8 +154,8 @@ export function HunminjeongeumPageClient() {
 
         {/* ── 장 본문 ───────────────────────────────────────────────── */}
         <div className="min-w-0">
-          {/* 목판본 책 페이지 — 이중 광곽 안에 장 전체가 들어감 · 한지 온기 워시 */}
-          <div className="book-page rounded-[2px] bg-gradient-to-b from-hanji-warm/60 via-transparent to-hanji-warm/25 px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14">
+          {/* 목판본 책 페이지 — 안쪽이 바깥 한지보다 밝은 종이 워시 */}
+          <div className="book-page rounded-[2px] bg-gradient-to-b from-white/70 via-white/20 to-white/45 px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14 dark:from-white/[0.07] dark:via-white/[0.02] dark:to-white/[0.05]">
             {/* 장 표지 — 본문과 같은 안쪽 들여쓰기(좌우 버튼 폭 제외) */}
             <header className="relative mb-14 overflow-hidden px-12 sm:mb-16 sm:px-16" aria-labelledby={`hunmin-${section.id}-title`}>
               <div className="min-w-0">
@@ -183,7 +183,7 @@ export function HunminjeongeumPageClient() {
                 {/* 고정 박스 + 좌우 독립 버튼 — 버튼은 박스 세로 중앙 양 끝에 고정 */}
                 <div className="relative">
                   {/* 새 문장만 옅게 나타나기 — 위치 계산 없음, 튈 자리 없음 */}
-                  <div className="min-h-[19rem] px-12 sm:min-h-[20rem] sm:px-16">
+                  <div className="min-h-[12rem] px-12 sm:min-h-[13rem] sm:px-16">
                     <div
                       key={section.passages[passageIdx]?.number ?? passageIdx}
                       className="passage-fade"
@@ -213,8 +213,8 @@ export function HunminjeongeumPageClient() {
                   </button>
                 </div>
 
-                {/* 번호 점프 — 원하는 문장으로 바로 이동 */}
-                <div className="mt-6 flex flex-wrap justify-center gap-1.5" role="group" aria-label="문장 번호로 이동">
+                {/* 번호 점프 — 카드에 바로 붙이고 상단 여백으로 간격 확보 */}
+                <div className="mt-8 flex flex-wrap justify-center gap-1.5" role="group" aria-label="문장 번호로 이동">
                   {section.passages.map((p, i) => {
                     const isActive = i === passageIdx
                     return (
