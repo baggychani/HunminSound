@@ -200,7 +200,7 @@ export function HunminjeongeumPageClient() {
                     onClick={() => goToPassage(passageIdx - 1)}
                     disabled={passageIdx === 0}
                     aria-label="이전 문장"
-                    className="absolute left-0 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-hanji-border bg-hanji-card/90 text-base text-ink-soft shadow-sm backdrop-blur transition-all hover:border-gold/50 hover:text-gold disabled:pointer-events-none disabled:opacity-25 sm:h-11 sm:w-11"
+                    className="absolute left-0 top-[9.5rem] flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-hanji-border bg-hanji-card/90 text-base text-ink-soft shadow-sm backdrop-blur transition-all hover:border-gold/50 hover:text-gold disabled:pointer-events-none disabled:opacity-25 sm:top-[10rem] sm:h-11 sm:w-11"
                   >
                     <span aria-hidden>←</span>
                   </button>
@@ -209,7 +209,7 @@ export function HunminjeongeumPageClient() {
                     onClick={() => goToPassage(passageIdx + 1)}
                     disabled={passageIdx === section.passages.length - 1}
                     aria-label="다음 문장"
-                    className="absolute right-0 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-hanji-border bg-hanji-card/90 text-base text-ink-soft shadow-sm backdrop-blur transition-all hover:border-gold/50 hover:text-gold disabled:pointer-events-none disabled:opacity-25 sm:h-11 sm:w-11"
+                    className="absolute right-0 top-[9.5rem] flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-hanji-border bg-hanji-card/90 text-base text-ink-soft shadow-sm backdrop-blur transition-all hover:border-gold/50 hover:text-gold disabled:pointer-events-none disabled:opacity-25 sm:top-[10rem] sm:h-11 sm:w-11"
                   >
                     <span aria-hidden>→</span>
                   </button>

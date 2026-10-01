@@ -559,7 +559,7 @@ function InfoTable({ rows }: { rows: { label: string; value: string }[] }) {
         {rows.map((row) => (
           <tr key={row.label} className="border-b border-hanji-border/60 transition-colors last:border-0 hover:bg-hanji-warm/50">
             <td className="py-3 pr-8 align-top whitespace-nowrap text-ink-muted font-medium w-48">{row.label}</td>
-            <td className="py-3 text-ink leading-relaxed"><RichText text={row.value} /></td>
+            <td className="py-3 text-ink-soft leading-[2.05]"><RichText text={row.value} /></td>
           </tr>
         ))}
       </tbody>
