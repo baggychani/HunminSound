@@ -980,9 +980,9 @@
     letter-spacing: 0;
     font-weight: 400;
     /* 한자(base)와 더 가깝게 — 글자 크기는 유지, transform 만으로 ruby 간격 압축 */
-    transform: translateY(0.85em);
+    transform: translateY(1em);
     transform-origin: center bottom;
-    margin-bottom: -0.55em;
+    margin-bottom: -0.7em;
     padding-bottom: 0;
     user-select: none;
   }

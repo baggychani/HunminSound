@@ -73,9 +73,9 @@ export function PassageCard({ passage }: PassageCardProps) {
         {passage.reference}
       </p>
 
-      {/* 한국어 풀이 — 항상 노출. 여러 줄이 되어도 숨쉬게 원문과 같은 줄간격. 본문 흐름 속 단독 자모(ㄱ, ㄴ …)는 교수님 지정 폰트로. */}
+      {/* 한국어 풀이 — 항상 노출. 여러 줄이 되어도 숨쉬게 원문보다 넓은 줄간격. 본문 흐름 속 단독 자모(ㄱ, ㄴ …)는 교수님 지정 폰트로. */}
       <p
-        className="mt-4 break-keep font-serif text-[17px] leading-[2.5] text-ink-soft [overflow-wrap:break-word] sm:text-lg"
+        className="mt-4 break-keep font-serif text-[17px] leading-[2.8] text-ink-soft [overflow-wrap:break-word] sm:text-lg"
         lang="ko"
       >
         <HunminPassageText text={passage.korean} />
@@ -92,7 +92,7 @@ export function PassageCard({ passage }: PassageCardProps) {
 
       {/* 발음 보기 링크 — 본문에 등장하는 한글 자모만 */}
       {passage.glyphLinks && passage.glyphLinks.length > 0 ? (
-        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1.5">
           {passage.glyphLinks.map((link, idx) => (
             <Link
               key={`${link.symbol}-${idx}`}
