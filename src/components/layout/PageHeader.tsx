@@ -31,16 +31,6 @@ export function PageHeader({ type }: PageHeaderProps) {
 
   return (
     <div className="relative overflow-hidden pt-16 pb-10 border-b border-hanji-border mb-16">
-      {/* 배경 워터마크 — 훈민정음 페이지와 같은 계열 */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -right-2 top-1/2 -translate-y-1/2 select-none font-jamo leading-none text-ink/[0.04] dark:text-ink/[0.06]"
-        style={{ fontSize: 'clamp(5rem, 14vw, 10rem)' }}
-        lang="ko"
-      >
-        {title}
-      </span>
-
       <AnimatePresence mode="wait">
         <motion.div key={type} className="relative">
           <motion.p
