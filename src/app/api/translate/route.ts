@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { Lang } from '@/lib/i18n'
 import { buildMtKey, getBundledMachineTranslation } from '@/lib/mtCache'
 import { translateKoreanWithPlaceholders, translateLongWithFixedChunk } from '@/lib/mtProtectedKorean'
-import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
+import { checkPublicRateLimit, getClientIp } from '@/lib/rateLimit'
 
 export const dynamic = 'force-dynamic'
 
@@ -38,7 +38,7 @@ const MAX_CHUNK = 420
 
 export async function POST(req: Request) {
   try {
-    if (!checkRateLimit('translate', getClientIp(req), 40, 10 * 60 * 1000)) {
+    if (!checkPublicRateLimit('translate', getClientIp(req), 40, 10 * 60 * 1000, 2000)) {
       return NextResponse.json({ translated: null, error: 'RATE_LIMIT' }, { status: 429 })
     }
 
@@ -77,13 +77,19 @@ export async function POST(req: Request) {
     }
 
     const translateOneSegment = async (segment: string): Promise<string> => {
-      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(segment)}&langpair=${src}|${tgt}`
-      const res = await fetch(url)
-      const data = (await res.json()) as {
-        responseData?: { translatedText?: string }
+      try {
+        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(segment)}&langpair=${src}|${tgt}`
+        // 상대 서버가 멈춰도 10초 안에 끊고 원문을 돌려준다
+        const res = await fetch(url, { signal: AbortSignal.timeout(10_000) })
+        if (!res.ok) return segment
+        const data = (await res.json()) as {
+          responseData?: { translatedText?: string }
+        }
+        const piece = data?.responseData?.translatedText
+        return typeof piece === 'string' && piece.trim() ? piece : segment
+      } catch {
+        return segment
       }
-      const piece = data?.responseData?.translatedText
-      return typeof piece === 'string' && piece.trim() ? piece : segment
     }
 
     /* 한국어: 보존 구간은 {{0}}…로 치환한 뒤 한 덩어리(또는 플레이스홀더 안 자르는 청크)로만 번역.

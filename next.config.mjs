@@ -12,7 +12,7 @@ const BASE_SECURITY_HEADERS = [
  */
 const PUBLIC_CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
@@ -28,7 +28,7 @@ const PUBLIC_CSP = [
   "form-action 'self'",
 ].join('; ')
 
-const PUBLIC_PAGE_SOURCES = ['/', '/consonants', '/vowels', '/hunminjeongeum', '/research']
+const PUBLIC_PAGE_SOURCES = ['/', '/consonants', '/vowels', '/hunminjeongeum', '/research', '/privacy']
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendContactEmail } from '@/lib/sendContactEmail'
-import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
+import { checkPublicRateLimit, getClientIp } from '@/lib/rateLimit'
 
 export const runtime = 'nodejs'
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req)
-  if (!checkRateLimit('contact', ip, 5, 60 * 60 * 1000)) {
+  if (!checkPublicRateLimit('contact', ip, 5, 60 * 60 * 1000, 200)) {
     return NextResponse.json({ error: 'RATE_LIMIT' }, { status: 429 })
   }
 
@@ -33,9 +33,17 @@ export async function POST(req: NextRequest) {
   const name = body.name?.trim() ?? ''
   const email = body.email?.trim() ?? ''
   const message = body.message?.trim() ?? ''
+  const subject = body.inquiryType?.trim() ?? ''
+  const affiliation = body.affiliation?.trim() ?? ''
 
   if (!name || !email || !message) {
     return NextResponse.json({ error: 'MISSING_FIELDS' }, { status: 400 })
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return NextResponse.json({ error: 'INVALID_EMAIL' }, { status: 400 })
+  }
+  if (name.length > 100 || email.length > 254 || subject.length > 200 || affiliation.length > 200) {
+    return NextResponse.json({ error: 'FIELD_TOO_LONG' }, { status: 400 })
   }
   // 개인정보 수집·이용 동의 없이는 받지 않는다(/privacy 참고)
   if (body.consent !== true) {

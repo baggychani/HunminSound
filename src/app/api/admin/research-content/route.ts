@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { ADMIN_SESSION_COOKIE, getAdminSessionSecret, verifyAdminSessionToken } from '@/lib/adminSession'
 import type { ResearchContent } from '@/lib/research-content'
+import { validateResearchContent } from '@/lib/research-content'
 import { readResearchContentForAdmin, writeResearchContent } from '@/lib/cms-storage'
 import { GithubConflictError } from '@/lib/githubContent'
 
@@ -61,6 +62,13 @@ export async function PUT(req: Request) {
   }
   try {
     const body = (await req.json()) as { data: ResearchContent; sha: string | null }
+    const valid = validateResearchContent(body.data)
+    if (valid !== true) {
+      return NextResponse.json(
+        { error: 'invalid_data', message: `저장할 내용의 모양이 올바르지 않습니다(${valid}).` },
+        { status: 400 },
+      )
+    }
     const sha = await writeResearchContent(body.data, body.sha, session)
     return NextResponse.json({ ok: true, sha })
   } catch (err) {

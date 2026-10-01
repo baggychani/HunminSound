@@ -1,7 +1,9 @@
 import { timingSafeEqual } from 'node:crypto'
+import bcrypt from 'bcryptjs'
 
 export type AdminAccount = {
   username: string
+  /** 평문 또는 bcrypt 해시($2a$·$2b$·$2y$). 해시는 scripts/make-admin-hash.mjs 로 생성. */
   password: string
 }
 
@@ -25,7 +27,7 @@ function parseAdminUsersJson(raw: string | undefined): AdminAccount[] | null {
   }
 }
 
-/** 서버 전용 환경 변수에서 관리자 계정 목록 (비밀 평문 또는 해시 저장은 후속 단계에서 확장 가능) */
+/** 서버 전용 환경 변수에서 관리자 계정 목록 (평문·bcrypt 해시 모두 허용, 해시 권장) */
 export function getAdminAccounts(): AdminAccount[] {
   const fromJson = parseAdminUsersJson(process.env.ADMIN_USERS)
   if (fromJson !== null && fromJson.length > 0) return fromJson
@@ -43,11 +45,19 @@ function timingSafeStringEqual(a: string, b: string): boolean {
   return timingSafeEqual(aa, bb)
 }
 
-export function findAdmin(username: string, password: string): AdminAccount | null {
+export function isBcryptHash(stored: string): boolean {
+  return stored.startsWith('$2a$') || stored.startsWith('$2b$') || stored.startsWith('$2y$')
+}
+
+export async function findAdmin(username: string, password: string): Promise<AdminAccount | null> {
   const user = username.trim()
   const accounts = getAdminAccounts()
   for (const account of accounts) {
-    if (timingSafeStringEqual(account.username, user) && timingSafeStringEqual(account.password, password)) {
+    if (!timingSafeStringEqual(account.username, user)) continue
+    if (isBcryptHash(account.password)) {
+      // 해시 비교는 bcrypt에 위임 (내부적으로 타이밍 공격에 안전)
+      if (await bcrypt.compare(password, account.password)) return account
+    } else if (timingSafeStringEqual(account.password, password)) {
       return account
     }
   }

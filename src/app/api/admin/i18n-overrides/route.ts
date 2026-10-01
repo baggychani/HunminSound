@@ -77,13 +77,24 @@ export async function PATCH(req: NextRequest) {
   catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }) }
 
   const { key, value, sourceSnapshot, staleDismissed, remove, displayName } = body
-  if (!key || typeof key !== 'string') {
-    return NextResponse.json({ error: 'key required' }, { status: 400 })
+  // 키는 반드시 "종류:항목:description:언어" 규격 — __proto__ 대입 등 예약어 차단 겸용
+  if (!key || typeof key !== 'string' || key.length > 200 || key.startsWith('__')) {
+    return NextResponse.json({ error: 'invalid key' }, { status: 400 })
+  }
+  const parsed = parseOverrideKey(key)
+  if (!parsed) {
+    return NextResponse.json({ error: 'invalid key' }, { status: 400 })
+  }
+  if (
+    (value !== undefined && (typeof value !== 'string' || value.length > 20000)) ||
+    (sourceSnapshot !== undefined && (typeof sourceSnapshot !== 'string' || sourceSnapshot.length > 20000)) ||
+    (displayName !== undefined && (typeof displayName !== 'string' || displayName.length > 300))
+  ) {
+    return NextResponse.json({ error: 'value too long' }, { status: 400 })
   }
 
   try {
     const store = await readOverridesStore()
-    const parsed = parseOverrideKey(key)
     const existing = store[key]
 
     if (remove) {

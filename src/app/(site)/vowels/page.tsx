@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   keywords: ['모음', '한국어 모음', '단모음', '이중모음', '혀 위치', 'MRI', 'Korean vowels'],
 }
 
+/** Sanity에 연결되어 있으면 1시간마다 새 글을 반영 (미연결 시 로컬 데이터 그대로) */
+export const revalidate = 3600
+
 export default async function VowelsPage() {
   const sanityData = await getVowels()
   const vowels = sanityData.length > 0 ? sanityData : vowelsData

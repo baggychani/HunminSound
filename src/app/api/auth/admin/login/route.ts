@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
 import { findAdmin, getAdminAccounts } from '@/lib/adminAccounts'
 import { ADMIN_SESSION_COOKIE, createAdminSessionToken, getAdminSessionSecret } from '@/lib/adminSession'
-import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
+import { checkPublicRateLimit, getClientIp } from '@/lib/rateLimit'
 
 export async function POST(request: Request) {
-  if (!checkRateLimit('admin-login', getClientIp(request), 10, 15 * 60 * 1000)) {
+  if (!checkPublicRateLimit('admin-login', getClientIp(request), 10, 15 * 60 * 1000, 200)) {
     return NextResponse.json({ ok: false, message: 'rate_limited' }, { status: 429 })
   }
 
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: 'missing_fields' }, { status: 400 })
   }
 
-  const account = findAdmin(username, password)
+  const account = await findAdmin(username, password)
   if (!account) {
     return NextResponse.json({ ok: false, message: 'invalid_credentials' }, { status: 401 })
   }

@@ -102,6 +102,10 @@ export function HomeContactSection() {
           setErrorDetail('RATE_LIMIT')
         } else if (data.error === 'CONSENT_REQUIRED') {
           setErrorDetail('CONSENT_REQUIRED')
+        } else if (data.error === 'INVALID_EMAIL') {
+          setErrorDetail('INVALID_EMAIL')
+        } else if (data.error === 'FIELD_TOO_LONG') {
+          setErrorDetail('FIELD_TOO_LONG')
         }
         throw new Error(data.error ?? 'failed')
       }
@@ -319,7 +323,11 @@ export function HomeContactSection() {
                   ? '잠시 후 다시 시도해 주세요. (시간당 전송 한도)'
                   : errorDetail === 'CONSENT_REQUIRED'
                     ? pm.consentRequired
-                    : v2.contactError}
+                    : errorDetail === 'INVALID_EMAIL'
+                      ? '이메일 주소 형식을 확인해 주세요.'
+                      : errorDetail === 'FIELD_TOO_LONG'
+                        ? '입력 길이를 줄여 주세요. (이름 100자·이메일 254자 이내)'
+                        : v2.contactError}
             </p>
           ) : null}
         </motion.form>

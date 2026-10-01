@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   keywords: ['자음', '한국어 자음', '조음 위치', '조음 방법', 'MRI', 'Korean consonants'],
 }
 
+/** Sanity에 연결되어 있으면 1시간마다 새 글을 반영 (미연결 시 로컬 데이터 그대로) */
+export const revalidate = 3600
+
 export default async function ConsonantsPage() {
   const sanityData = await getConsonants()
   const consonants = sanityData.length > 0 ? sanityData : consonantsData
