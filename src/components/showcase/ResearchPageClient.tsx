@@ -182,18 +182,6 @@ function SplitSection({
               muted ? '' : 'shadow-[0_1px_0_rgb(var(--ink-rgb)/0.04)]'
             }`}
           >
-            {!muted && (
-              <>
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t border-gold/45"
-                />
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r border-gold/45"
-                />
-              </>
-            )}
             {children}
           </div>
         </div>
@@ -344,14 +332,6 @@ function GoalQuadCard({
       >
         {String(index + 1).padStart(2, '0')}
       </span>
-      <span
-        aria-hidden
-        className={`pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t ${tone.cornerColor}`}
-      />
-      <span
-        aria-hidden
-        className={`pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r ${tone.cornerColor}`}
-      />
       <div className="relative z-10 flex flex-col gap-3">
         <div className="flex items-center gap-2">
           <span className={`h-1.5 w-1.5 rounded-full ${tone.dot}`} />
