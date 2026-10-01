@@ -182,8 +182,10 @@ export function HunminjeongeumPageClient() {
               <div className="min-w-0">
                 {/* 고정 박스 + 좌우 독립 버튼 — 버튼은 박스 세로 중앙 양 끝에 고정 */}
                 <div className="relative">
-                  {/* 새 문장만 옅게 나타나기 — 위치 계산 없음, 튈 자리 없음 */}
-                  <div className="min-h-[19rem] px-12 sm:min-h-[20rem] sm:px-16">
+                  {/* 새 문장만 옅게 나타나기 — 위치 계산 없음, 튈 자리 없음.
+                      안쪽 아래 여백(pb-8): 짧은 문장은 min-h에 가려 그대로,
+                      min-h를 넘는 긴 문장만 번호줄과 여유가 생긴다 */}
+                  <div className="min-h-[19rem] px-12 pb-8 sm:min-h-[20rem] sm:px-16">
                     <div
                       key={section.passages[passageIdx]?.number ?? passageIdx}
                       className="passage-fade"
