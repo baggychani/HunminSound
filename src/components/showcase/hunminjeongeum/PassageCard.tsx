@@ -68,8 +68,8 @@ export function PassageCard({ passage }: PassageCardProps) {
         )}
       </div>
 
-      {/* 출처(해례본 위치) — 위 호버 풀이와 여백을 두고 */}
-      <p className="mt-5 font-sans text-[11px] uppercase tracking-[0.18em] text-ink-muted sm:text-xs">
+      {/* 출처(해례본 위치) — 위 호버 풀이와 여백을 두고, 자간은 보통으로 */}
+      <p className="mt-8 font-sans text-[11px] uppercase tracking-[0.06em] text-ink-muted sm:text-xs">
         {passage.reference}
       </p>
 

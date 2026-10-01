@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import { HUNMIN_PASSAGE_SECTIONS } from '@/data/hunminjeongeumPassages'
@@ -38,16 +38,6 @@ const pageTurn = {
 }
 */
 
-/** 구절 넘김 전환 — 일반적인 크로스페이드 */
-const passageTurn = {
-  enter: () => ({
-    opacity: 0,
-  }),
-  center: { opacity: 1 },
-  exit: () => ({
-    opacity: 0,
-  }),
-}
 /** 장 사이 구분 장식 — 보관 (2026-10-01: 본문 하단 장식 제거)
 function ChapterEndMark() {
   return (
@@ -134,7 +124,7 @@ export function HunminjeongeumPageClient() {
       </div>
 
       {/* ── 본문 — 왼쪽 장 목차 + 오른쪽 리더 ─────────────────────────── */}
-      <div className="lg:grid lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-x-6 xl:gap-x-8">
+      <div className="lg:grid lg:grid-cols-[9.5rem_minmax(0,1fr)] lg:gap-x-6 xl:gap-x-8">
         {/* 장 목차 — 모바일은 가로, 데스크톱은 왼쪽 세로 */}
         <nav aria-label="훈민정음 장 목차" className="mb-10 lg:mb-0">
           <div className="scrollbar-none flex gap-2 overflow-x-auto lg:sticky lg:top-[calc(var(--site-header-h,4rem)+1.5rem)] lg:flex-col lg:overflow-visible">
@@ -153,17 +143,8 @@ export function HunminjeongeumPageClient() {
                       : 'border-hanji-border/80 bg-hanji-card text-ink-muted hover:border-gold/40 hover:text-ink'
                   }`}
                 >
-                  <span className="whitespace-nowrap font-sans text-[12.5px] leading-tight">
+                  <span className="whitespace-nowrap font-sans text-sm leading-tight">
                     {sLabel.title}
-                  </span>
-                  <span
-                    className={`shrink-0 whitespace-nowrap font-serif text-[10px] leading-none tracking-[0.12em] ${
-                      isActive ? 'text-[#f3d9b8]' : 'text-ink-muted'
-                    }`}
-                    lang="zh-Hant"
-                    aria-hidden
-                  >
-                    {s.classicLabel}
                   </span>
                 </button>
               )
@@ -175,8 +156,8 @@ export function HunminjeongeumPageClient() {
         <div className="min-w-0">
           {/* 목판본 책 페이지 — 이중 광곽 안에 장 전체가 들어감 · 한지 온기 워시 */}
           <div className="book-page rounded-[2px] bg-gradient-to-b from-hanji-warm/60 via-transparent to-hanji-warm/25 px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14">
-            {/* 장 표지 */}
-            <header className="relative mb-14 overflow-hidden sm:mb-16" aria-labelledby={`hunmin-${section.id}-title`}>
+            {/* 장 표지 — 본문과 같은 안쪽 들여쓰기(좌우 버튼 폭 제외) */}
+            <header className="relative mb-14 overflow-hidden px-12 sm:mb-16 sm:px-16" aria-labelledby={`hunmin-${section.id}-title`}>
               <div className="min-w-0">
                 <p className="font-serif text-[13px] tracking-[0.3em] text-gold" lang="zh-Hant" aria-hidden>
                   {CHAPTER_ORDINALS[chapter]}
@@ -201,22 +182,16 @@ export function HunminjeongeumPageClient() {
               <div className="min-w-0">
                 {/* 고정 박스 + 좌우 독립 버튼 — 버튼은 박스 세로 중앙 양 끝에 고정 */}
                 <div className="relative">
-                  {/* 겹쳐 바뀌는 크로스페이드 — 빈 박스가 번쩍이지 않게 popLayout */}
-                  <div className="min-h-[24rem] px-12 sm:min-h-[26rem] sm:px-16">
-                    <AnimatePresence mode="popLayout" initial={false}>
-                      <motion.div
-                        key={section.passages[passageIdx]?.number ?? passageIdx}
-                        variants={passageTurn}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={{ duration: 0.25, ease: 'easeOut' }}
-                      >
-                        {section.passages[passageIdx] ? (
-                          <PassageCard passage={section.passages[passageIdx]} />
-                        ) : null}
-                      </motion.div>
-                    </AnimatePresence>
+                  {/* 새 문장만 옅게 나타나기 — 위치 계산 없음, 튈 자리 없음 */}
+                  <div className="min-h-[19rem] px-12 sm:min-h-[20rem] sm:px-16">
+                    <div
+                      key={section.passages[passageIdx]?.number ?? passageIdx}
+                      className="passage-fade"
+                    >
+                      {section.passages[passageIdx] ? (
+                        <PassageCard passage={section.passages[passageIdx]} />
+                      ) : null}
+                    </div>
                   </div>
                   <button
                     type="button"
@@ -239,7 +214,7 @@ export function HunminjeongeumPageClient() {
                 </div>
 
                 {/* 번호 점프 — 원하는 문장으로 바로 이동 */}
-                <div className="mt-10 flex flex-wrap justify-center gap-1.5" role="group" aria-label="문장 번호로 이동">
+                <div className="mt-6 flex flex-wrap justify-center gap-1.5" role="group" aria-label="문장 번호로 이동">
                   {section.passages.map((p, i) => {
                     const isActive = i === passageIdx
                     return (

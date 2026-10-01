@@ -991,6 +991,27 @@
     font-family: var(--font-sans), 'Pretendard', system-ui, sans-serif;
   }
 
+  /* ── 훈민정음 문장 전환 — 새 문장만 옅게 나타나기 ───────────────────
+   * 위치 계산·겹침 없는 단일 키프레임이라 튈 자리가 없음.
+   * key가 바뀌면 리마운트되며 처음부터 재생된다.
+   */
+  @keyframes passage-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  .passage-fade {
+    animation: passage-fade 0.18s ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .passage-fade {
+      animation: none;
+    }
+  }
+
   /* 연구 방법 — 엠블럼 연결선 (고정, 필터/RAF 없음 → 일렁임 없음) */
   .method-link-halo {
     stroke: rgba(168, 130, 74, 0.32);
