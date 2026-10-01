@@ -68,14 +68,14 @@ export function PassageCard({ passage }: PassageCardProps) {
         )}
       </div>
 
-      {/* 출처(해례본 위치) */}
-      <p className="mt-2 font-sans text-[11px] uppercase tracking-[0.18em] text-ink-muted sm:text-xs">
+      {/* 출처(해례본 위치) — 위 호버 풀이와 여백을 두고 */}
+      <p className="mt-5 font-sans text-[11px] uppercase tracking-[0.18em] text-ink-muted sm:text-xs">
         {passage.reference}
       </p>
 
       {/* 한국어 풀이 — 항상 노출. 본문 흐름 속 단독 자모(ㄱ, ㄴ …)는 교수님 지정 폰트로. */}
       <p
-        className="mt-3 break-keep font-serif text-base leading-[2.2] text-ink-soft [overflow-wrap:break-word] sm:text-[17px]"
+        className="mt-4 break-keep font-serif text-[17px] leading-[2.1] text-ink-soft [overflow-wrap:break-word] sm:text-lg"
         lang="ko"
       >
         <HunminPassageText text={passage.korean} />

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
@@ -69,8 +69,6 @@ export function HunminjeongeumPageClient() {
   const [chapter, setChapter] = useState(0)
   /* 장 안에서 한 번에 한 문장만 — 고정 박스에서 넘겨 보기 */
   const [passageIdx, setPassageIdx] = useState(0)
-  const [passageDir, setPassageDir] = useState(1)
-  const readerTopRef = useRef<HTMLDivElement>(null)
 
   const sectionLabels: Record<
     (typeof HUNMIN_PASSAGE_SECTIONS)[number]['id'],
@@ -86,16 +84,13 @@ export function HunminjeongeumPageClient() {
     if (idx === chapter || idx < 0 || idx >= HUNMIN_PASSAGE_SECTIONS.length) return
     setChapter(idx)
     setPassageIdx(0)
-    setPassageDir(1)
   }
 
-  /* 같은 장 안에서 문장 이동 — 박스 위쪽으로 시선을 되돌림 */
+  /* 같은 장 안에서 문장 이동 — 스크롤 위치는 그대로 유지 */
   const goToPassage = (idx: number) => {
     const total = section.passages.length
     if (idx === passageIdx || idx < 0 || idx >= total) return
-    setPassageDir(idx > passageIdx ? 1 : -1)
     setPassageIdx(idx)
-    readerTopRef.current?.scrollIntoView({ behavior: 'instant', block: 'start' })
   }
 
   const section = HUNMIN_PASSAGE_SECTIONS[chapter]
@@ -139,7 +134,6 @@ export function HunminjeongeumPageClient() {
       </div>
 
       {/* ── 본문 — 왼쪽 장 목차 + 오른쪽 리더 ─────────────────────────── */}
-      <div ref={readerTopRef} className="home-scroll-margin" />
       <div className="lg:grid lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-x-6 xl:gap-x-8">
         {/* 장 목차 — 모바일은 가로, 데스크톱은 왼쪽 세로 */}
         <nav aria-label="훈민정음 장 목차" className="mb-10 lg:mb-0">
@@ -207,11 +201,11 @@ export function HunminjeongeumPageClient() {
               <div className="min-w-0">
                 {/* 고정 박스 + 좌우 독립 버튼 — 버튼은 박스 세로 중앙 양 끝에 고정 */}
                 <div className="relative">
-                  <div className="min-h-[22rem] px-12 sm:min-h-[24rem] sm:px-16">
-                    <AnimatePresence mode="wait" custom={passageDir} initial={false}>
+                  {/* 겹쳐 바뀌는 크로스페이드 — 빈 박스가 번쩍이지 않게 popLayout */}
+                  <div className="min-h-[24rem] px-12 sm:min-h-[26rem] sm:px-16">
+                    <AnimatePresence mode="popLayout" initial={false}>
                       <motion.div
                         key={section.passages[passageIdx]?.number ?? passageIdx}
-                        custom={passageDir}
                         variants={passageTurn}
                         initial="enter"
                         animate="center"
