@@ -126,16 +126,6 @@ export function HunminjeongeumPageClient() {
           訓民正音
         </motion.span>
 
-        <motion.p
-          custom={0}
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          className="font-sans text-[11px] uppercase tracking-[0.22em] text-ink-muted mb-6"
-        >
-          {m.hunminjeongeumCaption}
-        </motion.p>
-
         <h1
           className="font-jamo leading-none text-ink mb-6 flex"
           style={{ fontSize: 'clamp(3rem, 9vw, 5.5rem)' }}
@@ -177,36 +167,6 @@ export function HunminjeongeumPageClient() {
         >
           {m.hunminjeongeumPageDesc}
         </motion.p>
-
-        <motion.div
-          custom={4}
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          className="mt-10 flex items-end gap-4 sm:gap-6"
-        >
-          {(['ㄱ', 'ㄴ', 'ㅁ', 'ㅅ', 'ㅇ'] as const).map((glyph, i) => (
-            <motion.span
-              key={glyph}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.55 + i * 0.07, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="font-jamo text-3xl sm:text-4xl text-ink-muted dark:text-ink-muted select-none"
-              dir="ltr"
-              lang="ko"
-            >
-              {glyph}
-            </motion.span>
-          ))}
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.95 }}
-            className="font-sans text-xl text-ink-muted/40 pb-1 select-none"
-          >
-            …
-          </motion.span>
-        </motion.div>
       </div>
 
       {/* ── 일러두기 ──────────────────────────────────────────────────── */}
