@@ -40,6 +40,18 @@ const pageTurn = {
   }),
 }
 
+/** 구절 넘김 전환 — 장 넘김보다 얕게, 좌우로 미끄러지듯 */
+const passageTurn = {
+  enter: (dir: number) => ({
+    opacity: 0,
+    x: dir >= 0 ? 32 : -32,
+  }),
+  center: { opacity: 1, x: 0 },
+  exit: (dir: number) => ({
+    opacity: 0,
+    x: dir >= 0 ? -32 : 32,
+  }),
+}
 /** 붉은 낙관(落款) — 옛 책의 도장 장식 */
 function SealStamp() {
   return (
@@ -73,6 +85,9 @@ export function HunminjeongeumPageClient() {
 
   const [chapter, setChapter] = useState(0)
   const [direction, setDirection] = useState(1)
+  /* 장 안에서 한 번에 한 문장만 — 고정 박스에서 넘겨 보기 */
+  const [passageIdx, setPassageIdx] = useState(0)
+  const [passageDir, setPassageDir] = useState(1)
   const readerTopRef = useRef<HTMLDivElement>(null)
   const bodyRef = useRef<HTMLDivElement>(null)
 
@@ -100,6 +115,17 @@ export function HunminjeongeumPageClient() {
     if (idx === chapter || idx < 0 || idx >= HUNMIN_PASSAGE_SECTIONS.length) return
     setDirection(idx > chapter ? 1 : -1)
     setChapter(idx)
+    setPassageIdx(0)
+    setPassageDir(1)
+    readerTopRef.current?.scrollIntoView({ behavior: 'instant', block: 'start' })
+  }
+
+  /* 같은 장 안에서 문장 이동 — 박스 위쪽으로 시선을 되돌림 */
+  const goToPassage = (idx: number) => {
+    const total = section.passages.length
+    if (idx === passageIdx || idx < 0 || idx >= total) return
+    setPassageDir(idx > passageIdx ? 1 : -1)
+    setPassageIdx(idx)
     readerTopRef.current?.scrollIntoView({ behavior: 'instant', block: 'start' })
   }
 
@@ -168,11 +194,6 @@ export function HunminjeongeumPageClient() {
           {m.hunminjeongeumPageDesc}
         </motion.p>
       </div>
-
-      {/* ── 일러두기 ──────────────────────────────────────────────────── */}
-      <motion.div custom={5} variants={fadeUp} initial="hidden" animate="show" className="mb-10 sm:mb-12">
-        <EditorialNote />
-      </motion.div>
 
       {/* ── 책갈피 리본 탭 (sticky) — 헤더에서 늘어뜨린 가름끈 ─────────── */}
       <div ref={readerTopRef} className="home-scroll-margin" />
@@ -288,7 +309,7 @@ export function HunminjeongeumPageClient() {
               <div className="mt-8 h-px w-full bg-gradient-to-r from-hanji-border via-hanji-border/40 to-transparent" />
             </header>
 
-            {/* 구절 목록 (+ 초성 장은 우측 패럴랙스 이미지) */}
+            {/* 구절 리더 — 한 번에 한 문장만 고정 박스에 (+ 초성 장은 우측 패럴랙스 이미지) */}
             <div
               ref={bodyRef}
               className={
@@ -297,10 +318,74 @@ export function HunminjeongeumPageClient() {
                   : undefined
               }
             >
-              <div className="min-w-0 space-y-16 sm:space-y-20">
-                {section.passages.map((p) => (
-                  <PassageCard key={p.number} passage={p} />
-                ))}
+              <div className="min-w-0">
+                {/* 문장 이동 — 이전 / 위치 / 다음 */}
+                <div className="mb-8 flex items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    onClick={() => goToPassage(passageIdx - 1)}
+                    disabled={passageIdx === 0}
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-sm border border-hanji-border/80 px-3.5 py-2 font-sans text-xs text-ink-soft transition-all hover:border-gold/40 hover:text-ink-accent disabled:pointer-events-none disabled:opacity-30"
+                    aria-label="이전 문장"
+                  >
+                    <span aria-hidden>←</span>
+                    <span>이전</span>
+                  </button>
+                  <p className="font-serif text-[13px] tracking-[0.14em] text-ink-muted" aria-live="polite">
+                    [{section.passages[passageIdx]?.number}] · {passageIdx + 1} / {section.passages.length}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => goToPassage(passageIdx + 1)}
+                    disabled={passageIdx === section.passages.length - 1}
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-sm border border-hanji-border/80 px-3.5 py-2 font-sans text-xs text-ink-soft transition-all hover:border-gold/40 hover:text-ink-accent disabled:pointer-events-none disabled:opacity-30"
+                    aria-label="다음 문장"
+                  >
+                    <span>다음</span>
+                    <span aria-hidden>→</span>
+                  </button>
+                </div>
+
+                {/* 고정 박스 — 문장이 바뀌어도 아래 번호·일러두기가 밀리지 않게 최소 높이 유지 */}
+                <div className="min-h-[22rem] sm:min-h-[24rem]">
+                  <AnimatePresence mode="wait" custom={passageDir} initial={false}>
+                    <motion.div
+                      key={section.passages[passageIdx]?.number ?? passageIdx}
+                      custom={passageDir}
+                      variants={passageTurn}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      {section.passages[passageIdx] ? (
+                        <PassageCard passage={section.passages[passageIdx]} />
+                      ) : null}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+
+                {/* 번호 점프 — 원하는 문장으로 바로 이동 */}
+                <div className="mt-8 flex flex-wrap gap-1.5" role="group" aria-label="문장 번호로 이동">
+                  {section.passages.map((p, i) => {
+                    const isActive = i === passageIdx
+                    return (
+                      <button
+                        key={p.number}
+                        type="button"
+                        onClick={() => goToPassage(i)}
+                        aria-current={isActive ? 'true' : undefined}
+                        className={`rounded-sm border px-2.5 py-1.5 font-serif text-[11.5px] tracking-[0.06em] transition-colors ${
+                          isActive
+                            ? 'border-gold/60 bg-gold/[0.08] text-ink-accent'
+                            : 'border-hanji-border/70 text-ink-muted hover:border-gold/40 hover:text-ink'
+                        }`}
+                      >
+                        [{p.number}]
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
               {section.id === 'initial' ? (
                 <HunminSectionParallaxAside src={INITIAL_SECTION_IMAGE} alt="광화문 세종대왕 동상" />
@@ -318,7 +403,7 @@ export function HunminjeongeumPageClient() {
           {/* 책장 넘기기 — 이전 / 다음 장 */}
           <nav
             aria-label="장 이동"
-            className="mt-8 mb-24 grid grid-cols-1 gap-3 sm:mt-10 sm:mb-32 sm:grid-cols-2 sm:gap-4"
+            className="mt-8 mb-14 grid grid-cols-1 gap-3 sm:mt-10 sm:mb-16 sm:grid-cols-2 sm:gap-4"
           >
             {prevSection ? (
               <button
@@ -370,6 +455,11 @@ export function HunminjeongeumPageClient() {
           </nav>
         </motion.div>
       </AnimatePresence>
+      </div>
+
+      {/* ── 일러두기 — 본문 박스 바깥 아래 ─────────────────────────────── */}
+      <div className="mb-24 sm:mb-32">
+        <EditorialNote />
       </div>
     </>
   )
