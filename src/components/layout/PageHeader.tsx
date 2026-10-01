@@ -30,7 +30,7 @@ export function PageHeader({ type }: PageHeaderProps) {
   const desc = isConsonants ? m.consonantsPageDesc : m.vowelsPageDesc
 
   return (
-    <div className="relative overflow-hidden pt-16 pb-16 border-b border-hanji-border mb-16">
+    <div className="relative overflow-hidden pt-16 pb-10 border-b border-hanji-border mb-16">
       {/* 배경 워터마크 — 훈민정음 페이지와 같은 계열 */}
       <span
         aria-hidden

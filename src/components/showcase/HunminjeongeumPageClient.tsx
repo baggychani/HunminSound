@@ -45,7 +45,7 @@ function SealStamp() {
   return (
     <span
       aria-hidden
-      className="inline-flex h-11 w-11 rotate-3 select-none items-center justify-center rounded-[3px] bg-[#a63a2e]/90 shadow-[0_1px_4px_rgb(0_0_0/0.18)] dark:bg-[#b04437]/90"
+      className="inline-flex h-11 w-11 select-none items-center justify-center rounded-[3px] bg-[#a63a2e]/90 shadow-[0_1px_4px_rgb(0_0_0/0.18)] dark:bg-[#b04437]/90"
     >
       <span className="font-jamo text-[15px] leading-none tracking-tight text-[#fdf6ec]" lang="ko">
         正音
@@ -114,7 +114,7 @@ export function HunminjeongeumPageClient() {
   return (
     <>
       {/* ── 헤더 (책 표지) ─────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden pt-16 pb-12 border-b border-hanji-border mb-6 sm:mb-8">
+      <div className="relative overflow-hidden pt-16 pb-10 border-b border-hanji-border mb-6 sm:mb-8">
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
