@@ -38,32 +38,16 @@ const pageTurn = {
 }
 */
 
-/** 구절 넘김 전환 — 장 넘김보다 얕게, 좌우로 미끄러지듯 */
+/** 구절 넘김 전환 — 일반적인 크로스페이드 */
 const passageTurn = {
-  enter: (dir: number) => ({
+  enter: () => ({
     opacity: 0,
-    x: dir >= 0 ? 32 : -32,
   }),
-  center: { opacity: 1, x: 0 },
-  exit: (dir: number) => ({
+  center: { opacity: 1 },
+  exit: () => ({
     opacity: 0,
-    x: dir >= 0 ? -32 : 32,
   }),
 }
-/** 붉은 낙관(落款) — 옛 책의 도장 장식 */
-function SealStamp() {
-  return (
-    <span
-      aria-hidden
-      className="inline-flex h-11 w-11 select-none items-center justify-center rounded-[3px] bg-[#a63a2e]/90 shadow-[0_1px_4px_rgb(0_0_0/0.18)] dark:bg-[#b04437]/90"
-    >
-      <span className="font-jamo text-[15px] leading-none tracking-tight text-[#fdf6ec]" lang="ko">
-        正音
-      </span>
-    </span>
-  )
-}
-
 /** 장 사이 구분 장식 — 보관 (2026-10-01: 본문 하단 장식 제거)
 function ChapterEndMark() {
   return (
@@ -195,27 +179,24 @@ export function HunminjeongeumPageClient() {
 
         {/* ── 장 본문 ───────────────────────────────────────────────── */}
         <div className="min-w-0">
-          {/* 목판본 책 페이지 — 이중 광곽 안에 장 전체가 들어감 */}
-          <div className="book-page rounded-[2px] px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14">
+          {/* 목판본 책 페이지 — 이중 광곽 안에 장 전체가 들어감 · 한지 온기 워시 */}
+          <div className="book-page rounded-[2px] bg-gradient-to-b from-hanji-warm/60 via-transparent to-hanji-warm/25 px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14">
             {/* 장 표지 */}
             <header className="relative mb-14 overflow-hidden sm:mb-16" aria-labelledby={`hunmin-${section.id}-title`}>
-              <div className="flex items-start gap-5 sm:gap-7">
-                <SealStamp />
-                <div className="min-w-0">
-                  <p className="font-serif text-[13px] tracking-[0.3em] text-gold" lang="zh-Hant" aria-hidden>
-                    {CHAPTER_ORDINALS[chapter]}
-                  </p>
-                  <h2
-                    id={`hunmin-${section.id}-title`}
-                    className="mt-2 font-jamo text-3xl leading-tight tracking-tight text-ink sm:text-4xl"
-                    lang="ko"
-                  >
-                    {label.title}
-                  </h2>
-                  <p className="mt-2 font-sans text-xs tracking-[0.12em] text-ink-muted sm:text-[13px]">
-                    {label.sub}
-                  </p>
-                </div>
+              <div className="min-w-0">
+                <p className="font-serif text-[13px] tracking-[0.3em] text-gold" lang="zh-Hant" aria-hidden>
+                  {CHAPTER_ORDINALS[chapter]}
+                </p>
+                <h2
+                  id={`hunmin-${section.id}-title`}
+                  className="mt-2 font-jamo text-3xl leading-tight tracking-tight text-ink sm:text-4xl"
+                  lang="ko"
+                >
+                  {label.title}
+                </h2>
+                <p className="mt-2 font-sans text-xs tracking-[0.12em] text-ink-muted sm:text-[13px]">
+                  {label.sub}
+                </p>
               </div>
 
               <div className="mt-8 h-px w-full bg-gradient-to-r from-hanji-border via-hanji-border/40 to-transparent" />
@@ -235,7 +216,7 @@ export function HunminjeongeumPageClient() {
                         initial="enter"
                         animate="center"
                         exit="exit"
-                        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{ duration: 0.25, ease: 'easeOut' }}
                       >
                         {section.passages[passageIdx] ? (
                           <PassageCard passage={section.passages[passageIdx]} />

@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import { HanjaText } from './HanjaText'
@@ -29,24 +28,18 @@ export function PassageCard({ passage }: PassageCardProps) {
   const showExtraTranslation = lang !== 'ko'
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="group/passage relative pl-7 sm:pl-10"
-    >
-      {/* 일련번호 — 옛 책의 행두주처럼 왼쪽 여백에 세로 정렬 */}
+    <article className="group/passage relative pl-7 sm:pl-10">
+      {/* 일련번호 — 첫 줄 한자와 윗선이 맞게 (ruby 독음 높이만큼 내림) */}
       <span
         aria-label={`해례본 ${passage.number}번 문장`}
-        className="absolute left-0 top-3 select-none font-serif text-[10.5px] leading-none tracking-[0.06em] text-ink-muted sm:text-[11.5px]"
+        className="absolute left-0 top-8 select-none font-serif text-[11px] leading-none tracking-[0.06em] text-ink-muted sm:text-xs"
       >
         [{passage.number}]
       </span>
 
       {/* 한문 원문 (글자별 위에 독음) */}
       <p
-        className="hunmin-original break-keep text-[clamp(1.4rem,2.6vw,1.85rem)] font-serif leading-[2.7] tracking-[0.04em] text-ink [overflow-wrap:break-word]"
+        className="hunmin-original break-keep text-[clamp(1.5rem,2.8vw,2rem)] font-serif leading-[2.5] tracking-[0.04em] text-ink [overflow-wrap:break-word]"
         lang="ko"
       >
         <HanjaText
@@ -60,7 +53,7 @@ export function PassageCard({ passage }: PassageCardProps) {
       {/* 호버 슬롯 — 한 줄, 카드 사이 점프 방지를 위해 항상 자리 확보 */}
       <div
         aria-live="polite"
-        className="mt-2 flex h-[1.4em] items-center gap-2 font-sans text-xs leading-none text-ink-muted sm:text-[13px]"
+        className="mt-1 flex h-[1.4em] items-center gap-2 font-sans text-[13px] leading-none text-ink-muted sm:text-sm"
       >
         {gloss && hoveredChar ? (
           <>
@@ -76,13 +69,13 @@ export function PassageCard({ passage }: PassageCardProps) {
       </div>
 
       {/* 출처(해례본 위치) */}
-      <p className="mt-3 font-sans text-[10.5px] uppercase tracking-[0.18em] text-ink-muted sm:text-[11px]">
+      <p className="mt-2 font-sans text-[11px] uppercase tracking-[0.18em] text-ink-muted sm:text-xs">
         {passage.reference}
       </p>
 
       {/* 한국어 풀이 — 항상 노출. 본문 흐름 속 단독 자모(ㄱ, ㄴ …)는 교수님 지정 폰트로. */}
       <p
-        className="mt-4 break-keep font-serif text-[15px] leading-[2.2] text-ink-soft [overflow-wrap:break-word] sm:text-[16px]"
+        className="mt-3 break-keep font-serif text-base leading-[2.2] text-ink-soft [overflow-wrap:break-word] sm:text-[17px]"
         lang="ko"
       >
         <HunminPassageText text={passage.korean} />
@@ -99,15 +92,15 @@ export function PassageCard({ passage }: PassageCardProps) {
 
       {/* 발음 보기 링크 — 본문에 등장하는 한글 자모만 */}
       {passage.glyphLinks && passage.glyphLinks.length > 0 ? (
-        <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5">
           {passage.glyphLinks.map((link, idx) => (
             <Link
               key={`${link.symbol}-${idx}`}
               href={buildGlyphHref(link)}
-              className="group/link inline-flex items-baseline gap-1.5 font-sans text-[11px] tracking-[0.04em] text-ink-muted transition-colors hover:text-ink-accent focus-visible:text-ink-accent sm:text-[12px]"
+              className="group/link inline-flex items-baseline gap-1.5 font-sans text-xs tracking-[0.04em] text-ink-muted transition-colors hover:text-ink-accent focus-visible:text-ink-accent sm:text-[13px]"
             >
               <span
-                className="font-jamo text-[14px] leading-none text-ink-muted transition-colors group-hover/link:text-ink-accent sm:text-[15px]"
+                className="font-jamo text-[15px] leading-none text-ink-muted transition-colors group-hover/link:text-ink-accent sm:text-base"
                 lang="ko"
               >
                 {link.symbol}
@@ -120,6 +113,6 @@ export function PassageCard({ passage }: PassageCardProps) {
           ))}
         </div>
       ) : null}
-    </motion.article>
+    </article>
   )
 }
