@@ -183,7 +183,7 @@ export function HunminjeongeumPageClient() {
                 {/* 고정 박스 + 좌우 독립 버튼 — 버튼은 박스 세로 중앙 양 끝에 고정 */}
                 <div className="relative">
                   {/* 새 문장만 옅게 나타나기 — 위치 계산 없음, 튈 자리 없음 */}
-                  <div className="min-h-[12rem] px-12 sm:min-h-[13rem] sm:px-16">
+                  <div className="min-h-[19rem] px-12 sm:min-h-[20rem] sm:px-16">
                     <div
                       key={section.passages[passageIdx]?.number ?? passageIdx}
                       className="passage-fade"
@@ -213,8 +213,8 @@ export function HunminjeongeumPageClient() {
                   </button>
                 </div>
 
-                {/* 번호 점프 — 카드에 바로 붙이고 상단 여백으로 간격 확보 */}
-                <div className="mt-8 flex flex-wrap justify-center gap-1.5" role="group" aria-label="문장 번호로 이동">
+                {/* 번호 점프 — 원하는 문장으로 바로 이동 */}
+                <div className="mt-6 flex flex-wrap justify-center gap-1.5" role="group" aria-label="문장 번호로 이동">
                   {section.passages.map((p, i) => {
                     const isActive = i === passageIdx
                     return (
