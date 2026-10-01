@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { AnimatePresence, motion, useScroll, useSpring, useTransform } from 'framer-motion'
+import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import { HUNMIN_PASSAGE_SECTIONS } from '@/data/hunminjeongeumPassages'
@@ -89,18 +89,10 @@ export function HunminjeongeumPageClient() {
   const [passageIdx, setPassageIdx] = useState(0)
   const [passageDir, setPassageDir] = useState(1)
   const readerTopRef = useRef<HTMLDivElement>(null)
-  const bodyRef = useRef<HTMLDivElement>(null)
 
   const { scrollY } = useScroll()
   const bgY = useTransform(scrollY, [0, 700], [0, -90])
   const bgOpacity = useTransform(scrollY, [0, 500], [1, 0.4])
-
-  /* 장 본문 읽기 진행률 — sticky 탭바 아래 금색 실 */
-  const { scrollYProgress } = useScroll({
-    target: bodyRef,
-    offset: ['start 0.35', 'end end'],
-  })
-  const readProgress = useSpring(scrollYProgress, { stiffness: 160, damping: 30, mass: 0.4 })
 
   const sectionLabels: Record<
     (typeof HUNMIN_PASSAGE_SECTIONS)[number]['id'],
@@ -131,11 +123,6 @@ export function HunminjeongeumPageClient() {
 
   const section = HUNMIN_PASSAGE_SECTIONS[chapter]
   const label = sectionLabels[section.id]
-  const firstNum = section.passages[0]?.number
-  const lastNum = section.passages[section.passages.length - 1]?.number
-  const prevSection = chapter > 0 ? HUNMIN_PASSAGE_SECTIONS[chapter - 1] : null
-  const nextSection =
-    chapter < HUNMIN_PASSAGE_SECTIONS.length - 1 ? HUNMIN_PASSAGE_SECTIONS[chapter + 1] : null
 
   return (
     <>
@@ -175,16 +162,6 @@ export function HunminjeongeumPageClient() {
         </h1>
 
         <motion.p
-          custom={2}
-          variants={fadeUp}
-          initial="hidden"
-          animate="show"
-          className="font-serif text-xl sm:text-2xl text-ink-soft mb-8"
-        >
-          {m.hunminjeongeumSubtitle}
-        </motion.p>
-
-        <motion.p
           custom={3}
           variants={fadeUp}
           initial="hidden"
@@ -195,27 +172,12 @@ export function HunminjeongeumPageClient() {
         </motion.p>
       </div>
 
-      {/* ── 책갈피 리본 탭 (sticky) — 헤더에서 늘어뜨린 가름끈 ─────────── */}
+      {/* ── 본문 — 왼쪽 장 목차 + 오른쪽 리더 ─────────────────────────── */}
       <div ref={readerTopRef} className="home-scroll-margin" />
-      <div className="sticky top-[var(--site-header-h,4rem)] z-30 -mx-6 mb-12 sm:-mx-10 lg:-mx-14 sm:mb-16">
-        {/* 배경 바 — 리본 상단만 덮고, 리본 꼬리는 아래로 삐져나옴 */}
-        <div
-          aria-hidden
-          className="absolute inset-x-0 top-0 h-[3.35rem] border-b border-hanji-border/70 bg-hanji/92 backdrop-blur-md"
-        />
-        {/* 읽기 진행 실 — 붉은 가름끈이 차오르듯 */}
-        <motion.span
-          aria-hidden
-          style={{ scaleX: readProgress }}
-          className="absolute inset-x-0 top-0 z-10 h-[2px] origin-left bg-gradient-to-r from-gold via-gold-light to-[#c26a4a]"
-        />
-
-        <div className="relative flex items-start justify-between gap-4 px-6 sm:px-10 lg:px-14">
-          <div
-            className="scrollbar-none flex min-w-0 items-start gap-2 overflow-x-auto pe-2 sm:gap-3"
-            role="tablist"
-            aria-label="훈민정음 장 목차"
-          >
+      <div className="lg:grid lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-x-10 xl:gap-x-14">
+        {/* 장 목차 — 모바일은 가로, 데스크톱은 왼쪽 세로 */}
+        <nav aria-label="훈민정음 장 목차" className="mb-10 lg:mb-0">
+          <div className="scrollbar-none flex gap-2 overflow-x-auto lg:sticky lg:top-[calc(var(--site-header-h,4rem)+1.5rem)] lg:flex-col lg:overflow-visible">
             {HUNMIN_PASSAGE_SECTIONS.map((s, idx) => {
               const isActive = idx === chapter
               const sLabel = sectionLabels[s.id]
@@ -223,21 +185,16 @@ export function HunminjeongeumPageClient() {
                 <button
                   key={s.id}
                   type="button"
-                  role="tab"
-                  aria-selected={isActive}
+                  aria-current={isActive ? 'true' : undefined}
                   onClick={() => goToChapter(idx)}
-                  style={{
-                    clipPath:
-                      'polygon(0 0, 100% 0, 100% calc(100% - 9px), 50% 100%, 0 calc(100% - 9px))',
-                  }}
-                  className={`relative flex shrink-0 flex-col items-center gap-1 px-4 pt-2.5 transition-all duration-300 sm:px-5 ${
+                  className={`flex shrink-0 items-center gap-3 rounded-sm border px-4 py-3 text-start transition-all sm:px-5 lg:w-full ${
                     isActive
-                      ? 'bg-[#a6432e] pb-6 text-[#fdf3e7] dark:bg-[#93402c]'
-                      : 'bg-hanji-warm pb-4 text-ink-muted hover:bg-hanji-hover hover:pb-5 hover:text-ink-soft dark:bg-hanji-hover/70 dark:hover:bg-hanji-hover'
+                      ? 'border-[#a6432e] bg-[#a6432e] text-[#fdf3e7] dark:border-[#93402c] dark:bg-[#93402c]'
+                      : 'border-hanji-border/80 bg-hanji-card text-ink-muted hover:border-gold/40 hover:text-ink'
                   }`}
                 >
                   <span
-                    className={`font-serif text-[10.5px] leading-none tracking-[0.2em] ${
+                    className={`font-serif text-[11px] leading-none tracking-[0.2em] ${
                       isActive ? 'text-[#f3d9b8]' : 'text-ink-muted'
                     }`}
                     lang="zh-Hant"
@@ -245,18 +202,17 @@ export function HunminjeongeumPageClient() {
                   >
                     {s.classicLabel}
                   </span>
-                  <span className="whitespace-nowrap font-sans text-[12.5px] leading-tight sm:text-[13px]">
+                  <span className="whitespace-nowrap font-sans text-[13px] leading-tight">
                     {sLabel.title}
                   </span>
                 </button>
               )
             })}
           </div>
-        </div>
-      </div>
+        </nav>
 
-      {/* ── 장 본문 — 3D 페이지 넘김 전환 ──────────────────────────────── */}
-      <div style={{ perspective: '1800px' }}>
+        {/* ── 장 본문 — 3D 페이지 넘김 전환 ──────────────────────────── */}
+        <div style={{ perspective: '1800px' }} className="min-w-0">
       <AnimatePresence mode="wait" custom={direction} initial={false}>
         <motion.div
           key={section.id}
@@ -298,11 +254,6 @@ export function HunminjeongeumPageClient() {
                   <p className="mt-2 font-sans text-xs tracking-[0.12em] text-ink-muted sm:text-[13px]">
                     {label.sub}
                   </p>
-                  {firstNum && lastNum ? (
-                    <p className="mt-4 font-serif text-[11.5px] tracking-[0.14em] text-ink-muted">
-                      [{firstNum}] – [{lastNum}] · {section.passages.length}
-                    </p>
-                  ) : null}
                 </div>
               </div>
 
@@ -311,7 +262,6 @@ export function HunminjeongeumPageClient() {
 
             {/* 구절 리더 — 한 번에 한 문장만 고정 박스에 (+ 초성 장은 우측 패럴랙스 이미지) */}
             <div
-              ref={bodyRef}
               className={
                 section.id === 'initial'
                   ? 'lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(11rem,17rem)] lg:items-start lg:gap-x-10 xl:grid-cols-[minmax(0,1fr)_minmax(13rem,19rem)] xl:gap-x-14'
@@ -319,50 +269,43 @@ export function HunminjeongeumPageClient() {
               }
             >
               <div className="min-w-0">
-                {/* 문장 이동 — 이전 / 위치 / 다음 */}
-                <div className="mb-8 flex items-center justify-between gap-3">
+                {/* 고정 박스 + 좌우 독립 버튼 — 버튼은 박스 세로 중앙 양 끝에 고정 */}
+                <div className="relative">
+                  <div className="min-h-[22rem] px-12 sm:min-h-[24rem] sm:px-16">
+                    <AnimatePresence mode="wait" custom={passageDir} initial={false}>
+                      <motion.div
+                        key={section.passages[passageIdx]?.number ?? passageIdx}
+                        custom={passageDir}
+                        variants={passageTurn}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        {section.passages[passageIdx] ? (
+                          <PassageCard passage={section.passages[passageIdx]} />
+                        ) : null}
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
                   <button
                     type="button"
                     onClick={() => goToPassage(passageIdx - 1)}
                     disabled={passageIdx === 0}
-                    className="inline-flex shrink-0 items-center gap-1.5 rounded-sm border border-hanji-border/80 px-3.5 py-2 font-sans text-xs text-ink-soft transition-all hover:border-gold/40 hover:text-ink-accent disabled:pointer-events-none disabled:opacity-30"
                     aria-label="이전 문장"
+                    className="absolute left-0 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-hanji-border bg-hanji-card/90 text-base text-ink-soft shadow-sm backdrop-blur transition-all hover:border-gold/50 hover:text-gold disabled:pointer-events-none disabled:opacity-25 sm:h-11 sm:w-11"
                   >
                     <span aria-hidden>←</span>
-                    <span>이전</span>
                   </button>
-                  <p className="font-serif text-[13px] tracking-[0.14em] text-ink-muted" aria-live="polite">
-                    [{section.passages[passageIdx]?.number}] · {passageIdx + 1} / {section.passages.length}
-                  </p>
                   <button
                     type="button"
                     onClick={() => goToPassage(passageIdx + 1)}
                     disabled={passageIdx === section.passages.length - 1}
-                    className="inline-flex shrink-0 items-center gap-1.5 rounded-sm border border-hanji-border/80 px-3.5 py-2 font-sans text-xs text-ink-soft transition-all hover:border-gold/40 hover:text-ink-accent disabled:pointer-events-none disabled:opacity-30"
                     aria-label="다음 문장"
+                    className="absolute right-0 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-hanji-border bg-hanji-card/90 text-base text-ink-soft shadow-sm backdrop-blur transition-all hover:border-gold/50 hover:text-gold disabled:pointer-events-none disabled:opacity-25 sm:h-11 sm:w-11"
                   >
-                    <span>다음</span>
                     <span aria-hidden>→</span>
                   </button>
-                </div>
-
-                {/* 고정 박스 — 문장이 바뀌어도 아래 번호·일러두기가 밀리지 않게 최소 높이 유지 */}
-                <div className="min-h-[22rem] sm:min-h-[24rem]">
-                  <AnimatePresence mode="wait" custom={passageDir} initial={false}>
-                    <motion.div
-                      key={section.passages[passageIdx]?.number ?? passageIdx}
-                      custom={passageDir}
-                      variants={passageTurn}
-                      initial="enter"
-                      animate="center"
-                      exit="exit"
-                      transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                      {section.passages[passageIdx] ? (
-                        <PassageCard passage={section.passages[passageIdx]} />
-                      ) : null}
-                    </motion.div>
-                  </AnimatePresence>
                 </div>
 
                 {/* 번호 점프 — 원하는 문장으로 바로 이동 */}
@@ -400,61 +343,9 @@ export function HunminjeongeumPageClient() {
             </p>
           </div>
 
-          {/* 책장 넘기기 — 이전 / 다음 장 */}
-          <nav
-            aria-label="장 이동"
-            className="mt-8 mb-14 grid grid-cols-1 gap-3 sm:mt-10 sm:mb-16 sm:grid-cols-2 sm:gap-4"
-          >
-            {prevSection ? (
-              <button
-                type="button"
-                onClick={() => goToChapter(chapter - 1)}
-                className="group flex items-center justify-between gap-4 rounded-sm border border-hanji-border/80 bg-hanji-card px-5 py-4 text-start transition-all hover:border-gold/40 hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] sm:px-6 sm:py-5"
-              >
-                <span
-                  aria-hidden
-                  className="text-gold transition-transform group-hover:-translate-x-1 rtl:rotate-180 rtl:group-hover:translate-x-1"
-                >
-                  ←
-                </span>
-                <span className="min-w-0 text-end">
-                  <span className="block font-serif text-[11px] tracking-[0.2em] text-ink-muted" lang="zh-Hant" aria-hidden>
-                    {CHAPTER_ORDINALS[chapter - 1]}
-                  </span>
-                  <span className="mt-1 block truncate font-sans text-sm text-ink group-hover:text-ink-accent">
-                    {sectionLabels[prevSection.id].title}
-                  </span>
-                </span>
-              </button>
-            ) : (
-              <span aria-hidden className="hidden sm:block" />
-            )}
-
-            {nextSection ? (
-              <button
-                type="button"
-                onClick={() => goToChapter(chapter + 1)}
-                className="group flex items-center justify-between gap-4 rounded-sm border border-hanji-border/80 bg-hanji-card px-5 py-4 text-start transition-all hover:border-gold/40 hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] sm:px-6 sm:py-5"
-              >
-                <span className="min-w-0">
-                  <span className="block font-serif text-[11px] tracking-[0.2em] text-ink-muted" lang="zh-Hant" aria-hidden>
-                    {CHAPTER_ORDINALS[chapter + 1]}
-                  </span>
-                  <span className="mt-1 block truncate font-sans text-sm text-ink group-hover:text-ink-accent">
-                    {sectionLabels[nextSection.id].title}
-                  </span>
-                </span>
-                <span
-                  aria-hidden
-                  className="text-gold transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
-                >
-                  →
-                </span>
-              </button>
-            ) : null}
-          </nav>
         </motion.div>
       </AnimatePresence>
+        </div>
       </div>
 
       {/* ── 일러두기 — 본문 박스 바깥 아래 ─────────────────────────────── */}
