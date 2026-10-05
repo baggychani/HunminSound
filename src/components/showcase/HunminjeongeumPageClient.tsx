@@ -231,7 +231,7 @@ export function HunminjeongeumPageClient() {
                             : 'border-hanji-border/70 text-ink-muted hover:border-gold/40 hover:text-ink'
                         }`}
                       >
-                        [{p.number}]
+                        {p.number}
                       </button>
                     )
                   })}

@@ -142,7 +142,7 @@ export function HomeContactSection() {
           <h2 className="font-serif text-[clamp(1.65rem,4.5vw,2.5rem)] font-bold leading-[1.24] tracking-tight text-ink">
             {v2.contactTitle}
           </h2>
-          <p className="mt-5 max-w-md font-sans text-sm font-medium leading-relaxed text-ink-soft sm:mt-6">
+          <p className="mt-5 max-w-md font-sans text-sm font-normal leading-relaxed text-ink-soft sm:mt-6">
             {formatContactDesc(v2.contactDesc, lang)}
           </p>
 
