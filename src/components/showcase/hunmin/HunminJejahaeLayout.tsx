@@ -191,8 +191,7 @@ export function HunminJejahaeZoneTrack({
 
 export function HunminJejahaeZoneLabel({ children }: { children: ReactNode }) {
   return (
-    <div className="mb-3.5 flex items-center gap-2.5 sm:mb-4">
-      <span className="h-px w-5 shrink-0 bg-gold/50" aria-hidden />
+    <div className="mb-3.5 sm:mb-4">
       <span className="font-sans text-xs font-medium text-gold sm:text-[13px]">
         {children}
       </span>

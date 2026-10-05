@@ -83,7 +83,7 @@ export function SectionRail({ items, railId, ariaLabel }: SectionRailProps) {
                 <span
                   className={`relative leading-none transition-all duration-300 ${
                     isActive
-                      ? 'font-sans text-[10px] font-medium tracking-tight text-white'
+                      ? 'font-sans text-[11px] font-normal tracking-tight text-white'
                       : 'font-serif text-[13px] text-white/40 group-hover:text-white/75'
                   }`}
                 >

@@ -156,7 +156,7 @@ function SplitSection({
   children: React.ReactNode
 }) {
   return (
-    <section id={id} className="home-scroll-margin border-t border-hanji-border/60 py-20 first:border-t-0 first:pt-0 sm:py-28">
+    <section id={id} className="home-scroll-margin border-t border-hanji-border/60 py-20 first:border-t-0 first:pt-0 last:pb-8 sm:py-28 sm:last:pb-10">
       <div className="research-split">
         <div className="shrink-0 lg:sticky lg:top-[calc(var(--site-header-h,4rem)+2.75rem)] lg:self-start">
           <p
@@ -731,7 +731,7 @@ export function ResearchPageClient({ content }: Props) {
         </motion.nav>
       </div>
 
-      <div className="space-y-0 pb-28 sm:pb-36">
+      <div className="space-y-0 pb-10 sm:pb-14">
 
         <SplitSection id="section-motivation" index={1} title={t('section.motivation', '연구 동기')}>
           <div className="space-y-7 sm:space-y-8">
