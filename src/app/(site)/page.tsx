@@ -137,7 +137,7 @@ export default function HomePage() {
         <HomeJamoField />
 
         <div className="relative z-10 mx-auto grid max-sm:h-auto sm:h-full w-full max-w-6xl grid-cols-1 items-center px-6 sm:px-8 sm:ps-[4vw] lg:grid-cols-[0.32fr_1.38fr_0.80fr] lg:px-10 lg:ps-[5vw]">
-          {/* 좌측 세로 장식 — 임시 숨김. 열 너비는 유지하고, 복구 시 아래 주석을 되돌린다.
+          {/* 좌측 세로 장식 — 訓民正音 · 世宗御製 (데스크톱 전용) */}
           <div className="hidden h-full lg:flex lg:flex-col lg:items-center lg:justify-center lg:gap-5" aria-hidden>
             <motion.div
               initial={{ opacity: 0 }}
@@ -155,8 +155,6 @@ export default function HomePage() {
               <span className="h-14 w-px bg-gradient-to-t from-transparent via-ink-muted/35 to-ink-muted/35" />
             </motion.div>
           </div>
-          */}
-          <div className="hidden h-full lg:block" aria-hidden />
 
           <div className="flex flex-col items-center text-center translate-x-[clamp(0.25rem,2vw,0.75rem)] sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] lg:translate-x-0">
             <p

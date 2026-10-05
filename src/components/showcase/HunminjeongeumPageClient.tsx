@@ -92,7 +92,7 @@ export function HunminjeongeumPageClient() {
       <div className="relative overflow-hidden pt-16 pb-10 border-b border-hanji-border mb-6 sm:mb-8">
         <h1
           className="font-jamo leading-none text-ink mb-6 flex"
-          style={{ fontSize: 'clamp(3rem, 9vw, 5.5rem)' }}
+          style={{ fontSize: 'clamp(2.35rem, 7vw, 4.1rem)' }}
           aria-label="훈민정음"
         >
           {TITLE_CHARS.map((char, i) => (
