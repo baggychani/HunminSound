@@ -10,8 +10,9 @@ import { HunminPassageText } from './HunminPassageText'
 import type { HunminPassage, GlyphLink } from '@/data/hunminjeongeumPassages'
 import { phoneticsChartHref } from '@/lib/phoneticsHref'
 
+/** 제자해 문장에서 넘어가므로 차트도 제자해 보기로 연다 */
 function buildGlyphHref(link: GlyphLink): string {
-  return phoneticsChartHref(link.target, link.id)
+  return phoneticsChartHref(link.target, link.id, 'hunmin')
 }
 
 interface PassageCardProps {
@@ -31,10 +32,10 @@ export function PassageCard({ passage }: PassageCardProps) {
     <article className="group/passage relative pl-7 sm:pl-10">
       {/* 일련번호 — 첫 줄 한자와 윗선이 맞게 (ruby 독음 높이만큼 내림) */}
       <span
-        aria-label={`해례본 ${passage.number}번 문장`}
         className="absolute left-0 top-8 select-none font-serif text-[11px] leading-none tracking-[0.06em] text-ink-muted sm:text-xs"
       >
-        [{passage.number}]
+        <span aria-hidden>[{passage.number}]</span>
+        <span className="sr-only">{m.hunminPassageLabel.replace('{n}', passage.number)}</span>
       </span>
 
       {/* 한문 원문 (글자별 위에 독음) */}

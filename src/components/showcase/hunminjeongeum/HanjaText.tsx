@@ -161,25 +161,21 @@ function HanjaWithYum({ focusKey, char, yum, interactive, isActive, onFocus }: H
   const hanjaCls = [
     'hunmin-hanja inline-block transition-[transform,color] duration-200 ease-out',
     interactive
-      ? 'cursor-help hover:-translate-y-[2px] hover:text-ink-accent focus-visible:-translate-y-[2px] focus-visible:text-ink-accent'
+      ? 'cursor-help hover:-translate-y-[2px] hover:text-ink-accent'
       : '',
     isActive ? '-translate-y-[2px] text-ink-accent' : '',
   ]
     .join(' ')
     .trim()
 
-  /* ruby에 onMouseEnter/Leave를 걸어두면 rt(독음) 영역에서도 호버가 유지된다. */
+  /* ruby에 onMouseEnter/Leave를 걸어두면 rt(독음) 영역에서도 호버가 유지된다.
+   * 탭 순서에는 넣지 않는다 — 한자마다 멈추면 '다음 문장'까지 20번 넘게 눌러야 하고,
+   * 독음은 rt로 이미 읽힌다. */
   const handlers = interactive
     ? {
         onMouseEnter: () => onFocus(focusKey, char),
         onMouseLeave: () => onFocus(null, null),
-        onFocus: () => onFocus(focusKey, char),
-        onBlur: () => onFocus(null, null),
-        onKeyDown: (e: React.KeyboardEvent) => {
-          if (e.key === 'Escape') onFocus(null, null)
-        },
-        tabIndex: 0,
-        role: 'button',
+        onClick: () => onFocus(focusKey, char),
       }
     : {}
 

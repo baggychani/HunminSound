@@ -306,6 +306,7 @@ const MEDIAL: HunminPassage[] = [
     translations: {
       en: 'ㆍ /ʌ/ is pronounced by contracting the tongue, so the sound becomes deep — like when Heaven opens at the hour of the Rat (11 pm–1 am).',
     },
+    glyphLinks: [{ symbol: 'ㆍ', id: 'araea', target: 'vowels' }],
   },
   {
     number: '101',
