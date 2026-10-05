@@ -12,7 +12,8 @@ const BASE_SECURITY_HEADERS = [
  */
 const PUBLIC_CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  /* 'wasm-unsafe-eval' — drei useGLTF가 Meshopt 디코더(WebAssembly)를 컴파일함. JS eval은 여전히 차단 */
+  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
