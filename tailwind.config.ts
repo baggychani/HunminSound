@@ -48,7 +48,12 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addVariant }) {
+      // 창 안쪽 높이 800px 이하. 반응형(sm/lg)보다 뒤에 두어 그 구간에서만 덮어쓴다.
+      addVariant('h-short', '@media (max-height: 800px)')
+    },
+  ],
 }
 
 export default config

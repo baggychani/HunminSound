@@ -162,7 +162,7 @@ export function HomeContactSection() {
             </ContactItem>
           </div>
 
-          <div className="mt-6 w-full max-w-[15rem] rounded-sm border border-hanji-border/60 bg-white px-5 py-4 sm:max-w-[19rem] sm:px-6 sm:py-5">
+          <div className="mt-6 w-full max-w-[15rem] rounded-sm border border-hanji-border/60 bg-white px-5 py-4 sm:max-w-[19rem] sm:px-6 sm:py-5 h-short:max-w-[15rem] h-short:px-5 h-short:py-4 h-short:sm:max-w-[15rem] h-short:sm:px-5 h-short:sm:py-4">
             <Image
               src="/images/sejongorg.png"
               alt="세종대왕기념사업회"
@@ -181,12 +181,12 @@ export function HomeContactSection() {
           whileInView="show"
           viewport={{ once: true, margin: '-40px' }}
           onSubmit={onSubmit}
-          className="corner-brackets relative rounded-sm border border-hanji-border/60 bg-hanji/75 p-6 backdrop-blur-md sm:p-7 dark:bg-hanji/65"
+          className="corner-brackets relative rounded-sm border border-hanji-border/60 bg-hanji/75 p-6 backdrop-blur-md sm:p-7 h-short:p-5 h-short:sm:p-5 dark:bg-hanji/65"
         >
           <h3 className="font-serif text-lg font-bold text-ink">{v2.contactFormTitle}</h3>
           <p className="mt-2 font-sans text-xs text-ink-muted">{v2.contactFormDesc}</p>
 
-          <div className="mt-5 space-y-2.5">
+          <div className="mt-5 space-y-2.5 h-short:mt-3 h-short:space-y-1.5">
             <label className="block">
               <span className="font-sans text-xs font-medium text-ink-muted">{v2.contactName} *</span>
               <input
@@ -240,7 +240,7 @@ export function HomeContactSection() {
                 maxLength={500}
                 value={form.message}
                 onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-                className={`${inputClass} resize-y min-h-[5.5rem]`}
+                className={`${inputClass} resize-y min-h-[5.5rem] h-short:min-h-[3.75rem] h-short:h-[3.75rem]`}
               />
             </label>
             <input
