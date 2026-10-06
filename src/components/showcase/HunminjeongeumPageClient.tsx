@@ -65,11 +65,11 @@ export function HunminjeongeumPageClient() {
 
   const sectionLabels: Record<
     (typeof HUNMIN_PASSAGE_SECTIONS)[number]['id'],
-    { title: string; sub: string }
+    { title: string }
   > = {
-    initial: { title: m.hunminInitialTitle, sub: m.hunminInitialSub },
-    medial: { title: m.hunminMedialTitle, sub: m.hunminMedialSub },
-    appraisal: { title: m.hunminAppraisalTitle, sub: m.hunminAppraisalSub },
+    initial: { title: m.hunminInitialTitle },
+    medial: { title: m.hunminMedialTitle },
+    appraisal: { title: m.hunminAppraisalTitle },
   }
 
   /* 장 이동 — 스크롤 위치는 그대로 유지 */
@@ -224,9 +224,6 @@ export function HunminjeongeumPageClient() {
                 >
                   {label.title}
                 </h2>
-                <p className="mt-2 font-sans text-xs tracking-[0.12em] text-ink-muted sm:text-[13px]">
-                  {label.sub}
-                </p>
               </div>
 
               <div className="mt-8 h-px w-full bg-gradient-to-r from-hanji-border via-hanji-border/40 to-transparent" />
