@@ -266,7 +266,7 @@ export default function HomePage() {
       <section
         ref={act4Ref}
         id="home-act4"
-        className={`home-scroll-margin site-container relative z-10 flex ${act4SectionClass} flex-col justify-center py-[clamp(1rem,2.5dvh,2rem)] lg:py-[clamp(1.25rem,3dvh,2.5rem)]`}
+        className={`home-scroll-margin site-container relative z-10 flex ${act4SectionClass} flex-col justify-center py-[clamp(1rem,2.5dvh,2rem)] lg:py-[clamp(1.25rem,3dvh,2.5rem)] h-short:py-2 h-short:lg:py-2`}
       >
         <HomeContactSection />
       </section>
