@@ -158,7 +158,7 @@ export default function HomePage() {
           */}
           <div className="hidden h-full lg:block" aria-hidden />
 
-          <div className="flex flex-col items-center text-center translate-x-[clamp(0.25rem,2vw,0.75rem)] sm:h-[68%] sm:max-h-[68%] sm:min-h-0 sm:justify-center sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] sm:[container-type:size] lg:translate-x-0">
+          <div className="flex flex-col items-center text-center translate-x-[clamp(0.25rem,2vw,0.75rem)] sm:h-[78%] sm:max-h-[78%] sm:min-h-0 sm:justify-center sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] sm:[container-type:size] lg:translate-x-0">
             <p
               className={`shrink-0 font-serif font-medium text-[15px] tracking-wide text-ink-muted sm:text-[clamp(0.8rem,3.2cqh,1.0625rem)] ${
                 lang === 'hi' ? 'font-devanagari normal-case tracking-normal' : ''
@@ -169,13 +169,13 @@ export default function HomePage() {
             </p>
 
             <h1
-              className="mt-4 shrink-0 font-jamo text-[4rem] leading-none tracking-wide text-ink sm:mt-[clamp(0.5rem,3.42cqh,1.25rem)] sm:text-[clamp(3.15rem,16cqh,5.85rem)]"
+              className="mt-4 shrink-0 font-jamo text-[4rem] leading-none tracking-wide text-ink sm:mt-[clamp(0.75rem,5cqh,1.75rem)] sm:text-[clamp(3.15rem,16cqh,5.85rem)]"
               lang="ko"
             >
               <HeroTitleReveal text={SITE_BRAND_NAME} />
             </h1>
 
-            <p className="text-shimmer-gold mt-4 shrink-0 font-sans text-sm tracking-[0.2em] sm:mt-[clamp(0.5rem,3.42cqh,1.25rem)] sm:text-[clamp(0.75rem,2.2cqh,0.875rem)]">
+            <p className="text-shimmer-gold mt-4 shrink-0 font-sans text-sm tracking-[0.2em] sm:mt-[clamp(0.5rem,3.42cqh,1.25rem)] sm:text-[clamp(0.75rem,2.5cqh,0.875rem)]">
               Sejong Speech Sounds
             </p>
 

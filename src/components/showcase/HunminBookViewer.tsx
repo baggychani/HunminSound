@@ -24,7 +24,7 @@ import * as THREE from 'three'
  *  • 자세: 아래 `BOOK_ROT_X` / `BOOK_ROT_Y` / `BOOK_ROT_Z`
  *  • 화면에서 상대적 크기: `BOOK_BOUNDS_MARGIN`(작을수록 확대, 잘림 위험)
  *  • 애니메이션: `FLOAT_AMP_Y` / `SWAY_AMP_Y`(폭), `FLOAT_FREQ` / `SWAY_FREQ`(진동 속도)
- *  • 레이아웃 높이: PC는 히어로 가운데 묶음의 68% 안에서 남는 칸, 모바일은 page.tsx의 고정 높이
+ *  • 레이아웃 높이: PC는 히어로 가운데 묶음의 78% 안에서 남는 칸, 모바일은 page.tsx의 고정 높이
  */
 
 /** 정적 자산: `public/models/hmji.glb` → URL `/models/hmji.glb` */
