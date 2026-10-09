@@ -449,11 +449,12 @@
     }
   }
 
-  /* 히어로 스크롤 큐 — 내려가는 잉크 방울 */
+  /* 히어로 스크롤 큐 — 내려가는 잉크 방울. 길이는 화면 높이에 따라 변하고, 1080px에서 3rem */
   .scroll-cue-line {
     position: relative;
     width: 1px;
     height: 3rem;
+    height: max(2rem, 4.45dvh);
     overflow: hidden;
     background: rgb(var(--ink-muted-rgb) / 0.25);
   }
