@@ -684,8 +684,8 @@ export function ResearchPageClient({ content }: Props) {
 
       <div className="relative mb-14 overflow-hidden border-b border-hanji-border pb-12 pt-16 sm:mb-16">
         <h1
-          className="mb-4 font-serif leading-tight tracking-tight text-ink"
-          style={{ fontSize: 'clamp(2.25rem, 6.5vw, 3.5rem)' }}
+          className="mb-6 font-jamo leading-none text-ink"
+          style={{ fontSize: 'clamp(2.35rem, 7vw, 4.1rem)' }}
           lang="ko"
         >
           <TitleBlurReveal text={m.research} stagger={0.08} />
