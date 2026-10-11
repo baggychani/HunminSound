@@ -81,6 +81,9 @@ export function useHomeActScroll(
     let wheelAccTimer = 0
     let cooldownUntil = 0
     let settleTimer = 0
+    let resizeTimer = 0
+    /** 지금 머물고 있는 칸. 창 크기만 바뀌면 이 칸을 유지한다 */
+    let parkedIndex = 0
 
     /** 머물 수 있는 스크롤 위치 [1막, 2막, 3막, 4막, 페이지 맨 아래(꼬리말까지)] */
     const snapPoints = (): number[] | null => {
@@ -100,8 +103,31 @@ export function useHomeActScroll(
         ? points.find((t) => t > y + TOLERANCE)
         : [...points].reverse().find((t) => t < y - TOLERANCE)
 
+    const indexOf = (points: number[], top: number) => {
+      let best = 0
+      let bestDist = Infinity
+      for (let i = 0; i < points.length; i++) {
+        const dist = Math.abs(points[i] - top)
+        if (dist < bestDist) {
+          best = i
+          bestDist = dist
+        }
+      }
+      return best
+    }
+
+    const rememberIfParked = () => {
+      const points = snapPoints()
+      if (!points) return
+      const y = window.scrollY
+      const idx = indexOf(points, y)
+      if (Math.abs(points[idx] - y) <= TOLERANCE) parkedIndex = idx
+    }
+
     const snapTo = async (top: number) => {
       if (locked) return
+      const points = snapPoints()
+      if (points) parkedIndex = indexOf(points, top)
       locked = true
       wheelAcc = 0
       try {
@@ -170,7 +196,10 @@ export function useHomeActScroll(
       const points = snapPoints()
       if (!points) return
       const y = window.scrollY
-      if (points.some((t) => Math.abs(t - y) <= TOLERANCE)) return
+      if (points.some((t) => Math.abs(t - y) <= TOLERANCE)) {
+        rememberIfParked()
+        return
+      }
       const nearest = points.reduce((a, b) => (Math.abs(b - y) < Math.abs(a - y) ? b : a))
       void snapTo(nearest)
     }
@@ -183,7 +212,19 @@ export function useHomeActScroll(
     const hasScrollEnd = 'onscrollend' in window
     const onScrollEnd = () => settle()
     const onScroll = () => scheduleSettle(160)
-    const onResize = () => scheduleSettle(200)
+    /** 창 높이가 바뀌면 스크롤 픽셀은 남고 막 위치만 달라진다. 가까운 막으로 붙이면 2막이 3막으로 넘어간다 */
+    const keepParkedAct = () => {
+      const points = snapPoints()
+      if (!points) return
+      const target = points[Math.min(parkedIndex, points.length - 1)]
+      if (Math.abs(window.scrollY - target) <= TOLERANCE) return
+      window.scrollTo({ top: target, behavior: 'instant' })
+    }
+    const onResize = () => {
+      requestAnimationFrame(keepParkedAct)
+      window.clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(keepParkedAct, 60)
+    }
 
     window.addEventListener('wheel', onWheel, { passive: false })
     window.addEventListener('keydown', onKeyDown)
@@ -201,6 +242,7 @@ export function useHomeActScroll(
       window.removeEventListener('scroll', onScroll)
       window.clearTimeout(wheelAccTimer)
       window.clearTimeout(settleTimer)
+      window.clearTimeout(resizeTimer)
     }
   }, [_act1Ref, act2Ref, act3Ref, act4Ref])
 }
