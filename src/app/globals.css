@@ -263,6 +263,13 @@
   }
 }
 
+/* lg 미만에서는 글과 MRI가 위아래로 쌓이므로 글 묶음이 히어로 높이의 절반 남짓만 쓰게 줄인다 */
+@media (min-width: 640px) and (max-width: 1023px) {
+  #home-act3 .home-act3-scale {
+    font-size: min(15px, calc(100cqi * 15 / 576), calc(100cqh * 15 / 813));
+  }
+}
+
 /* ──────────────────────────────────────────────────────────────
  * 홈 데스크톱 전용 장식 효과 (sm 미만에서는 컴포넌트에서 hidden 처리)
  * ──────────────────────────────────────────────────────────────*/
@@ -472,7 +479,8 @@
     position: relative;
     width: 1px;
     height: 3rem;
-    height: max(2rem, 4.45dvh);
+    /* 1막 본문은 히어로 높이의 78%를 가운데에 쓰므로 아래 11%에서 bottom-5와 간격 8px을 뺀 만큼만 쓴다 */
+    height: max(0px, min(max(2rem, 4.45dvh), calc((100dvh - var(--site-header-h, 4rem)) * 0.11 - 1.75rem)));
     overflow: hidden;
     background: rgb(var(--ink-muted-rgb) / 0.25);
   }

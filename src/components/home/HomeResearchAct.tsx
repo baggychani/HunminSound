@@ -221,7 +221,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
             className="relative flex min-h-0 items-center justify-center lg:h-full"
           >
             <div className="relative flex w-full max-w-[min(100%,540px)] justify-center lg:max-w-none">
-              <div className="relative w-full overflow-hidden rounded-lg border border-white/[0.1] bg-[#050a12] shadow-[0_20px_50px_rgba(0,0,0,0.45),0_0_0_1px_rgba(120,170,220,0.08)_inset] ring-1 ring-sky-200/[0.06] sm:w-[min(100%,calc(62cqh*1.5))]">
+              <div className="relative w-full overflow-hidden rounded-lg border border-white/[0.1] bg-[#050a12] shadow-[0_20px_50px_rgba(0,0,0,0.45),0_0_0_1px_rgba(120,170,220,0.08)_inset] ring-1 ring-sky-200/[0.06] sm:w-[min(100%,calc(36cqh*1.5))] lg:w-[min(100%,calc(62cqh*1.5))]">
                 <Image
                   src={MRI_HERO}
                   alt="발음 중 성도의 실시간 MRI 영상"
