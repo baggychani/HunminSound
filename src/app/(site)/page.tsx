@@ -219,9 +219,9 @@ export default function HomePage() {
       <section
         ref={act2Ref}
         id="home-act2"
-        className={`home-scroll-margin page-frame relative z-10 flex max-sm:h-auto max-sm:min-h-0 max-sm:overflow-visible ${heroHeightDesktop} flex-col sm:justify-center`}
+        className={`home-scroll-margin relative z-10 flex w-full max-sm:h-auto max-sm:min-h-0 max-sm:overflow-visible max-sm:px-6 max-sm:py-8 ${heroHeightDesktop} flex-col sm:items-center sm:justify-center`}
       >
-        <div className="relative z-10 grid min-h-0 w-full grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:gap-5">
+        <div className="relative z-10 grid min-h-0 w-full grid-cols-1 gap-3 sm:h-[68%] sm:max-h-[68%] sm:w-[68%] sm:grid-cols-2 sm:gap-4 lg:gap-5">
         <NavCard
           compact
           lang={lang}

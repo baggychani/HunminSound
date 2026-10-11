@@ -52,10 +52,6 @@
     --wash-deep-rgb: 214 195 162;
     --wash-cool-rgb: 220 226 224;
 
-    /** 홈 2막 카드 묶음 바깥 여백 */
-    --page-gutter-x: clamp(1.5rem, 8vw, 7rem);
-    --page-gutter-y: clamp(1.5rem, 6dvh, 4rem);
-
     /** sticky 헤더 실측 전 fallback — Header ResizeObserver가 덮어씀 */
     --site-header-h: 4rem;
   }
@@ -194,15 +190,6 @@
   /** 공개 사이트 공통 가로 폭 — 기존 max-w-5xl(1024px)보다 넓게 */
   .site-container {
     @apply mx-auto w-full max-w-[1480px] px-6 sm:px-10 lg:px-14;
-  }
-
-  /** 홈 2막 — 가로·세로는 --page-gutter-* */
-  .page-frame {
-    margin-inline: auto;
-    width: 100%;
-    max-width: 1480px;
-    padding-inline: var(--page-gutter-x);
-    padding-block: var(--page-gutter-y);
   }
 
   /** 홈 2막 — 자음·모음·훈민정음 카드 (불투명 면 + 옅은 한지 결) */
