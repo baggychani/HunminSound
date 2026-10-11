@@ -221,7 +221,7 @@ export default function HomePage() {
         id="home-act2"
         className={`home-scroll-margin relative z-10 flex w-full max-sm:h-auto max-sm:min-h-0 max-sm:overflow-visible max-sm:px-6 max-sm:py-8 ${heroHeightDesktop} flex-col sm:items-center sm:justify-center sm:[container-type:size]`}
       >
-        <div className="relative z-10 grid w-full grid-cols-1 gap-3 sm:w-[76%] sm:max-w-[90rem] sm:grid-cols-2 sm:gap-[min(1.25rem,2.67cqh)]">
+        <div className="relative z-10 grid w-full grid-cols-1 gap-3 sm:w-[70%] sm:max-w-[90rem] sm:grid-cols-2 sm:gap-[min(1.25rem,2.67cqh)]">
         <NavCard
           compact
           lang={lang}
@@ -311,7 +311,7 @@ function HunminjeongeumCard({
             {label}
           </span>
         </div>
-        <span className="font-sans text-xs text-ink-muted tracking-[0.06em] sm:text-[clamp(0.625rem,1.6cqh,0.75rem)] sm:leading-[1.333]">{caption}</span>
+        <span className="font-sans text-xs text-ink-muted tracking-[0.06em] sm:text-[clamp(0.8125rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{caption}</span>
       </div>
 
       <div className="relative z-10 flex gap-2 flex-wrap sm:gap-3" dir="ltr" lang="ko">
@@ -327,12 +327,12 @@ function HunminjeongeumCard({
         ))}
       </div>
 
-      <p className="relative z-10 break-keep font-sans text-xs text-ink-muted leading-relaxed sm:text-[clamp(0.625rem,1.6cqh,0.75rem)] max-w-xl line-clamp-2 sm:line-clamp-none [overflow-wrap:break-word]">
+      <p className="relative z-10 break-keep font-sans text-xs text-ink-muted leading-relaxed sm:text-[clamp(0.8125rem,1.87cqh,0.875rem)] max-w-xl line-clamp-2 sm:line-clamp-none [overflow-wrap:break-word]">
         {description}
       </p>
 
-      <div className="relative z-10 flex items-center gap-2 mt-auto sm:text-[min(1rem,2.13cqh)]">
-        <span className="font-sans text-xs font-medium text-gold tracking-wider sm:text-[clamp(0.625rem,1.6cqh,0.75rem)] sm:leading-[1.333]">{explore}</span>
+      <div className="relative z-10 flex items-center gap-2 mt-auto sm:text-[clamp(0.8125rem,1.87cqh,0.875rem)]">
+        <span className="font-sans text-xs font-medium text-gold tracking-wider sm:text-[clamp(0.8125rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{explore}</span>
         <span className="text-gold group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform inline-block">
           →
         </span>
@@ -377,7 +377,7 @@ function NavCard({
             {label}
           </span>
         </div>
-        <span className="font-sans text-xs font-medium text-ink-muted sm:text-[clamp(0.625rem,1.6cqh,0.75rem)] sm:leading-[1.333]">{count}</span>
+        <span className="font-sans text-xs font-medium text-ink-muted sm:text-[clamp(0.8125rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{count}</span>
       </div>
 
       <div className="flex gap-2 flex-wrap sm:gap-3" dir="ltr" lang="ko">
@@ -394,15 +394,15 @@ function NavCard({
       </div>
 
       <p
-        className={`font-sans text-xs text-ink-muted leading-relaxed sm:text-[clamp(0.625rem,1.6cqh,0.75rem)] ${
+        className={`font-sans text-xs text-ink-muted leading-relaxed sm:text-[clamp(0.8125rem,1.87cqh,0.875rem)] ${
           compact ? 'line-clamp-2 sm:line-clamp-none' : ''
         }`}
       >
         {description}
       </p>
 
-      <div className="flex items-center gap-2 mt-auto sm:text-[min(1rem,2.13cqh)]">
-        <span className="font-sans text-xs font-medium text-gold tracking-wider sm:text-[clamp(0.625rem,1.6cqh,0.75rem)] sm:leading-[1.333]">{explore}</span>
+      <div className="flex items-center gap-2 mt-auto sm:text-[clamp(0.8125rem,1.87cqh,0.875rem)]">
+        <span className="font-sans text-xs font-medium text-gold tracking-wider sm:text-[clamp(0.8125rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{explore}</span>
         <span className="text-gold group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform inline-block">
           →
         </span>
