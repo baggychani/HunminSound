@@ -563,22 +563,21 @@ function DetailPanel({
         </>
       }
     >
+      <DualVideoPlayer
+        animationFileName={item.animationFileName}
+        mriFileName={item.mriFileName}
+        pictogramFileName={item.pictogramFileName}
+        type={type}
+        animationLabel={animationLabel}
+        mriLabel={mriLabel}
+        pictogramLabel={pictogramLabel}
+      />
       <TranslatedDescription
         item={item as unknown as { description: string; [key: string]: unknown }}
         lang={lang}
         phonemeType="consonant"
+        className="mt-6 font-sans text-sm leading-loose text-ink-soft"
       />
-      <div className="mt-6">
-        <DualVideoPlayer
-          animationFileName={item.animationFileName}
-          mriFileName={item.mriFileName}
-          pictogramFileName={item.pictogramFileName}
-          type={type}
-          animationLabel={animationLabel}
-          mriLabel={mriLabel}
-          pictogramLabel={pictogramLabel}
-        />
-      </div>
     </SymbolDetailCard>
   )
 }
