@@ -180,14 +180,14 @@ export default function HomePage() {
             </p>
 
             <div
-              className="relative mx-auto -mt-1 w-full max-w-lg shrink-0 max-sm:h-[min(clamp(10rem,42vw,16rem),max(8rem,calc(100dvh-var(--site-header-h,4rem)-20rem)))] sm:mt-0 sm:max-h-[19.5rem] sm:min-h-[12cqh] sm:w-full sm:flex-1 lg:max-w-xl"
+              className="relative mx-auto -mt-1 w-full max-w-lg shrink-0 max-sm:h-[min(clamp(10rem,42vw,16rem),max(8rem,calc(100dvh-var(--site-header-h,4rem)-20rem)))] sm:-top-[2.5cqh] sm:mt-0 sm:max-h-[19.5rem] sm:min-h-[12cqh] sm:w-full sm:flex-1 lg:max-w-xl"
               aria-hidden
             >
               <HunminBookViewer className="absolute inset-0" />
             </div>
 
             <p
-              className={`relative mt-3 w-full max-w-[min(100%,45rem)] shrink-0 break-keep px-1 font-serif font-medium text-base leading-loose text-ink-soft [overflow-wrap:break-word] sm:mt-[clamp(0.5rem,2.74cqh,1rem)] sm:px-0 sm:max-w-[46rem] sm:text-[clamp(0.625rem,3.1cqh,1.0625rem)] ${
+              className={`relative mt-3 w-full max-w-[min(100%,45rem)] shrink-0 break-keep px-1 font-serif font-medium text-base leading-loose text-ink-soft [overflow-wrap:break-word] sm:-top-[5cqh] sm:mt-[clamp(0.5rem,2.74cqh,1rem)] sm:px-0 sm:max-w-[46rem] sm:text-[clamp(0.625rem,3.1cqh,1.0625rem)] ${
                 lang === 'hi' ? 'font-devanagari' : ''
               }`}
               lang={lang === 'hi' ? 'hi' : undefined}
