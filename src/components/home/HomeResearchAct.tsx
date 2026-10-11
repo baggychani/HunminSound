@@ -133,10 +133,11 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
       </div>
 
       <div className="relative mx-auto w-full min-h-0 max-sm:h-auto px-6 sm:h-full sm:w-[85%] sm:max-w-[85.5rem] sm:px-0">
-        <div className="grid max-sm:h-auto sm:h-full min-h-0 grid-cols-1 grid-rows-[minmax(0,1fr)_auto] gap-5 py-[clamp(0.75rem,2dvh,1.25rem)] max-sm:py-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:grid-rows-1 lg:items-stretch lg:gap-12 xl:gap-14">
+        <div className="grid max-sm:h-auto sm:h-full min-h-0 grid-cols-1 grid-rows-[minmax(0,1fr)_auto] gap-5 py-[clamp(0.75rem,2dvh,1.25rem)] max-sm:py-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:grid-rows-1 lg:items-stretch lg:gap-[min(3.5rem,4.1vw,9.44cqh)]">
           {/* 좌 — 텍스트·카드 한 덩어리로 세로 중앙 */}
           <div className="flex min-h-0 items-center justify-center lg:h-full">
-            <div className="flex w-full min-w-0 max-w-xl flex-col gap-7 sm:gap-8 lg:gap-9">
+            <div className="home-act3-fit w-full min-w-0 max-w-xl">
+              <div className="home-act3-scale flex w-full min-w-0 flex-col gap-7 sm:gap-[2.4em]">
               <div>
                 <motion.h2
                   custom={0}
@@ -144,7 +145,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true, margin: '-20px' }}
-                  className="font-serif text-[clamp(1.65rem,4.5vw,2.5rem)] font-bold leading-[1.24] tracking-tight text-white"
+                  className="font-serif text-[clamp(1.65rem,4.5vw,2.5rem)] font-bold leading-[1.24] tracking-tight text-white sm:text-[2.6667em]"
                 >
                   {m.homeResearchTitle}
                 </motion.h2>
@@ -155,7 +156,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true, margin: '-20px' }}
-                  className={`mt-5 font-sans text-[clamp(13px,1.75vw,15px)] leading-[1.78] text-slate-300/90 sm:mt-6 whitespace-pre-line ${
+                  className={`mt-5 font-sans text-[clamp(13px,1.75vw,15px)] leading-[1.78] text-slate-300/90 sm:mt-[1.6em] sm:text-[1em] whitespace-pre-line ${
                     lang === 'hi' ? 'font-devanagari' : ''
                   }`}
                   lang={lang === 'hi' ? 'hi' : undefined}
@@ -170,17 +171,17 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, margin: '-20px' }}
-                className="grid grid-cols-2 gap-3 sm:gap-3.5"
+                className="grid grid-cols-2 gap-3 sm:gap-[0.9333em]"
               >
                 {FEATURE_KEYS.map(([titleKey, subKey]) => (
                   <div
                     key={titleKey}
-                    className="rounded-md border border-white/[0.11] bg-gradient-to-br from-white/[0.08] to-white/[0.02] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] backdrop-blur-sm sm:px-5 sm:py-[1.125rem]"
+                    className="rounded-md border border-white/[0.11] bg-gradient-to-br from-white/[0.08] to-white/[0.02] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] backdrop-blur-sm sm:px-[1.3333em] sm:py-[1.2em]"
                   >
-                    <p className="font-sans text-sm font-bold text-white sm:text-[15px]">
+                    <p className="font-sans text-sm font-bold leading-5 text-white sm:text-[1em] sm:leading-[1.333]">
                       {m[titleKey]}
                     </p>
-                    <p className="mt-1.5 font-sans text-xs leading-snug text-slate-400 sm:text-[13px]">
+                    <p className="mt-1.5 font-sans text-xs leading-snug text-slate-400 sm:mt-[0.4615em] sm:text-[0.8667em] sm:leading-snug">
                       {m[subKey]}
                     </p>
                   </div>
@@ -196,17 +197,18 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
               >
                 <Link
                   href="/research"
-                  className="group inline-flex items-center gap-2.5 rounded-md border border-sky-200/25 bg-sky-400/[0.08] px-6 py-3 font-sans text-sm font-medium tracking-wide text-sky-50 shadow-[0_0_24px_rgba(56,120,180,0.12)] transition-all hover:border-sky-200/45 hover:bg-sky-400/[0.14] hover:shadow-[0_0_32px_rgba(56,120,180,0.2)]"
+                  className="group inline-flex items-center gap-2.5 rounded-md border border-sky-200/25 bg-sky-400/[0.08] px-6 py-3 font-sans text-sm font-medium leading-5 tracking-wide text-sky-50 shadow-[0_0_24px_rgba(56,120,180,0.12)] transition-all hover:border-sky-200/45 hover:bg-sky-400/[0.14] hover:shadow-[0_0_32px_rgba(56,120,180,0.2)] sm:gap-[0.7143em] sm:px-[1.7143em] sm:py-[0.8571em] sm:text-[0.9333em] sm:leading-[1.429]"
                 >
                   {m.homeResearchCta}
                   <span
                     aria-hidden
-                    className="text-base leading-none transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                    className="text-base leading-none transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 sm:text-[1.1429em]"
                   >
                     ↗
                   </span>
                 </Link>
               </motion.div>
+              </div>
             </div>
           </div>
 
@@ -218,8 +220,8 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="relative flex min-h-0 items-center justify-center lg:h-full"
           >
-            <div className="relative w-full max-w-[min(100%,540px)] lg:max-w-none">
-              <div className="relative w-full overflow-hidden rounded-lg border border-white/[0.1] bg-[#050a12] shadow-[0_20px_50px_rgba(0,0,0,0.45),0_0_0_1px_rgba(120,170,220,0.08)_inset] ring-1 ring-sky-200/[0.06]">
+            <div className="relative flex w-full max-w-[min(100%,540px)] justify-center lg:max-w-none">
+              <div className="relative w-full overflow-hidden rounded-lg border border-white/[0.1] bg-[#050a12] shadow-[0_20px_50px_rgba(0,0,0,0.45),0_0_0_1px_rgba(120,170,220,0.08)_inset] ring-1 ring-sky-200/[0.06] sm:w-[min(100%,calc(62cqh*1.5))]">
                 <Image
                   src={MRI_HERO}
                   alt="발음 중 성도의 실시간 MRI 영상"
