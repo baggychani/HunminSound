@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default async function ResearchPage() {
   const content = await loadResearchContent()
   return (
-    <div className="site-container">
+    <div className="site-container page-shell">
       <ResearchPageClient content={content} />
     </div>
   )

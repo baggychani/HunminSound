@@ -43,7 +43,7 @@ function useSideNavPlacement() {
 
   useEffect(() => {
     const update = () => {
-      const container = document.querySelector('.site-container')
+      const container = document.querySelector('.page-shell')
       if (!container) {
         setVisible(false)
         return
@@ -56,7 +56,7 @@ function useSideNavPlacement() {
 
     update()
     window.addEventListener('resize', update)
-    const container = document.querySelector('.site-container')
+    const container = document.querySelector('.page-shell')
     const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(update) : null
     if (container) ro?.observe(container)
 

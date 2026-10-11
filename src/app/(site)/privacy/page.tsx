@@ -30,7 +30,7 @@ export default function PrivacyPage() {
   const { org, officer, retention, effectiveDate } = PRIVACY
 
   return (
-    <div className="site-container" lang="ko">
+    <div className="site-container page-shell" lang="ko">
       <div className="max-w-3xl pb-24">
         <div className="border-b border-hanji-border pb-10 pt-16">
           <h1

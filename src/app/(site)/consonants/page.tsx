@@ -20,7 +20,7 @@ export default async function ConsonantsPage() {
   const consonants = sanityData.length > 0 ? sanityData : consonantsData
 
   return (
-    <div className="site-container">
+    <div className="site-container page-shell">
       <PageHeader type="consonants" />
       <Suspense fallback={null}>
         <ConsonantsPageClient consonants={consonants} />

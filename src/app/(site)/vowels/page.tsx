@@ -20,7 +20,7 @@ export default async function VowelsPage() {
   const vowels = sanityData.length > 0 ? sanityData : vowelsData
 
   return (
-    <div className="site-container">
+    <div className="site-container page-shell">
       <PageHeader type="vowels" />
       <Suspense fallback={null}>
         <VowelsPageClient vowels={vowels} />

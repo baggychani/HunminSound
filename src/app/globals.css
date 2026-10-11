@@ -188,9 +188,18 @@
 }
 
 @layer components {
-  /** 공개 사이트 공통 가로 폭 — 기존 max-w-5xl(1024px)보다 넓게 */
+  /** 공개 사이트 공통 가로 폭 — 헤더·푸터. 본문 페이지는 page-shell */
   .site-container {
     @apply mx-auto w-full max-w-[1480px] px-6 sm:px-10 lg:px-14;
+  }
+
+  /** 세부 페이지 본문. 화면의 85%, 넓은 화면은 지금 내용 너비 1368px에서 멈춘다. */
+  @media (min-width: 640px) {
+    .site-container.page-shell {
+      width: 85%;
+      max-width: 85.5rem;
+      padding-inline: 0;
+    }
   }
 
   /** 홈 2막 — 자음·모음·훈민정음 카드 (불투명 면 + 옅은 한지 결) */
