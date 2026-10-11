@@ -52,7 +52,7 @@ function HeroTitleReveal({ text }: { text: string }) {
 
 /** 2막 카드 제목 — 한국어만 font-jamo, 외국어는 sans(힌디어는 devanagari) */
 function homeNavCardLabelClass(lang: Lang, compact?: boolean): string {
-  const size = compact ? 'text-3xl' : 'text-4xl'
+  const size = compact ? 'text-3xl lg:text-4xl' : 'text-4xl'
   const weight = lang === 'ko' ? '' : 'font-medium'
   const font =
     lang === 'ko' ? 'font-jamo' : lang === 'hi' ? 'font-devanagari font-sans' : 'font-sans'
@@ -219,9 +219,9 @@ export default function HomePage() {
       <section
         ref={act2Ref}
         id="home-act2"
-        className={`home-scroll-margin site-container relative z-10 flex max-sm:h-auto max-sm:min-h-0 max-sm:overflow-visible max-sm:py-8 ${heroHeightDesktop} flex-col sm:justify-center py-[clamp(0.75rem,2dvh,1.5rem)] sm:py-[clamp(0.75rem,2dvh,1.5rem)]`}
+        className={`home-scroll-margin page-frame relative z-10 flex max-sm:h-auto max-sm:min-h-0 max-sm:overflow-visible ${heroHeightDesktop} flex-col sm:justify-center`}
       >
-        <div className="relative z-10 mx-auto grid min-h-0 w-full grid-cols-1 gap-3 sm:max-w-[40rem] sm:grid-cols-2 sm:gap-3 lg:max-w-[52rem] lg:gap-4">
+        <div className="relative z-10 grid min-h-0 w-full grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:gap-5">
         <NavCard
           compact
           lang={lang}
@@ -299,7 +299,7 @@ function HunminjeongeumCard({
       href={href}
       onMouseMove={handleSpotlightMove}
       className={`home-act2-nav-card spotlight-card group col-span-1 sm:col-span-2 rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] flex flex-col ${
-        compact ? 'gap-4 p-6 sm:gap-2.5 sm:p-4 lg:gap-3 lg:p-5' : 'gap-6 p-10 sm:p-12'
+        compact ? 'gap-4 p-6 sm:gap-5 sm:p-7 lg:p-8' : 'gap-6 p-10 sm:p-12'
       }`}
     >
       <span className="sheen-sweep pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden />
@@ -319,7 +319,7 @@ function HunminjeongeumCard({
           <MagneticGlyph
             key={s}
             className={`font-jamo text-ink-muted group-hover:text-ink transition-colors inline-block ${
-              compact ? 'text-xl' : 'text-2xl'
+              compact ? 'text-xl sm:text-2xl' : 'text-2xl'
             }`}
           >
             {s}
@@ -367,7 +367,7 @@ function NavCard({
       href={href}
       onMouseMove={handleSpotlightMove}
       className={`home-act2-nav-card spotlight-card group flex flex-col rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] ${
-        compact ? 'min-h-0 gap-4 p-6 sm:gap-2.5 sm:p-4 lg:gap-3 lg:p-5' : 'gap-6 p-10 sm:p-12'
+        compact ? 'min-h-0 gap-4 p-6 sm:gap-5 sm:p-7 lg:p-8' : 'gap-6 p-10 sm:p-12'
       }`}
     >
       <span className="sheen-sweep pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden />
@@ -385,7 +385,7 @@ function NavCard({
           <MagneticGlyph
             key={symbol}
             className={`font-jamo text-ink-muted group-hover:text-ink transition-colors inline-block ${
-              compact ? 'text-xl' : 'text-2xl'
+              compact ? 'text-xl sm:text-2xl' : 'text-2xl'
             }`}
           >
             {symbol}
