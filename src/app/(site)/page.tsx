@@ -221,7 +221,7 @@ export default function HomePage() {
         id="home-act2"
         className={`home-scroll-margin relative z-10 flex w-full max-sm:h-auto max-sm:min-h-0 max-sm:overflow-visible max-sm:px-6 max-sm:py-8 ${heroHeightDesktop} flex-col sm:items-center sm:justify-center sm:[container-type:size]`}
       >
-        <div className="relative z-10 grid w-full grid-cols-1 gap-3 sm:w-[70%] sm:max-w-[90rem] sm:grid-cols-2 sm:gap-[min(1.25rem,2.67cqh)]">
+        <div className="relative z-10 grid w-full grid-cols-1 gap-3 sm:w-[70%] sm:max-w-[87.5rem] sm:grid-cols-2 sm:gap-[min(1.25rem,2.67cqh)]">
         <NavCard
           compact
           lang={lang}
