@@ -132,7 +132,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
         <HomeJamoField tone="inverse" />
       </div>
 
-      <div className="site-container relative max-sm:h-auto sm:h-full min-h-0 px-6 sm:px-10 lg:px-14">
+      <div className="relative mx-auto w-full min-h-0 max-sm:h-auto px-6 sm:h-full sm:w-[85%] sm:max-w-[85.5rem] sm:px-0">
         <div className="grid max-sm:h-auto sm:h-full min-h-0 grid-cols-1 grid-rows-[minmax(0,1fr)_auto] gap-5 py-[clamp(0.75rem,2dvh,1.25rem)] max-sm:py-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:grid-rows-1 lg:items-stretch lg:gap-12 xl:gap-14">
           {/* 좌 — 텍스트·카드 한 덩어리로 세로 중앙 */}
           <div className="flex min-h-0 items-center justify-center lg:h-full">
