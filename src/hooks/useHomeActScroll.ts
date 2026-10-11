@@ -9,6 +9,10 @@ const COOLDOWN_GAP_MS = 140
 
 function headerOffset() {
   const raw = getComputedStyle(document.documentElement).getPropertyValue('--site-header-h').trim()
+  if (raw.endsWith('rem')) {
+    const root = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+    return parseFloat(raw) * root
+  }
   const px = parseFloat(raw)
   return Number.isFinite(px) ? px : 64
 }
@@ -84,6 +88,8 @@ export function useHomeActScroll(
     let resizeTimer = 0
     /** 지금 머물고 있는 칸. 창 크기만 바뀌면 이 칸을 유지한다 */
     let parkedIndex = 0
+    /** 새로고침 복원 위치를 읽기 전에는 1막으로 당기지 않는다 */
+    let ready = false
 
     /** 머물 수 있는 스크롤 위치 [1막, 2막, 3막, 4막, 페이지 맨 아래(꼬리말까지)] */
     const snapPoints = (): number[] | null => {
@@ -192,7 +198,7 @@ export function useHomeActScroll(
 
     /** 스크롤이 멈췄는데 칸 사이라면 가장 가까운 칸으로 */
     const settle = () => {
-      if (locked) return
+      if (!ready || locked) return
       const points = snapPoints()
       if (!points) return
       const y = window.scrollY
@@ -220,7 +226,18 @@ export function useHomeActScroll(
       if (Math.abs(window.scrollY - target) <= TOLERANCE) return
       window.scrollTo({ top: target, behavior: 'instant' })
     }
+    /** 복원된 스크롤이 어느 막인지 기록하고, 그 막 시작으로 바로 붙인다 */
+    const alignToCurrentAct = () => {
+      const points = snapPoints()
+      if (!points) return
+      parkedIndex = indexOf(points, window.scrollY)
+      ready = true
+      const target = points[parkedIndex]
+      if (Math.abs(window.scrollY - target) <= TOLERANCE) return
+      window.scrollTo({ top: target, behavior: 'instant' })
+    }
     const onResize = () => {
+      if (!ready) return
       requestAnimationFrame(keepParkedAct)
       window.clearTimeout(resizeTimer)
       resizeTimer = window.setTimeout(keepParkedAct, 60)
@@ -231,8 +248,11 @@ export function useHomeActScroll(
     window.addEventListener('resize', onResize)
     if (hasScrollEnd) window.addEventListener('scrollend', onScrollEnd)
     else window.addEventListener('scroll', onScroll, { passive: true })
-    // 새로고침으로 막 사이 위치가 복원된 경우
-    scheduleSettle(300)
+    // 새로고침 복원이 끝난 뒤의 위치로 막을 정한다. 그 전에 돌리면 지나가는 3막에 붙는다.
+    const onLoad = () => window.setTimeout(alignToCurrentAct, 0)
+    requestAnimationFrame(() => requestAnimationFrame(alignToCurrentAct))
+    if (document.readyState === 'complete') window.setTimeout(alignToCurrentAct, 0)
+    else window.addEventListener('load', onLoad, { once: true })
 
     return () => {
       window.removeEventListener('wheel', onWheel)
@@ -240,6 +260,7 @@ export function useHomeActScroll(
       window.removeEventListener('resize', onResize)
       window.removeEventListener('scrollend', onScrollEnd)
       window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('load', onLoad)
       window.clearTimeout(wheelAccTimer)
       window.clearTimeout(settleTimer)
       window.clearTimeout(resizeTimer)

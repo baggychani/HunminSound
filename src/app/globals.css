@@ -84,8 +84,9 @@
   }
 
   html {
-    scroll-behavior: smooth;
-    /* 스크롤바 유무로 가로 폭이 바뀌며 헤더 구분선이 흔들이는 현상 완화 */
+    /* smooth를 두면 새로고침 위치 복원이 애니메이션이 된다.
+       홈은 그 중간에 가장 가까운 막으로 붙어 4막이 3막으로 간다.
+       막 이동은 스크롤 호출에서 behavior: 'smooth'를 직접 넘긴다. */
     scrollbar-gutter: stable;
   }
 
