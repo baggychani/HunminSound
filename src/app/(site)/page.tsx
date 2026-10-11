@@ -264,7 +264,7 @@ export default function HomePage() {
       <section
         ref={act4Ref}
         id="home-act4"
-        className={`home-scroll-margin relative z-10 mx-auto flex w-full max-w-[90rem] flex-col justify-center px-6 sm:px-10 lg:px-14 ${act4SectionClass} py-[clamp(1rem,2.5dvh,2rem)] lg:py-[clamp(1.25rem,3dvh,2.5rem)] h-short:py-2 h-short:lg:py-2`}
+        className={`home-scroll-margin relative z-10 mx-auto flex w-full max-w-[90rem] flex-col justify-center px-6 sm:w-[70%] sm:px-0 ${act4SectionClass} py-[clamp(1rem,2.5dvh,2rem)] lg:py-[clamp(1.25rem,3dvh,2.5rem)] h-short:py-2 h-short:lg:py-2`}
       >
         <HomeContactSection />
       </section>
