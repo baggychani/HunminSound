@@ -210,9 +210,9 @@ export function HunminjeongeumPageClient() {
         {/* ── 장 본문 ───────────────────────────────────────────────── */}
         <div className="min-w-0">
           {/* 목판본 책 페이지 — 안쪽이 바깥 한지보다 밝은 종이 워시 */}
-          <div className="book-page rounded-[2px] bg-gradient-to-b from-white/70 via-white/20 to-white/45 px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14 dark:from-white/[0.07] dark:via-white/[0.02] dark:to-white/[0.05]">
+          <div className="book-page rounded-[2px] bg-gradient-to-b from-white/70 via-white/20 to-white/45 px-6 py-7 sm:px-10 sm:py-8 lg:px-14 lg:py-8 dark:from-white/[0.07] dark:via-white/[0.02] dark:to-white/[0.05]">
             {/* 장 표지 — 본문과 같은 안쪽 들여쓰기(좌우 버튼 폭 제외) */}
-            <header className="relative mb-14 overflow-hidden sm:mb-16 sm:px-16" aria-labelledby={`hunmin-${section.id}-title`}>
+            <header className="relative mb-8 overflow-hidden sm:mb-10 sm:px-16" aria-labelledby={`hunmin-${section.id}-title`}>
               <div className="min-w-0">
                 <p className="font-serif text-[13px] tracking-[0.3em] text-gold" lang="zh-Hant" aria-hidden>
                   {CHAPTER_ORDINALS[chapter]}
@@ -226,7 +226,7 @@ export function HunminjeongeumPageClient() {
                 </h2>
               </div>
 
-              <div className="mt-8 h-px w-full bg-gradient-to-r from-hanji-border via-hanji-border/40 to-transparent" />
+              <div className="mt-5 h-px w-full bg-gradient-to-r from-hanji-border via-hanji-border/40 to-transparent" />
             </header>
 
             {/* 구절 리더 — 한 번에 한 문장만 고정 박스에 */}
@@ -237,7 +237,7 @@ export function HunminjeongeumPageClient() {
                   {/* 새 문장만 옅게 나타나기 — 위치 계산 없음, 튈 자리 없음.
                       안쪽 아래 여백(pb-8): 짧은 문장은 min-h에 가려 그대로,
                       min-h를 넘는 긴 문장만 번호줄과 여유가 생긴다 */}
-                  <div className="min-h-[19rem] pb-8 sm:min-h-[20rem] sm:px-16">
+                  <div className="min-h-[14rem] pb-4 sm:min-h-[15rem] sm:px-16">
                     <div
                       key={section.passages[passageIdx]?.number ?? passageIdx}
                       className="passage-fade"
@@ -252,7 +252,7 @@ export function HunminjeongeumPageClient() {
                     onClick={() => step(-1)}
                     disabled={isFirst}
                     aria-label={m.hunminPrevPassage}
-                    className={`absolute left-0 top-[10rem] hidden h-11 w-11 -translate-y-1/2 sm:flex ${STEP_BUTTON_CLASS}`}
+                    className={`absolute left-0 top-[7.5rem] hidden h-11 w-11 -translate-y-1/2 sm:flex ${STEP_BUTTON_CLASS}`}
                   >
                     <span aria-hidden>←</span>
                   </button>
@@ -261,7 +261,7 @@ export function HunminjeongeumPageClient() {
                     onClick={() => step(1)}
                     disabled={isLast}
                     aria-label={m.hunminNextPassage}
-                    className={`absolute right-0 top-[10rem] hidden h-11 w-11 -translate-y-1/2 sm:flex ${STEP_BUTTON_CLASS}`}
+                    className={`absolute right-0 top-[7.5rem] hidden h-11 w-11 -translate-y-1/2 sm:flex ${STEP_BUTTON_CLASS}`}
                   >
                     <span aria-hidden>→</span>
                   </button>
@@ -292,7 +292,7 @@ export function HunminjeongeumPageClient() {
                 </div>
 
                 {/* 번호 점프 — 원하는 문장으로 바로 이동 */}
-                <div className="mt-6 flex flex-wrap justify-center gap-1.5" role="group" aria-label={m.hunminJumpToPassage}>
+                <div className="mt-4 flex flex-wrap justify-center gap-1.5" role="group" aria-label={m.hunminJumpToPassage}>
                   {section.passages.map((p, i) => {
                     const isActive = i === passageIdx
                     return (
@@ -319,7 +319,7 @@ export function HunminjeongeumPageClient() {
       </div>
 
       {/* ── 일러두기 — 본문 박스 바깥 아래, 여백 넉넉히 ─────────────── */}
-      <div className="mt-20 mb-24 sm:mt-24 sm:mb-32">
+      <div className="mt-12 mb-16 sm:mt-14 sm:mb-20">
         <EditorialNote />
       </div>
 

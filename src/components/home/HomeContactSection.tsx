@@ -181,7 +181,7 @@ export function HomeContactSection() {
           whileInView="show"
           viewport={{ once: true, margin: '-40px' }}
           onSubmit={onSubmit}
-          className="corner-brackets relative rounded-sm border border-hanji-border/60 bg-hanji/75 p-6 backdrop-blur-md sm:p-7 h-short:p-5 h-short:sm:p-5 dark:bg-hanji/65"
+          className="relative rounded-sm border border-hanji-border/60 bg-hanji/75 p-6 backdrop-blur-md sm:p-7 h-short:p-5 h-short:sm:p-5 dark:bg-hanji/65"
         >
           <h3 className="font-serif text-lg font-bold text-ink">{v2.contactFormTitle}</h3>
           <p className="mt-2 font-sans text-xs text-ink-muted">{v2.contactFormDesc}</p>

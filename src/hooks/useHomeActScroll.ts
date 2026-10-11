@@ -21,25 +21,34 @@ function actScrollTop(el: HTMLElement) {
   return el.getBoundingClientRect().top + window.scrollY - headerOffset()
 }
 
+/** 브라우저 smooth 스크롤은 진행 중 휠 preventDefault에 끊긴다.
+ *  그래서 위치는 직접 옮긴다. 휠을 막아도 다음 막까지 간다. */
 function smoothScrollTo(top: number): Promise<void> {
   const target = Math.max(0, top)
+  const start = window.scrollY
+  const dist = target - start
+  if (Math.abs(dist) < 1) return Promise.resolve()
+
+  const duration = Math.min(SCROLL_TIMEOUT_MS, 520)
+  const t0 = performance.now()
 
   return new Promise((resolve) => {
-    let done = false
-    const finish = () => {
-      if (done) return
-      done = true
-      window.removeEventListener('scrollend', onScrollEnd)
-      window.clearTimeout(fallback)
-      resolve()
+    const step = (now: number) => {
+      const p = Math.min(1, (now - t0) / duration)
+      const eased = 1 - Math.pow(1 - p, 3)
+      window.scrollTo({ top: start + dist * eased, behavior: 'instant' })
+      if (p < 1) requestAnimationFrame(step)
+      else resolve()
     }
-
-    const onScrollEnd = () => finish()
-    window.addEventListener('scrollend', onScrollEnd, { once: true })
-    const fallback = window.setTimeout(finish, SCROLL_TIMEOUT_MS)
-
-    window.scrollTo({ top: target, behavior: 'smooth' })
+    requestAnimationFrame(step)
   })
+}
+
+/** 줄 단위 휠(보통 칸당 3)도 픽셀 휠과 같이 센다 */
+function wheelDelta(e: WheelEvent) {
+  if (e.deltaMode === WheelEvent.DOM_DELTA_LINE) return e.deltaY * 16
+  if (e.deltaMode === WheelEvent.DOM_DELTA_PAGE) return e.deltaY * window.innerHeight
+  return e.deltaY
 }
 
 /** 휠 방향으로 아직 더 스크롤할 수 있는 내부 요소(메시지 칸 등) 위인지 */
@@ -171,7 +180,7 @@ export function useHomeActScroll(
         wheelAcc = 0
         return
       }
-      wheelAcc += e.deltaY
+      wheelAcc += wheelDelta(e)
       resetWheelAcc()
       if (Math.abs(wheelAcc) < WHEEL_THRESHOLD) return
 
