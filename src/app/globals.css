@@ -233,7 +233,7 @@
 
   /** 연구 페이지 — 좌 제목 / 우 본문, 섹션마다 독립 블록 */
   .research-split {
-    @apply grid gap-8 lg:grid-cols-[minmax(9.5rem,13rem)_minmax(0,1fr)] lg:items-start lg:gap-x-20 xl:gap-x-28;
+    @apply grid gap-8 lg:grid-cols-[11rem_minmax(0,1fr)] lg:items-start lg:gap-x-10 xl:gap-x-12;
   }
 }
 
