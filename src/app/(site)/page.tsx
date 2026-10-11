@@ -52,7 +52,7 @@ function HeroTitleReveal({ text }: { text: string }) {
 
 /** 2막 카드 제목 — 한국어만 font-jamo, 외국어는 sans(힌디어는 devanagari) */
 function homeNavCardLabelClass(lang: Lang, compact?: boolean): string {
-  const size = compact ? 'text-3xl sm:text-[clamp(1.35rem,4cqh,2.25rem)]' : 'text-4xl'
+  const size = compact ? 'text-3xl sm:text-[min(2.25rem,4.8cqh)] sm:leading-none' : 'text-4xl'
   const weight = lang === 'ko' ? '' : 'font-medium'
   const font =
     lang === 'ko' ? 'font-jamo' : lang === 'hi' ? 'font-devanagari font-sans' : 'font-sans'
@@ -221,7 +221,7 @@ export default function HomePage() {
         id="home-act2"
         className={`home-scroll-margin relative z-10 flex w-full max-sm:h-auto max-sm:min-h-0 max-sm:overflow-visible max-sm:px-6 max-sm:py-8 ${heroHeightDesktop} flex-col sm:items-center sm:justify-center sm:[container-type:size]`}
       >
-        <div className="relative z-10 grid w-full grid-cols-1 gap-3 sm:w-[76%] sm:grid-cols-2 sm:gap-[clamp(1rem,2.2cqh,1.25rem)]">
+        <div className="relative z-10 grid w-full grid-cols-1 gap-3 sm:w-[76%] sm:grid-cols-2 sm:gap-[min(1.25rem,2.67cqh)]">
         <NavCard
           compact
           lang={lang}
@@ -299,7 +299,7 @@ function HunminjeongeumCard({
       href={href}
       onMouseMove={handleSpotlightMove}
       className={`home-act2-nav-card spotlight-card group col-span-1 sm:col-span-2 rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] flex flex-col ${
-        compact ? 'gap-4 p-6 sm:gap-[clamp(1rem,2.2cqh,1.25rem)] sm:p-[clamp(1.75rem,3.6cqh,2rem)]' : 'gap-6 p-10 sm:p-12'
+        compact ? 'gap-4 p-6 sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
       }`}
     >
       <span className="sheen-sweep pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden />
@@ -311,7 +311,7 @@ function HunminjeongeumCard({
             {label}
           </span>
         </div>
-        <span className="font-sans text-xs text-ink-muted tracking-[0.06em]">{caption}</span>
+        <span className="font-sans text-xs text-ink-muted tracking-[0.06em] sm:text-[clamp(0.625rem,1.6cqh,0.75rem)] sm:leading-[1.333]">{caption}</span>
       </div>
 
       <div className="relative z-10 flex gap-2 flex-wrap sm:gap-3" dir="ltr" lang="ko">
@@ -319,7 +319,7 @@ function HunminjeongeumCard({
           <MagneticGlyph
             key={s}
             className={`font-jamo text-ink-muted group-hover:text-ink transition-colors inline-block ${
-              compact ? 'text-xl sm:text-[clamp(1rem,2.7cqh,1.5rem)]' : 'text-2xl'
+              compact ? 'text-xl sm:text-[min(1.5rem,3.2cqh)] sm:leading-[1.17]' : 'text-2xl'
             }`}
           >
             {s}
@@ -327,12 +327,12 @@ function HunminjeongeumCard({
         ))}
       </div>
 
-      <p className="relative z-10 break-keep font-sans text-xs text-ink-muted leading-relaxed max-w-xl line-clamp-2 sm:line-clamp-none [overflow-wrap:break-word]">
+      <p className="relative z-10 break-keep font-sans text-xs text-ink-muted leading-relaxed sm:text-[clamp(0.625rem,1.6cqh,0.75rem)] max-w-xl line-clamp-2 sm:line-clamp-none [overflow-wrap:break-word]">
         {description}
       </p>
 
-      <div className="relative z-10 flex items-center gap-2 mt-auto">
-        <span className="font-sans text-xs font-medium text-gold tracking-wider">{explore}</span>
+      <div className="relative z-10 flex items-center gap-2 mt-auto sm:text-[min(1rem,2.13cqh)]">
+        <span className="font-sans text-xs font-medium text-gold tracking-wider sm:text-[clamp(0.625rem,1.6cqh,0.75rem)] sm:leading-[1.333]">{explore}</span>
         <span className="text-gold group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform inline-block">
           →
         </span>
@@ -367,7 +367,7 @@ function NavCard({
       href={href}
       onMouseMove={handleSpotlightMove}
       className={`home-act2-nav-card spotlight-card group flex flex-col rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] ${
-        compact ? 'min-h-0 gap-4 p-6 sm:gap-[clamp(1rem,2.2cqh,1.25rem)] sm:p-[clamp(1.75rem,3.6cqh,2rem)]' : 'gap-6 p-10 sm:p-12'
+        compact ? 'min-h-0 gap-4 p-6 sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
       }`}
     >
       <span className="sheen-sweep pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden />
@@ -377,7 +377,7 @@ function NavCard({
             {label}
           </span>
         </div>
-        <span className="font-sans text-xs font-medium text-ink-muted">{count}</span>
+        <span className="font-sans text-xs font-medium text-ink-muted sm:text-[clamp(0.625rem,1.6cqh,0.75rem)] sm:leading-[1.333]">{count}</span>
       </div>
 
       <div className="flex gap-2 flex-wrap sm:gap-3" dir="ltr" lang="ko">
@@ -385,7 +385,7 @@ function NavCard({
           <MagneticGlyph
             key={symbol}
             className={`font-jamo text-ink-muted group-hover:text-ink transition-colors inline-block ${
-              compact ? 'text-xl sm:text-[clamp(1rem,2.7cqh,1.5rem)]' : 'text-2xl'
+              compact ? 'text-xl sm:text-[min(1.5rem,3.2cqh)] sm:leading-[1.17]' : 'text-2xl'
             }`}
           >
             {symbol}
@@ -394,15 +394,15 @@ function NavCard({
       </div>
 
       <p
-        className={`font-sans text-xs text-ink-muted leading-relaxed ${
+        className={`font-sans text-xs text-ink-muted leading-relaxed sm:text-[clamp(0.625rem,1.6cqh,0.75rem)] ${
           compact ? 'line-clamp-2 sm:line-clamp-none' : ''
         }`}
       >
         {description}
       </p>
 
-      <div className="flex items-center gap-2 mt-auto">
-        <span className="font-sans text-xs font-medium text-gold tracking-wider">{explore}</span>
+      <div className="flex items-center gap-2 mt-auto sm:text-[min(1rem,2.13cqh)]">
+        <span className="font-sans text-xs font-medium text-gold tracking-wider sm:text-[clamp(0.625rem,1.6cqh,0.75rem)] sm:leading-[1.333]">{explore}</span>
         <span className="text-gold group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform inline-block">
           →
         </span>
