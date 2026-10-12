@@ -13,33 +13,28 @@ function readHeaderBelowGapPx(): number {
   return Math.ceil(h) + 12
 }
 
-/** main 아래 여백(globals.css) — 페이지 끝쪽 줄도 헤더 아래까지 올릴 수 있게 모자란 만큼만 */
+/** 예전 스크롤 보정용 빈칸. 더 이상 넣지 않고, 남아 있으면 지운다. */
 const ROOM_VAR = '--symbol-detail-room'
-
-function ensureRoomBelow(targetY: number): void {
-  const root = document.documentElement
-  const current = parseFloat(root.style.getPropertyValue(ROOM_VAR)) || 0
-  const maxScrollWithoutRoom = root.scrollHeight - current - window.innerHeight
-  const need = Math.max(0, Math.ceil(targetY - maxScrollWithoutRoom))
-  if (need !== current) root.style.setProperty(ROOM_VAR, `${need}px`)
-}
 
 function clearRoomBelow(): void {
   document.documentElement.style.removeProperty(ROOM_VAR)
 }
 
 function scrollWindowAlignTop(el: HTMLElement): void {
+  clearRoomBelow()
   const headerGap = readHeaderBelowGapPx()
   const scrollMt = parseFloat(getComputedStyle(el).scrollMarginTop) || 0
   const rect = el.getBoundingClientRect()
-  const y = Math.max(0, window.scrollY + rect.top - headerGap - scrollMt)
-  ensureRoomBelow(y)
-  window.scrollTo({ top: y, left: 0, behavior: 'instant' })
+  const desired = Math.max(0, window.scrollY + rect.top - headerGap - scrollMt)
+  const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight)
+  const top = Math.min(desired, maxScroll)
+  if (Math.abs(top - window.scrollY) < 2) return
+  window.scrollTo({ top, behavior: 'instant' })
 }
 
 /**
- * 자모/모음 **버튼 줄** 기준: sticky 헤더 바로 아래에 그 줄 상단이 오도록 window 스크롤.
- * 상세 패널(높이 가변)이 아니라 줄을 기준으로 해 비음 등에서도 일관됩니다.
+ * 자모/모음 버튼 줄을 헤더 아래로 올린다.
+ * 페이지가 짧으면 빈 높이를 만들지 않고, 실제 문서 끝에서 스크롤을 멈춘다.
  */
 export function useScrollToSymbolDetail(activeId: string | null) {
   const detailRef = useRef<HTMLDivElement>(null)
@@ -76,11 +71,14 @@ export function useScrollToSymbolDetail(activeId: string | null) {
       })
     })
 
-    // 상세 패널은 높이 0에서 펼쳐진다(ScrollSection, 0.55s). 클릭 순간엔 페이지가 짧아서
-    // (특히 아래 내용이 적은 모음 페이지) 브라우저가 스크롤을 끝에서 멈춰 버리므로,
-    // 펼쳐지는 동안 페이지 높이가 늘 때마다 다시 맞춘다. 사용자가 직접 스크롤하면 즉시 중단.
+    // 라우터가 로드 직후 스크롤을 맨 위로 되돌리는 경우가 있어, 빈 높이를 만들지 않고 잠시 다시 맞춘다.
+    const later = [50, 300, 700].map((ms) => window.setTimeout(scrollOnce, ms))
+
+    // 상세 패널은 높이 0에서 펼쳐진다(ScrollSection, 0.55s).
+    // 펼쳐지는 동안 문서가 길어지면 그 범위 안에서만 다시 맞춘다. 사용자가 직접 스크롤하면 즉시 중단.
     const stopFollowing = () => {
       observer.disconnect()
+      later.forEach((id) => window.clearTimeout(id))
       window.clearTimeout(followTimer)
       window.removeEventListener('wheel', stopFollowing)
       window.removeEventListener('touchstart', stopFollowing)

@@ -49,29 +49,29 @@ export function HomeActRail() {
   return (
     <nav
       aria-label="페이지 구간 이동"
-      className="pointer-events-none fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 mix-blend-difference lg:flex xl:right-8"
+      className="pointer-events-none fixed right-12 top-1/2 z-40 hidden -translate-y-1/2 mix-blend-difference lg:flex xl:right-16"
     >
       <ul className="pointer-events-auto flex flex-col items-center">
         {ACTS.map(({ id }, idx) => {
           const isActive = idx === active
           return (
             <li key={id} className="flex flex-col items-center">
-              {idx > 0 && <span aria-hidden className="h-4 w-px bg-white/30" />}
+              {idx > 0 && <span aria-hidden className="h-5 w-px bg-white/30" />}
               <button
                 type="button"
                 onClick={() => goTo(idx)}
                 aria-label={`${idx + 1}막으로 이동`}
                 aria-current={isActive ? 'true' : undefined}
-                className="group relative flex h-5 w-5 items-center justify-center"
+                className="group relative flex h-11 w-11 touch-manipulation items-center justify-center"
               >
                 <motion.span
                   aria-hidden
                   animate={{
-                    scale: isActive ? 1 : 0.6,
-                    opacity: isActive ? 1 : 0.4,
+                    scale: isActive ? 1 : 0.65,
+                    opacity: isActive ? 1 : 0.45,
                   }}
                   transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-                  className="h-1.5 w-1.5 rounded-full bg-white group-hover:opacity-80"
+                  className="h-2.5 w-2.5 rounded-full bg-white group-hover:opacity-80"
                 />
               </button>
             </li>
