@@ -214,7 +214,9 @@ export function HunminConsonantTable({
               })}
             </div>
             <div className="hunmin-consonant-table-span" role="row">
-              <ScrollSection isOpen={open}>{open ? renderDetail() : null}</ScrollSection>
+              <ScrollSection isOpen={open}>
+                {open ? <div className="pb-5">{renderDetail()}</div> : null}
+              </ScrollSection>
             </div>
           </Fragment>
         )
@@ -223,7 +225,10 @@ export function HunminConsonantTable({
         <div className="hunmin-consonant-table-span space-y-1 px-1 pt-4" role="note">
           {footnotes.map((row) => (
             <p key={row.id} className="font-sans text-xs leading-relaxed text-ink-muted">
-              <JamoText text={row.footnote ?? ''} />
+              <JamoText
+                text={row.footnote ?? ''}
+                jamoClassName={row.id === 'seol' ? 'hunmin-footnote-rieul' : 'hunmin-footnote-ye'}
+              />
             </p>
           ))}
         </div>

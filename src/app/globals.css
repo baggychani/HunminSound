@@ -1026,6 +1026,22 @@
     font-synthesis: none;
   }
 
+  /* 각주 ᄛ — 은평사가독서체는 이 초성 겹자를 점처럼 그린다 */
+  .font-jamo.hunmin-footnote-rieul {
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', 'HCR Batang', 'Hamchorom Batang', sans-serif;
+    font-size: 16px;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .font-jamo.hunmin-footnote-ye {
+    font-size: 16px;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
   /* [기][이] 발음 괄호, 현대 음성학 차트 — Text (옛한글 폰트 폴백 없음) */
   .font-dogseo-text {
     font-family: 'EunpyeongSagaDogseoText', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
