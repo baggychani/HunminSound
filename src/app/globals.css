@@ -969,6 +969,20 @@
     grid-column: 1 / -1;
   }
 
+  /* 모음 제자해 — 양성·음성·양음성이 행. 천지인 배너는 표 밖 */
+  .hunmin-vowel-table {
+    display: grid;
+    min-width: 72rem;
+    grid-template-columns:
+      6.5rem
+      minmax(6.25rem, 0.7fr)
+      minmax(9.25rem, 1fr)
+      minmax(9.25rem, 1fr)
+      minmax(9.25rem, 1fr)
+      minmax(22rem, 2.2fr)
+      minmax(9.25rem, 1fr);
+  }
+
   /* 훈민 차트 — 상형기본자→일반 가획·합성자 */
   .hunmin-gaheuk-arrow {
     color: rgb(var(--gold-rgb) / 0.85);

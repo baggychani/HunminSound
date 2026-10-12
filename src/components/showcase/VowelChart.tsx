@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { useScrollToSymbolDetail } from '@/hooks/useScrollToSymbolDetail'
 import { usePhoneticsDeepLink } from '@/hooks/usePhoneticsDeepLink'
@@ -12,23 +12,15 @@ import { TranslatedDescription } from '@/components/showcase/TranslatedDescripti
 import { TranslatedVowelArticulation } from '@/components/showcase/TranslatedVowelArticulation'
 import { VOWEL_ARTICULATION_KO } from '@/lib/vowelArticulation'
 import type { ChartViewMode } from '@/components/showcase/PhoneticsViewToggle'
+import { HUNMIN_VOWEL_CARD_CHAR_CLASS } from '@/components/showcase/hunmin/HunminVowelZone'
 import { HunminCheonJiInBanner } from '@/components/showcase/hunmin/HunminCheonJiInBanner'
-import { HunminJejahaeRow, HunminJejahaeRowHeading } from '@/components/showcase/hunmin/HunminJejahaeLayout'
+import { HunminVowelTable } from '@/components/showcase/hunmin/HunminVowelTable'
 import { PhoneticsHaeryeSource } from '@/components/showcase/phonetics/PhoneticsHaeryeSource'
 import { SymbolDetailCard } from '@/components/showcase/phonetics/SymbolDetailCard'
 import { SymbolDetailName } from '@/components/showcase/phonetics/SymbolDetailName'
 import {
-  HUNMIN_VOWEL_CARD_CHAR_CLASS,
-  HunminVowelImageGlyph,
-  HunminVowelJamoGlyph,
-  HunminVowelZone,
-} from '@/components/showcase/hunmin/HunminVowelZone'
-import {
   HUNMIN_VOWEL_ROWS,
   hunminVowelRowContainsSymbol,
-  type HunminVowelRow,
-  type HunminVowelSegment,
-  type HunminVowelSlot,
 } from '@/data/hunminVowelLayout'
 import type { Vowel } from '@/types'
 
@@ -36,8 +28,6 @@ import type { Vowel } from '@/types'
 const VOWEL_CAT_MONO = '\uB2E8\uBAA8\uC74C'
 const VOWEL_CAT_DIPHTH = '\uC774\uC911\uBAA8\uC74C'
 const CATEGORY_ORDER = [VOWEL_CAT_MONO, VOWEL_CAT_DIPHTH] as const
-const HUNMIN_ZONE_BASIC = '\uAE30\uBCF8\uC790'
-const HUNMIN_ZONE_COMBINED = '\uD569\uC6A9\uC790'
 const CHART_FADE_OUT_MS = 220
 const CHART_FADE_IN_MS = 220
 
@@ -105,258 +95,6 @@ function GlyphButton({
   )
 }
 
-function GlyphPlaceholder({ symbol, symbolFontClass }: { symbol: string; symbolFontClass: string }) {
-  return (
-    <span
-      className="symbol-btn symbol-btn-card is-disabled is-muted cursor-not-allowed"
-      aria-disabled
-    >
-      <span className={`symbol-char ${symbolFontClass} leading-none ${HUNMIN_VOWEL_CARD_CHAR_CLASS}`}>{symbol}</span>
-      <span className="symbol-sub invisible select-none" aria-hidden>
-        {'\u00a0'}
-      </span>
-    </span>
-  )
-}
-
-/** ???(?? ??): mapTo ??? ?? ??, ?? ?? ?? */
-function VowelCompoundSlot({
-  jamo,
-  mapTo,
-  vowels,
-  isActive,
-  onClick,
-  symbolFontClass,
-  interactive = true,
-}: {
-  jamo: string
-  mapTo?: string
-  vowels: Vowel[]
-  isActive: boolean
-  onClick: () => void
-  symbolFontClass: string
-  interactive?: boolean
-}) {
-  const mapped = mapTo ? findVowelBySymbol(vowels, mapTo) : undefined
-  const sub = mapped ? vowelButtonSubLabel(mapped.name) : null
-  const glyph = (
-    <span
-      className={`symbol-char ${symbolFontClass} inline-flex items-baseline leading-none tracking-[-0.22em] ${HUNMIN_VOWEL_CARD_CHAR_CLASS}`}
-    >
-      {Array.from(jamo).map((ch, i) => (
-        <span key={`${ch}-${i}`} className="inline-block">
-          {ch}
-        </span>
-      ))}
-    </span>
-  )
-
-  if (mapped && interactive) {
-    return (
-      <span className="inline-block align-top">
-        <button
-          type="button"
-          onClick={onClick}
-          className={`symbol-btn symbol-btn-card transition-transform duration-200 ease-out hover:-translate-y-px active:translate-y-0 ${
-            isActive ? 'active' : ''
-          }`}
-          aria-expanded={isActive}
-          aria-label={mapped.name}
-        >
-          <span aria-hidden className="symbol-card-dot" />
-          {glyph}
-          <span className={`symbol-sub ${sub ? '' : 'invisible'}`} aria-hidden={sub ? undefined : true}>
-            {sub ?? '\u00a0'}
-          </span>
-        </button>
-      </span>
-    )
-  }
-
-  return (
-    <span
-      className="symbol-btn symbol-btn-card is-muted pointer-events-none cursor-default"
-      aria-disabled
-      title={'\uBBF8\uC0AC\uC6A9 \uD569\uC6A9\uC790'}
-    >
-      {glyph}
-      <span className={`symbol-sub ${sub ? '' : 'invisible'}`} aria-hidden={sub ? undefined : true}>
-        {sub ?? '\u00a0'}
-      </span>
-    </span>
-  )
-}
-
-function VowelReservedSlot() {
-  return (
-    <span className="symbol-btn symbol-btn-card invisible border-transparent shadow-none" aria-hidden>
-      <span className="symbol-char invisible text-4xl leading-none">{'\u00a0'}</span>
-      <span className="symbol-sub invisible select-none">{'\u00a0'}</span>
-    </span>
-  )
-}
-
-function findVowelBySymbol(vowels: Vowel[], symbol: string): Vowel | undefined {
-  return vowels.find((v) => v.symbol === symbol)
-}
-
-function renderVowelSlot(
-  slot: HunminVowelSlot,
-  slotKey: string,
-  vowels: Vowel[],
-  activeId: string | null,
-  onToggle: (id: string) => void,
-  symbolFontClass: string,
-  interactive: boolean,
-) {
-  if (slot.kind === 'reserved') {
-    return <VowelReservedSlot key={slotKey} />
-  }
-  if (slot.kind === 'compound') {
-    const mapped = slot.mapTo ? findVowelBySymbol(vowels, slot.mapTo) : undefined
-    const active = mapped ? activeId === mapped._id : false
-    return (
-      <VowelCompoundSlot
-        key={slotKey}
-        jamo={slot.jamo}
-        mapTo={slot.mapTo}
-        vowels={vowels}
-        isActive={!!active}
-        onClick={() => {
-          const v = slot.mapTo ? findVowelBySymbol(vowels, slot.mapTo) : undefined
-          if (v) onToggle(v._id)
-        }}
-        symbolFontClass={symbolFontClass}
-        interactive={interactive}
-      />
-    )
-  }
-  if (slot.kind === 'image') {
-    const mapped = slot.mapTo ? findVowelBySymbol(vowels, slot.mapTo) : undefined
-    const subLabel =
-      slot.cardLabel ?? (mapped ? vowelButtonSubLabel(mapped.name) : slot.ipa) ?? undefined
-    return (
-      <HunminVowelImageGlyph
-        key={slotKey}
-        asset={slot.asset}
-        subLabel={subLabel}
-        interactive={interactive && Boolean(mapped)}
-        isActive={mapped ? activeId === mapped._id : false}
-        onClick={mapped ? () => onToggle(mapped._id) : undefined}
-        ariaLabel={mapped?.name}
-      />
-    )
-  }
-  const targetSymbol = slot.mapTo ?? slot.value
-  const vowel = findVowelBySymbol(vowels, targetSymbol)
-  if (vowel) {
-    return (
-      <GlyphButton
-        key={vowel._id}
-        vowel={vowel}
-        isActive={activeId === vowel._id}
-        onClick={() => onToggle(vowel._id)}
-        symbolFontClass={symbolFontClass}
-        subLabel={slot.ipa}
-      />
-    )
-  }
-  if (slot.ipa) {
-    return <HunminVowelJamoGlyph key={slotKey} symbol={slot.value} ipa={slot.ipa} />
-  }
-  return <GlyphPlaceholder key={slotKey} symbol={slot.value} symbolFontClass={symbolFontClass} />
-}
-
-interface HunminVowelRowBodyProps {
-  row: HunminVowelRow
-  rowIndex: number
-  vowels: Vowel[]
-  activeId: string | null
-  activeItem: Vowel | null
-  activeHunminRowTitle: string
-  detailScrollRef: RefObject<HTMLDivElement>
-  lang: ReturnType<typeof useLang>['lang']
-  animationLabel: string
-  mriLabel: string
-  pictogramLabel: string
-  onToggle: (id: string) => void
-  onBasicColumnWidth: (rowIndex: number, widthPx: number) => void
-  basicColumnMinWidthPx: number
-}
-
-function HunminVowelRowBody({
-  row,
-  rowIndex,
-  vowels,
-  activeId,
-  activeItem,
-  activeHunminRowTitle,
-  detailScrollRef,
-  lang,
-  animationLabel,
-  mriLabel,
-  pictogramLabel,
-  onToggle,
-  onBasicColumnWidth,
-  basicColumnMinWidthPx,
-}: HunminVowelRowBodyProps) {
-  const hasActive = !!activeItem && hunminVowelRowContainsSymbol(row, activeItem.symbol)
-  const hasCombinedZone = row.combinedSegments.length > 0
-
-  return (
-    <div>
-      <HunminJejahaeRow
-        scrollRef={hasActive ? detailScrollRef : undefined}
-        dir={lang === 'ar' ? 'ltr' : undefined}
-        lang={lang === 'ar' ? 'ko' : undefined}
-        basicColumnMinWidthPx={basicColumnMinWidthPx}
-        rowIndex={rowIndex}
-        onBasicColumnWidth={onBasicColumnWidth}
-        showSecondaryZone={hasCombinedZone}
-        basicLabel={HUNMIN_ZONE_BASIC}
-        secondaryLabel={HUNMIN_ZONE_COMBINED}
-        basic={
-          <HunminVowelZone
-            row={row}
-            zoneKey="b"
-            segments={row.basicSegments}
-            interactive
-            renderSlot={(slot, slotKey, interactive) =>
-              renderVowelSlot(slot, slotKey, vowels, activeId, onToggle, 'font-jamo', interactive)
-            }
-          />
-        }
-        secondary={
-          hasCombinedZone ? (
-            <HunminVowelZone
-              row={row}
-              zoneKey="c"
-              segments={row.combinedSegments}
-              interactive
-              renderSlot={(slot, slotKey) =>
-                renderVowelSlot(slot, slotKey, vowels, activeId, onToggle, 'font-jamo', true)
-              }
-            />
-          ) : null
-        }
-      />
-      <ScrollSection isOpen={hasActive}>
-        {activeItem && hasActive && (
-          <div>
-            <VowelDetailPanel
-              item={activeItem}
-              lang={lang}
-              animationLabel={animationLabel}
-              mriLabel={mriLabel}
-              pictogramLabel={pictogramLabel}
-              categoryLabel={activeHunminRowTitle}
-            />
-          </div>
-        )}
-      </ScrollSection>
-    </div>
-  )
-}
 
 interface ModernVowelSectionProps {
   category: (typeof CATEGORY_ORDER)[number]
@@ -459,17 +197,6 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
   const [displayMode, setDisplayMode] = useState<ChartViewMode>(viewMode)
   const [chartOpacity, setChartOpacity] = useState(1)
   const fadeTimerRef = useRef<number | null>(null)
-  const [hunminBasicColMinPx, setHunminBasicColMinPx] = useState(0)
-  const hunminBasicWidthsRef = useRef<[number, number, number]>([0, 0, 0])
-
-  const onHunminBasicColumnWidth = useCallback((rowIndex: number, widthPx: number) => {
-    if (rowIndex < 0 || rowIndex > 2) return
-    const next = [...hunminBasicWidthsRef.current] as [number, number, number]
-    next[rowIndex] = widthPx
-    hunminBasicWidthsRef.current = next
-    setHunminBasicColMinPx(Math.max(...next))
-  }, [])
-
 
   useEffect(() => {
     if (viewMode === displayMode) return
@@ -537,30 +264,30 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
         style={chartFadeStyle}
       >
       {displayMode === 'hunmin' ? (
-        <>
+        <div>
           <HunminCheonJiInBanner />
-          {HUNMIN_VOWEL_ROWS.map((row, rowIndex) => (
-            <section key={row.id}>
-              <HunminJejahaeRowHeading title={row.title} />
-              <HunminVowelRowBody
-                row={row}
-                rowIndex={rowIndex}
-                vowels={vowels}
-                activeId={activeId}
-                activeItem={activeItem}
-                activeHunminRowTitle={activeHunminRowTitle}
-                detailScrollRef={detailScrollRef}
-                lang={lang}
-                animationLabel={m.animationVideo}
-                mriLabel={m.mriVideo}
-                pictogramLabel={m.pictogramVideo}
-                onToggle={toggle}
-                onBasicColumnWidth={onHunminBasicColumnWidth}
-                basicColumnMinWidthPx={hunminBasicColMinPx}
-              />
-            </section>
-          ))}
-        </>
+          <div className="mt-12">
+            <HunminVowelTable
+              vowels={vowels}
+              activeId={activeId}
+              onToggle={toggle}
+              detailScrollRef={detailScrollRef}
+              lang={lang}
+              renderDetail={() =>
+                activeItem ? (
+                  <VowelDetailPanel
+                    item={activeItem}
+                    lang={lang}
+                    animationLabel={m.animationVideo}
+                    mriLabel={m.mriVideo}
+                    pictogramLabel={m.pictogramVideo}
+                    categoryLabel={activeHunminRowTitle}
+                  />
+                ) : null
+              }
+            />
+          </div>
+        </div>
       ) : (
         CATEGORY_ORDER.map((category) => {
             const items = grouped[category]
