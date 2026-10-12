@@ -39,6 +39,13 @@ function StrokeArrow() {
   )
 }
 
+function readingOf(name: string): string | null {
+  const paren = name.match(/\(([^)]*)\)/)
+  const raw = (paren?.[1] ?? '').replace(/[()]/g, '').trim()
+  if (!raw || /^[\-—–.]+$/.test(raw)) return null
+  return raw
+}
+
 function TableGlyph({
   symbol,
   consonant,
@@ -50,14 +57,19 @@ function TableGlyph({
   isActive: boolean
   onToggle: (id: string) => void
 }) {
-  const glyphClass = 'font-jamo text-[1.85rem] leading-none sm:text-[2rem]'
+  const reading = consonant ? readingOf(consonant.name) : null
+  const body = (
+    <>
+      {consonant ? <span aria-hidden className="symbol-card-dot" /> : null}
+      <span className="symbol-char font-jamo text-[1.85rem] leading-none sm:text-[2rem]">{symbol}</span>
+      <span className={`symbol-sub ${reading ? '' : 'invisible'}`} aria-hidden={reading ? undefined : true}>
+        {reading ?? '\u00a0'}
+      </span>
+    </>
+  )
 
   if (!consonant) {
-    return (
-      <span className={`inline-flex min-h-11 min-w-11 items-center justify-center ${glyphClass} text-ink`}>
-        {symbol}
-      </span>
-    )
+    return <span className="symbol-btn symbol-btn-card cursor-default">{body}</span>
   }
 
   return (
@@ -66,13 +78,11 @@ function TableGlyph({
       onClick={() => onToggle(consonant._id)}
       aria-expanded={isActive}
       aria-label={`${consonant.name} 상세 보기`}
-      className={`inline-flex min-h-11 min-w-11 items-center justify-center ${glyphClass} transition-colors ${
-        isActive
-          ? 'text-ink-accent shadow-[inset_0_-2px_0_rgb(var(--gold-rgb))]'
-          : 'text-ink hover:text-ink-accent'
+      className={`symbol-btn symbol-btn-card transition-transform duration-200 ease-out hover:-translate-y-px active:translate-y-0 ${
+        isActive ? 'active' : ''
       }`}
     >
-      {consonant.symbol}
+      {body}
     </button>
   )
 }
@@ -95,6 +105,7 @@ export function HunminConsonantTable({
   renderDetail: () => ReactNode
 }) {
   const bySymbol = new Map(consonants.map((consonant) => [consonant.symbol, consonant]))
+  const footnotes = HUNMIN_CONSONANT_ROWS.filter((row) => row.footnote)
 
   return (
     <div className="overflow-x-auto">
@@ -104,27 +115,30 @@ export function HunminConsonantTable({
       dir={lang === 'ar' ? 'ltr' : undefined}
       lang={lang === 'ar' ? 'ko' : undefined}
     >
-      <div className="hunmin-consonant-table-row pb-1.5" role="row">
-        <div />
-        <div className="col-span-3 px-2 text-center font-sans text-xs font-medium text-gold" role="columnheader">
+      <div className="hunmin-consonant-table-row" role="row">
+        <div className="hunmin-consonant-rowhead" />
+        <div
+          className="col-span-3 border-b border-hanji-border/80 px-2 pb-2.5 pt-1 text-center font-sans text-xs font-medium text-gold"
+          role="columnheader"
+        >
           기본자
         </div>
         <div
-          className="hunmin-consonant-split col-span-3 px-2 text-center font-sans text-xs font-medium text-gold"
+          className="hunmin-consonant-split col-span-3 border-b border-hanji-border/80 px-2 pb-2.5 pt-1 text-center font-sans text-xs font-medium text-gold"
           role="columnheader"
         >
           확장자
         </div>
       </div>
 
-      <div className="hunmin-consonant-table-row border-b border-hanji-border/80 pb-2" role="row">
-        <div role="columnheader" />
+      <div className="hunmin-consonant-table-row border-b border-hanji-border" role="row">
+        <div className="hunmin-consonant-rowhead" role="columnheader" />
         {COLUMNS.map((column) => (
           <div
             key={column.key}
             role="columnheader"
-            className={`px-1 text-center font-sans text-[11px] leading-tight text-ink-muted sm:text-xs ${
-              column.zone === 'extended' && column.key === 'double' ? 'hunmin-consonant-split' : ''
+            className={`flex items-end justify-center px-1 pb-2.5 pt-3 text-center font-sans text-[11px] leading-tight text-ink-muted sm:text-xs ${
+              column.key === 'double' ? 'hunmin-consonant-split' : 'hunmin-consonant-rule'
             }`}
           >
             {column.label}
@@ -143,36 +157,55 @@ export function HunminConsonantTable({
               }`}
               role="row"
             >
-              <div className="flex flex-col items-start justify-center py-3 pr-2" role="rowheader">
+              <div className="hunmin-consonant-rowhead" role="rowheader">
                 <h3 className="font-jamo text-[1.3125rem] leading-none text-ink">{row.title}</h3>
                 {classicLabelByRowId[row.id] ? (
-                  <span className="mt-1 font-serif text-[13px] leading-none text-ink-muted" lang="zh-Hant">
+                  <span className="mt-1.5 font-serif text-[13px] leading-none text-ink-muted" lang="zh-Hant">
                     {classicLabelByRowId[row.id]}
                   </span>
                 ) : null}
               </div>
               {COLUMNS.map((column) => {
                 const symbols = symbolsIn(row, column.match, column.zone)
+                const rule = column.key === 'double' ? 'hunmin-consonant-split' : 'hunmin-consonant-rule'
                 return (
-                  <div
-                    key={column.key}
-                    role="cell"
-                    className={`flex min-h-[4.25rem] items-center justify-center px-1 py-2 ${
-                      column.key === 'double' ? 'hunmin-consonant-split' : ''
-                    }`}
-                  >
-                    {symbols.length > 0 ? (
-                      <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-1">
-                        {symbols.map((symbol, index) => (
-                          <Fragment key={symbol}>
-                            {column.sequential && index > 0 ? <StrokeArrow /> : null}
-                            <TableGlyph
-                              symbol={symbol}
-                              consonant={bySymbol.get(symbol)}
-                              isActive={bySymbol.get(symbol)?._id === activeId}
-                              onToggle={onToggle}
-                            />
-                          </Fragment>
+                  <div key={column.key} role="cell" className={`flex items-center justify-center px-2 py-3.5 ${rule}`}>
+                    {column.sequential ? (
+                      <div className="hunmin-gaheuk-slots">
+                        {symbols[0] ? (
+                          <TableGlyph
+                            symbol={symbols[0]}
+                            consonant={bySymbol.get(symbols[0])}
+                            isActive={bySymbol.get(symbols[0])?._id === activeId}
+                            onToggle={onToggle}
+                          />
+                        ) : (
+                          <span />
+                        )}
+                        <div className="flex items-center justify-center">
+                          {symbols[1] ? <StrokeArrow /> : null}
+                        </div>
+                        {symbols[1] ? (
+                          <TableGlyph
+                            symbol={symbols[1]}
+                            consonant={bySymbol.get(symbols[1])}
+                            isActive={bySymbol.get(symbols[1])?._id === activeId}
+                            onToggle={onToggle}
+                          />
+                        ) : (
+                          <span />
+                        )}
+                      </div>
+                    ) : symbols.length > 0 ? (
+                      <div className="flex flex-wrap items-center justify-center gap-2">
+                        {symbols.map((symbol) => (
+                          <TableGlyph
+                            key={symbol}
+                            symbol={symbol}
+                            consonant={bySymbol.get(symbol)}
+                            isActive={bySymbol.get(symbol)?._id === activeId}
+                            onToggle={onToggle}
+                          />
                         ))}
                       </div>
                     ) : null}
@@ -181,16 +214,20 @@ export function HunminConsonantTable({
               })}
             </div>
             <div className="hunmin-consonant-table-span" role="row">
-              {row.footnote ? (
-                <p className="max-w-3xl px-1 pt-2.5 font-sans text-xs leading-relaxed text-ink-muted">
-                  <JamoText text={row.footnote} />
-                </p>
-              ) : null}
               <ScrollSection isOpen={open}>{open ? renderDetail() : null}</ScrollSection>
             </div>
           </Fragment>
         )
       })}
+      {footnotes.length > 0 ? (
+        <div className="hunmin-consonant-table-span space-y-1 px-1 pt-4" role="note">
+          {footnotes.map((row) => (
+            <p key={row.id} className="font-sans text-xs leading-relaxed text-ink-muted">
+              <JamoText text={row.footnote ?? ''} />
+            </p>
+          ))}
+        </div>
+      ) : null}
     </div>
     </div>
   )
