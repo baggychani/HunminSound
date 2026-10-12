@@ -108,7 +108,7 @@ export function HunminConsonantTable({
   const footnotes = HUNMIN_CONSONANT_ROWS.filter((row) => row.footnote)
 
   return (
-    <div className="overflow-x-auto">
+    <div className="hunmin-consonant-scroll">
     <div
       className="hunmin-consonant-table"
       role="table"

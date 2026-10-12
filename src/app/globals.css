@@ -903,6 +903,13 @@
     @apply mb-1 flex min-h-[1.2rem] items-end justify-start font-sans text-[11px] leading-tight text-ink-muted sm:mb-1.5 sm:min-h-[1.3rem] sm:text-xs;
   }
 
+  /* 자음 제자해 — 좁은 화면에서만 가로로 민다. overflow-x:auto 는
+     세로도 auto 가 되어, 상세를 열면 표 오른쪽에 스크롤바가 생긴다. */
+  .hunmin-consonant-scroll {
+    overflow-x: auto;
+    overflow-y: clip;
+  }
+
   /* 자음 제자해 — 오음이 행, 제자 방식이 열. 상세는 행 아래 전폭 */
   .hunmin-consonant-table {
     display: grid;
