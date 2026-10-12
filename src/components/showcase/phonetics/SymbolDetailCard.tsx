@@ -17,17 +17,17 @@ interface SymbolDetailCardProps {
  */
 export function SymbolDetailCard({ symbol, symbolFontClass, header, children }: SymbolDetailCardProps) {
   return (
-    <div className="detail-pop phonetics-detail-panel relative mt-8 rounded-[3px] border border-hanji-border/90 p-5 shadow-[0_2px_10px_rgb(var(--ink-rgb)/0.05),0_18px_44px_-24px_rgb(var(--ink-rgb)/0.16)] sm:p-8">
+    <div className="detail-pop phonetics-detail-panel relative mt-5 rounded-[3px] border border-hanji-border/90 p-4 shadow-[0_2px_10px_rgb(var(--ink-rgb)/0.05),0_18px_44px_-24px_rgb(var(--ink-rgb)/0.16)] sm:p-5">
       {/* 헤더 — 심볼 타일 + 이름/조음 정보 */}
-      <div className="flex flex-wrap items-center gap-5 sm:gap-7">
+      <div className="flex flex-wrap items-center gap-3.5 sm:gap-4">
         <div className="relative shrink-0">
           {/* 금빛 헤일로 — 은은하게 */}
           <span
             aria-hidden
-            className="pointer-events-none absolute -inset-2 rounded-full bg-gold/[0.06] blur-lg"
+            className="pointer-events-none absolute -inset-1.5 rounded-full bg-gold/[0.06] blur-lg"
           />
-          <div className="relative flex h-[4.25rem] w-[4.25rem] items-center justify-center rounded-[3px] border border-[#c9a962]/60 bg-white shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.06)] sm:h-[4.75rem] sm:w-[4.75rem]">
-            <span className={`${symbolFontClass} text-[2.35rem] leading-none text-[#1c1917] sm:text-[2.65rem]`}>
+          <div className="relative flex h-12 w-12 items-center justify-center rounded-[3px] border border-[#c9a962]/60 bg-white shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.06)] sm:h-[3.25rem] sm:w-[3.25rem]">
+            <span className={`${symbolFontClass} text-[1.65rem] leading-none text-[#1c1917] sm:text-[1.85rem]`}>
               {symbol}
             </span>
           </div>
@@ -38,10 +38,10 @@ export function SymbolDetailCard({ symbol, symbolFontClass, header, children }: 
       {/* 금실 구분선 */}
       <div
         aria-hidden
-        className="mt-6 h-px w-full bg-gradient-to-r from-gold/50 via-hanji-border to-transparent sm:mt-7"
+        className="mt-3.5 h-px w-full bg-gradient-to-r from-gold/50 via-hanji-border to-transparent sm:mt-4"
       />
 
-      <div className="mt-6 sm:mt-7">{children}</div>
+      <div className="mt-4 sm:mt-5">{children}</div>
     </div>
   )
 }

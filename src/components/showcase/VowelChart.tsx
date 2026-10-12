@@ -627,9 +627,13 @@ function VowelDetailPanel({
             <JamoText text={item.name} />
           </p>
           {vowelArticulationSymbol ? (
-            <TranslatedVowelArticulation symbol={vowelArticulationSymbol} lang={lang} />
+            <TranslatedVowelArticulation
+              symbol={vowelArticulationSymbol}
+              lang={lang}
+              className="mt-1.5 font-sans text-xs tracking-wide text-gold normal-case"
+            />
           ) : (
-            <p className="mt-2.5 font-sans text-[13px] font-medium text-gold">{categoryLabel}</p>
+            <p className="mt-1.5 font-sans text-[13px] font-medium text-gold">{categoryLabel}</p>
           )}
         </>
       }

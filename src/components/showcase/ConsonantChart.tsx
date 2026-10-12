@@ -549,7 +549,7 @@ function DetailPanel({
           <p className="font-serif text-lg leading-snug text-ink sm:text-xl">
             <JamoText text={item.name} />
           </p>
-          <p className="mt-2.5 flex flex-wrap items-baseline gap-1.5 font-sans text-[13px]">
+          <p className="mt-1.5 flex flex-wrap items-baseline gap-1.5 font-sans text-[13px]">
             <span className="font-medium text-gold">{categoryLabel}</span>
             {categoryEnLabel && categoryEnLabel !== categoryLabel ? (
               <>
