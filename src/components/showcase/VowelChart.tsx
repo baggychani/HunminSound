@@ -589,6 +589,14 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
           })
       )}
       </div>
+      {displayMode === 'modern' ? (
+        <div
+          aria-hidden
+          className={`overflow-hidden transition-[height] duration-500 ease-[cubic-bezier(0.04,0.62,0.23,0.98)] ${
+            activeItem?.category === VOWEL_CAT_DIPHTH ? 'h-0' : 'h-24'
+          }`}
+        />
+      ) : null}
       {displayMode === 'hunmin' ? (
         <div style={chartFadeStyle}>
           <PhoneticsHaeryeSource kind="vowels" />

@@ -509,6 +509,14 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
         )
       })}
       </div>
+      {displayMode === 'modern' ? (
+        <div
+          aria-hidden
+          className={`overflow-hidden transition-[height] duration-500 ease-[cubic-bezier(0.04,0.62,0.23,0.98)] ${
+            activeItem?.category === CATEGORY_ORDER[CATEGORY_ORDER.length - 1] ? 'h-0' : 'h-24'
+          }`}
+        />
+      ) : null}
       {displayMode === 'hunmin' ? (
         <div style={chartFadeStyle}>
           <PhoneticsHaeryeSource kind="consonants" />
