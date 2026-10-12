@@ -30,7 +30,7 @@ export function PageHeader({ type }: PageHeaderProps) {
   const desc = isConsonants ? m.consonantsPageDesc : m.vowelsPageDesc
 
   return (
-    <div className="relative overflow-hidden pt-8 pb-10 border-b border-hanji-border mb-6">
+    <div className="relative overflow-hidden pt-8 pb-10 border-b border-hanji-border mb-10">
       <AnimatePresence mode="wait">
         <motion.div key={type} className="relative">
           <motion.p
