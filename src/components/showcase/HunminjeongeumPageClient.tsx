@@ -144,7 +144,7 @@ export function HunminjeongeumPageClient() {
   return (
     <>
       {/* ── 헤더 (책 표지) ─────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden pt-16 pb-10 border-b border-hanji-border mb-6 sm:mb-8">
+      <div className="relative overflow-hidden pt-8 pb-10 border-b border-hanji-border mb-6 sm:mb-8">
         <h1
           className="font-jamo leading-none text-ink mb-6 flex"
           style={{ fontSize: 'clamp(2.35rem, 7vw, 4.1rem)' }}
