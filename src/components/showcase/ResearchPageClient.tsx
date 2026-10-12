@@ -683,35 +683,33 @@ export function ResearchPageClient({ content }: Props) {
           {m.researchPageDesc}
         </motion.p>
 
-        {/* 섹션 바로가기 */}
-        <motion.nav
-          aria-label="섹션 바로가기"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.55, duration: 0.5 }}
-          className="scrollbar-none mt-10 flex flex-wrap gap-2 border-t border-hanji-border/50 pt-8"
-        >
-          {RESEARCH_SECTIONS.map((s, i) => {
-            const title =
-              s.key === 'team'
-                ? m.researchSec1
-                : s.key === 'nrf'
-                  ? m.researchSec3
-                  : t(`section.${s.key}`, s.labelKo)
-            return (
-              <a
-                key={s.id}
-                href={`#${s.id}`}
-                className="inline-flex items-center gap-2 rounded-full border border-hanji-border/80 bg-hanji-warm/50 px-3.5 py-1.5 font-sans text-[12px] text-ink-muted transition-colors hover:border-gold/45 hover:bg-gold/[0.06] hover:text-ink"
-              >
-                <span className="font-serif text-[10px] tracking-wider text-gold">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                {title}
-              </a>
-            )
-          })}
-        </motion.nav>
+        {/* 섹션 바로가기 — 본문 번호는 두고, 여기에는 제목만 */}
+        <nav aria-label="섹션 바로가기" className="mt-10">
+          <ul className="grid grid-cols-2 gap-px border border-hanji-border bg-hanji-border sm:grid-cols-3 lg:grid-cols-6">
+            {RESEARCH_SECTIONS.map((s) => {
+              const title =
+                s.key === 'team'
+                  ? m.researchSec1
+                  : s.key === 'nrf'
+                    ? m.researchSec3
+                    : t(`section.${s.key}`, s.labelKo)
+              return (
+                <li key={s.id} className="bg-hanji">
+                  <a
+                    href={`#${s.id}`}
+                    className="group relative flex h-full min-h-12 items-center justify-center px-3 py-3 text-center font-serif text-[13px] leading-snug text-ink transition-colors hover:bg-gold/[0.07] hover:text-ink-accent"
+                  >
+                    <span
+                      aria-hidden
+                      className="absolute inset-x-0 bottom-0 h-0.5 origin-center scale-x-0 bg-gold transition-transform duration-300 group-hover:scale-x-100"
+                    />
+                    {title}
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
       </div>
 
       <div className="space-y-0 pb-10 sm:pb-14">
