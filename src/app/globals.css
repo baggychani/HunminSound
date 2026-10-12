@@ -903,6 +903,39 @@
     @apply mb-1 flex min-h-[1.2rem] items-end justify-start font-sans text-[11px] leading-tight text-ink-muted sm:mb-1.5 sm:min-h-[1.3rem] sm:text-xs;
   }
 
+  /* 자음 제자해 — 오음이 행, 제자 방식이 열. 상세는 행 아래 전폭 */
+  .hunmin-consonant-table {
+    display: grid;
+    min-width: 44rem;
+    grid-template-columns:
+      6.25rem
+      minmax(3rem, 0.7fr)
+      minmax(6.5rem, 1.3fr)
+      minmax(4.5rem, 1fr)
+      minmax(5.5rem, 1.15fr)
+      minmax(5.5rem, 1.15fr)
+      minmax(3.25rem, 0.75fr);
+  }
+
+  .hunmin-consonant-table-row {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    align-items: center;
+  }
+
+  .hunmin-consonant-table-glyphs.is-active {
+    background: rgb(var(--gold-rgb) / 0.05);
+  }
+
+  .hunmin-consonant-split {
+    box-shadow: inset 1px 0 0 rgb(var(--hanji-border-rgb) / 0.75);
+  }
+
+  .hunmin-consonant-table-span {
+    grid-column: 1 / -1;
+  }
+
   /* 훈민 차트 — 상형기본자→일반 가획·합성자 */
   .hunmin-gaheuk-arrow {
     color: rgb(var(--gold-rgb) / 0.85);

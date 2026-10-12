@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { useScrollToSymbolDetail } from '@/hooks/useScrollToSymbolDetail'
 import { usePhoneticsDeepLink } from '@/hooks/usePhoneticsDeepLink'
@@ -9,19 +9,12 @@ import { DualVideoPlayer } from '@/components/ui/DualVideoPlayer'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import { TranslatedDescription } from '@/components/showcase/TranslatedDescription'
-import { JamoText } from '@/components/ui/JamoText'
 import type { ChartViewMode } from '@/components/showcase/PhoneticsViewToggle'
 import { PhoneticsHaeryeSource } from '@/components/showcase/phonetics/PhoneticsHaeryeSource'
 import { SymbolDetailCard } from '@/components/showcase/phonetics/SymbolDetailCard'
 import { SymbolDetailName } from '@/components/showcase/phonetics/SymbolDetailName'
-import { HunminConsonantZone } from '@/components/showcase/hunmin/HunminConsonantZone'
-import { HunminJejahaeRow, HunminJejahaeRowHeading } from '@/components/showcase/hunmin/HunminJejahaeLayout'
-import {
-  HUNMIN_CONSONANT_ROWS,
-  hunminRowContainsSymbol,
-  type HunminRow,
-  type HunminSegment,
-} from '@/data/hunminConsonantLayout'
+import { HunminConsonantTable } from '@/components/showcase/hunmin/HunminConsonantTable'
+import { HUNMIN_CONSONANT_ROWS, hunminRowContainsSymbol } from '@/data/hunminConsonantLayout'
 import type { Consonant } from '@/types'
 
 const CATEGORY_ORDER = ['파열음', '마찰음', '파찰음', '비음', '유음']
@@ -97,20 +90,6 @@ function GlyphButton({
   )
 }
 
-function GlyphPlaceholder({ symbol, symbolFontClass }: { symbol: string; symbolFontClass: string }) {
-  return (
-    <span
-      className="symbol-btn symbol-btn-card is-disabled is-muted cursor-not-allowed"
-      aria-disabled
-    >
-      <span className={`symbol-char ${symbolFontClass} text-4xl leading-none`}>{symbol}</span>
-      <span className="symbol-sub invisible select-none" aria-hidden>
-        {'\u00a0'}
-      </span>
-    </span>
-  )
-}
-
 function groupByArticulation(items: Consonant[]): { group: string; items: Consonant[] }[] {
   const result: { group: string; items: Consonant[] }[] = []
   for (const item of items) {
@@ -121,140 +100,6 @@ function groupByArticulation(items: Consonant[]): { group: string; items: Conson
   }
   return result
 }
-
-function findConsonantBySymbol(consonants: Consonant[], symbol: string): Consonant | undefined {
-  return consonants.find((c) => c.symbol === symbol)
-}
-
-interface HunminRowBodyProps {
-  row: HunminRow
-  rowIndex: number
-  consonants: Consonant[]
-  activeId: string | null
-  activeItem: Consonant | null
-  activeHunminRowTitle: string
-  detailScrollRef: RefObject<HTMLDivElement>
-  lang: ReturnType<typeof useLang>['lang']
-  animationLabel: string
-  mriLabel: string
-  pictogramLabel: string
-  onToggle: (id: string) => void
-  /** 기본자 열 너비 보고 → 다섯 줄에서 확장자 시작 세로 정렬 */
-  onBasicColumnWidth: (rowIndex: number, widthPx: number) => void
-  /** 측정된 최대 기본자 열 너비(모든 행 동일 min-width) */
-  basicColumnMinWidthPx: number
-}
-
-function HunminRowBody({
-  row,
-  rowIndex,
-  consonants,
-  activeId,
-  activeItem,
-  activeHunminRowTitle,
-  detailScrollRef,
-  lang,
-  animationLabel,
-  mriLabel,
-  pictogramLabel,
-  onToggle,
-  onBasicColumnWidth,
-  basicColumnMinWidthPx,
-}: HunminRowBodyProps) {
-  const hasActive = !!activeItem && hunminRowContainsSymbol(row, activeItem.symbol)
-  const hasExtended = row.extendedSegments.length > 0
-
-  return (
-    <div>
-      <HunminJejahaeRow
-        scrollRef={hasActive ? detailScrollRef : undefined}
-        dir={lang === 'ar' ? 'ltr' : undefined}
-        lang={lang === 'ar' ? 'ko' : undefined}
-        basicColumnMinWidthPx={basicColumnMinWidthPx}
-        rowIndex={rowIndex}
-        onBasicColumnWidth={onBasicColumnWidth}
-        showSecondaryZone={hasExtended}
-        basicLabel="기본자"
-        secondaryLabel="확장자"
-        basic={
-          <HunminConsonantZone
-            row={row}
-            zoneKey="b"
-            segments={row.basicSegments}
-            renderGlyphs={(seg, segIdx, groupKey) => (
-              <>
-                {seg.symbols.map((sym) => {
-                  const c = findConsonantBySymbol(consonants, sym)
-                  if (!c)
-                    return <GlyphPlaceholder key={`${groupKey}-${sym}`} symbol={sym} symbolFontClass="font-jamo" />
-                  return (
-                    <GlyphButton
-                      key={c._id}
-                      consonant={c}
-                      isActive={activeId === c._id}
-                      onClick={() => onToggle(c._id)}
-                      symbolFontClass="font-jamo"
-                    />
-                  )
-                })}
-              </>
-            )}
-          />
-        }
-        secondary={
-          hasExtended ? (
-            <HunminConsonantZone
-              row={row}
-              zoneKey="x"
-              segments={row.extendedSegments}
-              renderGlyphs={(seg, segIdx, groupKey) => (
-                <>
-                  {seg.symbols.map((sym) => {
-                    const c = findConsonantBySymbol(consonants, sym)
-                    if (!c)
-                      return <GlyphPlaceholder key={`${groupKey}-${sym}`} symbol={sym} symbolFontClass="font-jamo" />
-                    return (
-                      <GlyphButton
-                        key={c._id}
-                        consonant={c}
-                        isActive={activeId === c._id}
-                        onClick={() => onToggle(c._id)}
-                        symbolFontClass="font-jamo"
-                      />
-                    )
-                  })}
-                </>
-              )}
-            />
-          ) : null
-        }
-      />
-      {row.footnote && (
-        <p className="mt-3 max-w-3xl font-sans text-xs leading-relaxed text-ink-muted">
-          <JamoText text={row.footnote} />
-        </p>
-      )}
-      <ScrollSection isOpen={hasActive}>
-        {activeItem && hasActive && (
-          <div>
-            <DetailPanel
-              item={activeItem}
-              lang={lang}
-              animationLabel={animationLabel}
-              mriLabel={mriLabel}
-              pictogramLabel={pictogramLabel}
-              type="consonants"
-              categoryLabel={activeHunminRowTitle}
-              categoryEnLabel=""
-              symbolFontClass="font-jamo"
-            />
-          </div>
-        )}
-      </ScrollSection>
-    </div>
-  )
-}
-
 
 interface ModernRowBodyProps {
   category: string
@@ -355,24 +200,6 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
   const [displayMode, setDisplayMode] = useState<ChartViewMode>(viewMode)
   const [chartOpacity, setChartOpacity] = useState(1)
   const fadeTimerRef = useRef<number | null>(null)
-  /** 훈민 모드: 각 행 기본자 열 너비 → max를 모든 행에 min-width로 적용해 확장자 시작선 정렬 */
-  const hunminBasicWidthsRef = useRef<[number, number, number, number, number]>([0, 0, 0, 0, 0])
-  const [hunminBasicColMinPx, setHunminBasicColMinPx] = useState(0)
-
-  const onHunminBasicColumnWidth = useCallback((rowIndex: number, widthPx: number) => {
-    if (rowIndex < 0 || rowIndex > 4) return
-    const next = [...hunminBasicWidthsRef.current] as [number, number, number, number, number]
-    next[rowIndex] = widthPx
-    hunminBasicWidthsRef.current = next
-    setHunminBasicColMinPx(Math.max(...next))
-  }, [])
-
-  useEffect(() => {
-    if (displayMode !== 'hunmin') {
-      hunminBasicWidthsRef.current = [0, 0, 0, 0, 0]
-      setHunminBasicColMinPx(0)
-    }
-  }, [displayMode])
 
   useEffect(() => {
     if (viewMode === displayMode) return
@@ -430,98 +257,86 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
 
   return (
     <div>
-      <div
-        className={displayMode === 'hunmin' ? 'space-y-24' : 'space-y-16'}
-        style={chartFadeStyle}
-      >
-      {[0, 1, 2, 3, 4].map((rowIndex) => {
-        const hunminRow = HUNMIN_CONSONANT_ROWS[rowIndex]
-        const category = CATEGORY_ORDER[rowIndex]
-        const items = grouped[category]
-        const categoryLabel = m.categories[category] ?? category
-        const categoryEnLabel = m.categoriesEn[category] ?? ''
-        const isEmpty = displayMode === 'modern' && (!items || items.length === 0)
-        const titleText = displayMode === 'hunmin' ? hunminRow.title : categoryLabel
-        const hunminClassicLabel = HUNMIN_CLASSIC_LABEL_BY_ROW_ID[hunminRow.id]
-
-        return (
-          <section key={`row-${rowIndex}`} className="relative">
-            {displayMode === 'hunmin' ? (
-              <HunminJejahaeRowHeading
-                title={titleText}
-                classicLabel={hunminClassicLabel}
-              />
-            ) : (
-            <div className="mb-4">
-              <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                <h3
-                  className={`font-serif text-xl ${isEmpty ? 'text-ink-muted' : 'text-ink'}`}
-                >
-                  {titleText}
-                </h3>
-                {!isEmpty && categoryEnLabel && categoryEnLabel !== categoryLabel ? (
-                  <span className="font-sans text-xs uppercase tracking-widest text-ink-muted">
-                    {categoryEnLabel}
-                  </span>
-                ) : null}
-              </div>
-              <div
-                aria-hidden
-                className="mt-2.5 h-px w-full bg-gradient-to-r from-gold/40 via-hanji-border to-hanji-border/30"
-              />
-            </div>
-            )}
-
-            {displayMode === 'hunmin' ? (
-              <HunminRowBody
-                row={hunminRow}
-                rowIndex={rowIndex}
-                consonants={consonants}
-                activeId={activeId}
-                activeItem={activeItem}
-                activeHunminRowTitle={activeHunminRowTitle}
-                detailScrollRef={detailScrollRef}
-                lang={lang}
-                animationLabel={m.animationVideo}
-                mriLabel={m.mriVideo}
-                pictogramLabel={m.pictogramVideo}
-                onToggle={toggle}
-                onBasicColumnWidth={onHunminBasicColumnWidth}
-                basicColumnMinWidthPx={hunminBasicColMinPx}
-              />
-            ) : (
-              <ModernRowBody
-                category={category}
-                items={items}
-                categoryLabel={categoryLabel}
-                categoryEnLabel={categoryEnLabel}
-                activeId={activeId}
-                activeItem={activeItem}
-                detailScrollRef={detailScrollRef}
-                lang={lang}
-                animationLabel={m.animationVideo}
-                mriLabel={m.mriVideo}
-                pictogramLabel={m.pictogramVideo}
-                onToggle={toggle}
-              />
-            )}
-          </section>
-        )
-      })}
-      </div>
-      {displayMode === 'modern' ? (
-        <div
-          aria-hidden
-          className={`overflow-hidden transition-[height] duration-500 ease-[cubic-bezier(0.04,0.62,0.23,0.98)] ${
-            activeItem?.category === CATEGORY_ORDER[CATEGORY_ORDER.length - 1] ? 'h-0' : 'h-24'
-          }`}
-        />
-      ) : null}
       {displayMode === 'hunmin' ? (
         <div style={chartFadeStyle}>
+          <HunminConsonantTable
+            consonants={consonants}
+            activeId={activeId}
+            onToggle={toggle}
+            detailScrollRef={detailScrollRef}
+            lang={lang}
+            classicLabelByRowId={HUNMIN_CLASSIC_LABEL_BY_ROW_ID}
+            renderDetail={() =>
+              activeItem ? (
+                <DetailPanel
+                  item={activeItem}
+                  lang={lang}
+                  animationLabel={m.animationVideo}
+                  mriLabel={m.mriVideo}
+                  pictogramLabel={m.pictogramVideo}
+                  type="consonants"
+                  categoryLabel={activeHunminRowTitle}
+                  categoryEnLabel=""
+                  symbolFontClass="font-jamo"
+                />
+              ) : null
+            }
+          />
           <PhoneticsHaeryeSource kind="consonants" />
         </div>
-      ) : null}
+      ) : (
+        <>
+          <div className="space-y-16" style={chartFadeStyle}>
+            {CATEGORY_ORDER.map((category) => {
+              const items = grouped[category]
+              const categoryLabel = m.categories[category] ?? category
+              const categoryEnLabel = m.categoriesEn[category] ?? ''
+              const isEmpty = !items || items.length === 0
+
+              return (
+                <section key={category} className="relative">
+                  <div className="mb-4">
+                    <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                      <h3 className={`font-serif text-xl ${isEmpty ? 'text-ink-muted' : 'text-ink'}`}>
+                        {categoryLabel}
+                      </h3>
+                      {!isEmpty && categoryEnLabel && categoryEnLabel !== categoryLabel ? (
+                        <span className="font-sans text-xs uppercase tracking-widest text-ink-muted">
+                          {categoryEnLabel}
+                        </span>
+                      ) : null}
+                    </div>
+                    <div
+                      aria-hidden
+                      className="mt-2.5 h-px w-full bg-gradient-to-r from-gold/40 via-hanji-border to-hanji-border/30"
+                    />
+                  </div>
+                  <ModernRowBody
+                    category={category}
+                    items={items}
+                    categoryLabel={categoryLabel}
+                    categoryEnLabel={categoryEnLabel}
+                    activeId={activeId}
+                    activeItem={activeItem}
+                    detailScrollRef={detailScrollRef}
+                    lang={lang}
+                    animationLabel={m.animationVideo}
+                    mriLabel={m.mriVideo}
+                    pictogramLabel={m.pictogramVideo}
+                    onToggle={toggle}
+                  />
+                </section>
+              )
+            })}
+          </div>
+          <div
+            aria-hidden
+            className={`overflow-hidden transition-[height] duration-500 ease-[cubic-bezier(0.04,0.62,0.23,0.98)] ${
+              activeItem?.category === CATEGORY_ORDER[CATEGORY_ORDER.length - 1] ? 'h-0' : 'h-24'
+            }`}
+          />
+        </>
+      )}
     </div>
   )
 }
