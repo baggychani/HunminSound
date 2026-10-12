@@ -34,6 +34,7 @@ coverage
 .nyc_output
 
 # ide / os
+.cursor/
 .idea
 .vscode/*
 !.vscode/extensions.json
