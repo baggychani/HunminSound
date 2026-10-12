@@ -13,6 +13,7 @@ import { JamoText } from '@/components/ui/JamoText'
 import type { ChartViewMode } from '@/components/showcase/PhoneticsViewToggle'
 import { PhoneticsHaeryeSource } from '@/components/showcase/phonetics/PhoneticsHaeryeSource'
 import { SymbolDetailCard } from '@/components/showcase/phonetics/SymbolDetailCard'
+import { SymbolDetailName } from '@/components/showcase/phonetics/SymbolDetailName'
 import { HunminConsonantZone } from '@/components/showcase/hunmin/HunminConsonantZone'
 import { HunminJejahaeRow, HunminJejahaeRowHeading } from '@/components/showcase/hunmin/HunminJejahaeLayout'
 import {
@@ -547,7 +548,7 @@ function DetailPanel({
       header={
         <>
           <p className="font-serif text-lg leading-snug text-ink sm:text-xl">
-            <JamoText text={item.name} />
+            <SymbolDetailName name={item.name} />
           </p>
           <p className="mt-1.5 flex flex-wrap items-baseline gap-1.5 font-sans text-[13px]">
             <span className="font-medium text-gold">{categoryLabel}</span>
@@ -572,12 +573,14 @@ function DetailPanel({
         mriLabel={mriLabel}
         pictogramLabel={pictogramLabel}
       />
-      <TranslatedDescription
-        item={item as unknown as { description: string; [key: string]: unknown }}
-        lang={lang}
-        phonemeType="consonant"
-        className="mt-6 font-sans text-sm leading-loose text-ink-soft"
-      />
+      <div className="mt-6 rounded-[3px] border border-[#e3d5c0] bg-[#f4ecdf] px-4 py-4 dark:border-white/10 dark:bg-white/[0.05] sm:px-5 sm:py-4">
+        <TranslatedDescription
+          item={item as unknown as { description: string; [key: string]: unknown }}
+          lang={lang}
+          phonemeType="consonant"
+          className="font-sans text-sm leading-loose text-ink-soft"
+        />
+      </div>
     </SymbolDetailCard>
   )
 }

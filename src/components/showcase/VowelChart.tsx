@@ -11,12 +11,12 @@ import { getMessages } from '@/lib/i18n'
 import { TranslatedDescription } from '@/components/showcase/TranslatedDescription'
 import { TranslatedVowelArticulation } from '@/components/showcase/TranslatedVowelArticulation'
 import { VOWEL_ARTICULATION_KO } from '@/lib/vowelArticulation'
-import { JamoText } from '@/components/ui/JamoText'
 import type { ChartViewMode } from '@/components/showcase/PhoneticsViewToggle'
 import { HunminCheonJiInBanner } from '@/components/showcase/hunmin/HunminCheonJiInBanner'
 import { HunminJejahaeRow, HunminJejahaeRowHeading } from '@/components/showcase/hunmin/HunminJejahaeLayout'
 import { PhoneticsHaeryeSource } from '@/components/showcase/phonetics/PhoneticsHaeryeSource'
 import { SymbolDetailCard } from '@/components/showcase/phonetics/SymbolDetailCard'
+import { SymbolDetailName } from '@/components/showcase/phonetics/SymbolDetailName'
 import {
   HUNMIN_VOWEL_CARD_CHAR_CLASS,
   HunminVowelImageGlyph,
@@ -624,7 +624,7 @@ function VowelDetailPanel({
       header={
         <>
           <p className="font-serif text-lg leading-snug text-ink sm:text-xl">
-            <JamoText text={item.name} />
+            <SymbolDetailName name={item.name} />
           </p>
           {vowelArticulationSymbol ? (
             <TranslatedVowelArticulation
@@ -647,12 +647,14 @@ function VowelDetailPanel({
         mriLabel={mriLabel}
         pictogramLabel={pictogramLabel}
       />
-      <TranslatedDescription
-        item={item as unknown as { description: string; [key: string]: unknown }}
-        lang={lang}
-        phonemeType="vowel"
-        className="mt-6 font-sans text-sm leading-loose text-ink-soft"
-      />
+      <div className="mt-6 rounded-[3px] border border-[#e3d5c0] bg-[#f4ecdf] px-4 py-4 dark:border-white/10 dark:bg-white/[0.05] sm:px-5 sm:py-4">
+        <TranslatedDescription
+          item={item as unknown as { description: string; [key: string]: unknown }}
+          lang={lang}
+          phonemeType="vowel"
+          className="font-sans text-sm leading-loose text-ink-soft"
+        />
+      </div>
     </SymbolDetailCard>
   )
 }
