@@ -115,16 +115,16 @@ export function HunminConsonantTable({
       dir={lang === 'ar' ? 'ltr' : undefined}
       lang={lang === 'ar' ? 'ko' : undefined}
     >
-      <div className="hunmin-consonant-table-row" role="row">
-        <div className="hunmin-consonant-rowhead" />
+      <div className="hunmin-consonant-table-row border-y border-hanji-border" role="row">
+        <div />
         <div
-          className="col-span-3 border-b border-hanji-border/80 px-2 pb-2.5 pt-1 text-center font-sans text-xs font-medium text-gold"
+          className="col-span-3 px-2 py-2.5 text-center font-sans text-sm font-semibold text-gold"
           role="columnheader"
         >
           기본자
         </div>
         <div
-          className="hunmin-consonant-split col-span-3 border-b border-hanji-border/80 px-2 pb-2.5 pt-1 text-center font-sans text-xs font-medium text-gold"
+          className="hunmin-consonant-split col-span-3 px-2 py-2.5 text-center font-sans text-sm font-semibold text-gold"
           role="columnheader"
         >
           확장자
@@ -132,12 +132,12 @@ export function HunminConsonantTable({
       </div>
 
       <div className="hunmin-consonant-table-row border-b border-hanji-border" role="row">
-        <div className="hunmin-consonant-rowhead" role="columnheader" />
+        <div role="columnheader" />
         {COLUMNS.map((column) => (
           <div
             key={column.key}
             role="columnheader"
-            className={`flex items-end justify-center px-1 pb-2.5 pt-3 text-center font-sans text-[11px] leading-tight text-ink-muted sm:text-xs ${
+            className={`flex items-end justify-center px-1 pb-2.5 pt-3 text-center font-sans text-[13px] font-medium leading-tight text-ink-soft ${
               column.key === 'double' ? 'hunmin-consonant-split' : 'hunmin-consonant-rule'
             }`}
           >
@@ -152,7 +152,7 @@ export function HunminConsonantTable({
           <Fragment key={row.id}>
             <div
               ref={open ? detailScrollRef : undefined}
-              className={`hunmin-consonant-table-row hunmin-consonant-table-glyphs border-b border-hanji-border/70 ${
+              className={`hunmin-consonant-table-row hunmin-consonant-table-glyphs border-b border-hanji-border ${
                 open ? 'is-active' : ''
               }`}
               role="row"
