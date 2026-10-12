@@ -16,30 +16,6 @@ import { SectionRail } from '@/components/ui/SectionRail'
 import { TitleBlurReveal } from '@/components/ui/TitleBlurReveal'
 import { tr } from '@/lib/research-content'
 
-/** 우측 레일 — 활성 시 짧은 한국어 라벨 (비한국어는 영문 약어) */
-function researchRailActiveLabel(section: string, lang: string): string {
-  if (lang === 'ko') {
-    const ko: Record<string, string> = {
-      motivation: '동기',
-      goals: '목표',
-      overview: '개요',
-      significance: '의의',
-      team: '연구',
-      nrf: '과제',
-    }
-    return ko[section] ?? '···'
-  }
-  const en: Record<string, string> = {
-    motivation: 'Mot',
-    goals: 'Goal',
-    overview: 'Ovr',
-    significance: 'Sig',
-    team: 'Team',
-    nrf: 'Info',
-  }
-  return en[section] ?? '···'
-}
-
 const RESEARCH_SECTIONS = [
   { id: 'section-motivation', key: 'motivation', labelKo: '연구 동기' },
   { id: 'section-goals', key: 'goals', labelKo: '연구 목표' },
@@ -534,12 +510,12 @@ function MethodTable({ intro, rows }: {
 
 function InfoTable({ rows }: { rows: { label: string; value: string }[] }) {
   return (
-    <table className="w-full border-collapse font-sans text-[0.95rem]">
+    <table className="w-full border-collapse font-sans">
       <tbody>
         {rows.map((row) => (
           <tr key={row.label} className="border-b border-hanji-border/60 transition-colors last:border-0 hover:bg-hanji-warm/50">
-            <td className="py-3 pr-8 align-top whitespace-nowrap text-ink-muted font-medium w-48">{row.label}</td>
-            <td className="py-3 text-ink-soft leading-[2.05]"><RichText text={row.value} /></td>
+            <td className="w-48 whitespace-nowrap py-3 pr-8 align-top text-[0.95rem] font-medium text-ink-muted">{row.label}</td>
+            <td className="py-3 text-[0.875rem] leading-[1.9] text-ink-soft"><RichText text={row.value} /></td>
           </tr>
         ))}
       </tbody>
@@ -667,7 +643,6 @@ export function ResearchPageClient({ content }: Props) {
       RESEARCH_SECTIONS.map((s, i) => ({
         id: s.id,
         num: String(i + 1).padStart(2, '0'),
-        activeLabel: researchRailActiveLabel(s.key, lang),
         label:
           s.key === 'team'
             ? m.researchSec1
@@ -683,6 +658,14 @@ export function ResearchPageClient({ content }: Props) {
       <SectionRail items={railItems} railId="research" ariaLabel="연구 페이지 섹션 이동" />
 
       <div className="relative mb-14 overflow-hidden border-b border-hanji-border pb-12 pt-8 sm:mb-16">
+        <motion.p
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-6 font-sans text-[11px] uppercase tracking-[0.22em] text-ink-muted"
+        >
+          Research
+        </motion.p>
         <h1
           className="mb-6 font-jamo leading-none text-ink"
           style={{ fontSize: 'clamp(2.25rem, 5.5vw, 3.5rem)' }}

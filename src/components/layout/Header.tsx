@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: '/consonants', topKey: 'consonants' as const, subKey: 'navSubConsonants' as const },
   { href: '/vowels', topKey: 'vowels' as const, subKey: 'navSubVowels' as const },
   { href: '/hunminjeongeum', topKey: 'hunminjeongeum' as const, subKey: 'navSubHunminjeongeum' as const },
+  { href: '/research', topKey: 'research' as const, subKey: 'navSubResearch' as const },
 ]
 
 function MenuGlyph({ open }: { open: boolean }) {

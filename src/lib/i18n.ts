@@ -50,6 +50,7 @@ export const NAV_LABEL_KO = {
   consonants: '자음',
   vowels: '모음',
   hunminjeongeum: '훈민정음',
+  research: '연구 소개',
   language: '언어',
 } as const
 
@@ -67,6 +68,7 @@ const ko = {
   navSubConsonants: 'Consonants',
   navSubVowels: 'Vowels',
   navSubLanguage: 'Language',
+  navSubResearch: 'Research',
   categories: {
     파열음: '파열음',
     마찰음: '마찰음',
@@ -192,6 +194,7 @@ const en: Messages = {
   navSubConsonants: 'Consonants',
   navSubVowels: 'Vowels',
   navSubLanguage: 'Language',
+  navSubResearch: 'Research',
   categories: {
     파열음: 'Plosives',
     마찰음: 'Fricatives',
@@ -312,6 +315,7 @@ const zh: Messages = {
   navSubConsonants: '辅音',
   navSubVowels: '元音',
   navSubLanguage: '语言',
+  navSubResearch: '研究',
   categories: {
     파열음: '爆破音',
     마찰음: '摩擦音',
@@ -427,6 +431,7 @@ const ja: Messages = {
   navSubConsonants: '子音',
   navSubVowels: '母音',
   navSubLanguage: '言語',
+  navSubResearch: '研究',
   categories: {
     파열음: '閉鎖音',
     마찰음: '摩擦音',
@@ -546,6 +551,7 @@ const fr: Messages = {
   navSubConsonants: 'Consonnes',
   navSubVowels: 'Voyelles',
   navSubLanguage: 'Langue',
+  navSubResearch: 'Recherche',
   categories: {
     파열음: 'Occlusives',
     마찰음: 'Fricatives',
@@ -669,6 +675,7 @@ const de: Messages = {
   navSubConsonants: 'Konsonanten',
   navSubVowels: 'Vokale',
   navSubLanguage: 'Sprache',
+  navSubResearch: 'Forschung',
   categories: {
     파열음: 'Plosive',
     마찰음: 'Frikative',
@@ -793,6 +800,7 @@ const es: Messages = {
   navSubConsonants: 'Consonantes',
   navSubVowels: 'Vocales',
   navSubLanguage: 'Idioma',
+  navSubResearch: 'Investigación',
   categories: {
     파열음: 'Oclusivas',
     마찰음: 'Fricativas',
@@ -917,6 +925,7 @@ const hi: Messages = {
   navSubConsonants: 'व्यंजन',
   navSubVowels: 'स्वर',
   navSubLanguage: 'भाषा',
+  navSubResearch: 'अनुसंधान',
   categories: {
     파열음: 'विस्फोटक',
     마찰음: 'घर्षणी',
@@ -1029,6 +1038,7 @@ const vi: Messages = {
   navSubConsonants: 'Phụ âm',
   navSubVowels: 'Nguyên âm',
   navSubLanguage: 'Ngôn ngữ',
+  navSubResearch: 'Nghiên cứu',
   siteTitle: 'Sejong Speech Sounds',
   homeSubtitle: 'Tái chiếu rọi khoa học về nguyên lý cấu tạo của Hunminjeongeum',
   homeDescription:
@@ -1128,6 +1138,7 @@ const ru: Messages = {
   navSubConsonants: 'Согласные',
   navSubVowels: 'Гласные',
   navSubLanguage: 'Язык',
+  navSubResearch: 'Исследование',
   siteTitle: 'Звуки речи Седжона',
   homeSubtitle: 'Научное переосмысление принципов создания Хунмин чёныма',
   homeDescription:
@@ -1209,6 +1220,7 @@ const ar: Messages = {
   navSubConsonants: 'الصّوامت',
   navSubVowels: 'الحروف المتحركة',
   navSubLanguage: 'اللغة',
+  navSubResearch: 'البحث',
   siteTitle: 'أصوات كلام سيجونغ',
   homeSubtitle: 'إعادة تسليط الضوء العلمي على مبادئ إنشاء الهونمين جيونغوم',
   homeDescription:

@@ -6,10 +6,8 @@ import { motion } from 'framer-motion'
 export interface SectionRailItem {
   /** 스크롤 대상 요소 id */
   id: string
-  /** 비활성 상태 표기 (예: '01') */
+  /** 표기 (예: '01') */
   num: string
-  /** 활성 상태 표기 — 한국어 짧은 라벨 (예: '동기') */
-  activeLabel: string
   /** 접근성 라벨 */
   label: string
 }
@@ -58,7 +56,7 @@ export function SectionRail({ items, railId, ariaLabel }: SectionRailProps) {
       className="pointer-events-none fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 mix-blend-difference lg:flex xl:right-7"
     >
       <ul className="pointer-events-auto flex flex-col items-center gap-1.5">
-        {items.map(({ id, num, activeLabel, label }, idx) => {
+        {items.map(({ id, num, label }, idx) => {
           const isActive = idx === active
           return (
             <li key={id} className="flex flex-col items-center gap-1.5">
@@ -68,9 +66,7 @@ export function SectionRail({ items, railId, ariaLabel }: SectionRailProps) {
                 onClick={() => goTo(idx)}
                 aria-label={label}
                 aria-current={isActive ? 'true' : undefined}
-                className={`group relative flex items-center justify-center transition-all duration-300 ${
-                  isActive ? 'h-9 min-w-[3.25rem] px-1.5' : 'h-9 w-9'
-                }`}
+                className="group relative flex h-9 w-9 items-center justify-center transition-all duration-300"
               >
                 {isActive && (
                   <motion.span
@@ -81,13 +77,11 @@ export function SectionRail({ items, railId, ariaLabel }: SectionRailProps) {
                   />
                 )}
                 <span
-                  className={`relative leading-none transition-all duration-300 ${
-                    isActive
-                      ? 'font-sans text-[11px] font-normal tracking-tight text-white'
-                      : 'font-serif text-[13px] text-white/40 group-hover:text-white/75'
+                  className={`relative font-serif text-[13px] leading-none transition-all duration-300 ${
+                    isActive ? 'text-white' : 'text-white/40 group-hover:text-white/75'
                   }`}
                 >
-                  {isActive ? activeLabel : num}
+                  {num}
                 </span>
               </button>
             </li>
