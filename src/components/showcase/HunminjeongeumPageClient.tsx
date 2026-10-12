@@ -145,9 +145,18 @@ export function HunminjeongeumPageClient() {
     <>
       {/* ── 헤더 (책 표지) ─────────────────────────────────────────────── */}
       <div className="relative overflow-hidden pt-8 pb-10 border-b border-hanji-border mb-6 sm:mb-8">
+        <motion.p
+          custom={0}
+          variants={fadeUp}
+          initial="hidden"
+          animate="show"
+          className="mb-6 font-sans text-[11px] uppercase tracking-[0.22em] text-ink-muted"
+        >
+          Hunminjeongeum
+        </motion.p>
         <h1
           className="font-jamo leading-none text-ink mb-6 flex"
-          style={{ fontSize: 'clamp(2.35rem, 7vw, 4.1rem)' }}
+          style={{ fontSize: 'clamp(2.25rem, 5.5vw, 3.5rem)' }}
           aria-label="훈민정음"
         >
           {TITLE_CHARS.map((char, i) => (

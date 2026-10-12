@@ -46,7 +46,7 @@ export function PageHeader({ type }: PageHeaderProps) {
 
           <h1
             className="font-jamo leading-none text-ink mb-6"
-            style={{ fontSize: 'clamp(2.35rem, 7vw, 4.1rem)' }}
+            style={{ fontSize: 'clamp(2.25rem, 5.5vw, 3.5rem)' }}
             lang="ko"
           >
             <TitleBlurReveal text={title} />
