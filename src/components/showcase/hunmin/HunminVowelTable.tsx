@@ -2,7 +2,6 @@
 
 import { Fragment, type ReactNode, type RefObject } from 'react'
 import { ScrollSection } from '@/components/ui/ScrollSection'
-import { JamoText } from '@/components/ui/JamoText'
 import {
   HUNMIN_VOWEL_CARD_CHAR_CLASS,
   HunminVowelImageGlyph,
@@ -243,7 +242,7 @@ export function HunminVowelTable({
                 column.split ? 'hunmin-consonant-split' : 'hunmin-consonant-rule'
               }`}
             >
-              <JamoText text={column.label} />
+              {column.label}
             </div>
           ))}
         </div>
