@@ -5,7 +5,7 @@
   "scripts": {
     "predev": "node scripts/generate-media-manifest.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/generate-media-manifest.mjs",
+    "prebuild": "node scripts/generate-media-manifest.mjs && node scripts/patch-next-font-loader.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
