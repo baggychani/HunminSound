@@ -8,6 +8,7 @@ import {
 } from 'next/font/google'
 import { Providers } from '@/components/theme/Providers'
 import { SITE_TAB_TITLE, SITE_URL } from '@/lib/siteMeta'
+import { languageFontVariables } from './fonts'
 import './globals.css'
 
 const notoSerifKr = Noto_Serif_KR({
@@ -96,7 +97,7 @@ export default function RootLayout({
     <html
       lang="ko"
       suppressHydrationWarning
-      className={`${notoSerifKr.variable} ${notoSansKr.variable} ${notoSansDevanagari.variable} ${notoSansArabic.variable} ${gowunBatang.variable}`}
+      className={`${notoSerifKr.variable} ${notoSansKr.variable} ${notoSansDevanagari.variable} ${notoSansArabic.variable} ${gowunBatang.variable} ${languageFontVariables}`}
     >
       <body className="font-sans">
         <Providers>{children}</Providers>

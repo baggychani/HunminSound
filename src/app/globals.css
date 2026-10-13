@@ -94,6 +94,39 @@
     @apply bg-hanji text-ink antialiased;
   }
 
+  /* 한국어 Noto KR에 없는 글자는 윈도우 글꼴로 떨어져 획이 굵어진다.
+     그 언어에서는 해당 문자를 가진 폰트로 --font-serif / --font-sans 를 바꾼다. */
+  html[lang='ja'] {
+    --font-serif: var(--font-serif-ja);
+    --font-sans: var(--font-sans-ja);
+  }
+
+  html[lang='zh-Hans'] {
+    --font-serif: var(--font-serif-sc);
+    --font-sans: var(--font-sans-sc);
+  }
+
+  html[lang='th'] {
+    --font-serif: var(--font-serif-thai);
+    --font-sans: var(--font-sans-thai);
+  }
+
+  html[lang='ru'] {
+    --font-serif: var(--font-serif-cyr);
+    --font-sans: var(--font-sans-cyr);
+  }
+
+  html[lang='vi'],
+  html[lang='tr'] {
+    --font-serif: var(--font-serif-ext);
+    --font-sans: var(--font-sans-ext);
+  }
+
+  html[lang='hi'] {
+    --font-serif: var(--font-devanagari);
+    --font-sans: var(--font-devanagari);
+  }
+
   /* 모바일: 한글 본문은 음절/단어 단위 줄바꿈 — "실증합니|다." 처럼 글자만 떨어지지 않게 */
   @media (max-width: 639px) {
     body {
