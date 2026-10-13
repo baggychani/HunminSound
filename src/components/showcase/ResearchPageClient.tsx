@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { motion, useReducedMotion, useTime, useTransform } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
@@ -12,6 +12,7 @@ import {
   TeamCardGrid,
   TeamDirectoryList,
 } from '@/components/showcase/research/ResearchInfographics'
+import { SectionRail } from '@/components/ui/SectionRail'
 import { TitleBlurReveal } from '@/components/ui/TitleBlurReveal'
 import { tr } from '@/lib/research-content'
 
@@ -29,9 +30,10 @@ function SubsectionReveal({ children, className }: { children: React.ReactNode; 
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>
@@ -151,18 +153,16 @@ function SplitSection({
   index,
   title,
   muted,
-  shown = true,
   children,
 }: {
   id: string
   index: number
   title: string
   muted?: boolean
-  shown?: boolean
   children: React.ReactNode
 }) {
   return (
-    <section id={id} className={`${shown ? '' : 'hidden'} home-scroll-margin border-t border-hanji-border/60 py-2 first:border-t-0 last:pb-8 sm:last:pb-10`}>
+    <section id={id} className="home-scroll-margin border-t border-hanji-border/60 py-20 first:border-t-0 first:pt-0 last:pb-8 sm:py-28 sm:last:pb-10">
       <div className="research-split">
         <div className="shrink-0 lg:sticky lg:top-[calc(var(--site-header-h,4rem)+2.75rem)] lg:self-start">
           <p
@@ -679,32 +679,26 @@ export function ResearchPageClient({ content }: Props) {
     return translations?.[lang]?.[key] || autoTrans[key] || koValue
   }
 
-  const [sectionIdx, setSectionIdx] = useState(0)
-  const sectionPaneRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const id = window.location.hash.replace(/^#/, '')
-    const idx = RESEARCH_SECTIONS.findIndex((section) => section.id === id)
-    if (idx >= 0) setSectionIdx(idx)
-  }, [])
-
-  function sectionTitle(section: (typeof RESEARCH_SECTIONS)[number]) {
-    if (section.key === 'team') return m.researchSec1
-    if (section.key === 'nrf') return m.researchSec3
-    return t(`section.${section.key}`, section.labelKo)
-  }
-
-  function openSection(idx: number) {
-    setSectionIdx(idx)
-    const id = RESEARCH_SECTIONS[idx]?.id
-    if (!id) return
-    window.history.replaceState(null, '', `#${id}`)
-    sectionPaneRef.current?.scrollTo({ top: 0 })
-  }
+  const railItems = useMemo(
+    () =>
+      RESEARCH_SECTIONS.map((s, i) => ({
+        id: s.id,
+        num: String(i + 1).padStart(2, '0'),
+        label:
+          s.key === 'team'
+            ? m.researchSec1
+            : s.key === 'nrf'
+              ? m.researchSec3
+              : t(`section.${s.key}`, s.labelKo),
+      })),
+    [lang, m.researchSec1, m.researchSec3, t],
+  )
 
   return (
-    <div className="flex min-h-[70vh] flex-col lg:h-[calc(100dvh-var(--site-header-h,4rem))] lg:min-h-0 lg:overflow-hidden">
-      <div className="relative shrink-0 overflow-hidden border-b border-hanji-border pb-6 pt-8">
+    <>
+      <SectionRail items={railItems} railId="research" ariaLabel="연구 페이지 섹션 이동" />
+
+      <div className="relative mb-14 overflow-hidden border-b border-hanji-border pb-12 pt-8 sm:mb-16">
         <motion.p
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -737,33 +731,38 @@ export function ResearchPageClient({ content }: Props) {
           {m.researchPageDesc}
         </motion.p>
 
+        {/* 섹션 바로가기 — 본문 번호는 두고, 여기에는 제목만 */}
+        <nav aria-label="섹션 바로가기" className="mt-10">
+          <ul className="grid grid-cols-2 gap-px border border-hanji-border bg-hanji-border sm:grid-cols-3 lg:grid-cols-6">
+            {RESEARCH_SECTIONS.map((s) => {
+              const title =
+                s.key === 'team'
+                  ? m.researchSec1
+                  : s.key === 'nrf'
+                    ? m.researchSec3
+                    : t(`section.${s.key}`, s.labelKo)
+              return (
+                <li key={s.id} className="bg-hanji">
+                  <a
+                    href={`#${s.id}`}
+                    className="group relative flex h-full min-h-12 items-center justify-center px-3 py-3 text-center font-serif text-[13px] leading-snug text-ink transition-colors hover:bg-gold/[0.07] hover:text-ink-accent"
+                  >
+                    <span
+                      aria-hidden
+                      className="absolute inset-x-0 bottom-0 h-0.5 origin-center scale-x-0 bg-gold transition-transform duration-300 group-hover:scale-x-100"
+                    />
+                    {title}
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
       </div>
 
-      <div className="grid min-h-0 flex-1 lg:grid-cols-[14rem_minmax(0,1fr)] lg:overflow-hidden">
-        <nav aria-label="섹션 바로가기" className="scrollbar-none flex gap-2 overflow-x-auto border-b border-hanji-border py-3 lg:flex-col lg:gap-1 lg:overflow-y-auto lg:border-b-0 lg:border-e lg:py-6 lg:pe-4">
-          {RESEARCH_SECTIONS.map((section, idx) => {
-            const on = idx === sectionIdx
-            return (
-              <button
-                key={section.id}
-                type="button"
-                aria-current={on ? 'true' : undefined}
-                onClick={() => openSection(idx)}
-                className={`shrink-0 rounded-sm px-3 py-2 text-start font-serif text-[13px] leading-snug transition-colors lg:w-full ${
-                  on ? 'bg-gold/10 text-ink' : 'text-ink-muted hover:bg-hanji-hover hover:text-ink'
-                }`}
-              >
-                <span className={`me-2 font-sans text-[11px] tracking-[0.18em] ${on ? 'text-gold' : 'text-ink-muted/70'}`}>
-                  {String(idx + 1).padStart(2, '0')}
-                </span>
-                {sectionTitle(section)}
-              </button>
-            )
-          })}
-        </nav>
-        <div ref={sectionPaneRef} className="min-h-0 overflow-y-auto py-8 lg:py-6 lg:ps-8">
+      <div className="space-y-0 pb-10 sm:pb-14">
 
-        <SplitSection id="section-motivation" index={1} title={t('section.motivation', '연구 동기')} shown={sectionIdx === 0}>
+        <SplitSection id="section-motivation" index={1} title={t('section.motivation', '연구 동기')}>
           <div className="space-y-7 sm:space-y-8">
             {motivation.paragraphs.map((p, i) => (
               <SubsectionReveal key={i}>
@@ -781,7 +780,7 @@ export function ResearchPageClient({ content }: Props) {
           </div>
         </SplitSection>
 
-        <SplitSection id="section-goals" index={2} title={t('section.goals', '연구 목표')} shown={sectionIdx === 1}>
+        <SplitSection id="section-goals" index={2} title={t('section.goals', '연구 목표')}>
           <div className="space-y-14 sm:space-y-16">
             <SubsectionReveal>
               <FinalGoalBlock
@@ -801,7 +800,7 @@ export function ResearchPageClient({ content }: Props) {
           </div>
         </SplitSection>
 
-        <SplitSection id="section-overview" index={3} title={t('section.overview', '연구 개요')} shown={sectionIdx === 2}>
+        <SplitSection id="section-overview" index={3} title={t('section.overview', '연구 개요')}>
           <div className="space-y-16 sm:space-y-20">
             <SubsectionReveal>
               <BlockLabel>{t('label.method', '연구 방법')}</BlockLabel>
@@ -864,14 +863,14 @@ export function ResearchPageClient({ content }: Props) {
           </div>
         </SplitSection>
 
-        <SplitSection id="section-significance" index={4} title={t('section.significance', '연구의 의의')} shown={sectionIdx === 3}>
+        <SplitSection id="section-significance" index={4} title={t('section.significance', '연구의 의의')}>
           <SignificanceClaims
             paragraphs={significance.paragraphs.map((p, i) => t(`significance.paragraphs.${i}`, p))}
             label={(i) => t(`significance.labels.${i}`, SIGNIFICANCE_LABELS[i] ?? '')}
           />
         </SplitSection>
 
-        <SplitSection id="section-team" index={5} title={m.researchSec1} muted shown={sectionIdx === 4}>
+        <SplitSection id="section-team" index={5} title={m.researchSec1} muted>
           <SubsectionReveal>
             <TeamCardGrid
               rows={team.rows.map((row, i) => ({
@@ -899,7 +898,7 @@ export function ResearchPageClient({ content }: Props) {
           </SubsectionReveal>
         </SplitSection>
 
-        <SplitSection id="section-nrf" index={6} title={m.researchSec3} muted shown={sectionIdx === 5}>
+        <SplitSection id="section-nrf" index={6} title={m.researchSec3} muted>
           <SubsectionReveal>
             <InfoTable
               rows={taskInfo.rows.map((row, i) => ({
@@ -910,8 +909,7 @@ export function ResearchPageClient({ content }: Props) {
           </SubsectionReveal>
         </SplitSection>
 
-        </div>
       </div>
-    </div>
+    </>
   )
 }
