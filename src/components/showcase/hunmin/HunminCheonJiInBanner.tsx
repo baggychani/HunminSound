@@ -27,6 +27,7 @@ type Slot = {
   y: number
   glyph: string
   line: string
+  result: Point
 }
 
 type Point = { x: number; y: number }
@@ -35,6 +36,8 @@ type Metrics = {
   earth: Point
   person: Point
   home: Point
+  fontSize: number
+  bar: number
   slots: Slot[]
 }
 
@@ -42,42 +45,85 @@ function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
-function metricsFor(w: number, h: number): Metrics {
+const EM = {
+  side: 23.4 / 144,
+  lift: 3.2 / 144,
+  above: 13.9 / 144,
+  below: 34 / 144,
+  bar: 10 / 144,
+  oNudge: 9 / 144,
+}
+
+function metricsFor(w: number, h: number, fontSize: number): Metrics {
   const y = h * 0.5
-  const earth = { x: w * 0.46, y }
-  const person = { x: w * 0.72, y }
-  const gap = Math.min(58, h * 0.28)
+  const earth = { x: w * 0.42, y }
+  const person = { x: w * 0.7, y }
+  const side = fontSize * EM.side
+  const lift = fontSize * EM.lift
   const home = { x: Math.max(36, w * 0.16), y }
+  const oAt = { x: earth.x, y: earth.y - fontSize * EM.oNudge }
   return {
     earth,
     person,
     home,
+    fontSize,
+    bar: fontSize * EM.bar,
     slots: [
-      { id: 'above', x: earth.x, y: y - gap, glyph: 'ㅗ', line: 'ㅡ 위에 점을 붙이면 ㅗ' },
-      { id: 'below', x: earth.x, y: y + gap, glyph: 'ㅜ', line: 'ㅡ 아래에 점을 붙이면 ㅜ' },
-      { id: 'right', x: person.x + gap * 0.72, y, glyph: 'ㅏ', line: 'ㅣ 오른쪽에 점을 붙이면 ㅏ' },
-      { id: 'left', x: person.x - gap * 0.72, y, glyph: 'ㅓ', line: 'ㅣ 왼쪽에 점을 붙이면 ㅓ' },
+      {
+        id: 'above',
+        x: earth.x,
+        y: earth.y - fontSize * EM.above,
+        glyph: 'ㅗ',
+        line: 'ㅡ 위에 점을 붙이면 ㅗ가 됩니다.',
+        result: oAt,
+      },
+      {
+        id: 'below',
+        x: earth.x,
+        y: earth.y + fontSize * EM.below,
+        glyph: 'ㅜ',
+        line: 'ㅡ 아래에 점을 붙이면 ㅜ가 됩니다.',
+        result: earth,
+      },
+      {
+        id: 'right',
+        x: person.x + side,
+        y: person.y - lift,
+        glyph: 'ㅏ',
+        line: 'ㅣ 오른쪽에 점을 붙이면 ㅏ가 됩니다.',
+        result: person,
+      },
+      {
+        id: 'left',
+        x: person.x - side,
+        y: person.y - lift,
+        glyph: 'ㅓ',
+        line: 'ㅣ 왼쪽에 점을 붙이면 ㅓ가 됩니다.',
+        result: person,
+      },
     ],
   }
 }
 
-function nearestSlot(px: number, py: number, slots: Slot[]) {
-  let slot = slots[0]
-  let dist = Infinity
-  for (const item of slots) {
-    const d = Math.hypot(px - item.x, py - item.y)
-    if (d < dist) {
-      slot = item
-      dist = d
-    }
-  }
-  return { slot, dist }
+function aimedSlot(px: number, py: number, metrics: Metrics) {
+  const toEarth = Math.hypot(px - metrics.earth.x, py - metrics.earth.y)
+  const toPerson = Math.hypot(px - metrics.person.x, py - metrics.person.y)
+  const onEarth = toEarth <= toPerson
+  const id: SlotId = onEarth
+    ? py < metrics.earth.y - metrics.bar
+      ? 'above'
+      : 'below'
+    : px < metrics.person.x
+      ? 'left'
+      : 'right'
+  const slot = metrics.slots.find((item) => item.id === id) as Slot
+  return { slot, strokeDist: onEarth ? toEarth : toPerson }
 }
 
-function magnetTarget(px: number, py: number, slots: Slot[]) {
-  const { slot, dist } = nearestSlot(px, py, slots)
-  if (dist >= MAGNET) return { x: px, y: py, near: null as Slot | null }
-  const t = 1 - dist / MAGNET
+function magnetTarget(px: number, py: number, metrics: Metrics) {
+  const { slot, strokeDist } = aimedSlot(px, py, metrics)
+  if (strokeDist >= MAGNET) return { x: px, y: py, near: null as Slot | null }
+  const t = 1 - strokeDist / MAGNET
   const pull = t * t * 0.85
   return {
     x: px + (slot.x - px) * pull,
@@ -121,11 +167,14 @@ export function HunminCheonJiInBanner() {
             onClick={() => setOpen((value) => !value)}
             className="inline-flex shrink-0 items-center gap-1.5 font-sans text-[12px] tracking-[0.12em] text-white/70 transition-colors hover:text-white"
           >
-            {open ? '접기' : '붙여 보기'}
+            <span className="inline-grid">
+              <span className="invisible col-start-1 row-start-1">붙여 보기</span>
+              <span className="col-start-1 row-start-1 text-right">{open ? '접기' : '붙여 보기'}</span>
+            </span>
             <svg
               aria-hidden
               viewBox="0 0 12 12"
-              className={`h-3 w-3 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? 'rotate-180' : ''}`}
+              className={`h-3 w-3 shrink-0 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? 'rotate-180' : ''}`}
             >
               <path d="M2 4.2 L6 8 L10 4.2" fill="none" stroke="currentColor" strokeWidth="1.2" />
             </svg>
@@ -158,14 +207,15 @@ function AttachStage() {
   const rafRef = useRef(0)
   const targetRef = useRef({ x: 0, y: 0 })
   const grabRef = useRef({ dx: 0, dy: 0 })
+  const anchorRef = useRef<Point | null>(null)
 
   const x = useMotionValue(48)
   const y = useMotionValue(80)
+  const scale = useMotionValue(1)
 
   const [metrics, setMetrics] = useState<Metrics | null>(null)
   const [placed, setPlaced] = useState<SlotId | null>(null)
   const [nearId, setNearId] = useState<SlotId | null>(null)
-  const [dragging, setDragging] = useState(false)
 
   const stopAnims = useCallback(() => {
     genRef.current += 1
@@ -176,13 +226,14 @@ function AttachStage() {
   }, [])
 
   const glideTo = useCallback(
-    (px: number, py: number, duration: number, after?: () => void) => {
+    (px: number, py: number, duration: number, after?: () => void, nextScale = 1) => {
       stopAnims()
       const id = genRef.current
       const dur = prefersReducedMotion() ? 0.01 : duration
       animsRef.current = [
         animate(x, px, { duration: dur, ease: EASE }),
         animate(y, py, { duration: dur, ease: EASE }),
+        animate(scale, nextScale, { duration: dur, ease: EASE }),
       ]
       timerRef.current = window.setTimeout(() => {
         timerRef.current = 0
@@ -190,7 +241,7 @@ function AttachStage() {
         after?.()
       }, dur * 1000)
     },
-    [stopAnims, x, y],
+    [scale, stopAnims, x, y],
   )
 
   const setPlacedBoth = useCallback((id: SlotId | null) => {
@@ -202,7 +253,9 @@ function AttachStage() {
     const el = stageRef.current
     if (!el) return
     const measure = () => {
-      const next = metricsFor(el.clientWidth, el.clientHeight)
+      const sample = el.querySelector('[data-jamo]')
+      const fontSize = sample ? Number.parseFloat(getComputedStyle(sample).fontSize) : 60
+      const next = metricsFor(el.clientWidth, el.clientHeight, Number.isFinite(fontSize) ? fontSize : 60)
       const prev = metricsRef.current
       metricsRef.current = next
       setMetrics(next)
@@ -251,7 +304,7 @@ function AttachStage() {
     if (!stage || !current) return
     stage.setPointerCapture(event.pointerId)
     draggingRef.current = true
-    setDragging(true)
+    const wasPlaced = placedRef.current
     stopAnims()
     stopLoop()
     const rect = stage.getBoundingClientRect()
@@ -262,7 +315,8 @@ function AttachStage() {
       dx: x.get() - px,
       dy: y.get() - py - (coarse ? 28 : 0),
     }
-    if (placedRef.current) setPlacedBoth(null)
+    animsRef.current = [animate(scale, wasPlaced ? 1 : 1.04, { duration: wasPlaced ? 0.16 : 0.12, ease: EASE })]
+    if (wasPlaced) setPlacedBoth(null)
     targetRef.current = { x: x.get(), y: y.get() }
     startLoop()
   }
@@ -278,7 +332,7 @@ function AttachStage() {
     const pad = 24
     const clampedX = Math.max(pad, Math.min(rect.width - pad, px))
     const clampedY = Math.max(pad, Math.min(rect.height - pad, py))
-    const pulled = magnetTarget(clampedX, clampedY, current.slots)
+    const pulled = magnetTarget(clampedX, clampedY, current)
     targetRef.current = { x: pulled.x, y: pulled.y }
     setNearId(pulled.near?.id ?? null)
   }
@@ -286,14 +340,13 @@ function AttachStage() {
   const endDrag = () => {
     if (!draggingRef.current) return
     draggingRef.current = false
-    setDragging(false)
     stopLoop()
     setNearId(null)
     const current = metricsRef.current
     if (!current) return
-    const { slot, dist } = nearestSlot(x.get(), y.get(), current.slots)
-    if (dist < COMMIT) {
-      glideTo(slot.x, slot.y, 0.28, () => setPlacedBoth(slot.id))
+    const { slot, strokeDist } = aimedSlot(x.get(), y.get(), current)
+    if (strokeDist < COMMIT) {
+      glideTo(slot.x, slot.y, 0.28, () => setPlacedBoth(slot.id), 0.68)
       return
     }
     setPlacedBoth(null)
@@ -304,7 +357,6 @@ function AttachStage() {
     const current = metricsRef.current
     if (!current) return
     draggingRef.current = false
-    setDragging(false)
     stopLoop()
     setNearId(null)
     setPlacedBoth(null)
@@ -312,10 +364,13 @@ function AttachStage() {
   }
 
   const placedSlot = metrics?.slots.find((item) => item.id === placed) ?? null
-  if (placedSlot) glyphRef.current = placedSlot.glyph
+  if (placedSlot) {
+    glyphRef.current = placedSlot.glyph
+    anchorRef.current = placedSlot.result
+  }
   const onEarth = placed === 'above' || placed === 'below'
   const onPerson = placed === 'left' || placed === 'right'
-  const resultAt = onEarth ? metrics?.earth : onPerson ? metrics?.person : null
+  const showResult = Boolean(placedSlot && anchorRef.current)
 
   return (
     <div>
@@ -354,25 +409,27 @@ function AttachStage() {
         <Stroke char="ㅡ" point={metrics?.earth ?? { x: 0, y: 0 }} hidden={!metrics || onEarth} />
         <Stroke char="ㅣ" point={metrics?.person ?? { x: 0, y: 0 }} hidden={!metrics || onPerson} />
 
-        <motion.span
-          aria-hidden={!placed}
-          onPointerDown={placed ? beginDrag : undefined}
-          animate={{ opacity: placed && resultAt ? 1 : 0 }}
-          initial={{ opacity: 0 }}
-          transition={{ duration: 0.32, ease: EASE }}
+        <span
+          aria-hidden={!showResult}
+          onPointerDown={showResult ? beginDrag : undefined}
           className={`absolute -translate-x-1/2 -translate-y-1/2 font-jamo text-6xl leading-none text-ink sm:text-7xl ${
-            placed ? 'cursor-grab touch-none' : 'pointer-events-none'
+            showResult ? 'cursor-grab touch-none' : 'pointer-events-none'
           }`}
-          style={{ left: resultAt?.x ?? 0, top: resultAt?.y ?? 0 }}
+          style={{
+            left: anchorRef.current?.x ?? -9999,
+            top: anchorRef.current?.y ?? -9999,
+            opacity: showResult ? 1 : 0,
+            transition: showResult ? 'opacity 280ms cubic-bezier(0.22,1,0.36,1)' : 'none',
+          }}
         >
           {glyphRef.current}
-        </motion.span>
+        </span>
 
-        <DotHandle x={x} y={y} dragging={dragging} hidden={Boolean(placed)} onPointerDown={beginDrag} />
+        <DotHandle x={x} y={y} scale={scale} hidden={Boolean(placed)} onPointerDown={beginDrag} />
       </div>
 
       <p className="mt-3 min-h-6 font-serif text-[15px] leading-snug text-ink-soft">
-        {placedSlot ? placedSlot.line : '아래아를 ㅡ나 ㅣ에 붙이면 자리가 글자를 정합니다.'}
+        {placedSlot ? placedSlot.line : '아래아를 ㅡ나 ㅣ에 붙여 보세요.'}
       </p>
     </div>
   )
@@ -382,8 +439,14 @@ function Stroke({ char, point, hidden }: { char: string; point: Point; hidden: b
   return (
     <span
       aria-hidden
-      className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 font-jamo text-6xl leading-none text-ink transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] sm:text-7xl"
-      style={{ left: point.x, top: point.y, opacity: hidden ? 0 : 1 }}
+      data-jamo=""
+      className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 font-jamo text-6xl leading-none text-ink sm:text-7xl"
+      style={{
+        left: point.x,
+        top: point.y,
+        opacity: hidden ? 0 : 1,
+        transition: hidden ? 'opacity 280ms cubic-bezier(0.22,1,0.36,1)' : 'none',
+      }}
     >
       {char}
     </span>
@@ -393,13 +456,13 @@ function Stroke({ char, point, hidden }: { char: string; point: Point; hidden: b
 function DotHandle({
   x,
   y,
-  dragging,
+  scale,
   hidden,
   onPointerDown,
 }: {
   x: MotionValue<number>
   y: MotionValue<number>
-  dragging: boolean
+  scale: MotionValue<number>
   hidden: boolean
   onPointerDown: (event: PointerEvent<Element>) => void
 }) {
@@ -408,17 +471,20 @@ function DotHandle({
       type="button"
       aria-label="아래아"
       onPointerDown={onPointerDown}
-      style={{ left: x, top: y }}
-      className={`absolute flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 touch-none items-center justify-center font-jamo text-6xl leading-none text-ink transition-opacity duration-300 sm:text-7xl ${
-        hidden ? 'pointer-events-none opacity-0' : 'cursor-grab opacity-100 active:cursor-grabbing'
+      style={{
+        left: x,
+        top: y,
+        opacity: hidden ? 0 : 1,
+        transition: hidden ? 'opacity 280ms cubic-bezier(0.22,1,0.36,1)' : 'none',
+      }}
+      className={`absolute -translate-x-1/2 -translate-y-1/2 touch-none font-jamo text-6xl leading-none text-ink sm:text-7xl ${
+        hidden ? 'pointer-events-none' : 'cursor-grab active:cursor-grabbing'
       }`}
     >
-      <span
-        className="transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]"
-        style={{ transform: dragging ? 'scale(1.06)' : 'scale(1)' }}
-      >
+      <span className="pointer-events-none absolute -inset-3" aria-hidden />
+      <motion.span className="block" style={{ scale }}>
         {'\u318D'}
-      </span>
+      </motion.span>
     </motion.button>
   )
 }
