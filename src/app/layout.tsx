@@ -69,13 +69,21 @@ export const metadata: Metadata = {
     title: SITE_TAB_TITLE,
     description:
       '1443년 세종이 훈민정음(訓民正音)으로 제시한 상형 원리를 MRI·음성공학·AI 융합으로 실증하는 세종말소리.',
-    images: [{ url: '/icons/icon-512.png', width: 512, height: 512, alt: '세종말소리' }],
+    images: [
+      {
+        url: '/images/og-share.png',
+        width: 1200,
+        height: 630,
+        alt: '훈민정음 창제 원리의 과학적 재조명 · 세종말소리',
+      },
+    ],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: SITE_TAB_TITLE,
     description:
       '1443년 세종이 훈민정음(訓民正音)으로 제시한 상형 원리를 MRI·음성공학·AI 융합으로 실증하는 세종말소리.',
+    images: ['/images/og-share.png'],
   },
   icons: {
     icon: [
