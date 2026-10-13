@@ -1,6 +1,8 @@
 import type { Vowel } from '@/types'
+import { applyPhonemeI18n } from '@/data/applyPhonemeI18n'
+import { vowelI18n } from '@/data/phonemeBundle'
 
-export const vowelsData: Vowel[] = [
+const vowelsSource: Vowel[] = [
   // 천지인 — 아래아 (훈민정음 전용, 현대 음성학 차트에는 미표시) ─────────────────
   {
     _id: 'araea',
@@ -245,3 +247,5 @@ export const vowelsData: Vowel[] = [
     mriFileName: 'mri_ui.mp4',
   },
 ]
+
+export const vowelsData: Vowel[] = applyPhonemeI18n(vowelsSource, vowelI18n)

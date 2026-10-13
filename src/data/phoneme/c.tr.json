@@ -1,0 +1,21 @@
+{
+  "b": "‘비’nin başındaki gibi bu ses hece başında gelir. Başta, yumuşak damak burun yolunu kapatır, iki dudak kapanıp açılır ve ağız içindeki hava dışarı bırakılır. Bu, ötümsüz çift dudak patlamalısıdır. Sonda, ‘읍’te olduğu gibi, bu hava dışarı bırakılmaz.",
+  "p": "‘피’nin başındaki gibi yumuşak damak burun yolunu kapatır, iki dudak kapanır ve güçlü bir hava çıkışıyla ayrılır. Ötümsüz patlamalıdır. Harf sonda kullanıldığında ses ‘읍’ ile aynıdır.",
+  "bb": "‘삐’deki gibi bu ses yalnız hece başında gelir. Yumuşak damak burun yolunu kapatır ve gırtlak kasları gerilir; iki dudak kapanıp açılır ve ağız içindeki hava dışarı bırakılır. Ötümsüz patlamalıdır.",
+  "d": "‘디’nin başındaki gibi bu ses hece başında gelir. Yumuşak damak burun yolunu kapatır, dil ucu üst diş etine değip ağız yolunu kapatır ve sonra açılır. Patlamalıdır. Sonda, ‘읃’te olduğu gibi, son patlama yapılmaz.",
+  "t": "‘티’deki gibi bu ses yalnız başta gelir. Yumuşak damak burun yolunu kapatır, dil ucu diş etine değer ve güçlü bir hava çıkışıyla ayrılır. Ötümsüz patlamalıdır. Sonda yalnız dil ucu ile diş eti arasındaki kapanma tutulur; ‘읃’teki ‘ㄷ’ gibidir.",
+  "dd": "‘띠’deki gibi bu ses yalnız başta gelir. Yumuşak damak burun yolunu kapatır ve gırtlak kasları gerilir; dil ucu üst diş etine değip ağız yolunu kapatır ve kuvvetle açılır. Ötümsüz patlamalıdır.",
+  "g": "‘기’nin başındaki gibi bu ses hece başında gelir. Yumuşak damak burun yolunu kapatır, dil kökü yumuşak damağa kalkar, soluğu keser ve sonra ayrılır. Ses ötümsüzdür. Sonda, ‘윽’te olduğu gibi, dil kökü ayrılmaz. Ünlüler arasında, ‘아기’deki ‘ㄱ’ gibi, ötümlü olur.",
+  "k": "‘키’nin başındaki gibi bu ses hece başında gelir. Yumuşak damak burun yolunu kapatır, dil kökü yumuşak damağa kalkıp ağız yolunu kapatır ve güçlü bir hava çıkışıyla ayrılır. Ötümsüz patlamalıdır. Sonda ‘윽’teki ‘ㄱ’ ile aynıdır.",
+  "gg": "‘끼’deki gibi bu ses yalnız başta gelir. Yumuşak damak burun yolunu kapatır ve gırtlak kasları gerilir; dil gövdesinin arkası yumuşak damağı kapatır ve soluk sonra bırakılır. Yumuşak damak patlamalısıdır. Sonda ‘윽’teki ‘ㄱ’ ile aynı son ses olarak söylenir.",
+  "s": "‘시’nin başındaki gibi bu ses hece başında gelir. Dil ucu üst diş etine değecek kadar yaklaşır, soluk bu dar aralıktan sürtünerek çıkar. Ses ötümsüzdür. Sonda, ‘옷’ gibi, dil ucu diş etini kapatır ve ses ‘읃’teki ‘ㄷ’ ile aynı olur.",
+  "ss": "‘씨’deki gibi bu ses yalnız başta gelir. Yumuşak damak burun yolunu kapatır ve gırtlak kasları gerilir; dil ucu diş etine ya da sert damağa değecek kadar yaklaşır, soluk aralıktan sürtünerek çıkar. Ses ötümsüzdür.",
+  "h": "‘히’deki gibi bu ses yalnız başta gelir. Gırtlak yarığı daraltılarak soluk verilirken oluşan ötümsüz sürtünmelidir. Sonda dil ucu diş etinden ayrılmadan yalnız kapanma tutulur; ‘읃’teki ‘ㄷ’ gibidir.",
+  "j": "‘지’deki gibi bu ses yalnız başta gelir. Dil gövdesinin önü sert damağa genişçe dayanır ve ayrılırken sürtünme de olur. Ötümsüz yarı kapantılıdır. Sonda dil ucu diş etini kapatır ve ses ‘읃’teki ‘ㄷ’ ile aynı olur. Ünlüler arasında, ‘모자’daki ‘ㅈ’ gibi, ötümlü olur.",
+  "ch": "‘치’deki gibi bu ses yalnız başta gelir. Dil gövdesinin önü sert damağa dayanır; ayrılırken soluk kuvvetle verilir ve sürtünme de olur. Ötümsüz yarı kapantılıdır. Sonda dil ucu diş etini kapatır ve ses ‘읃’teki ‘ㄷ’ ile aynı olur.",
+  "jj": "‘찌’deki gibi bu ses yalnız başta gelir. Yumuşak damak burun yolunu kapatır ve gırtlak kasları gerilir; dil gövdesinin önü damağa yapışıp soluğu keser, ayrılırken sürtünme de olur. Ötümsüz yarı kapantılıdır.",
+  "n": "‘니’nin başındaki gibi bu ses hece başında gelir. Dil ucu diş etine yapışıp ayrılırken soluk burun deliklerinden çıkar ve burun boşluğunda yankılanır. Ses ötümlüdür. Sonda dil ucu ayrılmaz.",
+  "m": "‘미’nin başındaki gibi bu ses hece başında gelir. Dudaklar kapalıdır, soluk burun boşluğuna gönderilir ve ses telleri titreşir. Ses ötümlüdür. Sonda dudaklar ayrılmaz.",
+  "ng": "‘이’ gibi başta geldiğinde ses değeri yoktur. Sonda, ‘응’de olduğu gibi, dil kökü yumuşak damağa kalkar, soluğu kesip burun boşluğuna gönderir. Ötümlü genizsil sestir.",
+  "r": "‘리’nin başındaki gibi bu ses hece başında gelir. Başta dil ucu üst diş etine bir kez hafifçe vurur. Sonda, ‘을’de olduğu gibi, dil ucu diş etine sıkıca yapışır ve hava dilin iki yanından çıkar. O zaman akıcı yan sestir."
+}

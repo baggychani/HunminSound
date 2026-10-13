@@ -18,6 +18,7 @@ import { HunminVowelTable } from '@/components/showcase/hunmin/HunminVowelTable'
 import { PhoneticsHaeryeSource } from '@/components/showcase/phonetics/PhoneticsHaeryeSource'
 import { SymbolDetailCard } from '@/components/showcase/phonetics/SymbolDetailCard'
 import { SymbolDetailName } from '@/components/showcase/phonetics/SymbolDetailName'
+import { hunminChartLabel } from '@/data/hunminChart-i18n'
 import {
   HUNMIN_VOWEL_ROWS,
   hunminVowelRowContainsSymbol,
@@ -248,8 +249,8 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
   const activeHunminRowTitle = useMemo(() => {
     if (!activeItem) return ''
     const row = HUNMIN_VOWEL_ROWS.find((r) => hunminVowelRowContainsSymbol(r, activeItem.symbol))
-    return row?.title ?? ''
-  }, [activeItem])
+    return hunminChartLabel(lang, row?.title ?? '')
+  }, [activeItem, lang])
 
   const categoryDesc: Record<(typeof CATEGORY_ORDER)[number], string> = {
     [VOWEL_CAT_MONO]: m.monophthongDesc,

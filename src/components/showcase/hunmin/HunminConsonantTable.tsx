@@ -9,6 +9,7 @@ import {
   type HunminRow,
 } from '@/data/hunminConsonantLayout'
 import type { Consonant } from '@/types'
+import { hunminChartLabel, hunminFootnote } from '@/data/hunminChart-i18n'
 
 const COLUMNS: {
   key: string
@@ -121,13 +122,13 @@ export function HunminConsonantTable({
           className="col-span-3 px-2 py-2.5 text-center font-sans text-sm font-semibold text-gold"
           role="columnheader"
         >
-          기본자
+          {hunminChartLabel(lang, '기본자')}
         </div>
         <div
           className="hunmin-consonant-split col-span-3 px-2 py-2.5 text-center font-sans text-sm font-semibold text-gold"
           role="columnheader"
         >
-          확장자
+          {hunminChartLabel(lang, '확장자')}
         </div>
       </div>
 
@@ -141,7 +142,7 @@ export function HunminConsonantTable({
               column.key === 'double' ? 'hunmin-consonant-split' : 'hunmin-consonant-rule'
             }`}
           >
-            {column.label}
+            {hunminChartLabel(lang, column.label)}
           </div>
         ))}
       </div>
@@ -158,7 +159,7 @@ export function HunminConsonantTable({
               role="row"
             >
               <div className="hunmin-consonant-rowhead" role="rowheader">
-                <h3 className="font-jamo text-[1.3125rem] leading-none text-ink">{row.title}</h3>
+                <h3 className={`${lang === 'ko' ? 'font-jamo' : 'font-serif'} text-[1.3125rem] leading-none text-ink`}>{hunminChartLabel(lang, row.title)}</h3>
                 {classicLabelByRowId[row.id] ? (
                   <span className="mt-1.5 font-serif text-[13px] leading-none text-ink-muted" lang="zh-Hant">
                     {classicLabelByRowId[row.id]}
@@ -226,7 +227,7 @@ export function HunminConsonantTable({
           {footnotes.map((row) => (
             <p key={row.id} className="font-sans text-xs leading-relaxed text-ink-muted">
               <JamoText
-                text={row.footnote ?? ''}
+                text={hunminFootnote(lang, row.id, row.footnote ?? '')}
                 jamoClassName={row.id === 'seol' ? 'hunmin-footnote-rieul' : 'hunmin-footnote-ye'}
               />
             </p>

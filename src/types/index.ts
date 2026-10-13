@@ -15,6 +15,9 @@ export interface Consonant {
   description_ar?: string
   description_de?: string
   description_es?: string
+  description_tr?: string
+  description_id?: string
+  description_th?: string
   animationFileName?: string
   mriFileName?: string
   /** 상형도 일러스트 — public/images/pictograms/ */
@@ -37,6 +40,9 @@ export interface Vowel {
   description_ar?: string
   description_de?: string
   description_es?: string
+  description_tr?: string
+  description_id?: string
+  description_th?: string
   animationFileName?: string
   mriFileName?: string
   pictogramFileName?: string

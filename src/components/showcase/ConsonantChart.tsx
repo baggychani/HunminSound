@@ -15,6 +15,7 @@ import { SymbolDetailCard } from '@/components/showcase/phonetics/SymbolDetailCa
 import { SymbolDetailName } from '@/components/showcase/phonetics/SymbolDetailName'
 import { HunminConsonantTable } from '@/components/showcase/hunmin/HunminConsonantTable'
 import { HUNMIN_CONSONANT_ROWS, hunminRowContainsSymbol } from '@/data/hunminConsonantLayout'
+import { hunminChartLabel } from '@/data/hunminChart-i18n'
 import type { Consonant } from '@/types'
 
 const CATEGORY_ORDER = ['파열음', '마찰음', '파찰음', '비음', '유음']
@@ -251,8 +252,8 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
   const activeHunminRowTitle = useMemo(() => {
     if (!activeItem) return ''
     const row = HUNMIN_CONSONANT_ROWS.find((r) => hunminRowContainsSymbol(r, activeItem.symbol))
-    return row?.title ?? ''
-  }, [activeItem])
+    return hunminChartLabel(lang, row?.title ?? '')
+  }, [activeItem, lang])
 
   const chartFadeStyle = {
     opacity: chartOpacity,

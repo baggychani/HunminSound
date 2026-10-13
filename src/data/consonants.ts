@@ -1,6 +1,8 @@
 import type { Consonant } from '@/types'
+import { applyPhonemeI18n } from '@/data/applyPhonemeI18n'
+import { consonantI18n } from '@/data/phonemeBundle'
 
-export const consonantsData: Consonant[] = [
+const consonantsSource: Consonant[] = [
   // ─── 파열음 (Plosives) ────────────────────────────────────────────
   // 양순 (Bilabial)
   {
@@ -224,3 +226,5 @@ export const consonantsData: Consonant[] = [
     mriFileName: 'ㄹ.mp4',
   },
 ]
+
+export const consonantsData: Consonant[] = applyPhonemeI18n(consonantsSource, consonantI18n)

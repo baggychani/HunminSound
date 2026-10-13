@@ -35,6 +35,49 @@ export const VOWEL_ARTICULATION_EN: Record<string, string> = {
   'ㅚ': 'close-mid front rounded vowel [ø]',
 }
 
+/** 영어 보조 줄과 같은 높이–전후–원순 순서. 본문 설명의 중설 분류와 별개로, 이 한 줄의 기존 영어 표를 따른다. */
+const VOWEL_ARTICULATION_TR: Record<string, string> = {
+  '·': 'art açık yarı yuvarlak ünlü [ʌ], [ɔ]',
+  'ㅏ': 'art açık düz ünlü [a]',
+  'ㅓ': 'art yarı açık düz ünlü [ʌ]',
+  'ㅗ': 'art yarı kapalı yuvarlak ünlü [o]',
+  'ㅜ': 'art kapalı yuvarlak ünlü [u]',
+  'ㅡ': 'art kapalı düz ünlü [ɯ]',
+  'ㅣ': 'ön kapalı düz ünlü [i]',
+  'ㅔ': 'ön yarı kapalı düz ünlü [e]',
+  'ㅐ': 'ön yarı açık düz ünlü [ɛ]',
+  'ㅟ': 'ön kapalı yuvarlak ünlü [y]',
+  'ㅚ': 'ön yarı kapalı yuvarlak ünlü [ø]',
+}
+
+const VOWEL_ARTICULATION_ID: Record<string, string> = {
+  '·': 'vokal belakang terbuka semi-bundar [ʌ], [ɔ]',
+  'ㅏ': 'vokal belakang terbuka tak bundar [a]',
+  'ㅓ': 'vokal belakang semi-terbuka tak bundar [ʌ]',
+  'ㅗ': 'vokal belakang semi-tertutup bundar [o]',
+  'ㅜ': 'vokal belakang tertutup bundar [u]',
+  'ㅡ': 'vokal belakang tertutup tak bundar [ɯ]',
+  'ㅣ': 'vokal depan tertutup tak bundar [i]',
+  'ㅔ': 'vokal depan semi-tertutup tak bundar [e]',
+  'ㅐ': 'vokal depan semi-terbuka tak bundar [ɛ]',
+  'ㅟ': 'vokal depan tertutup bundar [y]',
+  'ㅚ': 'vokal depan semi-tertutup bundar [ø]',
+}
+
+const VOWEL_ARTICULATION_TH: Record<string, string> = {
+  '·': 'สระหลังต่ำกึ่งห่อปาก [ʌ], [ɔ]',
+  'ㅏ': 'สระหลังต่ำไม่ห่อปาก [a]',
+  'ㅓ': 'สระหลังกึ่งต่ำไม่ห่อปาก [ʌ]',
+  'ㅗ': 'สระหลังกึ่งสูงห่อปาก [o]',
+  'ㅜ': 'สระหลังสูงห่อปาก [u]',
+  'ㅡ': 'สระหลังสูงไม่ห่อปาก [ɯ]',
+  'ㅣ': 'สระหน้าสูงไม่ห่อปาก [i]',
+  'ㅔ': 'สระหน้ากึ่งสูงไม่ห่อปาก [e]',
+  'ㅐ': 'สระหน้ากึ่งต่ำไม่ห่อปาก [ɛ]',
+  'ㅟ': 'สระหน้าสูงห่อปาก [y]',
+  'ㅚ': 'สระหน้ากึ่งสูงห่อปาก [ø]',
+}
+
 /** UI 언어에 맞는 보조 문구 (사전 번역优先, 없으면 undefined) */
 export function getVowelArticulationText(
   symbol: string,
@@ -42,7 +85,8 @@ export function getVowelArticulationText(
 ): string | undefined {
   if (lang === 'ko') return VOWEL_ARTICULATION_KO[symbol]
   if (lang === 'en') return VOWEL_ARTICULATION_EN[symbol]
-  /** 터키어·인도네시아어·태국어는 번역 전이므로 영어 문구를 보여 준다 */
-  if (lang === 'tr' || lang === 'id' || lang === 'th') return VOWEL_ARTICULATION_EN[symbol]
+  if (lang === 'tr') return VOWEL_ARTICULATION_TR[symbol]
+  if (lang === 'id') return VOWEL_ARTICULATION_ID[symbol]
+  if (lang === 'th') return VOWEL_ARTICULATION_TH[symbol]
   return VOWEL_ARTICULATION_BY_LANG[lang]?.[symbol]
 }

@@ -15,6 +15,7 @@ import {
   type HunminVowelSlot,
 } from '@/data/hunminVowelLayout'
 import type { Vowel } from '@/types'
+import { hunminChartLabel } from '@/data/hunminChart-i18n'
 
 const COLUMNS: {
   key: string
@@ -222,13 +223,13 @@ export function HunminVowelTable({
             className="col-span-3 px-2 py-2.5 text-center font-sans text-sm font-semibold text-gold"
             role="columnheader"
           >
-            기본자
+            {hunminChartLabel(lang, '기본자')}
           </div>
           <div
             className="hunmin-consonant-split col-span-3 px-2 py-2.5 text-center font-sans text-sm font-semibold text-gold"
             role="columnheader"
           >
-            합용자
+            {hunminChartLabel(lang, '합용자')}
           </div>
         </div>
 
@@ -242,7 +243,7 @@ export function HunminVowelTable({
                 column.split ? 'hunmin-consonant-split' : 'hunmin-consonant-rule'
               }`}
             >
-              {column.label}
+              {hunminChartLabel(lang, column.label)}
             </div>
           ))}
         </div>
@@ -259,7 +260,7 @@ export function HunminVowelTable({
                 role="row"
               >
                 <div className="hunmin-consonant-rowhead" role="rowheader">
-                  <h3 className="font-jamo text-[1.3125rem] leading-none text-ink">{row.title}</h3>
+                  <h3 className={`${lang === 'ko' ? 'font-jamo' : 'font-serif'} text-[1.3125rem] leading-none text-ink`}>{hunminChartLabel(lang, row.title)}</h3>
                 </div>
                 {COLUMNS.map((column) => (
                   <div

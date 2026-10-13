@@ -45,9 +45,10 @@ export function PageHeader({ type }: PageHeaderProps) {
           </motion.p>
 
           <h1
-            className="font-jamo leading-none text-ink mb-6"
+            className={`leading-none text-ink mb-6 ${lang === 'ko' ? 'font-jamo' : 'font-serif'}`}
             style={{ fontSize: 'clamp(2.25rem, 5.5vw, 3.5rem)' }}
-            lang="ko"
+            dir={lang === 'ar' ? 'rtl' : 'ltr'}
+            lang={lang === 'ko' ? 'ko' : lang}
           >
             <TitleBlurReveal text={title} />
           </h1>
