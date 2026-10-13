@@ -22,7 +22,7 @@ export interface HistoryEntry {
   newValue?: string       // 새 번역 (save 액션)
 }
 
-export const MAX_HISTORY = 100
+export const MAX_HISTORY = 500
 
 export function makeHistoryEntry(
   params: Omit<HistoryEntry, 'id' | 'timestamp'>,
@@ -50,8 +50,9 @@ export function parseOverrideKey(key: string): {
 /** 액션 한국어 요약 */
 export function describeAction(entry: HistoryEntry): string {
   const langMap: Record<string, string> = {
-    en: 'English', zh: '中文', ja: '日本語', fr: 'Français',
+    en: 'English', zh: '中文', ja: '日本語', fr: 'Français', de: 'Deutsch', es: 'Español',
     hi: 'हिन्दी', vi: 'Tiếng Việt', ru: 'Русский', ar: 'العربية',
+    tr: 'Türkçe', id: 'Bahasa Indonesia', th: 'ภาษาไทย',
   }
   const typeLabel =
     entry.type === 'consonant'

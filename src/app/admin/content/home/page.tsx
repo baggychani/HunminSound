@@ -40,27 +40,36 @@ function KoreanEditor({
     setTimeout(() => textareaRef.current?.focus(), 50)
   }
 
+  const [error, setError] = useState<string | null>(null)
+
   const save = async () => {
-    if (draft === baseText) {
-      await patchOverride({
-        key: `home:${id}:description:ko`,
-        remove: true,
-        displayName,
-        lang: 'ko',
-        type: 'home',
-      })
-    } else {
-      await patchOverride({
-        key: `home:${id}:description:ko`,
-        value: draft,
-        sourceSnapshot: '',
-        displayName,
-        lang: 'ko',
-        type: 'home',
-      })
+    setSaving(true)
+    setError(null)
+    try {
+      if (draft === baseText) {
+        await patchOverride({
+          key: `home:${id}:description:ko`,
+          remove: true,
+          displayName,
+          lang: 'ko',
+          type: 'home',
+        })
+      } else {
+        await patchOverride({
+          key: `home:${id}:description:ko`,
+          value: draft,
+          sourceSnapshot: '',
+          displayName,
+          lang: 'ko',
+          type: 'home',
+        })
+      }
+      setEditing(false)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '저장하지 못했습니다.')
+    } finally {
+      setSaving(false)
     }
-    setSaving(false)
-    setEditing(false)
   }
 
   return (
@@ -74,15 +83,13 @@ function KoreanEditor({
             rows={id === 'homeIntro' || id === 'homeResearchDesc' ? 5 : 3}
             className="w-full rounded-sm border border-gold/40 bg-hanji px-3 py-2 font-sans text-xs text-ink outline-none resize-none focus-visible:border-gold/70 focus-visible:shadow-[inset_0_0_0_1px_rgb(var(--gold-rgb)/0.25)] leading-relaxed"
           />
+          {error && <p role="alert" className="font-sans text-[11px] leading-snug text-red-500">{error}</p>}
           <div className="flex items-center gap-2 justify-end">
             {draft !== baseText && draft !== currentText && (
               <span className="font-sans text-[10px] text-ink-muted/40">원본과 다름</span>
             )}
             <button
-              onClick={async () => {
-                setSaving(true)
-                await save()
-              }}
+              onClick={save}
               disabled={saving}
               className="rounded-sm bg-gold/90 px-3 py-1 font-sans text-[10px] text-hanji disabled:opacity-50 hover:bg-gold"
             >

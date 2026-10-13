@@ -106,9 +106,9 @@ function LangRow({ langCode, langName, value, isStale, onSave, onRemove, onDismi
       <div className="flex flex-col items-end gap-1 pt-0.5">
         {editing ? (
           <>
-            <button onClick={saveEdit}
+            <button onClick={saveEdit} title="화면에만 적용됩니다. 페이지 아래 저장 막대에서 저장해야 사이트에 올라갑니다."
               className="rounded-sm bg-gold/90 px-2.5 py-1 font-sans text-[10px] text-hanji hover:bg-gold">
-              저장
+              적용
             </button>
             <button onClick={cancelEdit}
               className="px-2 py-1 font-sans text-[10px] text-ink-muted/50 hover:text-ink-soft transition-colors">

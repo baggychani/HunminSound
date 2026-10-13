@@ -55,8 +55,8 @@ export function AdminTopBar({ sanityProjectIdConfigured }: { sanityProjectIdConf
   const fetchHistory = () => {
     setHistLoading(true)
     fetch('/api/admin/history')
-      .then((r) => r.json())
-      .then((data) => setHistory(data as HistoryEntry[]))
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => setHistory(Array.isArray(data) ? (data as HistoryEntry[]) : []))
       .catch(() => {})
       .finally(() => setHistLoading(false))
   }

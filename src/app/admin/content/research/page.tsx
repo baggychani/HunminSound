@@ -475,6 +475,29 @@ export default function AdminResearchPage() {
 
   const dirty = !!data && JSON.stringify(data) !== JSON.stringify(original)
 
+  useEffect(() => {
+    if (!dirty) return
+    const warn = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    // 번역 줄의 '저장'은 화면에만 적용되므로, 아래 저장 막대를 누르기 전에 떠나면 사라진다
+    const guardLinks = (e: MouseEvent) => {
+      const a = (e.target as Element | null)?.closest?.('a[href]')
+      if (!a || a.getAttribute('target') === '_blank') return
+      if (!window.confirm('저장하지 않은 변경사항이 있습니다. 아래 저장 막대에서 저장하지 않고 나가면 사라집니다. 그래도 나갈까요?')) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+    window.addEventListener('beforeunload', warn)
+    document.addEventListener('click', guardLinks, true)
+    return () => {
+      window.removeEventListener('beforeunload', warn)
+      document.removeEventListener('click', guardLinks, true)
+    }
+  }, [dirty])
+
   const save = useCallback(async () => {
     if (!data) return
     setSaving(true)
@@ -486,6 +509,9 @@ export default function AdminResearchPage() {
         body: JSON.stringify({ data, sha }),
       })
       const body = (await res.json().catch(() => null)) as { message?: string; sha?: string | null } | null
+      if (res.status === 401) {
+        throw new Error('로그인이 만료되었습니다. 이 탭은 새로고침하지 말고, 새 탭에서 다시 로그인한 뒤 여기서 저장을 다시 눌러 주세요.')
+      }
       if (!res.ok) throw new Error(body?.message ?? '저장에 실패했습니다.')
       setSha(body?.sha ?? null)
       setOriginal(cloneDeep(data))

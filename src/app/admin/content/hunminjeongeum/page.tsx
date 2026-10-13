@@ -61,8 +61,11 @@ function EnglishEditor({
     setTimeout(() => textareaRef.current?.focus(), 50)
   }
 
+  const [error, setError] = useState<string | null>(null)
+
   const save = async () => {
     setSaving(true)
+    setError(null)
     try {
       const trimmed = draft.trim()
       if (!trimmed || trimmed === baseText) {
@@ -85,6 +88,8 @@ function EnglishEditor({
         })
       }
       setEditing(false)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '저장하지 못했습니다.')
     } finally {
       setSaving(false)
     }
@@ -111,6 +116,7 @@ function EnglishEditor({
             rows={4}
             className="w-full rounded-sm border border-gold/40 bg-hanji px-3 py-2 font-sans text-sm text-ink outline-none resize-none focus-visible:border-gold/70 focus-visible:shadow-[inset_0_0_0_1px_rgb(var(--gold-rgb)/0.25)] leading-relaxed"
           />
+          {error && <p role="alert" className="font-sans text-[11px] leading-snug text-red-500">{error}</p>}
           <div className="flex items-center gap-2 justify-end">
             {draft !== baseText && draft !== currentText && (
               <span className="font-sans text-[10px] text-ink-muted/40">원본과 다름</span>

@@ -10,7 +10,8 @@
  *  - 이후 원본 한국어가 바뀌었을 때 → stale 상태로 감지
  */
 
-export type SupportedTranslationLang = 'en' | 'zh' | 'ja' | 'fr' | 'de' | 'es' | 'hi' | 'vi' | 'ru' | 'ar'
+export type SupportedTranslationLang =
+  | 'en' | 'zh' | 'ja' | 'fr' | 'de' | 'es' | 'hi' | 'vi' | 'ru' | 'ar' | 'tr' | 'id' | 'th'
 
 export const TRANSLATION_LANGS: { code: SupportedTranslationLang; name: string; script: string }[] = [
   { code: 'en', name: 'English',      script: 'Latin'    },
@@ -23,6 +24,9 @@ export const TRANSLATION_LANGS: { code: SupportedTranslationLang; name: string; 
   { code: 'vi', name: 'Tiếng Việt',   script: 'Latin'    },
   { code: 'ru', name: 'Русский',      script: 'Cyrillic' },
   { code: 'ar', name: 'العربية',      script: 'Arabic'   },
+  { code: 'tr', name: 'Türkçe',       script: 'Latin'    },
+  { code: 'id', name: 'Bahasa Indonesia', script: 'Latin' },
+  { code: 'th', name: 'ภาษาไทย',       script: 'Thai'     },
 ]
 
 const SUPPORTED_SET = new Set<string>(TRANSLATION_LANGS.map((l) => l.code))

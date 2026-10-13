@@ -18,6 +18,7 @@ import {
   writeOverridesStore,
   readAdminHistory,
   writeAdminHistory,
+  withCmsLock,
 } from '@/lib/cms-storage'
 
 export const runtime = 'nodejs'
@@ -31,6 +32,12 @@ async function getAuthUser(): Promise<string | null> {
 
 function cmsErrorResponse(err: unknown) {
   const message = err instanceof Error ? err.message : '저장 실패'
+  if (message.includes('CMS_LOCK_TIMEOUT')) {
+    return NextResponse.json(
+      { error: 'busy', message: '다른 분의 저장과 겹쳤습니다. 잠시 뒤 저장을 다시 눌러 주세요.' },
+      { status: 503 },
+    )
+  }
   if (message.includes('CMS_CLOUD_STORAGE_REQUIRED')) {
     return NextResponse.json(
       {
@@ -94,69 +101,71 @@ export async function PATCH(req: NextRequest) {
   }
 
   try {
-    const store = await readOverridesStore()
-    const existing = store[key]
+    return await withCmsLock(async () => {
+      const store = await readOverridesStore()
+      const existing = store[key]
 
-    if (remove) {
-      if (parsed) {
-        const history = [
-          makeHistoryEntry({
-            username, action: 'remove', key,
-            type: parsed.type, itemId: parsed.itemId,
-            itemName: displayName ?? parsed.itemId,
-            lang: parsed.lang,
-            oldValue: existing?.value,
-          }),
-          ...(await readAdminHistory()),
-        ].slice(0, MAX_HISTORY)
-        await writeAdminHistory(history)
-      }
-      delete store[key]
-    } else if (staleDismissed === true) {
-      if (existing) {
-        store[key] = { ...existing, staleDismissed: true, updatedAt: new Date().toISOString() }
+      if (remove) {
         if (parsed) {
           const history = [
             makeHistoryEntry({
-              username, action: 'dismiss', key,
+              username, action: 'remove', key,
               type: parsed.type, itemId: parsed.itemId,
               itemName: displayName ?? parsed.itemId,
               lang: parsed.lang,
+              oldValue: existing?.value,
+            }),
+            ...(await readAdminHistory()),
+          ].slice(0, MAX_HISTORY)
+          await writeAdminHistory(history)
+        }
+        delete store[key]
+      } else if (staleDismissed === true) {
+        if (existing) {
+          store[key] = { ...existing, staleDismissed: true, updatedAt: new Date().toISOString() }
+          if (parsed) {
+            const history = [
+              makeHistoryEntry({
+                username, action: 'dismiss', key,
+                type: parsed.type, itemId: parsed.itemId,
+                itemName: displayName ?? parsed.itemId,
+                lang: parsed.lang,
+              }),
+              ...(await readAdminHistory()),
+            ].slice(0, MAX_HISTORY)
+            await writeAdminHistory(history)
+          }
+        }
+      } else {
+        if (typeof value !== 'string' || typeof sourceSnapshot !== 'string') {
+          return NextResponse.json({ error: 'value and sourceSnapshot required' }, { status: 400 })
+        }
+        const entry: TranslationOverride = {
+          value,
+          sourceSnapshot,
+          staleDismissed: false,
+          updatedAt: new Date().toISOString(),
+        }
+        store[key] = entry
+        if (parsed) {
+          const history = [
+            makeHistoryEntry({
+              username, action: 'save', key,
+              type: parsed.type, itemId: parsed.itemId,
+              itemName: displayName ?? parsed.itemId,
+              lang: parsed.lang,
+              oldValue: existing?.value,
+              newValue: value,
             }),
             ...(await readAdminHistory()),
           ].slice(0, MAX_HISTORY)
           await writeAdminHistory(history)
         }
       }
-    } else {
-      if (typeof value !== 'string' || typeof sourceSnapshot !== 'string') {
-        return NextResponse.json({ error: 'value and sourceSnapshot required' }, { status: 400 })
-      }
-      const entry: TranslationOverride = {
-        value,
-        sourceSnapshot,
-        staleDismissed: false,
-        updatedAt: new Date().toISOString(),
-      }
-      store[key] = entry
-      if (parsed) {
-        const history = [
-          makeHistoryEntry({
-            username, action: 'save', key,
-            type: parsed.type, itemId: parsed.itemId,
-            itemName: displayName ?? parsed.itemId,
-            lang: parsed.lang,
-            oldValue: existing?.value,
-            newValue: value,
-          }),
-          ...(await readAdminHistory()),
-        ].slice(0, MAX_HISTORY)
-        await writeAdminHistory(history)
-      }
-    }
 
-    await writeOverridesStore(store)
-    return NextResponse.json({ ok: true, store })
+      await writeOverridesStore(store)
+      return NextResponse.json({ ok: true, store })
+    })
   } catch (err) {
     return cmsErrorResponse(err)
   }

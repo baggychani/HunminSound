@@ -25,14 +25,17 @@ export async function patchOverride(body: object): Promise<OverridesStore> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
-  const data = (await res.json()) as {
+  const data = (await res.json().catch(() => ({}))) as {
     ok?: boolean
     store?: OverridesStore
     error?: string
     message?: string
   }
+  if (res.status === 401) {
+    throw new Error('로그인이 만료되었습니다. 이 탭은 그대로 두고 새 탭에서 다시 로그인한 뒤, 여기서 저장을 다시 눌러 주세요.')
+  }
   if (!res.ok) {
-    throw new Error(data.message ?? '저장 실패')
+    throw new Error(data.message ?? `저장하지 못했습니다(${res.status}). 입력한 내용을 복사해 두고 다시 시도해 주세요.`)
   }
   _globalStore = data.store ?? {}
   notify()

@@ -113,6 +113,27 @@ async function writeCloudJson(key: string, data: unknown, filePath: string): Pro
   writeFileJson(filePath, data)
 }
 
+/**
+ * 번역·수정 내역은 객체 전체를 읽고 고쳐 다시 쓰므로, 두 관리자가 동시에 저장하면
+ * 나중 쓰기가 앞 저장을 지운다. 그 구간을 Redis 잠금으로 한 번에 하나씩만 돌린다.
+ */
+export async function withCmsLock<T>(fn: () => Promise<T>): Promise<T> {
+  const redis = getRedis()
+  if (!redis) return fn()
+  const lockKey = 'hunminsound:cms:lock'
+  const token = `${Date.now()}-${Math.random().toString(36).slice(2)}`
+  const deadline = Date.now() + 8000
+  while (!(await redis.set(lockKey, token, { nx: true, px: 10000 }))) {
+    if (Date.now() > deadline) throw new Error('CMS_LOCK_TIMEOUT')
+    await new Promise((r) => setTimeout(r, 100 + Math.random() * 100))
+  }
+  try {
+    return await fn()
+  } finally {
+    if ((await redis.get<string>(lockKey)) === token) await redis.del(lockKey)
+  }
+}
+
 /* ── i18n overrides ─────────────────────────────────────────────────────── */
 
 export async function readOverridesStore(): Promise<OverridesStore> {

@@ -68,23 +68,28 @@ function LangRow({ langCode, langName, baseValue, override, koreanSource, source
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(currentValue)
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const hasValue = !!(override?.value)
 
-  const startEdit = () => { setDraft(currentValue); setEditing(true); setTimeout(() => textareaRef.current?.focus(), 50) }
-  const cancelEdit = () => setEditing(false)
-  const saveEdit = async () => {
+  const startEdit = () => { setDraft(currentValue); setError(null); setEditing(true); setTimeout(() => textareaRef.current?.focus(), 50) }
+  const cancelEdit = () => { setError(null); setEditing(false) }
+  const run = async (action: () => Promise<void>) => {
     setSaving(true)
+    setError(null)
     try {
-      // 빈 문자열로 저장하면 고정 해제와 동일하게 처리
-      if (!draft.trim()) {
-        await onRemove(langCode)
-      } else {
-        await onSave(langCode, draft.trim())
-      }
-      setEditing(false)
+      await action()
+      return true
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '저장하지 못했습니다.')
+      return false
     } finally { setSaving(false) }
+  }
+  const saveEdit = async () => {
+    // 빈 문자열로 저장하면 고정 해제와 동일하게 처리
+    const ok = await run(() => (draft.trim() ? onSave(langCode, draft.trim()) : onRemove(langCode)))
+    if (ok) setEditing(false)
   }
 
   return (
@@ -115,6 +120,9 @@ function LangRow({ langCode, langName, baseValue, override, koreanSource, source
             </p>
           </div>
         )}
+        {error && (
+          <p role="alert" className="mt-1.5 font-sans text-[11px] leading-snug text-red-500">{error}</p>
+        )}
       </div>
 
       <div className="flex flex-col items-end gap-1 pt-0.5">
@@ -136,13 +144,13 @@ function LangRow({ langCode, langName, baseValue, override, koreanSource, source
               수정
             </button>
             {stale && (
-              <button onClick={async () => { setSaving(true); try { await onDismissStale(langCode) } finally { setSaving(false) } }} disabled={saving}
+              <button onClick={() => run(() => onDismissStale(langCode))} disabled={saving}
                 className="px-2 py-1 font-sans text-[10px] text-amber-500/80 hover:text-amber-600 transition-colors disabled:opacity-50">
                 수정 불필요
               </button>
             )}
             {override && !stale && (
-              <button onClick={async () => { setSaving(true); try { await onRemove(langCode) } finally { setSaving(false) } }} disabled={saving}
+              <button onClick={() => run(() => onRemove(langCode))} disabled={saving}
                 className="px-2 py-1 font-sans text-[10px] text-ink-muted/30 hover:text-ink-accent transition-colors disabled:opacity-50">
                 고정 해제
               </button>
