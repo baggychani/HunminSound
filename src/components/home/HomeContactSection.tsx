@@ -121,16 +121,6 @@ export function HomeContactSection() {
 
   return (
     <div id="contact" className="relative w-full">
-      {/* 거대 배경 한자 — 問(물을 문) 워터마크 */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -right-2 -top-8 hidden select-none font-serif leading-none text-ink/[0.03] dark:text-ink/[0.045] lg:block"
-        style={{ fontSize: 'clamp(8rem, 16vw, 14rem)' }}
-        lang="zh-Hant"
-      >
-        問
-      </span>
-
       <div className="relative grid gap-8 lg:grid-cols-2 lg:gap-12">
         <motion.div
           custom={0}

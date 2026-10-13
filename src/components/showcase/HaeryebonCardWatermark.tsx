@@ -20,10 +20,25 @@ const ZONE = {
   bottom: '-12%', // ↑ 음수 크면 아래로 넓어짐 → 전체가 아래로 내려감
 } as const
 
+/** 아랍어: 글자가 오른쪽이므로 해례본은 왼쪽 */
+const ZONE_LEFT = {
+  left: '-5%',
+  right: '42%',
+  top: '-10%',
+  bottom: '-12%',
+} as const
+
 /** 모바일: 오른쪽 영역을 넓히고 이미지를 키워 카드 우측을 채움 */
 const ZONE_MOBILE = {
   left: '22%',
   right: '-22%',
+  top: '-16%',
+  bottom: '-16%',
+} as const
+
+const ZONE_MOBILE_LEFT = {
+  left: '-22%',
+  right: '22%',
   top: '-16%',
   bottom: '-16%',
 } as const
@@ -60,13 +75,26 @@ const ROTATE = {
 
 // ─────────────────────────────────────────────────────────────
 
-export function HaeryebonCardWatermark() {
+export function HaeryebonCardWatermark({ side = 'right' }: { side?: 'left' | 'right' }) {
   const ref = useRef<HTMLDivElement | null>(null)
   const isMobile = useMaxSm()
   const reduceMotion = useReducedMotion()
-  const zone = isMobile ? ZONE_MOBILE : ZONE
+  const zone = isMobile
+    ? side === 'left'
+      ? ZONE_MOBILE_LEFT
+      : ZONE_MOBILE
+    : side === 'left'
+      ? ZONE_LEFT
+      : ZONE
   const imgScale = isMobile ? IMG_SCALE_MOBILE : IMG_SCALE
-  const imgObject = isMobile ? IMG_OBJECT_MOBILE : IMG_OBJECT
+  const imgObject =
+    side === 'left'
+      ? isMobile
+        ? 'object-cover object-left'
+        : 'object-contain object-left'
+      : isMobile
+        ? IMG_OBJECT_MOBILE
+        : IMG_OBJECT
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start end', 'end start'],
@@ -91,7 +119,7 @@ export function HaeryebonCardWatermark() {
       className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
     >
       <motion.div
-        className={`haeryebon-watermark-feather absolute${isMobile ? ' haeryebon-watermark-feather--mobile' : ''}`}
+        className={`haeryebon-watermark-feather absolute${isMobile ? ' haeryebon-watermark-feather--mobile' : ''}${side === 'left' ? ' haeryebon-watermark-feather--left' : ''}`}
         style={{
           left: zone.left,
           right: zone.right,

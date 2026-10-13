@@ -177,7 +177,7 @@ export function Header() {
           className="group flex min-w-0 flex-1 items-baseline gap-2 sm:flex-initial sm:shrink-0 sm:gap-3"
           onClick={closePanels}
         >
-          <span className="font-jamo text-lg sm:text-xl tracking-wide text-ink group-hover:text-ink-accent transition-colors truncate" lang="ko">
+          <span className="font-jamo text-lg sm:text-xl tracking-wide text-ink group-hover:text-ink-accent transition-colors truncate" dir="ltr" lang="ko">
             {SITE_BRAND_NAME}
           </span>
           <span className="hidden sm:inline font-sans text-xs text-ink-muted tracking-widest uppercase shrink-0">
@@ -211,7 +211,9 @@ export function Header() {
                   }}
                   href={href}
                   onClick={closePanels}
-                  className="group relative flex flex-col items-center justify-center gap-0.5 pb-2"
+                  className={`group relative flex flex-col items-center justify-center pb-2 ${
+                    lang === 'ko' ? 'gap-0.5' : 'gap-1.5'
+                  }`}
                 >
                   <span
                     className={`font-sans transition-colors ${lang === 'ko' ? 'tracking-korean' : ''} ${
@@ -250,7 +252,11 @@ export function Header() {
             aria-controls="site-lang-panel"
             aria-label={m.languagePickerAria}
           >
-            <div className="flex flex-col items-center justify-center gap-0.5 text-center min-w-0">
+            <div
+              className={`flex flex-col items-center justify-center text-center min-w-0 ${
+                lang === 'ko' ? 'gap-0.5' : 'gap-1.5'
+              }`}
+            >
               <span
                 className={`font-sans leading-tight transition-colors ${lang === 'ko' ? 'tracking-korean' : ''} ${
                   lang === 'hi' ? 'text-[15px]' : 'text-sm'

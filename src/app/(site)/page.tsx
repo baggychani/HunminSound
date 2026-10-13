@@ -170,6 +170,7 @@ export default function HomePage() {
 
             <h1
               className="mt-4 shrink-0 font-jamo text-[4rem] leading-none tracking-wide text-ink sm:mt-[clamp(0.75rem,5cqh,1.75rem)] sm:text-[clamp(2.5rem,16cqh,5.85rem)]"
+              dir="ltr"
               lang="ko"
             >
               <HeroTitleReveal text={SITE_BRAND_NAME} />
@@ -303,7 +304,7 @@ function HunminjeongeumCard({
       }`}
     >
       <span className="sheen-sweep pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden />
-      <HaeryebonCardWatermark />
+      <HaeryebonCardWatermark side={lang === 'ar' ? 'left' : 'right'} />
 
       <div className="relative z-10">
         <div className="flex items-baseline gap-3 mb-1">
@@ -314,7 +315,11 @@ function HunminjeongeumCard({
         <span className="font-sans text-xs text-ink-muted tracking-[0.06em] sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{caption}</span>
       </div>
 
-      <div className="relative z-10 flex gap-2 flex-wrap sm:gap-3" dir="ltr" lang="ko">
+      <div
+        className={`relative z-10 flex gap-2 flex-wrap sm:gap-3 ${lang === 'ar' ? 'justify-end' : ''}`}
+        dir="ltr"
+        lang="ko"
+      >
         {baseShapes.map((s) => (
           <MagneticGlyph
             key={s}
@@ -380,7 +385,11 @@ function NavCard({
         <span className="font-sans text-xs font-medium text-ink-muted sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{count}</span>
       </div>
 
-      <div className="flex gap-2 flex-wrap sm:gap-3" dir="ltr" lang="ko">
+      <div
+        className={`flex gap-2 flex-wrap sm:gap-3 ${lang === 'ar' ? 'justify-end' : ''}`}
+        dir="ltr"
+        lang="ko"
+      >
         {preview.map((symbol) => (
           <MagneticGlyph
             key={symbol}

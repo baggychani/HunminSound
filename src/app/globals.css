@@ -1163,8 +1163,43 @@
     );
   }
 
+  /* 아랍어: 해례본이 왼쪽이므로 오른쪽(글자 쪽)을 흐린다 */
+  .haeryebon-watermark-feather--left {
+    -webkit-mask-image: linear-gradient(
+      to left,
+      transparent 0%,
+      rgba(0, 0, 0, 0.4) 14%,
+      #000 34%,
+      #000 100%
+    );
+    mask-image: linear-gradient(
+      to left,
+      transparent 0%,
+      rgba(0, 0, 0, 0.4) 14%,
+      #000 34%,
+      #000 100%
+    );
+  }
+
   /* 모바일 훈민정음 카드: 왼쪽 페더를 짧게 해 우측 해례본이 더 넓게 보이게 */
   @media (max-width: 639px) {
+    .haeryebon-watermark-feather--mobile.haeryebon-watermark-feather--left {
+      -webkit-mask-image: linear-gradient(
+        to left,
+        transparent 0%,
+        rgba(0, 0, 0, 0.45) 6%,
+        #000 18%,
+        #000 100%
+      );
+      mask-image: linear-gradient(
+        to left,
+        transparent 0%,
+        rgba(0, 0, 0, 0.45) 6%,
+        #000 18%,
+        #000 100%
+      );
+    }
+
     .haeryebon-watermark-feather--mobile {
       -webkit-mask-image: linear-gradient(
         to right,
