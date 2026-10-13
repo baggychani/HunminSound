@@ -177,7 +177,7 @@ export function Header() {
           className="group flex min-w-0 flex-1 items-baseline gap-2 sm:flex-initial sm:shrink-0 sm:gap-3"
           onClick={closePanels}
         >
-          <span className="font-jamo text-lg sm:text-xl tracking-wide text-ink group-hover:text-ink-accent transition-colors truncate" dir="ltr" lang="ko">
+          <span className="font-jamo text-lg max-sm:translate-y-[3px] sm:text-xl tracking-wide text-ink group-hover:text-ink-accent transition-colors truncate" dir="ltr" lang="ko">
             {SITE_BRAND_NAME}
           </span>
           <span className="hidden sm:inline font-sans text-xs text-ink-muted tracking-widest uppercase shrink-0">

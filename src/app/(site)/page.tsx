@@ -235,7 +235,7 @@ export default function HomePage() {
         id="home-act2"
         className={`home-scroll-margin relative z-10 flex w-full max-sm:justify-center max-sm:px-5 max-sm:py-6 max-sm:pb-14 ${heroHeightDesktop} flex-col sm:items-center sm:justify-center sm:[container-type:size]`}
       >
-        <div className="relative z-10 grid w-full max-sm:h-auto max-sm:flex-none grid-cols-1 grid-rows-none gap-3 sm:h-auto sm:w-[70%] sm:max-w-[87.5rem] sm:grid-cols-2 sm:grid-rows-none sm:gap-[min(1.25rem,2.67cqh)]">
+        <div className="relative z-10 grid w-full max-sm:h-auto max-sm:-translate-y-5 max-sm:flex-none grid-cols-1 grid-rows-none gap-3 sm:h-auto sm:w-[70%] sm:max-w-[87.5rem] sm:grid-cols-2 sm:grid-rows-none sm:gap-[min(1.25rem,2.67cqh)]">
         <NavCard
           compact
           lang={lang}
@@ -347,7 +347,7 @@ function HunminjeongeumCard({
             {label}
           </span>
         </div>
-        <span className="font-sans text-xs text-ink-muted tracking-[0.06em] sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{caption}</span>
+        <span className="font-sans text-[11px] text-ink-muted tracking-[0.06em] sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{caption}</span>
       </div>
 
       <div
@@ -417,7 +417,7 @@ function NavCard({
             {label}
           </span>
         </div>
-        <span className="font-sans text-xs font-medium text-ink-muted sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{count}</span>
+        <span className="font-sans text-[11px] font-medium text-ink-muted sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{count}</span>
       </div>
 
       <div

@@ -55,11 +55,11 @@ const GLYPHS_MOBILE = [
   { ch: 'ㆍ', left: '88%', top: '0.7rem', size: '1.6rem', dur: 13, delay: 5, rot: -3, op: 0.12, depth: -0.008 },
 ] as const
 
-/** 1막·4막은 한지 글씨와 겹쳐 보여 더 옅게. 2·3막은 그대로. */
+/** 1막은 글씨와 겹쳐 더 옅게, 4막은 그보다 덜. 2·3막은 그대로. */
 function mobileEdgeFade(progress: number) {
   const t = Math.min(1, Math.max(0, progress))
   const third = 1 / 3
-  if (t <= third) return 0.58 + (0.42 * t) / third
+  if (t <= third) return 0.38 + (0.62 * t) / third
   if (t >= third * 2) return 0.58 + (0.42 * (1 - t)) / third
   return 1
 }
