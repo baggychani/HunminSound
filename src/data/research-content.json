@@ -433,7 +433,15 @@
             "pipeline.steps.1": "Mel-spectrogram",
             "pipeline.steps.2": "LSTM model",
             "pipeline.steps.3": "MR image",
-            "pipeline.steps.4": "Optical Flow"
+            "pipeline.steps.4": "Optical Flow",
+            "table.field": "Field",
+            "table.methodRole": "Role",
+            "table.methods": "Key methods",
+            "table.category": "Category",
+            "table.name": "Full name",
+            "table.affiliation": "Affiliation",
+            "table.task": "Role",
+            "table.major": "Field of specialization"
         },
         "zh": {
             "motivation.paragraphs.0": "尽管世界各国使用着众多文字，但韩国的\"训民正音（韩文）\"是唯一一种创制者、创制时间及创制目的均有明确记载的文字。训民正音由世宗大王于1443年创制，并于1446年通过《解例本》详细解释了其制字原理，是一门基于\"声音科学\"的文字。",
@@ -562,7 +570,15 @@
             "pipeline.steps.1": "Mel-spectrogram",
             "pipeline.steps.2": "LSTM 模型",
             "pipeline.steps.3": "MR 影像",
-            "pipeline.steps.4": "Optical Flow"
+            "pipeline.steps.4": "Optical Flow",
+            "table.field": "领域",
+            "table.methodRole": "作用",
+            "table.methods": "主要方法",
+            "table.category": "类别",
+            "table.name": "姓名",
+            "table.affiliation": "所属机构",
+            "table.task": "职责",
+            "table.major": "专业领域"
         },
         "ja": {
             "motivation.paragraphs.0": "世界の様々な国で多くの文字が使用されているが、創製者、創製時期、そして創製目的が明らかになっている文字は、我が国の「訓民正音（ハングル）」が唯一である。1443年に世宗大王によって創製され、1446年に『解例本（ヘレボン）』を通じてその製作原理が詳細に説明された訓民正音は、「音声科学」に基づいた文字である。",
@@ -691,7 +707,15 @@
             "pipeline.steps.1": "Mel-spectrogram",
             "pipeline.steps.2": "LSTM モデル",
             "pipeline.steps.3": "MR 画像",
-            "pipeline.steps.4": "Optical Flow"
+            "pipeline.steps.4": "Optical Flow",
+            "table.field": "分野",
+            "table.methodRole": "役割",
+            "table.methods": "主な手法",
+            "table.category": "区分",
+            "table.name": "氏名",
+            "table.affiliation": "所属機関",
+            "table.task": "担当業務",
+            "table.major": "専門分野"
         },
         "fr": {
             "motivation.paragraphs.0": "Bien que de nombreux systèmes d'écriture soient utilisés à travers le monde, le « Hunminjeongeum (Hangeul) » de Corée est le seul dont le créateur, l'époque de création et l'objectif de création sont historiquement attestés. Créé par le roi Sejong en 1443 et explicité en détail quant à ses principes de fabrication à travers le Haeryebon (Édition explicative) en 1446, le Hunminjeongeum est une écriture fondée sur la « science acoustique ».",
@@ -820,7 +844,15 @@
             "pipeline.steps.1": "Mel-spectrogram",
             "pipeline.steps.2": "Modèle LSTM",
             "pipeline.steps.3": "Image RM",
-            "pipeline.steps.4": "Optical Flow"
+            "pipeline.steps.4": "Optical Flow",
+            "table.field": "Domaine",
+            "table.methodRole": "Rôle",
+            "table.methods": "Principales méthodes",
+            "table.category": "Catégorie",
+            "table.name": "Nom complet",
+            "table.affiliation": "Établissement de rattachement",
+            "table.task": "Rôle",
+            "table.major": "Domaine de spécialisation"
         },
         "de": {
             "motivation.paragraphs.0": "Obwohl weltweit in vielen Ländern zahlreiche Schriftsysteme verwendet werden, ist Koreas „Hunminjeongeum (Hangeul)\" die einzige Schrift, deren Schöpfer, Entstehungszeit und Entstehungszweck vollständig dokumentiert und bekannt sind. Das Hunminjeongeum, das 1443 von König Sejong geschaffen und 1446 durch das Haeryebon (Erläuternde Ausgabe) in seinen Konstruktionsprinzipien detailliert erklärt wurde, ist eine auf der „Klangwissenschaft\" basierende Schrift.",
@@ -949,7 +981,15 @@
             "pipeline.steps.1": "Mel-spectrogram",
             "pipeline.steps.2": "LSTM-Modell",
             "pipeline.steps.3": "MR-Bild",
-            "pipeline.steps.4": "Optical Flow"
+            "pipeline.steps.4": "Optical Flow",
+            "table.field": "Bereich",
+            "table.methodRole": "Funktion",
+            "table.methods": "Zentrale Methoden",
+            "table.category": "Kategorie",
+            "table.name": "Vollständiger Name",
+            "table.affiliation": "Institutionelle Zugehörigkeit",
+            "table.task": "Aufgabenbereich",
+            "table.major": "Fachgebiet"
         },
         "es": {
             "motivation.paragraphs.0": "Aunque se utilizan numerosos sistemas de escritura en varios países del mundo, el \"Hunminjeongeum (Hangeul)\" de Corea es la única escritura cuyo creador, época y propósito de creación están plenamente documentados. Creado por el Gran Rey Sejong en 1443 y explicado en detalle en cuanto a sus principios de construcción a través del Haeryebon (Edición Explicativa) en 1446, el Hunminjeongeum es un sistema de escritura profundamente basado en la \"ciencia del sonido\".",
@@ -1078,7 +1118,15 @@
             "pipeline.steps.1": "Mel-spectrogram",
             "pipeline.steps.2": "Modelo LSTM",
             "pipeline.steps.3": "Imagen de RM",
-            "pipeline.steps.4": "Optical Flow"
+            "pipeline.steps.4": "Optical Flow",
+            "table.field": "Área",
+            "table.methodRole": "Función",
+            "table.methods": "Métodos principales",
+            "table.category": "Categoría",
+            "table.name": "Nombre completo",
+            "table.affiliation": "Afiliación institucional",
+            "table.task": "Función",
+            "table.major": "Área de especialización"
         },
         "hi": {
             "motivation.paragraphs.0": "हालांकि दुनिया के विभिन्न देशों में कई लेखन प्रणालियों का उपयोग किया जाता है, लेकिन कोरिया की 'हुनमिनजोंगम (हंगुल)' (Hunminjeongeum (Hangeul)) एकमात्र ऐसी लिपि है जिसके निर्माता, निर्माण का समय और निर्माण का उद्देश्य पूरी तरह से प्रलेखित हैं। 1443 में राजा सेजोंग (King Sejong) द्वारा बनाई गई और 1446 में 'हेरीबोन' (Haeryebon) के माध्यम से इसके निर्माण के सिद्धांतों को विस्तार से समझाने वाली हुनमिनजोंगम 'ध्वनि विज्ञान' (sound science) पर आधारित एक लिपि है।",
@@ -1207,7 +1255,15 @@
             "pipeline.steps.1": "Mel-spectrogram",
             "pipeline.steps.2": "LSTM मॉडल",
             "pipeline.steps.3": "एमआर छवि",
-            "pipeline.steps.4": "Optical Flow"
+            "pipeline.steps.4": "Optical Flow",
+            "table.field": "क्षेत्र",
+            "table.methodRole": "भूमिका",
+            "table.methods": "प्रमुख विधियाँ",
+            "table.category": "श्रेणी",
+            "table.name": "पूरा नाम",
+            "table.affiliation": "संस्थागत संबद्धता",
+            "table.task": "भूमिका",
+            "table.major": "विशेषज्ञता का क्षेत्र"
         },
         "vi": {
             "motivation.paragraphs.0": "Mặc dù nhiều hệ thống chữ viết đang được sử dụng ở các quốc gia khác nhau trên thế giới, 'Hunminjeongeum (Hangeul)' của Hàn Quốc là văn bản duy nhất có người sáng tạo, thời gian sáng tạo và mục đích sáng tạo được ghi chép rõ ràng. Được vua Sejong sáng tạo vào năm 1443 và được giải thích chi tiết về nguyên lý cấu tạo thông qua Haeryebon (解例本) vào năm 1446, Hunminjeongeum là một hệ thống chữ viết dựa trên 'khoa học âm thanh'.",
@@ -1336,7 +1392,15 @@
             "pipeline.steps.1": "Mel-spectrogram",
             "pipeline.steps.2": "Mô hình LSTM",
             "pipeline.steps.3": "Ảnh MR",
-            "pipeline.steps.4": "Optical Flow"
+            "pipeline.steps.4": "Optical Flow",
+            "table.field": "Lĩnh vực",
+            "table.methodRole": "Vai trò",
+            "table.methods": "Phương pháp chính",
+            "table.category": "Phân loại",
+            "table.name": "Họ và tên",
+            "table.affiliation": "Cơ quan công tác",
+            "table.task": "Vai trò",
+            "table.major": "Chuyên môn"
         },
         "ru": {
             "motivation.paragraphs.0": "Хотя во многих странах мира используются многочисленные системы письменности, корейский «Хунмин чёным (Хангыль)» является единственной письменностью, создатель, время и цель создания которой полностью задокументированы и известны. Созданный великим королем Седжоном в 1443 году и подробно разъясненный в принципах своего построения в трактате «Хэребон» (Пояснительное издание) в 1446 году, Хунмин чёным представляет собой письменность, глубоко основанную на «науке о звуке».",
@@ -1465,7 +1529,15 @@
             "pipeline.steps.1": "Mel-spectrogram",
             "pipeline.steps.2": "Модель LSTM",
             "pipeline.steps.3": "МР-изображение",
-            "pipeline.steps.4": "Optical Flow"
+            "pipeline.steps.4": "Optical Flow",
+            "table.field": "Область",
+            "table.methodRole": "Роль",
+            "table.methods": "Основные методы",
+            "table.category": "Категория",
+            "table.name": "Полное имя",
+            "table.affiliation": "Организация",
+            "table.task": "Обязанности",
+            "table.major": "Специализация"
         },
         "ar": {
             "motivation.paragraphs.0": "في حين تُستخدم العديد من أنظمة الكتابة في مختلف بلدان العالم، فإن نظام \"هونمين جيونغوم (الهانغول)\" (Hunminjeongeum / Hangeul) في كوريا هو الخط الوحيد الموثق بالكامل من حيث مبدعه ووقت إنشائه والغرض منه. تم إنشاء الهونمين جيونغوم على يد الملك العظيم سيجونغ في عام 1443، وتم شرح مبادئ بنائه بالتفصيل من خلال \"هيريبون\" (Haeryebon - النسخة التفسيرية) في عام 1446، وهو نظام كتابة يعتمد بشكل عميق على \"علم الصوت\".",
@@ -1594,7 +1666,15 @@
             "pipeline.steps.1": "Mel-spectrogram",
             "pipeline.steps.2": "نموذج LSTM",
             "pipeline.steps.3": "صورة الرنين المغناطيسي",
-            "pipeline.steps.4": "Optical Flow"
+            "pipeline.steps.4": "Optical Flow",
+            "table.field": "المجال",
+            "table.methodRole": "الدور",
+            "table.methods": "المنهجيات الرئيسية",
+            "table.category": "الفئة",
+            "table.name": "الاسم الكامل",
+            "table.affiliation": "الانتماء المؤسسي",
+            "table.task": "الدور",
+            "table.major": "مجال التخصص"
         },
         "id": {
             "section.motivation": "Latar penelitian",
@@ -1723,7 +1803,15 @@
             "pipeline.steps.1": "Mel-spectrogram",
             "pipeline.steps.2": "Model LSTM",
             "pipeline.steps.3": "Citra MR",
-            "pipeline.steps.4": "Optical Flow"
+            "pipeline.steps.4": "Optical Flow",
+            "table.field": "Bidang",
+            "table.methodRole": "Peran",
+            "table.methods": "Metode utama",
+            "table.category": "Kategori",
+            "table.name": "Nama lengkap",
+            "table.affiliation": "Afiliasi institusi",
+            "table.task": "Peran",
+            "table.major": "Bidang keahlian"
         },
         "th": {
             "section.motivation": "แรงจูงใจของงานวิจัย",
@@ -1852,7 +1940,15 @@
             "pipeline.steps.1": "Mel-spectrogram",
             "pipeline.steps.2": "โมเดล LSTM",
             "pipeline.steps.3": "ภาพ MR",
-            "pipeline.steps.4": "Optical Flow"
+            "pipeline.steps.4": "Optical Flow",
+            "table.field": "สาขา",
+            "table.methodRole": "บทบาท",
+            "table.methods": "วิธีการหลัก",
+            "table.category": "ประเภท",
+            "table.name": "ชื่อและนามสกุล",
+            "table.affiliation": "หน่วยงานต้นสังกัด",
+            "table.task": "บทบาท",
+            "table.major": "สาขาความเชี่ยวชาญ"
         },
         "tr": {
             "section.motivation": "Araştırmanın gerekçesi",
@@ -1981,7 +2077,15 @@
             "pipeline.steps.1": "Mel-spectrogram",
             "pipeline.steps.2": "LSTM modeli",
             "pipeline.steps.3": "MR görüntüsü",
-            "pipeline.steps.4": "Optical Flow"
+            "pipeline.steps.4": "Optical Flow",
+            "table.field": "Alan",
+            "table.methodRole": "Rol",
+            "table.methods": "Başlıca yöntemler",
+            "table.category": "Kategori",
+            "table.name": "Adı ve soyadı",
+            "table.affiliation": "Bağlı olduğu kurum",
+            "table.task": "Görev",
+            "table.major": "Uzmanlık alanı"
         }
     }
 }

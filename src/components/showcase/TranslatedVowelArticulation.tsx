@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import type { Lang } from '@/lib/i18n'
+import { STORED_TRANSLATIONS_ONLY } from '@/lib/translationPolicy'
 import {
   MT_LS_PREFIX,
   buildMtKey,
@@ -45,6 +46,7 @@ export function TranslatedVowelArticulation({
   const [text, setText] = useState(() => getVowelArticulationText(symbol, lang) ?? koSource ?? '')
 
   useEffect(() => {
+    if (STORED_TRANSLATIONS_ONLY) return
     if (!koSource) return
     const staticText = getVowelArticulationText(symbol, lang)
     if (staticText) {
@@ -89,5 +91,5 @@ export function TranslatedVowelArticulation({
   }, [symbol, lang, koSource, itemId])
 
   if (!koSource) return null
-  return <p className={className}>{text}</p>
+  return <p className={className}>{STORED_TRANSLATIONS_ONLY ? (getVowelArticulationText(symbol, lang) ?? koSource) : text}</p>
 }

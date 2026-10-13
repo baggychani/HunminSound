@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { motion, useReducedMotion, useTime, useTransform } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
+import { STORED_TRANSLATIONS_ONLY } from '@/lib/translationPolicy'
 import type { ResearchContent } from '@/lib/research-content'
 import {
   AchievementsShowcase,
@@ -565,6 +566,7 @@ export function ResearchPageClient({ content }: Props) {
   const [autoTrans, setAutoTrans] = useState<Record<string, string>>({})
 
   useEffect(() => {
+    if (STORED_TRANSLATIONS_ONLY) return
     if (lang === 'ko') { setAutoTrans({}); return }
 
     const allKeys: { key: string; ko: string }[] = [
@@ -673,9 +675,10 @@ export function ResearchPageClient({ content }: Props) {
     return () => { cancelled = true }
   }, [lang]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  /** Stored translation > auto-translated fallback > Korean original */
+  /** 저장된 번역 우선. 저장 번역 전용 모드에서 누락되면 한국어 원문을 표시한다. */
   const t = (key: string, koValue: string) => {
     if (lang === 'ko') return koValue
+    if (STORED_TRANSLATIONS_ONLY) return translations?.[lang]?.[key] || koValue
     return translations?.[lang]?.[key] || autoTrans[key] || koValue
   }
 

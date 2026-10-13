@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import type { Lang } from '@/lib/i18n'
+import { STORED_TRANSLATIONS_ONLY } from '@/lib/translationPolicy'
 import {
   makeHunminPassageOverrideKey,
   isSupportedTranslationLang,
@@ -39,14 +40,13 @@ interface TranslatedPassageTextProps {
 /**
  * 사이트 언어가 한국어가 아닐 때 표시되는 추가 번역 줄.
  *
- * 훈민정음 단락은 한국어 풀이에 옛 한국어 표현(축시 등)이 많아 자동 번역 품질이
- * 낮으므로, 한 번 정리된 영어 풀이(`passage.translations.en`)를 **번역의 출처**로
- * 삼는다. 영어 오버라이드가 있으면 그것을 출처로 사용해 stale 갱신이 자연스럽다.
+ * 번역은 한국어 원문을 기준으로 작성해 저장한 값을 사용한다.
+ * 저장 번역 전용 모드에서는 해당 언어 번역이 없으면 한국어 원문을 표시한다.
  *
  * 우선순위:
  *  1) 해당 언어의 관리자 번역 오버라이드 (`hunminPassage:{number}:description:{lang}`)
  *  2) 코드에 넣은 그 언어 번역
- *  3) 없으면 영어 문장 전체. 기계번역은 하지 않는다.
+ *  3) 저장 번역 전용 모드에서는 한국어 원문. 기존 모드에서는 영어 문장 전체.
  */
 export function TranslatedPassageText({ passage, lang, className }: TranslatedPassageTextProps) {
   const store = usePublicOverridesStore()
@@ -66,12 +66,15 @@ export function TranslatedPassageText({ passage, lang, className }: TranslatedPa
     ? makeHunminPassageOverrideKey(passage.number, overrideLangCode)
     : null
   const overrideValue = overrideKey ? store[overrideKey]?.value : undefined
+  const savedTranslation = overrideValue?.trim() ? overrideValue : lang === 'ko' ? passage.korean : passage.translations[lang]
+  const storedText = lang === 'ko' || !savedTranslation?.trim() ? passage.korean : savedTranslation
 
   const [text, setText] = useState<string>(() =>
     pickInitial(passage, lang, overrideValue, englishSource),
   )
 
   useEffect(() => {
+    if (STORED_TRANSLATIONS_ONLY) return
     /* 1) 오버라이드 우선 */
     if (overrideValue && overrideValue.trim()) {
       setText(overrideValue)
@@ -99,7 +102,7 @@ export function TranslatedPassageText({ passage, lang, className }: TranslatedPa
 
   return (
     <p className={className} lang={lang}>
-      <HunminPassageText text={text} />
+      <HunminPassageText text={STORED_TRANSLATIONS_ONLY ? storedText : text} />
     </p>
   )
 }

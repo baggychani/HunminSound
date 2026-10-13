@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { GetDescriptionOptions, Lang } from '@/lib/i18n'
 import { getDescription } from '@/lib/i18n'
+import { STORED_TRANSLATIONS_ONLY } from '@/lib/translationPolicy'
 import {
   MT_LS_PREFIX,
   buildMtKey,
@@ -94,6 +95,7 @@ export function TranslatedDescription({
   )
 
   useEffect(() => {
+    if (STORED_TRANSLATIONS_ONLY) return
     const held = textUntilOfficialTranslation(item, lang, descOptions)
     if (held !== null) {
       setText(held)
@@ -145,7 +147,7 @@ export function TranslatedDescription({
 
   return (
     <p className={className}>
-      <JamoText text={text} />
+      <JamoText text={STORED_TRANSLATIONS_ONLY ? getDescription(item, lang, descOptions).text : text} />
     </p>
   )
 }

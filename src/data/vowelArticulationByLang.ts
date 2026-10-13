@@ -2,6 +2,8 @@ import type { Lang } from '@/lib/i18n'
 
 /**
  * 단모음 음성학 보조 문구 — 언어별 학술 속성 순서에 맞춘 고정 번역.
+ * 아래아는 한국어 원문의 '반원순 후설 저모음 [ʌ], [ɔ]'를 번역한다.
+ * 여기서 반원순은 입술의 부분적 원순성을 뜻하며, 모음 높이의 '반개'와 구분한다.
  * - 中文: 舌位(전후) → 舌高 → 唇形
  * - 日本語: 円唇性 → 舌の前後 → 高さ
  * - français: hauteur → antériorité → labialisation
@@ -17,6 +19,7 @@ export const VOWEL_ARTICULATION_BY_LANG: Record<
   Record<string, string>
 > = {
   zh: {
+    '·': '后舌、低、半圆唇元音 [ʌ], [ɔ]',
     'ㅏ': '后舌、低、不圆唇元音 [a]',
     'ㅓ': '后舌、半低、不圆唇元音 [ʌ]',
     'ㅗ': '后舌、半高、圆唇元音 [o]',
@@ -29,6 +32,7 @@ export const VOWEL_ARTICULATION_BY_LANG: Record<
     'ㅚ': '前舌、半高、圆唇元音 [ø]',
   },
   ja: {
+    '·': '半円唇・後舌・広母音 [ʌ], [ɔ]',
     'ㅏ': '非円唇・後舌・広母音 [a]',
     'ㅓ': '非円唇・後舌・半広母音 [ʌ]',
     'ㅗ': '円唇・後舌・半狭母音 [o]',
@@ -41,6 +45,7 @@ export const VOWEL_ARTICULATION_BY_LANG: Record<
     'ㅚ': '円唇・前舌・半狭母音 [ø]',
   },
   fr: {
+    '·': 'Voyelle basse postérieure semi-arrondie [ʌ], [ɔ]',
     'ㅏ': 'Voyelle basse postérieure non arrondie [a]',
     'ㅓ': 'Voyelle mi-ouverte postérieure non arrondie [ʌ]',
     'ㅗ': 'Voyelle mi-fermée postérieure arrondie [o]',
@@ -53,6 +58,7 @@ export const VOWEL_ARTICULATION_BY_LANG: Record<
     'ㅚ': 'Voyelle mi-fermée antérieure arrondie [ø]',
   },
   de: {
+    '·': 'Halb gerundeter offener Hinterzungenvokal [ʌ], [ɔ]',
     'ㅏ': 'Ungerundeter offener Hinterzungenvokal [a]',
     'ㅓ': 'Ungerundeter halb offener Hinterzungenvokal [ʌ]',
     'ㅗ': 'Gerundeter halb geschlossener Hinterzungenvokal [o]',
@@ -65,6 +71,7 @@ export const VOWEL_ARTICULATION_BY_LANG: Record<
     'ㅚ': 'Gerundeter halb geschlossener Vorderzungenvokal [ø]',
   },
   es: {
+    '·': 'Vocal baja posterior semirredondeada [ʌ], [ɔ]',
     'ㅏ': 'Vocal baja posterior no redondeada [a]',
     'ㅓ': 'Vocal media abierta posterior no redondeada [ʌ]',
     'ㅗ': 'Vocal media cerrada posterior redondeada [o]',
@@ -77,6 +84,7 @@ export const VOWEL_ARTICULATION_BY_LANG: Record<
     'ㅚ': 'Vocal media cerrada anterior redondeada [ø]',
   },
   hi: {
+    '·': 'निम्न पश्च अर्धवृत्त स्वर [ʌ], [ɔ]',
     'ㅏ': 'निम्न पश्च अवृत्त स्वर [a]',
     'ㅓ': 'विवृत पश्च अवृत्त स्वर [ʌ]',
     'ㅗ': 'समीप-मध्यम पश्च वृत्त स्वर [o]',
@@ -89,6 +97,7 @@ export const VOWEL_ARTICULATION_BY_LANG: Record<
     'ㅚ': 'समीप-मध्यम अग्र वृत्त स्वर [ø]',
   },
   vi: {
+    '·': 'Nguyên âm dòng sau, môi hơi tròn, độ mở rộng [ʌ], [ɔ]',
     'ㅏ': 'Nguyên âm dòng sau, không tròn môi, mở rộng [a]',
     'ㅓ': 'Nguyên âm dòng sau, không tròn môi, độ mở vừa [ʌ]',
     'ㅗ': 'Nguyên âm dòng sau, tròn môi, độ mở vừa [o]',
@@ -101,6 +110,7 @@ export const VOWEL_ARTICULATION_BY_LANG: Record<
     'ㅚ': 'Nguyên âm dòng trước, tròn môi, độ mở vừa-hẹp [ø]',
   },
   ru: {
+    '·': 'Гласный заднего ряда низкого подъёма с частичной лабиализацией [ʌ], [ɔ]',
     'ㅏ': 'Гласный заднего ряда низкого подъёма нелабиализованный [a]',
     'ㅓ': 'Гласный заднего ряда среднего подъёма нелабиализованный [ʌ]',
     'ㅗ': 'Гласный заднего ряда среднего подъёма лабиализованный [o]',
@@ -113,6 +123,7 @@ export const VOWEL_ARTICULATION_BY_LANG: Record<
     'ㅚ': 'Гласный переднего ряда среднего подъёма лабиализованный [ø]',
   },
   ar: {
+    '·': 'صائت خلفي، مفتوح، ذو استدارة جزئية للشفتين [ʌ], [ɔ]',
     'ㅏ': 'صائت خلفي، مفتوح، غير مدور [a]',
     'ㅓ': 'صائت خلفي، نصف مفتوح، غير مدور [ʌ]',
     'ㅗ': 'صائت خلفي، شبه مرتفع، مدور [o]',
