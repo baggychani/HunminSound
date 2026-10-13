@@ -134,7 +134,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
       </div>
 
       <div className="relative mx-auto h-full min-h-0 w-full px-6 max-sm:flex max-sm:flex-col max-sm:justify-center max-sm:py-6 max-sm:pb-14 sm:w-[85%] sm:max-w-[85.5rem] sm:px-0">
-        <div className="grid h-full min-h-0 grid-cols-1 gap-3 max-sm:h-auto max-sm:flex-none max-sm:grid-rows-none max-sm:gap-4 max-sm:py-0 py-[clamp(0.75rem,2dvh,1.25rem)] sm:grid-rows-[minmax(0,1fr)_auto] sm:gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:grid-rows-1 lg:items-stretch lg:gap-[min(3.5rem,4.1vw,9.44cqh)]">
+        <div className="grid h-full min-h-0 grid-cols-1 gap-3 max-sm:h-auto max-sm:flex-none max-sm:grid-rows-none max-sm:gap-0 max-sm:py-0 py-[clamp(0.75rem,2dvh,1.25rem)] sm:grid-rows-[minmax(0,1fr)_auto] sm:gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:grid-rows-1 lg:items-stretch lg:gap-[min(3.5rem,4.1vw,9.44cqh)]">
           {/* 좌 — 텍스트·카드 한 덩어리로 세로 중앙. 폰에서는 칸을 풀어 제목·그림·버튼을 다시 쌓는다. */}
           <div className="flex min-h-0 items-center justify-center max-sm:contents lg:h-full">
             <div className="home-act3-fit w-full min-w-0 max-w-xl max-sm:contents">
@@ -159,7 +159,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true, margin: '-20px' }}
-                  className={`mt-3 font-sans text-sm leading-relaxed text-slate-300/90 sm:mt-[1.6em] sm:text-[1em] sm:leading-[1.78] whitespace-pre-line ${
+                  className={`mt-8 font-sans text-sm leading-relaxed text-slate-300/90 sm:mt-[1.6em] sm:text-[1em] sm:leading-[1.78] whitespace-pre-line ${
                     lang === 'hi' ? 'font-devanagari' : ''
                   }`}
                   lang={lang === 'hi' ? 'hi' : undefined}
@@ -197,7 +197,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, margin: '-20px' }}
-                className="max-sm:order-3"
+                className="max-sm:order-2 max-sm:mt-8"
               >
                 <Link
                   href="/research"
@@ -222,9 +222,9 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-20px' }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="relative flex min-h-0 items-center justify-center max-sm:order-2 max-sm:h-auto lg:h-full"
+            className="relative flex min-h-0 items-center justify-center max-sm:order-3 max-sm:mt-4 max-sm:h-auto lg:h-full"
           >
-            <div className="relative flex w-full max-w-[min(100%,540px)] justify-center max-sm:max-w-[16rem] lg:max-w-none">
+            <div className="relative flex w-full max-w-[min(100%,540px)] justify-center max-sm:max-w-[20rem] lg:max-w-none">
               <div className="relative h-full max-h-full w-full overflow-hidden rounded-lg border border-white/[0.1] bg-[#050a12] shadow-[0_20px_50px_rgba(0,0,0,0.45),0_0_0_1px_rgba(120,170,220,0.08)_inset] ring-1 ring-sky-200/[0.06] max-sm:h-auto sm:h-auto sm:w-[min(100%,calc(36cqh*1.5))] lg:w-[min(100%,calc(62cqh*1.5))]">
                 <Image
                   src={MRI_HERO}
