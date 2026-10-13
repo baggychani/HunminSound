@@ -169,7 +169,7 @@ function ModernVowelSection({
 
       <ScrollSection isOpen={hasActive}>
         {activeItem && hasActive && (
-          <div>
+          <div className="pb-6">
             <VowelDetailPanel
               item={activeItem}
               lang={lang}

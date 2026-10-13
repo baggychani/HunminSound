@@ -35,8 +35,9 @@ function MriScanOverlay() {
       <span className="absolute right-[4%] top-[6%] h-4 w-4 border-r border-t border-sky-200/40 sm:h-5 sm:w-5" />
       <span className="absolute bottom-[22%] left-[6%] h-3 w-3 border border-white/20 sm:h-4 sm:w-4" />
       <span className="absolute bottom-[38%] left-[42%] h-14 w-14 rounded-full border border-dashed border-sky-200/25 sm:h-[4.5rem] sm:w-[4.5rem]" />
-      {/* MRI 촬영 중인 듯한 스캔 라인 — 데스크톱 전용 */}
+      {/* MRI 촬영 중인 듯한 스캔 라인 — 데스크톱 전용. 빛줄이 위에서 아래로 훑던 효과. 일단 끈다.
       <span className="mri-scan-sweep hidden lg:block" />
+      */}
     </div>
   )
 }
