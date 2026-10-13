@@ -191,7 +191,7 @@ export function HunminCheonJiInBanner() {
         className={`grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
       >
         <div className="overflow-hidden">
-          <div id={panelId} className="bg-[#fff6ea] px-5 py-6 dark:bg-[#3d342b] sm:px-8 sm:py-7">
+          <div id={panelId} className="bg-white px-5 py-5 dark:bg-[#3a3836] sm:px-8 sm:py-6">
             {open ? <AttachStage /> : null}
           </div>
         </div>
@@ -397,7 +397,7 @@ function AttachStage() {
 
       <div
         ref={stageRef}
-        className="relative h-52 touch-none select-none sm:h-60"
+        className="relative h-44 touch-none select-none sm:h-52"
         onPointerMove={moveDrag}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
