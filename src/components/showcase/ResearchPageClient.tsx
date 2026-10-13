@@ -94,7 +94,7 @@ function SignificanceClaims({
   label: (index: number) => string
 }) {
   return (
-    <div className="max-w-[38rem]">
+    <div>
       {paragraphs.map((text, i) => {
         const heading = label(i)
         return (
