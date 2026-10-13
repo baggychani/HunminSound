@@ -222,7 +222,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-20px' }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="relative flex min-h-0 items-center justify-center max-sm:order-3 max-sm:mt-4 max-sm:h-auto lg:h-full"
+            className="relative flex min-h-0 items-center justify-center max-sm:order-3 max-sm:mt-4 max-sm:h-auto max-sm:justify-start lg:h-full"
           >
             <div className="relative flex w-full max-w-[min(100%,540px)] justify-center max-sm:max-w-[20rem] lg:max-w-none">
               <div className="relative h-full max-h-full w-full overflow-hidden rounded-lg border border-white/[0.1] bg-[#050a12] shadow-[0_20px_50px_rgba(0,0,0,0.45),0_0_0_1px_rgba(120,170,220,0.08)_inset] ring-1 ring-sky-200/[0.06] max-sm:h-auto sm:h-auto sm:w-[min(100%,calc(36cqh*1.5))] lg:w-[min(100%,calc(62cqh*1.5))]">

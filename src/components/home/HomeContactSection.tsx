@@ -17,11 +17,26 @@ function formatContactDesc(desc: string, lang: string): ReactNode {
   const marker = '연구자'
   const idx = desc.indexOf(marker)
   if (idx === -1) return desc
+  const lead = '관심 있는 '
+  const leadIdx = desc.lastIndexOf(lead, idx)
+  if (leadIdx === -1) {
+    return (
+      <>
+        {desc.slice(0, idx)}
+        <br className="max-sm:hidden" />
+        {desc.slice(idx)}
+      </>
+    )
+  }
   return (
     <>
-      {desc.slice(0, idx)}
-      <br />
-      {desc.slice(idx)}
+      {desc.slice(0, leadIdx)}
+      <span className="max-sm:whitespace-nowrap">
+        {lead}
+        <br className="max-sm:hidden" />
+        {marker}
+      </span>
+      {desc.slice(idx + marker.length)}
     </>
   )
 }
@@ -162,7 +177,7 @@ export function HomeContactSection({ linkFormOnMobile = false }: { linkFormOnMob
             </Link>
           ) : null}
 
-          <div className={`mt-6 w-full max-w-[15rem] rounded-sm border border-hanji-border/60 bg-white px-5 py-4 sm:max-w-[19rem] sm:px-6 sm:py-5 h-short:max-w-[15rem] h-short:px-5 h-short:py-4 h-short:sm:max-w-[15rem] h-short:sm:px-5 h-short:sm:py-4 ${linkFormOnMobile ? 'max-sm:mx-auto max-sm:mt-10' : ''}`}>
+          <div className={`mt-6 w-full max-w-[15rem] rounded-sm border border-hanji-border/60 bg-white px-5 py-4 sm:max-w-[19rem] sm:px-6 sm:py-5 h-short:max-w-[15rem] h-short:px-5 h-short:py-4 h-short:sm:max-w-[15rem] h-short:sm:px-5 h-short:sm:py-4 ${linkFormOnMobile ? 'max-sm:mx-auto max-sm:mt-4 max-sm:max-w-[11rem]' : ''}`}>
             <Image
               src="/images/sejongorg.png"
               alt="세종대왕기념사업회"

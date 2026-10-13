@@ -171,7 +171,7 @@ export default function HomePage() {
           */}
           <div className="hidden h-full lg:block" aria-hidden />
 
-          <div className="flex h-full min-h-0 translate-x-0 flex-col items-center justify-center text-center sm:h-[78%] sm:max-h-[78%] sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] sm:[container-type:size] lg:translate-x-0">
+          <div className="flex h-full min-h-0 translate-x-0 flex-col items-center justify-center text-center max-sm:pb-12 sm:h-[78%] sm:max-h-[78%] sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] sm:[container-type:size] lg:translate-x-0">
             <p
               className={`shrink-0 font-medium text-[15px] text-ink-muted sm:text-[clamp(0.625rem,3.2cqh,1.0625rem)] ${
                 lang === 'hi' ? 'font-devanagari normal-case tracking-normal' : 'font-serif tracking-wide'
@@ -335,7 +335,7 @@ function HunminjeongeumCard({
       href={href}
       onMouseMove={handleSpotlightMove}
       className={`home-act2-nav-card spotlight-card group col-span-1 flex h-full max-sm:h-auto min-h-0 flex-col overflow-hidden rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] sm:col-span-2 lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] ${
-        compact ? 'gap-2 px-6 py-3 sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
+        compact ? 'gap-2 px-4 py-4 sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
       }`}
     >
       <span className="sheen-sweep pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden />
@@ -347,7 +347,7 @@ function HunminjeongeumCard({
             {label}
           </span>
         </div>
-        <span className="font-sans text-xs text-ink-muted tracking-[0.06em] sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{caption}</span>
+        <span className="hidden font-sans text-xs text-ink-muted tracking-[0.06em] sm:inline sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{caption}</span>
       </div>
 
       <div
@@ -407,7 +407,7 @@ function NavCard({
       href={href}
       onMouseMove={handleSpotlightMove}
       className={`home-act2-nav-card spotlight-card group flex h-full max-sm:h-auto min-h-0 flex-col overflow-hidden rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] ${
-        compact ? 'gap-2 px-6 py-3 sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
+        compact ? 'gap-2 px-4 py-4 sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
       }`}
     >
       <span className="sheen-sweep pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden />
@@ -417,7 +417,7 @@ function NavCard({
             {label}
           </span>
         </div>
-        <span className="font-sans text-xs font-medium text-ink-muted sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{count}</span>
+        <span className="hidden font-sans text-xs font-medium text-ink-muted sm:inline sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{count}</span>
       </div>
 
       <div
