@@ -254,6 +254,11 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
       </div>
 
       <SpectrogramStrip />
+      {/* 폰에서만: 남색이 한지로 끊기지 않게 아래를 녹인다. PC 마퀴 다리는 그대로. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-28 bg-gradient-to-b from-transparent to-[rgb(var(--hanji-rgb))] sm:hidden"
+      />
     </section>
   )
 })
