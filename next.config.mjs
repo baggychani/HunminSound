@@ -1,3 +1,8 @@
+import { patchNextFontLoader } from './scripts/patch-next-font-loader.mjs'
+
+// Vercel은 npm prebuild 없이 next build를 돌릴 수 있다. 설정이 로드될 때 패치한다.
+patchNextFontLoader()
+
 /** 모든 경로 공통 — 브레이킹 리스크 없는 기본 보안 헤더 */
 const BASE_SECURITY_HEADERS = [
   { key: 'X-Content-Type-Options', value: 'nosniff' },

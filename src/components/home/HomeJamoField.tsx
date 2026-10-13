@@ -47,12 +47,14 @@ const GLYPHS = [
  * depth는 덱의 가로 스크롤(px)에 곱한다. PC의 세로 시차와 같은 크기다.
  */
 const GLYPHS_MOBILE = [
-  { ch: 'ㆍ', left: '5%', top: '0.15rem', size: '1.05rem', dur: 16, delay: 0, rot: 4, op: 0.07, depth: -0.018 },
-  { ch: 'ㅅ', left: '18%', top: '0.95rem', size: '0.95rem', dur: 18, delay: 4.2, rot: -5, op: 0.05, depth: 0.016 },
-  { ch: 'ㅿ', left: '9%', top: '1.7rem', size: '1.2rem', dur: 19, delay: 2.4, rot: -6, op: 0.045, depth: 0.022 },
-  { ch: 'ㄴ', left: '82%', top: '0.3rem', size: '1rem', dur: 17, delay: 1.6, rot: 5, op: 0.05, depth: 0.014 },
-  { ch: 'ㆍ', left: '93%', top: '1.15rem', size: '1.1rem', dur: 13, delay: 5, rot: -3, op: 0.06, depth: -0.02 },
-  { ch: 'ㅁ', left: '74%', top: '1.75rem', size: '0.95rem', dur: 20, delay: 2, rot: 3, op: 0.04, depth: -0.016 },
+  { ch: 'ㆍ', left: '5%', top: '0.35rem', size: '1.7rem', dur: 16, delay: 0, rot: 4, op: 0.16, depth: -0.018 },
+  { ch: 'ㅅ', left: '18%', top: '2.55rem', size: '1.55rem', dur: 18, delay: 4.2, rot: -5, op: 0.14, depth: 0.016 },
+  { ch: 'ㅿ', left: '34%', top: '0.45rem', size: '2.05rem', dur: 19, delay: 2.4, rot: -6, op: 0.18, depth: 0.02 },
+  { ch: 'ㄱ', left: '50%', top: '2.7rem', size: '1.75rem', dur: 15, delay: 0.8, rot: 7, op: 0.15, depth: -0.016 },
+  { ch: 'ㆁ', left: '64%', top: '0.3rem', size: '1.9rem', dur: 14, delay: 1.1, rot: 5, op: 0.16, depth: -0.014 },
+  { ch: 'ㄴ', left: '80%', top: '2.4rem', size: '1.65rem', dur: 17, delay: 1.6, rot: 5, op: 0.14, depth: 0.014 },
+  { ch: 'ㆍ', left: '92%', top: '0.55rem', size: '1.6rem', dur: 13, delay: 5, rot: -3, op: 0.15, depth: -0.02 },
+  { ch: 'ㅁ', left: '46%', top: '0.2rem', size: '1.45rem', dur: 20, delay: 3.2, rot: -4, op: 0.13, depth: 0.012 },
 ] as const
 
 type Glyph = (typeof GLYPHS)[number] | (typeof GLYPHS_MOBILE)[number]
@@ -85,7 +87,7 @@ function JamoGlyph({
 }) {
   const reduce = useReducedMotion()
   const shift = useTransform(scroll, (v) => (reduce ? 0 : v * g.depth))
-  // 3막(다크)에서는 존재감을 낮춘다. 폰 기본값이 이미 옅어서 그만큼만 더 낮춘다.
+  // 3막(다크)에서는 흰 글자라 조금만 낮춘다.
   const op = inverse ? g.op * (axis === 'x' ? 0.85 : 0.7) : g.op
   return (
     <motion.div

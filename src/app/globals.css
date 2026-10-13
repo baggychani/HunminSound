@@ -625,7 +625,7 @@
   /* 폰 자모 — 헤더 아래 좁은 띠. 둥실거림도 가로로만, 진해지는 폭도 작게. */
   .home-jamo-mobile {
     top: var(--site-header-h, 3.5rem);
-    height: 3.4rem;
+    height: 6rem;
   }
 
   .hero-jamo-drift-x {

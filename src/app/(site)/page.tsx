@@ -173,7 +173,7 @@ export default function HomePage() {
 
           <div className="flex h-full min-h-0 translate-x-0 flex-col items-center justify-center text-center max-sm:pb-12 sm:h-[78%] sm:max-h-[78%] sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] sm:[container-type:size] lg:translate-x-0">
             <p
-              className={`shrink-0 font-medium text-[15px] text-ink-muted sm:text-[clamp(0.625rem,3.2cqh,1.0625rem)] ${
+              className={`shrink-0 font-medium text-[13.5px] text-ink-muted sm:text-[clamp(0.625rem,3.2cqh,1.0625rem)] ${
                 lang === 'hi' ? 'font-devanagari normal-case tracking-normal' : 'font-serif tracking-wide'
               }`}
               lang={lang === 'hi' ? 'hi' : undefined}
@@ -182,7 +182,7 @@ export default function HomePage() {
             </p>
 
             <h1
-              className="mt-2 shrink-0 font-jamo text-[2.7rem] leading-none tracking-wide text-ink sm:mt-[clamp(0.75rem,5cqh,1.75rem)] sm:text-[clamp(2.5rem,16cqh,5.85rem)]"
+              className="mt-3.5 shrink-0 font-jamo text-[2.7rem] leading-none tracking-wide text-ink sm:mt-[clamp(0.75rem,5cqh,1.75rem)] sm:text-[clamp(2.5rem,16cqh,5.85rem)]"
               dir="ltr"
               lang="ko"
             >
