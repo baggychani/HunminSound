@@ -91,7 +91,7 @@ export function TranslatedDescription({
       setText(bundled)
       return
     }
-    if (ls) {
+    if (ls && ls !== koreanSource) {
       setText(ls)
       return
     }

@@ -631,7 +631,7 @@ export function ResearchPageClient({ content }: Props) {
       if (translations?.[lang]?.[key]) continue
       try {
         const c = JSON.parse(localStorage.getItem(`rmt:${lang}:${key}`) ?? 'null') as { src?: string; v?: string } | null
-        if (c?.src === ko && c?.v) { fromCache[key] = c.v; continue }
+        if (c?.src === ko && c?.v && c.v !== ko) { fromCache[key] = c.v; continue }
       } catch {}
       toFetch.push({ key, ko })
     }

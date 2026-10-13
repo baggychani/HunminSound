@@ -40,13 +40,12 @@ export function TranslatedVowelArticulation({
   className?: string
 }) {
   const koSource = VOWEL_ARTICULATION_KO[symbol]
-  if (!koSource) return null
-
   const itemId = `vowel-artic-${symbol}`
 
-  const [text, setText] = useState(() => getVowelArticulationText(symbol, lang) ?? koSource)
+  const [text, setText] = useState(() => getVowelArticulationText(symbol, lang) ?? koSource ?? '')
 
   useEffect(() => {
+    if (!koSource) return
     const staticText = getVowelArticulationText(symbol, lang)
     if (staticText) {
       setText(staticText)
@@ -60,10 +59,11 @@ export function TranslatedVowelArticulation({
       setText(bundled)
       return
     }
-    if (ls) {
+    if (ls && ls !== koSource) {
       setText(ls)
       return
     }
+    setText(koSource)
 
     const ac = new AbortController()
     fetch('/api/translate', {
@@ -88,5 +88,6 @@ export function TranslatedVowelArticulation({
     return () => ac.abort()
   }, [symbol, lang, koSource, itemId])
 
+  if (!koSource) return null
   return <p className={className}>{text}</p>
 }

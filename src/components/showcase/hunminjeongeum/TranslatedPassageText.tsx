@@ -127,7 +127,7 @@ export function TranslatedPassageText({ passage, lang, className }: TranslatedPa
       setText(bundled)
       return
     }
-    if (ls) {
+    if (ls && ls !== englishSource) {
       setText(ls)
       return
     }
