@@ -101,13 +101,9 @@ function SignificanceClaims({
           <SubsectionReveal key={i}>
             <article className={i === 0 ? '' : 'mt-7 border-t border-hanji-border/55 pt-7 sm:mt-8 sm:pt-8'}>
               {heading ? (
-                <h3 className="mb-2 font-sans text-sm font-medium tracking-normal text-ink">{heading}</h3>
+                <h3 className="mb-2 font-sans text-[0.97rem] font-normal tracking-normal text-gold">{heading}</h3>
               ) : null}
-              <p
-                className={`font-sans leading-[1.85] ${
-                  i === 0 ? 'text-[1.0625rem] text-ink' : 'text-[0.97rem] text-ink-soft'
-                }`}
-              >
+              <p className="font-sans text-[0.97rem] leading-[2.05] text-ink-soft">
                 <RichText text={text} />
               </p>
             </article>
