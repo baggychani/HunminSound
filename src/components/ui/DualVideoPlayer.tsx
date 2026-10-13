@@ -45,8 +45,9 @@ function PictogramImage({ fileName, label }: { fileName: string; label: string }
 }
 
 /**
- * MRI 영상 · 상형도 · 조음 애니메이션 — 실제로 준비된 것만 균등한 열로 표시.
- * MRI를 맨 앞에 둔다. 준비 안 된 항목은 자리 자체를 만들지 않는다.
+ * MRI 영상 · 조음 애니메이션 · 상형도 — 실제로 준비된 것만 균등한 열로 표시.
+ * MRI를 맨 앞에 두고, 그 바로 다음에 조음 애니메이션을 둔다.
+ * 준비 안 된 항목은 자리 자체를 만들지 않는다.
  */
 export function DualVideoPlayer({
   animationFileName,
@@ -77,16 +78,16 @@ export function DualVideoPlayer({
           <VideoPlayer fileName={mriFileName} type={type} videoType="mri" />
         </div>
       ) : null}
-      {showPictogram ? (
-        <div>
-          <p className={labelClass}>{pictogramLabel}</p>
-          <PictogramImage fileName={pictogramFileName as string} label={pictogramLabel} />
-        </div>
-      ) : null}
       {showAnimation ? (
         <div>
           <p className={labelClass}>{animationLabel}</p>
           <VideoPlayer fileName={animationFileName} type={type} videoType="animation" />
+        </div>
+      ) : null}
+      {showPictogram ? (
+        <div>
+          <p className={labelClass}>{pictogramLabel}</p>
+          <PictogramImage fileName={pictogramFileName as string} label={pictogramLabel} />
         </div>
       ) : null}
     </div>
