@@ -223,6 +223,52 @@
   }
 }
 
+/* 홈 모바일 — 히어로 하나가 화면 하나. 밀어 올리면 다음 막.
+   레이어 밖에 두어 섹션의 h-auto 보다 우선한다. PC에는 적용하지 않는다. */
+@media (max-width: 639px) {
+  body:has(.home-mobile-deck) {
+    overflow: hidden;
+    height: 100dvh;
+  }
+
+  .home-mobile-deck {
+    position: fixed;
+    z-index: 20;
+    top: var(--site-header-h, 3.5rem);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    overscroll-behavior-y: none;
+    background: rgb(var(--hanji-rgb));
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .home-mobile-deck::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
+  .home-mobile-deck > section {
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+}
+
+@media (max-width: 639px) and (prefers-reduced-motion: no-preference) {
+  .home-mobile-deck {
+    scroll-behavior: smooth;
+  }
+}
+
 @layer components {
   /** 공개 사이트 공통 가로 폭 — 헤더·푸터. 본문 페이지는 page-shell */
   .site-container {

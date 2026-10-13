@@ -10,7 +10,7 @@ import { HomeJamoField } from '@/components/home/HomeJamoField'
 const MRI_HERO = '/images/research/mri-hero-v2.webp'
 const MRI_W = 1536
 const MRI_H = 1024
-const ACT_H = 'h-[calc(100dvh-var(--site-header-h,4rem))]'
+const ACT_H = 'sm:h-[calc(100dvh-var(--site-header-h,4rem))]'
 
 const FEATURE_KEYS = [
   ['homeResearchFeature1Title', 'homeResearchFeature1Sub'],
@@ -97,7 +97,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
     <section
       ref={setRefs}
       id="home-act3"
-      className={`home-scroll-margin relative z-10 min-h-0 max-sm:h-auto max-sm:max-h-none max-sm:overflow-x-clip max-sm:py-10 ${ACT_H} sm:max-h-[calc(100dvh-var(--site-header-h,4rem))] sm:overflow-hidden bg-[#070e1a] text-white`}
+      className={`home-scroll-margin relative z-10 min-h-0 max-sm:overflow-x-clip ${ACT_H} sm:max-h-[calc(100dvh-var(--site-header-h,4rem))] sm:overflow-hidden bg-[#070e1a] text-white`}
     >
       <div
         aria-hidden
@@ -133,12 +133,12 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
         <HomeJamoField tone="inverse" />
       </div>
 
-      <div className="relative mx-auto w-full min-h-0 max-sm:h-auto px-6 sm:h-full sm:w-[85%] sm:max-w-[85.5rem] sm:px-0">
-        <div className="grid max-sm:h-auto sm:h-full min-h-0 grid-cols-1 grid-rows-[minmax(0,1fr)_auto] gap-5 py-[clamp(0.75rem,2dvh,1.25rem)] max-sm:py-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:grid-rows-1 lg:items-stretch lg:gap-[min(3.5rem,4.1vw,9.44cqh)]">
+      <div className="relative mx-auto h-full min-h-0 w-full max-sm:flex max-sm:flex-col px-6 max-sm:py-4 max-sm:pb-10 sm:w-[85%] sm:max-w-[85.5rem] sm:px-0">
+        <div className="grid h-full min-h-0 grid-cols-1 gap-3 max-sm:grid-rows-[auto_minmax(0,1fr)] max-sm:py-0 py-[clamp(0.75rem,2dvh,1.25rem)] sm:grid-rows-[minmax(0,1fr)_auto] sm:gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:grid-rows-1 lg:items-stretch lg:gap-[min(3.5rem,4.1vw,9.44cqh)]">
           {/* 좌 — 텍스트·카드 한 덩어리로 세로 중앙 */}
           <div className="flex min-h-0 items-center justify-center lg:h-full">
             <div className="home-act3-fit w-full min-w-0 max-w-xl">
-              <div className="home-act3-scale flex w-full min-w-0 flex-col gap-7 sm:gap-[2.4em]">
+              <div className="home-act3-scale flex w-full min-w-0 flex-col gap-3 sm:gap-[2.4em]">
               <div>
                 <motion.h2
                   custom={0}
@@ -159,7 +159,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true, margin: '-20px' }}
-                  className={`mt-5 font-sans text-[clamp(13px,1.75vw,15px)] leading-[1.78] text-slate-300/90 sm:mt-[1.6em] sm:text-[1em] whitespace-pre-line ${
+                  className={`mt-2 line-clamp-3 font-sans text-[13px] leading-snug text-slate-300/90 sm:mt-[1.6em] sm:line-clamp-none sm:text-[1em] sm:leading-[1.78] whitespace-pre-line ${
                     lang === 'hi' ? 'font-devanagari' : ''
                   }`}
                   lang={lang === 'hi' ? 'hi' : undefined}
@@ -174,7 +174,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, margin: '-20px' }}
-                className="grid grid-cols-2 gap-3 sm:gap-[0.9333em]"
+                className="hidden grid-cols-2 gap-3 sm:grid sm:gap-[0.9333em]"
               >
                 {FEATURE_KEYS.map(([titleKey, subKey]) => (
                   <div
@@ -221,17 +221,17 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-20px' }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="relative flex min-h-0 items-center justify-center lg:h-full"
+            className="relative flex min-h-0 items-center justify-center max-sm:h-full lg:h-full"
           >
             <div className="relative flex w-full max-w-[min(100%,540px)] justify-center lg:max-w-none">
-              <div className="relative w-full overflow-hidden rounded-lg border border-white/[0.1] bg-[#050a12] shadow-[0_20px_50px_rgba(0,0,0,0.45),0_0_0_1px_rgba(120,170,220,0.08)_inset] ring-1 ring-sky-200/[0.06] sm:w-[min(100%,calc(36cqh*1.5))] lg:w-[min(100%,calc(62cqh*1.5))]">
+              <div className="relative h-full max-h-full w-full overflow-hidden rounded-lg border border-white/[0.1] bg-[#050a12] shadow-[0_20px_50px_rgba(0,0,0,0.45),0_0_0_1px_rgba(120,170,220,0.08)_inset] ring-1 ring-sky-200/[0.06] sm:h-auto sm:w-[min(100%,calc(36cqh*1.5))] lg:w-[min(100%,calc(62cqh*1.5))]">
                 <Image
                   src={MRI_HERO}
                   alt="발음 중 성도의 실시간 MRI 영상"
                   width={MRI_W}
                   height={MRI_H}
                   sizes="(max-width: 1024px) 92vw, 44vw"
-                  className="h-auto w-full object-contain"
+                  className="h-full w-full object-contain sm:h-auto"
                 />
                 <div
                   aria-hidden
@@ -254,11 +254,6 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
       </div>
 
       <SpectrogramStrip />
-      {/* 폰에서만: 남색이 한지로 끊기지 않게 아래를 녹인다. PC 마퀴 다리는 그대로. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-28 bg-gradient-to-b from-transparent to-[rgb(var(--hanji-rgb))] sm:hidden"
-      />
     </section>
   )
 })

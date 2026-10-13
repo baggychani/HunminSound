@@ -67,7 +67,7 @@ const INQUIRY_TYPES = [
   'contactTypeGeneral',
 ] as const
 
-export function HomeContactSection() {
+export function HomeContactSection({ linkFormOnMobile = false }: { linkFormOnMobile?: boolean }) {
   const { lang } = useLang()
   const { v2 } = useSiteMessages()
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
@@ -152,7 +152,17 @@ export function HomeContactSection() {
             </ContactItem>
           </div>
 
-          <div className="mt-6 w-full max-w-[15rem] rounded-sm border border-hanji-border/60 bg-white px-5 py-4 sm:max-w-[19rem] sm:px-6 sm:py-5 h-short:max-w-[15rem] h-short:px-5 h-short:py-4 h-short:sm:max-w-[15rem] h-short:sm:px-5 h-short:sm:py-4">
+          {linkFormOnMobile ? (
+            <Link
+              href="/contact"
+              className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-sm bg-gold px-4 py-3.5 font-sans text-sm font-medium text-hanji sm:hidden"
+            >
+              {v2.contactFormTitle}
+              <span aria-hidden>→</span>
+            </Link>
+          ) : null}
+
+          <div className={`mt-6 w-full max-w-[15rem] rounded-sm border border-hanji-border/60 bg-white px-5 py-4 sm:max-w-[19rem] sm:px-6 sm:py-5 h-short:max-w-[15rem] h-short:px-5 h-short:py-4 h-short:sm:max-w-[15rem] h-short:sm:px-5 h-short:sm:py-4 ${linkFormOnMobile ? 'max-sm:hidden' : ''}`}>
             <Image
               src="/images/sejongorg.png"
               alt="세종대왕기념사업회"
@@ -171,7 +181,7 @@ export function HomeContactSection() {
           whileInView="show"
           viewport={{ once: true, margin: '-40px' }}
           onSubmit={onSubmit}
-          className="relative rounded-sm border border-hanji-border/60 bg-hanji/75 p-6 backdrop-blur-md sm:p-7 h-short:p-5 h-short:sm:p-5 dark:bg-hanji/65"
+          className={`relative rounded-sm border border-hanji-border/60 bg-hanji/75 p-6 backdrop-blur-md sm:p-7 h-short:p-5 h-short:sm:p-5 dark:bg-hanji/65 ${linkFormOnMobile ? 'max-sm:hidden' : ''}`}
         >
           <h3 className="font-serif text-lg font-bold text-ink">{v2.contactFormTitle}</h3>
           <p className="mt-2 font-sans text-xs text-ink-muted">{v2.contactFormDesc}</p>

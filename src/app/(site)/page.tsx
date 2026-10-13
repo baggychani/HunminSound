@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion'
 import { useSiteMessages } from '@/hooks/useSiteMessages'
 import { SITE_BRAND_NAME, type Lang } from '@/lib/i18n'
@@ -52,7 +52,9 @@ function HeroTitleReveal({ text }: { text: string }) {
 
 /** 2막 카드 제목 — 한국어만 font-jamo, 외국어는 sans(힌디어는 devanagari) */
 function homeNavCardLabelClass(lang: Lang, compact?: boolean): string {
-  const size = compact ? 'text-3xl sm:text-[min(2.25rem,4.8cqh)] sm:leading-none' : 'text-4xl'
+  const size = compact
+    ? 'text-[1.65rem] leading-none sm:text-[min(2.25rem,4.8cqh)]'
+    : 'text-4xl'
   const weight = lang === 'ko' ? '' : 'font-medium'
   const font =
     lang === 'ko' ? 'font-jamo' : lang === 'hi' ? 'font-devanagari font-sans' : 'font-sans'
@@ -115,14 +117,25 @@ export default function HomePage() {
 
   const heroHeightDesktop =
     'sm:h-[calc(100dvh-var(--site-header-h,4rem))] sm:min-h-0 sm:overflow-hidden'
-  /** 모바일 — 1뷰포트 고정·클립 없이 자연 스크롤 */
-  const heroHeightMobile =
-    'max-sm:h-auto max-sm:min-h-0 max-sm:overflow-visible max-sm:py-8'
-  /** 4막만 1뷰포트 고정 포기 — 내용 높이만큼 늘어나고, 최소 1화면은 유지 */
-  const act4SectionClass = 'min-h-[calc(100dvh-var(--site-header-h,4rem))]'
+  /** 4막 — PC에서만 최소 한 화면. 폰은 덱의 한 칸 */
+  const act4SectionClass = 'sm:min-h-[calc(100dvh-var(--site-header-h,4rem))]'
+  const [mobileAct, setMobileAct] = useState(0)
+
+  useEffect(() => {
+    const root = pageRef.current
+    if (!root) return
+    const onScroll = () => {
+      if (window.matchMedia('(min-width: 640px)').matches) return
+      const h = root.clientHeight
+      if (h < 1) return
+      setMobileAct(Math.min(3, Math.max(0, Math.round(root.scrollTop / h))))
+    }
+    root.addEventListener('scroll', onScroll, { passive: true })
+    return () => root.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
-    <div ref={pageRef} className="relative w-full">
+    <div ref={pageRef} className="home-mobile-deck relative w-full">
       <ScrollColorWash actRefs={{ act1: act1Ref, act2: act2Ref, act3: act3Ref }} />
       <HomeScrollProgress containerRef={pageRef} />
       <HomeActRail />
@@ -131,12 +144,12 @@ export default function HomePage() {
       <section
         ref={act1Ref}
         id="home-act1"
-        className={`relative z-10 ${heroHeightMobile} ${heroHeightDesktop} isolation-isolate`}
+        className={`relative z-10 max-sm:flex max-sm:flex-col ${heroHeightDesktop} isolation-isolate`}
       >
         <HeroActBackdrop heroRef={act1Ref} />
         <HomeJamoField />
 
-        <div className="relative z-10 mx-auto grid max-sm:h-auto sm:h-full sm:grid-rows-[minmax(0,1fr)] w-full max-w-6xl grid-cols-1 items-center px-6 sm:px-8 sm:ps-[4vw] lg:grid-cols-[0.32fr_1.38fr_0.80fr] lg:px-10 lg:ps-[5vw]">
+        <div className="relative z-10 mx-auto grid h-full min-h-0 w-full max-w-6xl grid-cols-1 items-center px-6 max-sm:py-3 sm:h-full sm:grid-rows-[minmax(0,1fr)] sm:px-8 sm:ps-[4vw] lg:grid-cols-[0.32fr_1.38fr_0.80fr] lg:px-10 lg:ps-[5vw]">
           {/* 좌측 세로 장식 — 임시 숨김. 열 너비는 유지하고, 복구 시 아래 주석을 되돌린다.
           <div className="hidden h-full lg:flex lg:flex-col lg:items-center lg:justify-center lg:gap-5" aria-hidden>
             <motion.div
@@ -158,7 +171,7 @@ export default function HomePage() {
           */}
           <div className="hidden h-full lg:block" aria-hidden />
 
-          <div className="flex flex-col items-center text-center translate-x-[clamp(0.25rem,2vw,0.75rem)] sm:h-[78%] sm:max-h-[78%] sm:min-h-0 sm:justify-center sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] sm:[container-type:size] lg:translate-x-0">
+          <div className="flex h-full min-h-0 translate-x-0 flex-col items-center justify-center text-center sm:h-[78%] sm:max-h-[78%] sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] sm:[container-type:size] lg:translate-x-0">
             <p
               className={`shrink-0 font-medium text-[15px] text-ink-muted sm:text-[clamp(0.625rem,3.2cqh,1.0625rem)] ${
                 lang === 'hi' ? 'font-devanagari normal-case tracking-normal' : 'font-serif tracking-wide'
@@ -169,26 +182,26 @@ export default function HomePage() {
             </p>
 
             <h1
-              className="mt-4 shrink-0 font-jamo text-[4rem] leading-none tracking-wide text-ink sm:mt-[clamp(0.75rem,5cqh,1.75rem)] sm:text-[clamp(2.5rem,16cqh,5.85rem)]"
+              className="mt-2 shrink-0 font-jamo text-[2.7rem] leading-none tracking-wide text-ink sm:mt-[clamp(0.75rem,5cqh,1.75rem)] sm:text-[clamp(2.5rem,16cqh,5.85rem)]"
               dir="ltr"
               lang="ko"
             >
               <HeroTitleReveal text={SITE_BRAND_NAME} />
             </h1>
 
-            <p className="text-shimmer-gold mt-4 shrink-0 font-sans text-sm tracking-[0.2em] sm:mt-[clamp(0.5rem,3.42cqh,1.25rem)] sm:text-[clamp(0.75rem,2.5cqh,0.875rem)]">
+            <p className="text-shimmer-gold mt-2 shrink-0 font-sans text-sm tracking-[0.2em] sm:mt-[clamp(0.5rem,3.42cqh,1.25rem)] sm:text-[clamp(0.75rem,2.5cqh,0.875rem)]">
               Sejong Speech Sounds
             </p>
 
             <div
-              className="relative mx-auto -mt-1 w-full max-w-lg shrink-0 max-sm:h-[min(clamp(10rem,42vw,16rem),max(8rem,calc(100dvh-var(--site-header-h,4rem)-20rem)))] sm:-top-[2.5cqh] sm:mt-0 sm:max-h-[19.5rem] sm:min-h-[12cqh] sm:w-full sm:flex-1 lg:max-w-xl"
+              className="relative mx-auto mt-1 w-full min-h-0 max-w-lg flex-1 max-sm:max-h-[34vh] sm:-top-[2.5cqh] sm:mt-0 sm:max-h-[19.5rem] sm:min-h-[12cqh] sm:w-full lg:max-w-xl"
               aria-hidden
             >
               <HunminBookViewer className="absolute inset-0" />
             </div>
 
             <p
-              className={`relative mt-3 w-full max-w-[min(100%,45rem)] shrink-0 break-keep px-1 font-medium text-base leading-loose text-ink-soft [overflow-wrap:break-word] sm:-top-[5cqh] sm:mt-[clamp(0.5rem,2.74cqh,1rem)] sm:px-0 sm:max-w-[46rem] sm:text-[clamp(0.625rem,3.1cqh,1.0625rem)] ${
+              className={`relative mt-2 line-clamp-4 w-full max-w-[min(100%,45rem)] shrink-0 break-keep px-1 font-medium text-sm leading-relaxed text-ink-soft [overflow-wrap:break-word] sm:-top-[5cqh] sm:mt-[clamp(0.5rem,2.74cqh,1rem)] sm:line-clamp-none sm:px-0 sm:max-w-[46rem] sm:text-[clamp(0.625rem,3.1cqh,1.0625rem)] sm:leading-loose ${
                 lang === 'hi' ? 'font-devanagari tracking-normal' : 'font-serif'
               }`}
               lang={lang === 'hi' ? 'hi' : undefined}
@@ -220,9 +233,9 @@ export default function HomePage() {
       <section
         ref={act2Ref}
         id="home-act2"
-        className={`home-scroll-margin relative z-10 flex w-full max-sm:h-auto max-sm:min-h-0 max-sm:overflow-visible max-sm:px-6 max-sm:py-8 ${heroHeightDesktop} flex-col sm:items-center sm:justify-center sm:[container-type:size]`}
+        className={`home-scroll-margin relative z-10 flex w-full max-sm:px-4 max-sm:py-3 max-sm:pb-10 ${heroHeightDesktop} flex-col sm:items-center sm:justify-center sm:[container-type:size]`}
       >
-        <div className="relative z-10 grid w-full grid-cols-1 gap-3 sm:w-[70%] sm:max-w-[87.5rem] sm:grid-cols-2 sm:gap-[min(1.25rem,2.67cqh)]">
+        <div className="relative z-10 grid h-full min-h-0 w-full grid-cols-1 grid-rows-3 gap-2 sm:h-auto sm:w-[70%] sm:max-w-[87.5rem] sm:grid-cols-2 sm:grid-rows-none sm:gap-[min(1.25rem,2.67cqh)]">
         <NavCard
           compact
           lang={lang}
@@ -265,10 +278,32 @@ export default function HomePage() {
       <section
         ref={act4Ref}
         id="home-act4"
-        className={`home-scroll-margin relative z-10 mx-auto flex w-full max-w-[90rem] flex-col justify-center px-6 max-sm:justify-start max-sm:pb-14 max-sm:pt-16 sm:w-[70%] sm:justify-center sm:px-0 ${act4SectionClass} sm:py-[clamp(1rem,2.5dvh,2rem)] lg:py-[clamp(1.25rem,3dvh,2.5rem)] sm:h-short:py-2 h-short:lg:py-2`}
+        className={`home-scroll-margin relative z-10 mx-auto flex w-full max-w-[90rem] flex-col justify-center px-6 max-sm:pb-12 sm:w-[70%] sm:px-0 ${act4SectionClass} sm:py-[clamp(1rem,2.5dvh,2rem)] lg:py-[clamp(1.25rem,3dvh,2.5rem)] sm:h-short:py-2 h-short:lg:py-2`}
       >
-        <HomeContactSection />
+        <HomeContactSection linkFormOnMobile />
       </section>
+
+      <nav
+        aria-label="히어로 이동"
+        className="pointer-events-none fixed inset-x-0 bottom-3 z-30 flex justify-center gap-2 sm:hidden"
+      >
+        {[0, 1, 2, 3].map((index) => (
+          <button
+            key={index}
+            type="button"
+            aria-label={`${index + 1}막으로 이동`}
+            aria-current={mobileAct === index ? 'true' : undefined}
+            onClick={() => {
+              const root = pageRef.current
+              if (!root) return
+              root.scrollTo({ top: index * root.clientHeight, behavior: 'smooth' })
+            }}
+            className={`pointer-events-auto h-2 w-2 rounded-full ${
+              mobileAct === index ? 'bg-gold' : 'bg-gold/35'
+            }`}
+          />
+        ))}
+      </nav>
     </div>
   )
 }
@@ -299,8 +334,8 @@ function HunminjeongeumCard({
     <Link
       href={href}
       onMouseMove={handleSpotlightMove}
-      className={`home-act2-nav-card spotlight-card group col-span-1 sm:col-span-2 rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] flex flex-col ${
-        compact ? 'gap-4 p-6 sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
+      className={`home-act2-nav-card spotlight-card group col-span-1 flex h-full min-h-0 flex-col overflow-hidden rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] sm:col-span-2 lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] ${
+        compact ? 'gap-2 p-3.5 sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
       }`}
     >
       <span className="sheen-sweep pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden />
@@ -332,7 +367,7 @@ function HunminjeongeumCard({
         ))}
       </div>
 
-      <p className="relative z-10 break-keep font-sans text-xs text-ink-muted leading-relaxed sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] max-w-xl line-clamp-2 sm:line-clamp-none [overflow-wrap:break-word]">
+      <p className="relative z-10 hidden max-w-xl break-keep font-sans text-xs leading-relaxed text-ink-muted [overflow-wrap:break-word] sm:line-clamp-none sm:block sm:text-[clamp(0.625rem,1.87cqh,0.875rem)]">
         {description}
       </p>
 
@@ -371,8 +406,8 @@ function NavCard({
     <Link
       href={href}
       onMouseMove={handleSpotlightMove}
-      className={`home-act2-nav-card spotlight-card group flex flex-col rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] ${
-        compact ? 'min-h-0 gap-4 p-6 sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
+      className={`home-act2-nav-card spotlight-card group flex h-full min-h-0 flex-col overflow-hidden rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] ${
+        compact ? 'gap-2 p-3.5 sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
       }`}
     >
       <span className="sheen-sweep pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden />
@@ -403,8 +438,8 @@ function NavCard({
       </div>
 
       <p
-        className={`font-sans text-xs text-ink-muted leading-relaxed sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] ${
-          compact ? 'line-clamp-2 sm:line-clamp-none' : ''
+        className={`font-sans text-xs leading-relaxed text-ink-muted sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] ${
+          compact ? 'hidden sm:line-clamp-none sm:block' : ''
         }`}
       >
         {description}
