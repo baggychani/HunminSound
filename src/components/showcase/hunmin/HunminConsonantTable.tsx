@@ -215,7 +215,7 @@ export function HunminConsonantTable({
               })}
             </div>
             <div className="hunmin-consonant-table-span" role="row">
-              <ScrollSection isOpen={open}>
+              <ScrollSection className="hunmin-consonant-detail" isOpen={open}>
                 {open ? <div className="pb-5">{renderDetail()}</div> : null}
               </ScrollSection>
             </div>
