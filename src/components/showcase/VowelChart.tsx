@@ -379,6 +379,7 @@ function VowelDetailPanel({
       }
     >
       <DualVideoPlayer
+        key={item._id}
         animationFileName={item.animationFileName}
         mriFileName={item.mriFileName}
         pictogramFileName={item.pictogramFileName}
