@@ -327,14 +327,6 @@ export function Header() {
             >
               {m.language}
             </span>
-            <motion.span
-              animate={{ rotate: langOpen ? 180 : 0 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="inline-flex text-[10px] leading-none"
-              aria-hidden
-            >
-              ▾
-            </motion.span>
           </button>
         </div>
       </div>

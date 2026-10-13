@@ -28,7 +28,7 @@ export function SiteFooter() {
           </div>
         </div>
         {/* B18: 저작권·지원기관·주관기관·갱신일 — 공공 누리집 필수 고지 */}
-        <div className="mt-6 border-t border-hanji-border/50 pt-5 font-sans text-[11.5px] leading-[1.8] text-ink-muted">
+        <div className="mt-6 hidden border-t border-hanji-border/50 pt-5 font-sans text-[11.5px] leading-[1.8] text-ink-muted sm:block">
           <p className="break-keep">
             © 2026 세종국어문화원 · 한국연구재단 글로벌인문사회융합연구지원사업(연구그룹형) 지원
             (NRF-2023S1A5A2A21086078)

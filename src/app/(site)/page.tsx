@@ -372,7 +372,7 @@ function HunminjeongeumCard({
       href={href}
       onMouseMove={handleSpotlightMove}
       className={`home-act2-nav-card spotlight-card group col-span-1 flex h-full max-sm:h-auto min-h-0 flex-col overflow-hidden rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] sm:col-span-2 lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] ${
-        compact ? 'gap-2 pb-4 pe-4 ps-[18px] pt-[18px] sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
+        compact ? 'gap-2 pb-5 pe-4 ps-[18px] pt-[22px] sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
       }`}
     >
       <span className="sheen-sweep pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden />
@@ -444,7 +444,7 @@ function NavCard({
       href={href}
       onMouseMove={handleSpotlightMove}
       className={`home-act2-nav-card spotlight-card group flex h-full max-sm:h-auto min-h-0 flex-col overflow-hidden rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] ${
-        compact ? 'gap-2 pb-4 pe-4 ps-[18px] pt-[18px] sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
+        compact ? 'gap-2 pb-5 pe-4 ps-[18px] pt-[22px] sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
       }`}
     >
       <span className="sheen-sweep pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden />
