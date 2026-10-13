@@ -97,7 +97,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
     <section
       ref={setRefs}
       id="home-act3"
-      className={`home-scroll-margin relative z-10 min-h-0 max-sm:h-auto max-sm:max-h-none max-sm:overflow-visible max-sm:py-10 ${ACT_H} sm:max-h-[calc(100dvh-var(--site-header-h,4rem))] sm:overflow-hidden bg-[#070e1a] text-white`}
+      className={`home-scroll-margin relative z-10 min-h-0 max-sm:h-auto max-sm:max-h-none max-sm:overflow-x-clip max-sm:py-10 ${ACT_H} sm:max-h-[calc(100dvh-var(--site-header-h,4rem))] sm:overflow-hidden bg-[#070e1a] text-white`}
     >
       <div
         aria-hidden

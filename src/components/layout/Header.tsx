@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react'
 import { useLang } from '@/contexts/LanguageContext'
 import { LANGUAGES, NAV_LABEL_KO, getMessages, SITE_BRAND_NAME } from '@/lib/i18n'
@@ -339,19 +339,13 @@ export function Header() {
         </div>
       </div>
 
-      {/* 모바일 사이트 메뉴 (자음 / 모음) */}
-      <AnimatePresence initial={false}>
-        {mobileNavOpen && (
-          <motion.div
-            key="site-nav-panel"
+      {/* 모바일 사이트 메뉴. 투명도로 열면 흰 배경도 같이 비쳐서 밑 글자가 한순간 겹친다. */}
+      {mobileNavOpen && (
+          <div
             id="site-mobile-nav-panel"
             ref={panelRef}
             role="navigation"
             aria-label={m.siteNavMenuAria}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15, ease: 'easeOut' }}
             className="absolute start-0 end-0 top-full z-[65] border-b border-hanji-border bg-header shadow-[0_12px_24px_-8px_rgb(0_0_0_/0.18)] dark:shadow-[0_16px_32px_-10px_rgb(0_0_0_/0.65)] sm:hidden"
           >
             <div className="site-container py-2">
@@ -376,22 +370,15 @@ export function Header() {
                 )
               })}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+      )}
 
-      <AnimatePresence initial={false}>
-        {langOpen && (
-          <motion.div
-            key="lang-panel"
+      {langOpen && (
+          <div
             id="site-lang-panel"
             ref={panelRef}
             role="region"
             aria-label={m.languagePickerAria}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15, ease: 'easeOut' }}
             className="absolute start-0 end-0 top-full z-[70] border-b border-hanji-border bg-header shadow-[0_12px_24px_-8px_rgb(0_0_0_/0.18)] dark:shadow-[0_16px_32px_-10px_rgb(0_0_0_/0.65)]"
           >
             <div className="site-container py-4 sm:py-5">
@@ -431,9 +418,8 @@ export function Header() {
                 })}
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+      )}
     </header>
   )
 }

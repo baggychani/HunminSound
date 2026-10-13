@@ -88,6 +88,9 @@
        홈은 그 중간에 가장 가까운 막으로 붙어 4막이 3막으로 간다.
        막 이동은 스크롤 호출에서 behavior: 'smooth'를 직접 넘긴다. */
     scrollbar-gutter: stable;
+    /* 문서 너비는 화면이다. 장식이 칸 밖으로 나가도 페이지가 옆으로 밀리지 않는다.
+       가로 스크롤은 자모 표처럼 자기 칸이 overflow-x: auto 인 곳만 한다. */
+    overflow-x: clip;
   }
 
   body {
