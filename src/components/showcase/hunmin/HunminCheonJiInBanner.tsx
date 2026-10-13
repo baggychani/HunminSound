@@ -28,6 +28,7 @@ type Slot = {
   glyph: string
   line: string
   result: Point
+  ink: Point
 }
 
 type Point = { x: number; y: number }
@@ -45,61 +46,64 @@ function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
-const EM = {
-  side: 23.4 / 144,
-  lift: 3.2 / 144,
-  above: 13.9 / 144,
-  below: 34 / 144,
-  bar: 10 / 144,
-  oNudge: 9 / 144,
-}
+const RING_R = 14
+const RING_GAP = 8
 
 function metricsFor(w: number, h: number, fontSize: number): Metrics {
   const y = h * 0.5
   const earth = { x: w * 0.42, y }
   const person = { x: w * 0.7, y }
-  const side = fontSize * EM.side
-  const lift = fontSize * EM.lift
+  const em = fontSize / 144
+  const stemHalf = 8.5 * em
+  const barHalf = 7 * em
+  const barUp = 10 * em
+  const side = stemHalf + RING_GAP + RING_R
+  const above = barUp + barHalf + RING_GAP + RING_R
+  const below = barHalf + RING_GAP + RING_R - barUp
   const home = { x: Math.max(36, w * 0.16), y }
-  const oAt = { x: earth.x, y: earth.y - fontSize * EM.oNudge }
+  const oAt = { x: earth.x, y: earth.y - 9 * em }
   return {
     earth,
     person,
     home,
     fontSize,
-    bar: fontSize * EM.bar,
+    bar: barUp,
     slots: [
       {
         id: 'above',
         x: earth.x,
-        y: earth.y - fontSize * EM.above,
+        y: earth.y - above,
         glyph: 'ㅗ',
         line: 'ㅡ 위에 점을 붙이면 ㅗ가 됩니다.',
         result: oAt,
+        ink: { x: earth.x, y: earth.y - 13.9 * em },
       },
       {
         id: 'below',
         x: earth.x,
-        y: earth.y + fontSize * EM.below,
+        y: earth.y + below,
         glyph: 'ㅜ',
         line: 'ㅡ 아래에 점을 붙이면 ㅜ가 됩니다.',
         result: earth,
+        ink: { x: earth.x, y: earth.y + 34 * em },
       },
       {
         id: 'right',
         x: person.x + side,
-        y: person.y - lift,
+        y,
         glyph: 'ㅏ',
         line: 'ㅣ 오른쪽에 점을 붙이면 ㅏ가 됩니다.',
         result: person,
+        ink: { x: person.x + 23.4 * em, y },
       },
       {
         id: 'left',
         x: person.x - side,
-        y: person.y - lift,
+        y,
         glyph: 'ㅓ',
         line: 'ㅣ 왼쪽에 점을 붙이면 ㅓ가 됩니다.',
         result: person,
+        ink: { x: person.x - 23.4 * em, y },
       },
     ],
   }
@@ -216,6 +220,7 @@ function AttachStage() {
   const [metrics, setMetrics] = useState<Metrics | null>(null)
   const [placed, setPlaced] = useState<SlotId | null>(null)
   const [nearId, setNearId] = useState<SlotId | null>(null)
+  const [dotHidden, setDotHidden] = useState(false)
 
   const stopAnims = useCallback(() => {
     genRef.current += 1
@@ -263,8 +268,8 @@ function AttachStage() {
       if (placedRef.current) {
         const slot = next.slots.find((item) => item.id === placedRef.current)
         if (slot) {
-          x.set(slot.x)
-          y.set(slot.y)
+          x.set(slot.ink.x)
+          y.set(slot.ink.y)
         }
         return
       }
@@ -316,6 +321,7 @@ function AttachStage() {
       dy: y.get() - py - (coarse ? 28 : 0),
     }
     animsRef.current = [animate(scale, wasPlaced ? 1 : 1.04, { duration: wasPlaced ? 0.16 : 0.12, ease: EASE })]
+    setDotHidden(false)
     if (wasPlaced) setPlacedBoth(null)
     targetRef.current = { x: x.get(), y: y.get() }
     startLoop()
@@ -346,10 +352,14 @@ function AttachStage() {
     if (!current) return
     const { slot, strokeDist } = aimedSlot(x.get(), y.get(), current)
     if (strokeDist < COMMIT) {
-      glideTo(slot.x, slot.y, 0.28, () => setPlacedBoth(slot.id), 0.68)
+      glideTo(slot.x, slot.y, 0.22, () => {
+        setPlacedBoth(slot.id)
+        glideTo(slot.ink.x, slot.ink.y, 0.28, () => setDotHidden(true), 0.68)
+      })
       return
     }
     setPlacedBoth(null)
+    setDotHidden(false)
     glideTo(current.home.x, current.home.y, 0.4)
   }
 
@@ -360,6 +370,7 @@ function AttachStage() {
     stopLoop()
     setNearId(null)
     setPlacedBoth(null)
+    setDotHidden(false)
     glideTo(current.home.x, current.home.y, 0.4)
   }
 
@@ -425,7 +436,7 @@ function AttachStage() {
           {glyphRef.current}
         </span>
 
-        <DotHandle x={x} y={y} scale={scale} hidden={Boolean(placed)} onPointerDown={beginDrag} />
+        <DotHandle x={x} y={y} scale={scale} hidden={dotHidden} onPointerDown={beginDrag} />
       </div>
 
       <p className="mt-3 min-h-6 font-serif text-[15px] leading-snug text-ink-soft">
