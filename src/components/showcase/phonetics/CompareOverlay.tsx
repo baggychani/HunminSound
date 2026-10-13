@@ -3,8 +3,11 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { VideoPlayer } from '@/components/ui/VideoPlayer'
+import { MEDIA_MANIFEST } from '@/data/mediaManifest'
 import { useLang } from '@/contexts/LanguageContext'
-import { getMessages } from '@/lib/i18n'
+import { getMessages, type Messages } from '@/lib/i18n'
+
+export type CompareVideoKind = 'mri' | 'animation'
 
 export interface CompareLetter {
   id: string
@@ -12,6 +15,11 @@ export interface CompareLetter {
   name: string
   mriFileName?: string
   animationFileName?: string
+}
+
+export interface CompareSource {
+  letter: CompareLetter
+  kind: CompareVideoKind
 }
 
 const CompareCatalogContext = createContext<CompareLetter[]>([])
@@ -50,55 +58,81 @@ interface CompareOverlayProps {
   open: boolean
   onClose: () => void
   type: 'consonants' | 'vowels'
-  current: CompareLetter
+  source: CompareSource
   letters: CompareLetter[]
 }
 
-function LetterPane({
-  letter,
-  type,
-  mriLabel,
-  animationLabel,
+function fileFor(letter: CompareLetter, kind: CompareVideoKind) {
+  return kind === 'mri' ? letter.mriFileName : letter.animationFileName
+}
+
+function kindReady(
+  letter: CompareLetter,
+  kind: CompareVideoKind,
+  type: 'consonants' | 'vowels',
+  source: CompareSource,
+) {
+  const fileName = fileFor(letter, kind)
+  if (!fileName) return false
+  if (!(MEDIA_MANIFEST[type][kind] as readonly string[]).includes(fileName)) return false
+  if (letter.id === source.letter.id && kind === source.kind) return false
+  return true
+}
+
+function SpeedButtons({
+  rate,
+  onChange,
+  m,
 }: {
-  letter: CompareLetter
-  type: 'consonants' | 'vowels'
-  mriLabel: string
-  animationLabel: string
+  rate: number
+  onChange: (rate: number) => void
+  m: Messages
 }) {
+  const controlClass =
+    'inline-flex items-center rounded-full border px-3.5 py-1.5 font-sans text-[13px] font-medium transition-colors'
+  const controlOff =
+    'border-hanji-border bg-hanji-card/80 text-ink-soft hover:border-gold/45 hover:text-ink dark:bg-white/[0.04]'
+  const controlOn = 'border-gold/55 bg-gold/15 text-ink'
+  const options = [
+    { value: 0.5, label: m.halfSpeed, aria: m.halfSpeedAria },
+    { value: 0.7, label: m.slow07, aria: m.slow07Aria },
+  ]
   return (
-    <div className="min-w-0">
-      <p className="font-serif text-3xl leading-none text-ink" dir="ltr" lang="ko">
-        {letter.symbol}
-      </p>
-      <p className="mt-1 font-sans text-[13px] text-ink-muted" dir="ltr" lang="ko">
-        {letter.name}
-      </p>
-      <div className="mt-4 grid gap-3">
-        {letter.mriFileName ? (
-          <div>
-            <p className="mb-1.5 font-sans text-[12px] font-medium text-ink-muted">{mriLabel}</p>
-            <VideoPlayer fileName={letter.mriFileName} type={type} videoType="mri" />
-          </div>
-        ) : null}
-        {letter.animationFileName ? (
-          <div>
-            <p className="mb-1.5 font-sans text-[12px] font-medium text-ink-muted">{animationLabel}</p>
-            <VideoPlayer fileName={letter.animationFileName} type={type} videoType="animation" />
-          </div>
-        ) : null}
-      </div>
+    <div className="flex flex-wrap items-center gap-2">
+      {options.map((option) => {
+        const on = rate === option.value
+        return (
+          <button
+            key={option.value}
+            type="button"
+            aria-pressed={on}
+            aria-label={option.aria}
+            onClick={() => onChange(on ? 1 : option.value)}
+            className={`${controlClass} ${on ? controlOn : controlOff}`}
+          >
+            {option.label}
+          </button>
+        )
+      })}
     </div>
   )
 }
 
-export function CompareOverlay({ open, onClose, type, current, letters }: CompareOverlayProps) {
+export function CompareOverlay({ open, onClose, type, source, letters }: CompareOverlayProps) {
   const { lang } = useLang()
   const m = getMessages(lang)
   const [otherId, setOtherId] = useState('')
+  const [otherKind, setOtherKind] = useState<CompareVideoKind | null>(null)
+  const [leftRate, setLeftRate] = useState(1)
+  const [rightRate, setRightRate] = useState(1)
 
   useEffect(() => {
-    if (open) setOtherId('')
-  }, [open, current.id])
+    if (!open) return
+    setOtherId('')
+    setOtherKind(null)
+    setLeftRate(1)
+    setRightRate(1)
+  }, [open, source.letter.id, source.kind])
 
   useEffect(() => {
     if (!open) return
@@ -117,13 +151,19 @@ export function CompareOverlay({ open, onClose, type, current, letters }: Compar
   if (!open || typeof document === 'undefined') return null
 
   const choices = letters.filter(
-    (letter) => letter.id !== current.id && (letter.mriFileName || letter.animationFileName),
+    (letter) => kindReady(letter, 'mri', type, source) || kindReady(letter, 'animation', type, source),
   )
   const other = choices.find((letter) => letter.id === otherId) ?? null
+  const mediaKinds = other
+    ? (['mri', 'animation'] as const).filter((kind) => kindReady(other, kind, type, source))
+    : []
+  const rightFile = other && otherKind ? fileFor(other, otherKind) : undefined
+  const leftFile = fileFor(source.letter, source.kind)
+  const leftLabel = source.kind === 'mri' ? m.mriVideo : m.animationVideo
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[10050] flex items-end justify-center bg-ink/45 p-3 sm:items-center sm:p-6"
+      className="fixed inset-0 z-[10050] flex items-end justify-center bg-ink/45 p-3 sm:items-center sm:p-5"
       role="presentation"
       onClick={onClose}
     >
@@ -131,7 +171,7 @@ export function CompareOverlay({ open, onClose, type, current, letters }: Compar
         role="dialog"
         aria-modal="true"
         aria-label={m.compareAria}
-        className="max-h-[min(92vh,52rem)] w-full max-w-5xl overflow-y-auto rounded-md border border-hanji-border bg-hanji px-4 py-4 shadow-2xl sm:px-6 sm:py-5"
+        className="max-h-[94vh] w-[min(96vw,90rem)] overflow-y-auto rounded-md border border-hanji-border bg-hanji px-4 py-4 shadow-2xl sm:px-7 sm:py-5"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between gap-3">
@@ -144,21 +184,35 @@ export function CompareOverlay({ open, onClose, type, current, letters }: Compar
             {m.compareClose}
           </button>
         </div>
-        <div className="grid gap-6 md:grid-cols-2">
-          <LetterPane
-            letter={current}
-            type={type}
-            mriLabel={m.mriVideo}
-            animationLabel={m.animationVideo}
-          />
-          <div className="min-w-0">
-            <label className="mb-2 block font-sans text-[13px] font-medium text-ink-muted" htmlFor="compare-letter">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-x-8 md:gap-y-3">
+          <p className="font-sans text-[13px] font-medium text-ink-muted md:col-start-1 md:row-start-1">
+            {leftLabel}
+          </p>
+          <div className="aspect-video w-full overflow-hidden rounded-sm bg-black md:col-start-1 md:row-start-2">
+            {leftFile ? (
+              <VideoPlayer
+                fileName={leftFile}
+                type={type}
+                videoType={source.kind}
+                playbackRate={leftRate}
+              />
+            ) : null}
+          </div>
+          <div className="md:col-start-1 md:row-start-3">
+            <SpeedButtons rate={leftRate} onChange={setLeftRate} m={m} />
+          </div>
+
+          <div className="md:col-start-2 md:row-start-1">
+            <label className="mb-2 block font-sans text-[13px] font-medium text-ink-muted" htmlFor="compare-jamo">
               {m.comparePick}
             </label>
             <select
-              id="compare-letter"
+              id="compare-jamo"
               value={otherId}
-              onChange={(event) => setOtherId(event.target.value)}
+              onChange={(event) => {
+                setOtherId(event.target.value)
+                setOtherKind(null)
+              }}
               className="w-full rounded-sm border border-hanji-border bg-hanji-card px-3 py-2 font-sans text-sm text-ink"
             >
               <option value="">{m.comparePick}</option>
@@ -168,20 +222,45 @@ export function CompareOverlay({ open, onClose, type, current, letters }: Compar
                 </option>
               ))}
             </select>
-            {other ? (
-              <div className="mt-4">
-                <LetterPane
-                  letter={other}
-                  type={type}
-                  mriLabel={m.mriVideo}
-                  animationLabel={m.animationVideo}
-                />
+            {mediaKinds.length > 0 ? (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {mediaKinds.map((kind) => {
+                  const on = otherKind === kind
+                  return (
+                    <button
+                      key={kind}
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() => setOtherKind(kind)}
+                      className={`inline-flex items-center rounded-full border px-3.5 py-1.5 font-sans text-[13px] font-medium transition-colors ${
+                        on
+                          ? 'border-gold/55 bg-gold/15 text-ink'
+                          : 'border-hanji-border bg-hanji-card/80 text-ink-soft hover:border-gold/45 hover:text-ink dark:bg-white/[0.04]'
+                      }`}
+                    >
+                      {kind === 'mri' ? m.mriVideo : m.animationVideo}
+                    </button>
+                  )
+                })}
               </div>
+            ) : null}
+          </div>
+          <div className="aspect-video w-full overflow-hidden rounded-sm bg-black md:col-start-2 md:row-start-2">
+            {other && otherKind && rightFile ? (
+              <VideoPlayer
+                fileName={rightFile}
+                type={type}
+                videoType={otherKind}
+                playbackRate={rightRate}
+              />
             ) : (
-              <p className="mt-6 rounded-sm border border-dashed border-hanji-border px-4 py-8 text-center font-sans text-sm leading-relaxed text-ink-muted">
+              <p className="flex h-full items-center justify-center px-6 text-center font-sans text-sm leading-relaxed text-white/70">
                 {m.compareEmpty}
               </p>
             )}
+          </div>
+          <div className="md:col-start-2 md:row-start-3">
+            <SpeedButtons rate={rightRate} onChange={setRightRate} m={m} />
           </div>
         </div>
       </div>
