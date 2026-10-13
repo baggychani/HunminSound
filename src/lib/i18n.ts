@@ -1312,6 +1312,10 @@ const tr: Messages = {
   explore: 'İncele',
   language: 'Dil',
   languagePickerAria: 'Dil seçin',
+  themeLight: 'Açık',
+  themeDark: 'Koyu',
+  themeSystem: 'Sistem',
+  themeToggleAria: 'Görünüm temasını seçin',
   research: 'Araştırma',
   hunminjeongeum: 'Hunminjeongeum',
   hunminjeongeumCardDesc:
@@ -1381,6 +1385,10 @@ const id: Messages = {
   explore: 'Jelajahi',
   language: 'Bahasa',
   languagePickerAria: 'Pilih bahasa',
+  themeLight: 'Terang',
+  themeDark: 'Gelap',
+  themeSystem: 'Sistem',
+  themeToggleAria: 'Pilih tema tampilan',
   research: 'Penelitian',
   hunminjeongeum: 'Hunminjeongeum',
   hunminjeongeumCardDesc:
@@ -1450,6 +1458,10 @@ const th: Messages = {
   explore: 'สำรวจ',
   language: 'ภาษา',
   languagePickerAria: 'เลือกภาษา',
+  themeLight: 'สว่าง',
+  themeDark: 'มืด',
+  themeSystem: 'ตามระบบ',
+  themeToggleAria: 'เลือกธีมการแสดงผล',
   research: 'งานวิจัย',
   hunminjeongeum: 'ฮุนมินจองอึม',
   hunminjeongeumCardDesc:
