@@ -6,6 +6,7 @@ import { useScrollToSymbolDetail } from '@/hooks/useScrollToSymbolDetail'
 import { usePhoneticsDeepLink } from '@/hooks/usePhoneticsDeepLink'
 import { ScrollSection } from '@/components/ui/ScrollSection'
 import { DualVideoPlayer } from '@/components/ui/DualVideoPlayer'
+import { CompareCatalogProvider, toCompareLetter } from '@/components/showcase/phonetics/CompareOverlay'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import { TranslatedDescription } from '@/components/showcase/TranslatedDescription'
@@ -260,7 +261,10 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
     transition: `opacity ${chartOpacity === 0 ? CHART_FADE_OUT_MS : CHART_FADE_IN_MS}ms ease-out`,
   }
 
+  const compareLetters = useMemo(() => consonants.map(toCompareLetter), [consonants])
+
   return (
+    <CompareCatalogProvider letters={compareLetters}>
     <div>
       {displayMode === 'hunmin' ? (
         <div style={chartFadeStyle}>
@@ -343,6 +347,7 @@ export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantCha
         </>
       )}
     </div>
+    </CompareCatalogProvider>
   )
 }
 
@@ -401,6 +406,7 @@ function DetailPanel({
         animationLabel={animationLabel}
         mriLabel={mriLabel}
         pictogramLabel={pictogramLabel}
+        compareLetter={toCompareLetter(item)}
       />
       <div className="mt-6 rounded-[3px] border border-[#e3d5c0] bg-[#f4ecdf] px-4 py-4 dark:border-white/10 dark:bg-white/[0.05] sm:px-5 sm:py-4">
         <TranslatedDescription

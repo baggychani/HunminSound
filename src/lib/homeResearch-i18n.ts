@@ -160,7 +160,7 @@ export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
   },
   hi: {
     homeResearchLabel: 'वैज्ञानिक दृष्टिकोण',
-    homeResearchTitle: 'एमआरआई (MRI) द्वारा अनावरण किए गए हुनमिंजेओंगम के रहस्य',
+    homeResearchTitle: 'एमआरआई (MRI) द्वारा अनावरण किए गए हुनमिनजोंगम के रहस्य',
     homeResearchDesc1:
       'राजा सेजोंग ने 580 वर्ष पहले मानव आवाज अंगों का सटीक अवलोकन करके हंगुल का निर्माण किया था।',
     homeResearchDesc2:

@@ -160,8 +160,8 @@ export default function HomePage() {
 
           <div className="flex flex-col items-center text-center translate-x-[clamp(0.25rem,2vw,0.75rem)] sm:h-[78%] sm:max-h-[78%] sm:min-h-0 sm:justify-center sm:translate-x-[clamp(0.5rem,2.5vw,1rem)] sm:[container-type:size] lg:translate-x-0">
             <p
-              className={`shrink-0 font-serif font-medium text-[15px] tracking-wide text-ink-muted sm:text-[clamp(0.625rem,3.2cqh,1.0625rem)] ${
-                lang === 'hi' ? 'font-devanagari normal-case tracking-normal' : ''
+              className={`shrink-0 font-medium text-[15px] text-ink-muted sm:text-[clamp(0.625rem,3.2cqh,1.0625rem)] ${
+                lang === 'hi' ? 'font-devanagari normal-case tracking-normal' : 'font-serif tracking-wide'
               }`}
               lang={lang === 'hi' ? 'hi' : undefined}
             >
@@ -188,8 +188,8 @@ export default function HomePage() {
             </div>
 
             <p
-              className={`relative mt-3 w-full max-w-[min(100%,45rem)] shrink-0 break-keep px-1 font-serif font-medium text-base leading-loose text-ink-soft [overflow-wrap:break-word] sm:-top-[5cqh] sm:mt-[clamp(0.5rem,2.74cqh,1rem)] sm:px-0 sm:max-w-[46rem] sm:text-[clamp(0.625rem,3.1cqh,1.0625rem)] ${
-                lang === 'hi' ? 'font-devanagari' : ''
+              className={`relative mt-3 w-full max-w-[min(100%,45rem)] shrink-0 break-keep px-1 font-medium text-base leading-loose text-ink-soft [overflow-wrap:break-word] sm:-top-[5cqh] sm:mt-[clamp(0.5rem,2.74cqh,1rem)] sm:px-0 sm:max-w-[46rem] sm:text-[clamp(0.625rem,3.1cqh,1.0625rem)] ${
+                lang === 'hi' ? 'font-devanagari tracking-normal' : 'font-serif'
               }`}
               lang={lang === 'hi' ? 'hi' : undefined}
             >

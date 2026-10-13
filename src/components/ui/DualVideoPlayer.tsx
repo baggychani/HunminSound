@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { MEDIA_MANIFEST } from '@/data/mediaManifest'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
+import { CompareOverlay, useCompareCatalog, type CompareLetter } from '@/components/showcase/phonetics/CompareOverlay'
 import { VideoPlayer } from './VideoPlayer'
 
 interface DualVideoPlayerProps {
@@ -15,6 +16,7 @@ interface DualVideoPlayerProps {
   animationLabel: string
   mriLabel: string
   pictogramLabel?: string
+  compareLetter?: CompareLetter
 }
 
 /** 실제로 준비된 파일만 있다고 취급 — 아직 없는 건 "준비 중" 대신 그 영역 자체를 노출하지 않는다 */
@@ -59,9 +61,12 @@ export function DualVideoPlayer({
   animationLabel,
   mriLabel,
   pictogramLabel = '상형도',
+  compareLetter,
 }: DualVideoPlayerProps) {
   const { lang } = useLang()
   const m = getMessages(lang)
+  const catalog = useCompareCatalog()
+  const [compareOpen, setCompareOpen] = useState(false)
   const showPictogram = hasFile(MEDIA_MANIFEST.pictograms, pictogramFileName)
   const showAnimation = hasFile(MEDIA_MANIFEST[type].animation, animationFileName)
   const showMri = hasFile(MEDIA_MANIFEST[type].mri, mriFileName)
@@ -125,11 +130,24 @@ export function DualVideoPlayer({
           >
             {m.halfSpeed}
           </button>
-          {/* 비교 창은 다음 작업에서 연다. 지금은 자리만 둔다. */}
-          <button type="button" aria-label={m.compareAria} className={`${controlClass} ${controlOff}`}>
+          <button
+            type="button"
+            aria-label={m.compareAria}
+            onClick={() => setCompareOpen(true)}
+            className={`${controlClass} ${controlOff}`}
+          >
             {m.compare}
           </button>
         </div>
+      ) : null}
+      {compareLetter ? (
+        <CompareOverlay
+          open={compareOpen}
+          onClose={() => setCompareOpen(false)}
+          type={type}
+          current={compareLetter}
+          letters={catalog}
+        />
       ) : null}
     </div>
   )

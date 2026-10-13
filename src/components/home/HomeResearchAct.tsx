@@ -145,7 +145,9 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true, margin: '-20px' }}
-                  className="font-serif text-[clamp(1.65rem,4.5vw,2.5rem)] font-bold leading-[1.24] tracking-tight text-white sm:text-[2.6667em]"
+                  className={`text-[clamp(1.65rem,4.5vw,2.5rem)] font-bold leading-[1.35] text-white sm:text-[2.6667em] ${
+                    lang === 'hi' ? 'font-devanagari tracking-normal' : 'font-serif tracking-tight'
+                  }`}
                 >
                   {m.homeResearchTitle}
                 </motion.h2>

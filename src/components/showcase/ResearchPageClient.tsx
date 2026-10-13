@@ -708,7 +708,13 @@ export function ResearchPageClient({ content }: Props) {
           Research
         </motion.p>
         <h1
-          className={`mb-6 leading-none text-ink ${lang === 'ko' ? 'font-jamo' : 'font-serif'}`}
+          className={`mb-6 text-ink ${
+            lang === 'ko'
+              ? 'font-jamo leading-none'
+              : lang === 'hi'
+                ? 'font-devanagari leading-[1.45]'
+                : 'font-serif leading-none'
+          }`}
           style={{ fontSize: 'clamp(2.25rem, 5.5vw, 3.5rem)' }}
           dir={lang === 'ar' ? 'rtl' : 'ltr'}
           lang={lang === 'ko' ? 'ko' : lang}
