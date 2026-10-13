@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { useSiteMessages } from '@/hooks/useSiteMessages'
@@ -82,7 +82,14 @@ const INQUIRY_TYPES = [
   'contactTypeGeneral',
 ] as const
 
-export function HomeContactSection({ linkFormOnMobile = false }: { linkFormOnMobile?: boolean }) {
+export function HomeContactSection({
+  linkFormOnMobile = false,
+  formOnly = false,
+}: {
+  linkFormOnMobile?: boolean
+  /** 폰 4막의 메시지 보내기. 제목·연락처·그림 없이 양식만. */
+  formOnly?: boolean
+}) {
   const { lang } = useLang()
   const { v2 } = useSiteMessages()
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
@@ -98,6 +105,15 @@ export function HomeContactSection({ linkFormOnMobile = false }: { linkFormOnMob
   })
   const pm = getPrivacyMessages(lang)
   const [consentOpen, setConsentOpen] = useState(false)
+
+  useEffect(() => {
+    if (!formOnly) return
+    try {
+      sessionStorage.setItem('home-mobile-act', '4')
+    } catch {
+      /* 저장이 막혀도 양식은 연다 */
+    }
+  }, [formOnly])
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -136,7 +152,8 @@ export function HomeContactSection({ linkFormOnMobile = false }: { linkFormOnMob
 
   return (
     <div id="contact" className="relative w-full">
-      <div className="relative grid gap-8 lg:grid-cols-2 lg:gap-12">
+      <div className={`relative grid gap-8 ${formOnly ? '' : 'lg:grid-cols-2 lg:gap-12'}`}>
+        {formOnly ? null : (
         <motion.div
           custom={0}
           variants={fadeUp}
@@ -147,7 +164,7 @@ export function HomeContactSection({ linkFormOnMobile = false }: { linkFormOnMob
           <h2 className="font-serif text-[clamp(1.65rem,4.5vw,2.5rem)] font-bold leading-[1.24] tracking-tight text-ink">
             {v2.contactTitle}
           </h2>
-          <p className={`mt-5 max-w-md font-sans font-normal leading-relaxed text-ink-soft sm:mt-6 sm:text-sm ${linkFormOnMobile ? 'text-[calc(0.875rem-0.5pt)]' : 'text-sm'}`}>
+          <p className={`mt-5 max-w-md font-sans font-normal leading-relaxed text-ink-soft sm:mt-6 sm:text-sm ${linkFormOnMobile ? 'text-[13px]' : 'text-sm'}`}>
             {formatContactDesc(v2.contactDesc, lang)}
           </p>
 
@@ -169,7 +186,14 @@ export function HomeContactSection({ linkFormOnMobile = false }: { linkFormOnMob
 
           {linkFormOnMobile ? (
             <Link
-              href="/contact"
+              href="/contact?form=1"
+              onClick={() => {
+                try {
+                  sessionStorage.setItem('home-mobile-act', '4')
+                } catch {
+                  /* 저장이 막혀도 이동은 한다 */
+                }
+              }}
               className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-sm bg-gold px-4 py-3.5 font-sans text-sm font-medium text-hanji sm:hidden"
             >
               {v2.contactFormTitle}
@@ -188,6 +212,7 @@ export function HomeContactSection({ linkFormOnMobile = false }: { linkFormOnMob
             />
           </div>
         </motion.div>
+        )}
 
         <motion.form
           custom={1}
@@ -196,7 +221,7 @@ export function HomeContactSection({ linkFormOnMobile = false }: { linkFormOnMob
           whileInView="show"
           viewport={{ once: true, margin: '-40px' }}
           onSubmit={onSubmit}
-          className={`relative rounded-sm border border-hanji-border/60 bg-hanji/75 p-6 backdrop-blur-md sm:p-7 h-short:p-5 h-short:sm:p-5 dark:bg-hanji/65 ${linkFormOnMobile ? 'max-sm:hidden' : ''}`}
+          className={`relative rounded-sm border border-hanji-border/60 bg-hanji/75 p-6 backdrop-blur-md sm:p-7 h-short:p-5 h-short:sm:p-5 dark:bg-hanji/65 ${linkFormOnMobile && !formOnly ? 'max-sm:hidden' : ''}`}
         >
           <h3 className="font-serif text-lg font-bold text-ink">{v2.contactFormTitle}</h3>
           <p className="mt-2 font-sans text-xs text-ink-muted">{v2.contactFormDesc}</p>

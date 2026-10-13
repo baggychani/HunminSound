@@ -6,10 +6,15 @@ export const metadata: Metadata = {
   description: '세종말소리 연구 협력과 문의 메시지를 보냅니다.',
 }
 
-export default function ContactPage() {
+export default function ContactPage({
+  searchParams,
+}: {
+  searchParams?: { form?: string }
+}) {
+  const formOnly = searchParams?.form === '1'
   return (
-    <div className="site-container page-shell py-10 sm:py-16">
-      <HomeContactSection />
+    <div className={`site-container page-shell ${formOnly ? 'py-6 sm:py-16' : 'py-10 sm:py-16'}`}>
+      <HomeContactSection formOnly={formOnly} />
     </div>
   )
 }

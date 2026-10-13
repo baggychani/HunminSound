@@ -159,7 +159,7 @@ export const HomeResearchAct = forwardRef<HTMLElement>(function HomeResearchAct(
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true, margin: '-20px' }}
-                  className={`mt-8 font-sans text-[calc(0.875rem-0.5pt)] leading-relaxed text-slate-300/90 sm:mt-[1.6em] sm:text-[1em] sm:leading-[1.78] whitespace-pre-line ${
+                  className={`mt-8 font-sans text-[13px] leading-relaxed text-slate-300/90 sm:mt-[1.6em] sm:text-[1em] sm:leading-[1.78] whitespace-pre-line ${
                     lang === 'hi' ? 'font-devanagari' : ''
                   }`}
                   lang={lang === 'hi' ? 'hi' : undefined}

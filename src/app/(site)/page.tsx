@@ -124,6 +124,43 @@ export default function HomePage() {
   useEffect(() => {
     const root = pageRef.current
     if (!root) return
+
+    const restoreHero4 = () => {
+      if (window.matchMedia('(min-width: 640px)').matches) return
+      let fromForm = false
+      try {
+        fromForm = sessionStorage.getItem('home-mobile-act') === '4'
+      } catch {
+        return
+      }
+      if (!fromForm) return
+      const w = root.clientWidth
+      if (w < 1) return
+      const prev = root.style.scrollBehavior
+      root.style.scrollBehavior = 'auto'
+      root.scrollLeft = w * 3
+      root.style.scrollBehavior = prev
+      try {
+        sessionStorage.removeItem('home-mobile-act')
+      } catch {
+        /* ignore */
+      }
+    }
+
+    restoreHero4()
+    const raf = requestAnimationFrame(restoreHero4)
+    const timer = window.setTimeout(restoreHero4, 180)
+    window.addEventListener('pageshow', restoreHero4)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.clearTimeout(timer)
+      window.removeEventListener('pageshow', restoreHero4)
+    }
+  }, [])
+
+  useEffect(() => {
+    const root = pageRef.current
+    if (!root) return
     const onScroll = () => {
       if (window.matchMedia('(min-width: 640px)').matches) return
       const w = root.clientWidth
@@ -201,7 +238,7 @@ export default function HomePage() {
             </div>
 
             <p
-              className={`relative mt-2 line-clamp-4 w-full max-w-[min(100%,45rem)] shrink-0 break-keep px-1 font-medium text-sm leading-relaxed text-ink-soft [overflow-wrap:break-word] sm:-top-[5cqh] sm:mt-[clamp(0.5rem,2.74cqh,1rem)] sm:line-clamp-none sm:px-0 sm:max-w-[46rem] sm:text-[clamp(0.625rem,3.1cqh,1.0625rem)] sm:leading-loose ${
+              className={`relative mt-2 line-clamp-4 w-full max-w-[min(100%,45rem)] shrink-0 break-keep px-1 font-medium text-[13px] leading-relaxed text-ink-soft [overflow-wrap:break-word] sm:-top-[5cqh] sm:mt-[clamp(0.5rem,2.74cqh,1rem)] sm:line-clamp-none sm:px-0 sm:max-w-[46rem] sm:text-[clamp(0.625rem,3.1cqh,1.0625rem)] sm:leading-loose ${
                 lang === 'hi' ? 'font-devanagari tracking-normal' : 'font-serif'
               }`}
               lang={lang === 'hi' ? 'hi' : undefined}
