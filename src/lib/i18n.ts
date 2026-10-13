@@ -1318,6 +1318,9 @@ const tr: Messages = {
     'Sejong’un 1443’te yarattığı Hunminjeongeum’da biçim benzetmesi ile boğumlanma biliminin buluşmasını inceler.',
   hunminjeongeumCaption: '訓民正音 · 1443’te yaratıldı · 1446’da yayımlandı',
   footerRight: 'Hunminjeongeum’un yaratılış ilkelerine bilimsel bir yeniden bakış',
+  researchSec1: 'Araştırma ekibi',
+  researchSec2: 'Amaç ve önem',
+  researchSec3: 'Proje bilgisi',
 }
 
 /** 인도네시아어 — 메인·메뉴. 훈민정음 본문 등 나머지는 영어. */
@@ -1344,6 +1347,9 @@ const id: Messages = {
     'Menelusuri pertemuan prinsip bentuk dan ilmu artikulasi dalam Hunminjeongeum yang diciptakan Sejong pada tahun 1443.',
   hunminjeongeumCaption: '訓民正音 · Diciptakan 1443 · Diumumkan 1446',
   footerRight: 'Tinjauan ilmiah atas prinsip penciptaan Hunminjeongeum',
+  researchSec1: 'Tim peneliti',
+  researchSec2: 'Tujuan dan makna',
+  researchSec3: 'Informasi proyek',
 }
 
 /** 태국어 — 메인·메뉴. 훈민정음 본문 등 나머지는 영어. */
@@ -1370,6 +1376,9 @@ const th: Messages = {
     'สำรวจจุดที่หลักการถอดแบบอวัยวะพบกับศาสตร์การออกเสียง ในฮุนมินจองอึมที่พระเจ้าเซจงสร้างขึ้นในปี 1443',
   hunminjeongeumCaption: '訓民正音 · สร้างปี 1443 · ประกาศปี 1446',
   footerRight: 'การทบทวนเชิงวิทยาศาสตร์ต่อหลักการสร้างอักษรฮุนมินจองอึม',
+  researchSec1: 'คณะวิจัย',
+  researchSec2: 'เป้าหมายและความสำคัญ',
+  researchSec3: 'ข้อมูลโครงการ',
 }
 
 export const messages: Record<Lang, Messages> = {

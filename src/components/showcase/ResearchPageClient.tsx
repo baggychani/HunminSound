@@ -870,7 +870,7 @@ export function ResearchPageClient({ content }: Props) {
           <SubsectionReveal>
             <InfoTable
               rows={taskInfo.rows.map((row, i) => ({
-                label: row.label,
+                label: t(`taskInfo.rows.${i}.label`, row.label),
                 value: t(`taskInfo.rows.${i}.value`, row.value),
               }))}
             />
