@@ -84,6 +84,40 @@ function BodyText({ text }: { text: string }) {
   return <p className="font-sans text-[0.97rem] leading-[2.05] text-ink-soft"><RichText text={text} /></p>
 }
 
+const SIGNIFICANCE_LABELS = ['제자 원리', '문자의 성격', '보편성'] as const
+
+function SignificanceClaims({
+  paragraphs,
+  label,
+}: {
+  paragraphs: string[]
+  label: (index: number) => string
+}) {
+  return (
+    <div className="max-w-[38rem]">
+      {paragraphs.map((text, i) => {
+        const heading = label(i)
+        return (
+          <SubsectionReveal key={i}>
+            <article className={i === 0 ? '' : 'mt-7 border-t border-hanji-border/55 pt-7 sm:mt-8 sm:pt-8'}>
+              {heading ? (
+                <h3 className="mb-3 font-sans text-[11px] tracking-[0.22em] text-gold">{heading}</h3>
+              ) : null}
+              <p
+                className={`font-sans leading-[1.85] ${
+                  i === 0 ? 'text-[1.0625rem] text-ink' : 'text-[0.97rem] text-ink-soft'
+                }`}
+              >
+                <RichText text={text} />
+              </p>
+            </article>
+          </SubsectionReveal>
+        )
+      })}
+    </div>
+  )
+}
+
 function BulletItem({ label, text }: { label?: string; text: string }) {
   return (
     <div className="flex gap-3 font-sans text-[0.95rem] leading-relaxed text-ink-soft">
@@ -553,6 +587,7 @@ export function ResearchPageClient({ content }: Props) {
       { key: 'label.vowelSystem', ko: '모음 체계' },
       { key: 'label.consonantSystem', ko: '자음 체계' },
       { key: 'label.techDev', ko: '기술 개발' },
+      ...SIGNIFICANCE_LABELS.map((ko, i) => ({ key: `significance.labels.${i}`, ko })),
       // 테이블 헤더
       { key: 'table.field', ko: '분야' },
       { key: 'table.methodRole', ko: '역할' },
@@ -806,13 +841,10 @@ export function ResearchPageClient({ content }: Props) {
         </SplitSection>
 
         <SplitSection id="section-significance" index={4} title={t('section.significance', '연구의 의의')}>
-          <div className="space-y-7 sm:space-y-8">
-            {significance.paragraphs.map((p, i) => (
-              <SubsectionReveal key={i}>
-                <BodyText text={t(`significance.paragraphs.${i}`, p)} />
-              </SubsectionReveal>
-            ))}
-          </div>
+          <SignificanceClaims
+            paragraphs={significance.paragraphs.map((p, i) => t(`significance.paragraphs.${i}`, p))}
+            label={(i) => t(`significance.labels.${i}`, SIGNIFICANCE_LABELS[i] ?? '')}
+          />
         </SplitSection>
 
         <SplitSection id="section-team" index={5} title={m.researchSec1} muted>
