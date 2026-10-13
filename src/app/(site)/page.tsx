@@ -126,9 +126,9 @@ export default function HomePage() {
     if (!root) return
     const onScroll = () => {
       if (window.matchMedia('(min-width: 640px)').matches) return
-      const h = root.clientHeight
-      if (h < 1) return
-      setMobileAct(Math.min(3, Math.max(0, Math.round(root.scrollTop / h))))
+      const w = root.clientWidth
+      if (w < 1) return
+      setMobileAct(Math.min(3, Math.max(0, Math.round(root.scrollLeft / w))))
     }
     root.addEventListener('scroll', onScroll, { passive: true })
     return () => root.removeEventListener('scroll', onScroll)
@@ -296,7 +296,7 @@ export default function HomePage() {
             onClick={() => {
               const root = pageRef.current
               if (!root) return
-              root.scrollTo({ top: index * root.clientHeight, behavior: 'smooth' })
+              root.scrollTo({ left: index * root.clientWidth, behavior: 'smooth' })
             }}
             className={`pointer-events-auto h-2 w-2 rounded-full ${
               mobileAct === index ? 'bg-gold' : 'bg-gold/35'
