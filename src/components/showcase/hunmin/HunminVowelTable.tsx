@@ -210,7 +210,7 @@ export function HunminVowelTable({
   const activeSymbol = vowels.find((vowel) => vowel._id === activeId)?.symbol
 
   return (
-    <div className="hunmin-consonant-scroll">
+    <div className="hunmin-consonant-scroll hunmin-vowel-scroll">
       <div
         className="hunmin-vowel-table"
         role="table"
@@ -284,7 +284,7 @@ export function HunminVowelTable({
                 ))}
               </div>
               <div className="hunmin-consonant-table-span" role="row">
-                <ScrollSection isOpen={open}>
+                <ScrollSection className="hunmin-vowel-detail" isOpen={open}>
                   {open ? <div className="pb-5">{renderDetail()}</div> : null}
                 </ScrollSection>
               </div>

@@ -1003,6 +1003,21 @@
   }
 
   /* 모음 제자해 — 양성·음성·양음성이 행. 천지인 배너는 표 밖 */
+  /* 폰에서만: 표는 그대로 가로로 넘기고, 펼친 영상은 보이는 너비에 둔다 */
+  @media (max-width: 639px) {
+    .hunmin-vowel-scroll {
+      container-type: inline-size;
+    }
+
+    .hunmin-vowel-detail {
+      position: sticky;
+      inset-inline-start: 0;
+      width: 100cqi;
+      max-width: 100cqi;
+      box-sizing: border-box;
+    }
+  }
+
   .hunmin-vowel-table {
     display: grid;
     min-width: 72rem;

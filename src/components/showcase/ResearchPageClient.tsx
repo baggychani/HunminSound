@@ -539,12 +539,12 @@ function MethodTable({ intro, rows }: {
 
 function InfoTable({ rows }: { rows: { label: string; value: string }[] }) {
   return (
-    <table className="w-full border-collapse font-sans">
+    <table className="w-full border-collapse font-sans max-sm:table-fixed">
       <tbody>
         {rows.map((row) => (
           <tr key={row.label} className="border-b border-hanji-border/60 transition-colors last:border-0 hover:bg-hanji-warm/50">
-            <td className="w-48 whitespace-nowrap py-3 pr-8 align-top text-[0.95rem] font-medium text-ink-muted">{row.label}</td>
-            <td className="py-3 text-[0.9125rem] leading-[1.975] text-ink-soft"><RichText text={row.value} /></td>
+            <td className="w-48 whitespace-nowrap py-3 pr-8 align-top text-[0.95rem] font-medium text-ink-muted max-sm:w-[7.5rem] max-sm:whitespace-normal max-sm:pr-3 max-sm:text-[0.82rem] max-sm:leading-snug">{row.label}</td>
+            <td className="py-3 text-[0.9125rem] leading-[1.975] text-ink-soft max-sm:min-w-0 max-sm:text-[0.82rem] max-sm:leading-relaxed max-sm:[overflow-wrap:anywhere]"><RichText text={row.value} /></td>
           </tr>
         ))}
       </tbody>
