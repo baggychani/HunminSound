@@ -51,8 +51,10 @@ const RING_GAP = 8
 
 function metricsFor(w: number, h: number, fontSize: number): Metrics {
   const y = h * 0.5
-  const earth = { x: w * 0.42, y }
-  const person = { x: w * 0.7, y }
+  const gap = Math.min(w * 0.26, w / 2 - 56)
+  const earth = { x: w / 2, y }
+  const home = { x: earth.x - gap, y }
+  const person = { x: earth.x + gap, y }
   const em = fontSize / 144
   const stemHalf = 8.5 * em
   const barHalf = 7 * em
@@ -60,7 +62,6 @@ function metricsFor(w: number, h: number, fontSize: number): Metrics {
   const side = stemHalf + RING_GAP + RING_R
   const above = barUp + barHalf + RING_GAP + RING_R
   const below = barHalf + RING_GAP + RING_R - barUp
-  const home = { x: Math.max(36, w * 0.16), y }
   const oAt = { x: earth.x, y: earth.y - 9 * em }
   return {
     earth,
@@ -264,15 +265,7 @@ function AttachStage() {
       const prev = metricsRef.current
       metricsRef.current = next
       setMetrics(next)
-      if (draggingRef.current) return
-      if (placedRef.current) {
-        const slot = next.slots.find((item) => item.id === placedRef.current)
-        if (slot) {
-          x.set(slot.ink.x)
-          y.set(slot.ink.y)
-        }
-        return
-      }
+      if (draggingRef.current || placedRef.current) return
       const atHome =
         !prev || Math.hypot(x.get() - prev.home.x, y.get() - prev.home.y) < 2
       if (atHome) {
@@ -320,9 +313,16 @@ function AttachStage() {
       dx: x.get() - px,
       dy: y.get() - py - (coarse ? 28 : 0),
     }
-    animsRef.current = [animate(scale, wasPlaced ? 1 : 1.04, { duration: wasPlaced ? 0.16 : 0.12, ease: EASE })]
+    if (wasPlaced) {
+      const slot = current.slots.find((item) => item.id === wasPlaced)
+      if (slot) {
+        x.set(slot.ink.x)
+        y.set(slot.ink.y)
+      }
+      setPlacedBoth(null)
+    }
+    animsRef.current = [animate(scale, 1, { duration: 0.12, ease: EASE })]
     setDotHidden(false)
-    if (wasPlaced) setPlacedBoth(null)
     targetRef.current = { x: x.get(), y: y.get() }
     startLoop()
   }
@@ -352,9 +352,9 @@ function AttachStage() {
     if (!current) return
     const { slot, strokeDist } = aimedSlot(x.get(), y.get(), current)
     if (strokeDist < COMMIT) {
-      glideTo(slot.x, slot.y, 0.22, () => {
+      glideTo(slot.x, slot.y, 0.28, () => {
         setPlacedBoth(slot.id)
-        glideTo(slot.ink.x, slot.ink.y, 0.28, () => setDotHidden(true), 0.68)
+        setDotHidden(true)
       })
       return
     }
