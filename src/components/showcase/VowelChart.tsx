@@ -199,7 +199,11 @@ export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
   const fadeTimerRef = useRef<number | null>(null)
 
   useEffect(() => {
-    if (viewMode === displayMode) return
+    // 페이드 도중 원래 보기로 돌아오면 타이머가 지워지고, 투명도 0인 채로 이 분기에 걸린다
+    if (viewMode === displayMode) {
+      setChartOpacity(1)
+      return
+    }
 
     if (typeof window === 'undefined') return
 

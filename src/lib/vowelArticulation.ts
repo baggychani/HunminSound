@@ -42,7 +42,7 @@ export function getVowelArticulationText(
 ): string | undefined {
   if (lang === 'ko') return VOWEL_ARTICULATION_KO[symbol]
   if (lang === 'en') return VOWEL_ARTICULATION_EN[symbol]
-  /** 터키어·인도네시아어·태국어: 번역 미착수 — 정적 문구 없이 한국어 원문/실시간 번역 폴백에 맡김 */
-  if (lang === 'tr' || lang === 'id' || lang === 'th') return undefined
+  /** 터키어·인도네시아어·태국어는 번역 전이므로 영어 문구를 보여 준다 */
+  if (lang === 'tr' || lang === 'id' || lang === 'th') return VOWEL_ARTICULATION_EN[symbol]
   return VOWEL_ARTICULATION_BY_LANG[lang]?.[symbol]
 }

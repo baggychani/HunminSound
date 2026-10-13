@@ -40,6 +40,22 @@ function buildDescOptions(
   return { store, phonemeType, itemId }
 }
 
+/** 번역 API가 받지 않는 언어. 관리자 번역이 없으면 한국어가 아니라 영어를 보여 준다. */
+function isEnglishUntilTranslated(lang: Lang): boolean {
+  return lang === 'tr' || lang === 'id' || lang === 'th'
+}
+
+function textUntilOfficialTranslation(
+  item: DescItem,
+  lang: Lang,
+  descOptions: GetDescriptionOptions | undefined,
+): string | null {
+  if (!isEnglishUntilTranslated(lang)) return null
+  const own = getDescription(item, lang, descOptions)
+  if (!own.isFallback) return own.text
+  return getDescription(item, 'en', descOptions).text
+}
+
 /** 번들만 사용 SSR 초기값(localStorage는 마운트 후 적용해 hydration 불일치 방지) */
 function bundledOrCms(
   item: DescItem,
@@ -73,9 +89,17 @@ export function TranslatedDescription({
     [store, phonemeType, itemId],
   )
 
-  const [text, setText] = useState(() => bundledOrCms(item, lang, itemId, descOptions))
+  const [text, setText] = useState(
+    () => textUntilOfficialTranslation(item, lang, descOptions) ?? bundledOrCms(item, lang, itemId, descOptions),
+  )
 
   useEffect(() => {
+    const held = textUntilOfficialTranslation(item, lang, descOptions)
+    if (held !== null) {
+      setText(held)
+      return
+    }
+
     const base = bundledOrCms(item, lang, itemId, descOptions)
     setText(base)
 

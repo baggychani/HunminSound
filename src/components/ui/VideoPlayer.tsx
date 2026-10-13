@@ -35,14 +35,13 @@ export function VideoPlayer({
     <div className="rounded-sm overflow-hidden bg-ink/5">
       <video
         key={src}
+        src={src}
         controls
         playsInline
         onError={() => setBroken(true)}
         className="w-full aspect-video object-contain bg-black/80"
         aria-label={`${videoType === 'animation' ? '조음 애니메이션' : 'MRI'} 영상`}
-      >
-        <source src={src} type="video/mp4" />
-      </video>
+      />
     </div>
   )
 }
