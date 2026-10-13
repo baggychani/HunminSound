@@ -45,6 +45,7 @@ export function JamoText({
           key={idx}
           className={['font-jamo', jamoClassName].filter(Boolean).join(' ')}
           lang="ko"
+          dir="ltr"
         >
           {seg.text}
         </span>

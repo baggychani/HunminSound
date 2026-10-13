@@ -11,6 +11,8 @@
  * 출처: 세종 외 8인 원저(1446) / 김슬옹 편저(2025). ≪훈민정음 해례본 함께 읽기≫. 마리북스.
  */
 
+import { hunminPassageI18n } from '@/data/hunminPassageBundle'
+
 export type HunminPassageSectionId = 'initial' | 'medial' | 'appraisal'
 
 export type GlyphLinkTarget = 'consonants' | 'vowels'
@@ -45,6 +47,9 @@ export interface HunminPassage {
     vi?: string
     ru?: string
     ar?: string
+    tr?: string
+    id?: string
+    th?: string
   }
   /** 차트 페이지로 보낼 한글 자모. 카드 푸터에 작은 링크로 노출. */
   glyphLinks?: GlyphLink[]
@@ -744,7 +749,18 @@ const APPRAISAL: HunminPassage[] = [
 ]
 
 export const HUNMIN_PASSAGE_SECTIONS: HunminPassageSection[] = [
-  { id: 'initial', classicLabel: '初聲', passages: INITIAL },
-  { id: 'medial', classicLabel: '中聲', passages: MEDIAL },
-  { id: 'appraisal', classicLabel: '鄭麟趾序', passages: APPRAISAL },
+  { id: 'initial', classicLabel: '初聲', passages: applyHunminPassageI18n(INITIAL) },
+  { id: 'medial', classicLabel: '中聲', passages: applyHunminPassageI18n(MEDIAL) },
+  { id: 'appraisal', classicLabel: '鄭麟趾序', passages: applyHunminPassageI18n(APPRAISAL) },
 ]
+
+function applyHunminPassageI18n(passages: HunminPassage[]): HunminPassage[] {
+  return passages.map((passage) => {
+    const added: Record<string, string> = {}
+    for (const [lang, map] of Object.entries(hunminPassageI18n)) {
+      const text = map[passage.number]
+      if (text?.trim()) added[lang] = text
+    }
+    return { ...passage, translations: { ...passage.translations, ...added } }
+  })
+}

@@ -3,11 +3,6 @@
 import { useEffect, useState } from 'react'
 import type { Lang } from '@/lib/i18n'
 import {
-  MT_LS_PREFIX,
-  buildMtKey,
-  getBundledMachineTranslation,
-} from '@/lib/mtCache'
-import {
   makeHunminPassageOverrideKey,
   isSupportedTranslationLang,
   type SupportedTranslationLang,
@@ -16,27 +11,9 @@ import { usePublicOverridesStore } from '@/hooks/useSiteMessages'
 import { HunminPassageText } from './HunminPassageText'
 import type { HunminPassage } from '@/data/hunminjeongeumPassages'
 
-function readLs(key: string): string | undefined {
-  if (typeof window === 'undefined') return undefined
-  try {
-    const v = window.localStorage.getItem(MT_LS_PREFIX + key)
-    return v && v.trim() ? v : undefined
-  } catch {
-    return undefined
-  }
-}
-
-function writeLs(key: string, value: string) {
-  try {
-    window.localStorage.setItem(MT_LS_PREFIX + key, value)
-  } catch {
-    /* 비공개 모드 등 */
-  }
-}
-
-/** passage 데이터에 있는 정적 번역(en은 출처이므로 별도 처리) */
+/** 코드에 넣은 번역. 없으면 null. 영어 문장을 기계번역기에 넘기지 않는다. */
 function getStaticTranslation(passage: HunminPassage, lang: Lang): string | null {
-  if (lang === 'ko' || lang === 'en' || lang === 'de' || lang === 'es') return null
+  if (lang === 'ko' || lang === 'en') return null
   const t = passage.translations[lang as keyof typeof passage.translations]
   return typeof t === 'string' && t.trim() ? t : null
 }
@@ -68,9 +45,8 @@ interface TranslatedPassageTextProps {
  *
  * 우선순위:
  *  1) 해당 언어의 관리자 번역 오버라이드 (`hunminPassage:{number}:description:{lang}`)
- *  2) 데이터 파일에 박힌 정적 번역(en 외 일부 언어)
- *  3) MT 캐시(번들 + localStorage), 키는 "영어 출처 + 영어 source-prefix"로 격리
- *  4) `/api/translate` 자동 번역 호출 (source = 'en', text = 영어 출처)
+ *  2) 코드에 넣은 그 언어 번역
+ *  3) 없으면 영어 문장 전체. 기계번역은 하지 않는다.
  */
 export function TranslatedPassageText({ passage, lang, className }: TranslatedPassageTextProps) {
   const store = usePublicOverridesStore()
@@ -117,45 +93,8 @@ export function TranslatedPassageText({ passage, lang, className }: TranslatedPa
       setText(passage.korean)
       return
     }
-    /* 3·4) 자동 번역 — 영어 출처를 source로 mt-cache 키 생성, 없으면 API 호출.
-     *      itemId 접두에 ':en' 을 붙여 한국어 source 시절 캐시와 키가 충돌하지 않도록. */
-    const itemId = `hunminPassage:${passage.number}:en`
-    const key = buildMtKey(itemId, lang, englishSource)
-    const bundled = getBundledMachineTranslation(key)
-    const ls = readLs(key)
-    if (bundled) {
-      setText(bundled)
-      return
-    }
-    if (ls && ls !== englishSource) {
-      setText(ls)
-      return
-    }
-    /* 번역 도착 전 깜빡임 방지 — 일단 영어 출처를 임시 노출. */
+    /* 코드에 없는 언어는 영어 문장 전체를 보여 준다. 영어 문장을 잘라 기계번역하지 않는다. */
     setText(englishSource)
-
-    const ac = new AbortController()
-    fetch('/api/translate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text: englishSource,
-        source: 'en',
-        target: lang,
-        itemId,
-      }),
-      signal: ac.signal,
-    })
-      .then((r) => r.json())
-      .then((data: { translated?: string | null }) => {
-        if (typeof data.translated === 'string' && data.translated.trim()) {
-          setText(data.translated)
-          writeLs(key, data.translated)
-        }
-      })
-      .catch(() => {})
-
-    return () => ac.abort()
   }, [passage.number, passage.korean, lang, overrideValue, englishSource, passage])
 
   return (
