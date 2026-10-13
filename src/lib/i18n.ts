@@ -1294,22 +1294,82 @@ const ar: Messages = {
   admin: 'صفحة المسؤول',
 }
 
-/** 터키어 — 번역 미착수, 언어 선택지에만 노출(영문 콘텐츠로 폴백) */
+/** 터키어 — 메인·메뉴. 훈민정음 본문 등 나머지는 영어. */
 const tr: Messages = {
   ...en,
+  consonants: 'Ünsüzler',
+  vowels: 'Ünlüler',
+  homeSubtitle: 'Hunminjeongeum’un yaratılış ilkelerine bilimsel bir yeniden bakış',
+  homeIntroPart1:
+    'Sejong’un 1443’te Hunminjeongeum’u (訓民正音) yaratırken ortaya koyduğu biçim benzetmesi ilkesini,',
+  homeIntroPart2:
+    '580 yılı aşkın süre sonra bugün MRI görüntüleri, konuşma mühendisliği ve yapay zekâ ile doğruluyoruz.',
+  consonantsCount: '19',
+  vowelsCount: '21',
+  consonantsCardDesc:
+    'Patlamalı, sürtünmeli, yarı kapantılı, genizsil ve akıcı 19 ünsüzün boğumlanmasını inceler.',
+  vowelsCardDesc: '21 ünlünün dil konumu ve boğumlanma özelliklerine bakar.',
+  explore: 'İncele',
   language: 'Dil',
+  languagePickerAria: 'Dil seçin',
+  research: 'Araştırma',
+  hunminjeongeum: 'Hunminjeongeum',
+  hunminjeongeumCardDesc:
+    'Sejong’un 1443’te yarattığı Hunminjeongeum’da biçim benzetmesi ile boğumlanma biliminin buluşmasını inceler.',
+  hunminjeongeumCaption: '訓民正音 · 1443’te yaratıldı · 1446’da yayımlandı',
+  footerRight: 'Hunminjeongeum’un yaratılış ilkelerine bilimsel bir yeniden bakış',
 }
 
-/** 인도네시아어 — 번역 미착수, 언어 선택지에만 노출(영문 콘텐츠로 폴백) */
+/** 인도네시아어 — 메인·메뉴. 훈민정음 본문 등 나머지는 영어. */
 const id: Messages = {
   ...en,
+  consonants: 'Konsonan',
+  vowels: 'Vokal',
+  homeSubtitle: 'Tinjauan ilmiah atas prinsip penciptaan Hunminjeongeum',
+  homeIntroPart1:
+    'Prinsip sanghyeong yang diajukan Sejong saat menciptakan Hunminjeongeum (訓民正音) pada tahun 1443,',
+  homeIntroPart2:
+    'kini, lebih dari 580 tahun kemudian, kami buktikan melalui citra MRI, rekayasa wicara, dan teknologi AI.',
+  consonantsCount: '19',
+  vowelsCount: '21',
+  consonantsCardDesc:
+    'Menelusuri pelafalan 19 konsonan: letup, frikatif, afrikat, nasal, dan likuida.',
+  vowelsCardDesc: 'Melihat posisi lidah dan ciri artikulasi 21 vokal.',
+  explore: 'Jelajahi',
   language: 'Bahasa',
+  languagePickerAria: 'Pilih bahasa',
+  research: 'Penelitian',
+  hunminjeongeum: 'Hunminjeongeum',
+  hunminjeongeumCardDesc:
+    'Menelusuri pertemuan prinsip bentuk dan ilmu artikulasi dalam Hunminjeongeum yang diciptakan Sejong pada tahun 1443.',
+  hunminjeongeumCaption: '訓民正音 · Diciptakan 1443 · Diumumkan 1446',
+  footerRight: 'Tinjauan ilmiah atas prinsip penciptaan Hunminjeongeum',
 }
 
-/** 태국어 — 번역 미착수, 언어 선택지에만 노출(영문 콘텐츠로 폴백) */
+/** 태국어 — 메인·메뉴. 훈민정음 본문 등 나머지는 영어. */
 const th: Messages = {
   ...en,
+  consonants: 'พยัญชนะ',
+  vowels: 'สระ',
+  homeSubtitle: 'การทบทวนเชิงวิทยาศาสตร์ต่อหลักการสร้างอักษรฮุนมินจองอึม',
+  homeIntroPart1:
+    'หลักการถอดแบบอวัยวะที่พระเจ้าเซจงเสนอเมื่อสร้างฮุนมินจองอึม (訓民正音) ในปี 1443',
+  homeIntroPart2:
+    'วันนี้ กว่า 580 ปีให้หลัง เราพิสูจน์ด้วยภาพ MRI วิศวกรรมเสียงพูด และเทคโนโลยี AI',
+  consonantsCount: '19',
+  vowelsCount: '21',
+  consonantsCardDesc:
+    'สำรวจการออกเสียงพยัญชนะ 19 ตัว ทั้งเสียงระเบิด เสียงเสียดแทรก เสียงกักเสียดแทรก เสียงนาสิก และเสียงเปิด',
+  vowelsCardDesc: 'ดูตำแหน่งลิ้นและลักษณะการออกเสียงของสระ 21 ตัว',
+  explore: 'สำรวจ',
   language: 'ภาษา',
+  languagePickerAria: 'เลือกภาษา',
+  research: 'งานวิจัย',
+  hunminjeongeum: 'ฮุนมินจองอึม',
+  hunminjeongeumCardDesc:
+    'สำรวจจุดที่หลักการถอดแบบอวัยวะพบกับศาสตร์การออกเสียง ในฮุนมินจองอึมที่พระเจ้าเซจงสร้างขึ้นในปี 1443',
+  hunminjeongeumCaption: '訓民正音 · สร้างปี 1443 · ประกาศปี 1446',
+  footerRight: 'การทบทวนเชิงวิทยาศาสตร์ต่อหลักการสร้างอักษรฮุนมินจองอึม',
 }
 
 export const messages: Record<Lang, Messages> = {
