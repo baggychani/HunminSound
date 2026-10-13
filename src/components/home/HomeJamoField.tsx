@@ -47,28 +47,42 @@ const GLYPHS = [
  * depth는 덱의 가로 스크롤(px)에 곱한다. PC의 세로 시차와 같은 크기다.
  */
 const GLYPHS_MOBILE = [
-  { ch: 'ㆍ', left: '6%', top: '0.4rem', size: '1.7rem', dur: 16, delay: 0, rot: 4, op: 0.13, depth: -0.01 },
-  { ch: 'ㅅ', left: '20%', top: '1.95rem', size: '1.55rem', dur: 18, delay: 4.2, rot: -5, op: 0.11, depth: -0.006 },
-  { ch: 'ㅿ', left: '36%', top: '0.5rem', size: '2.05rem', dur: 19, delay: 2.4, rot: -6, op: 0.14, depth: 0.01 },
-  { ch: 'ㅁ', left: '52%', top: '2.2rem', size: '1.5rem', dur: 20, delay: 3.2, rot: -4, op: 0.1, depth: 0.004 },
-  { ch: 'ㆁ', left: '72%', top: '0.35rem', size: '1.9rem', dur: 14, delay: 1.1, rot: 5, op: 0.13, depth: -0.008 },
-  { ch: 'ㆍ', left: '88%', top: '0.7rem', size: '1.6rem', dur: 13, delay: 5, rot: -3, op: 0.12, depth: -0.008 },
+  { ch: 'ㆍ', left: '6%', top: '0.1rem', size: '1.7rem', dur: 16, delay: 0, rot: 4, op: 0.13, depth: -0.01 },
+  { ch: 'ㅅ', left: '20%', top: '0.28rem', size: '1.55rem', dur: 18, delay: 4.2, rot: -5, op: 0.11, depth: -0.006 },
+  { ch: 'ㅿ', left: '36%', top: '0.16rem', size: '2.05rem', dur: 19, delay: 2.4, rot: -6, op: 0.14, depth: 0.01 },
+  { ch: 'ㅁ', left: '52%', top: '0.42rem', size: '1.5rem', dur: 20, delay: 3.2, rot: -4, op: 0.1, depth: 0.004 },
+  { ch: 'ㆁ', left: '72%', top: '0.08rem', size: '1.9rem', dur: 14, delay: 1.1, rot: 5, op: 0.13, depth: -0.008 },
+  { ch: 'ㆍ', left: '88%', top: '0.3rem', size: '1.6rem', dur: 13, delay: 5, rot: -3, op: 0.12, depth: -0.008 },
 ] as const
+
+/** 1막·4막은 한지 글씨와 겹쳐 보여 더 옅게. 2·3막은 그대로. */
+function mobileEdgeFade(progress: number) {
+  const t = Math.min(1, Math.max(0, progress))
+  const third = 1 / 3
+  if (t <= third) return 0.58 + (0.42 * t) / third
+  if (t >= third * 2) return 0.58 + (0.42 * (1 - t)) / third
+  return 1
+}
 
 type Glyph = (typeof GLYPHS)[number] | (typeof GLYPHS_MOBILE)[number]
 
 /** 폰 덱의 scrollLeft. 세로 스크롤이 잠겨 있어 scrollY는 움직이지 않는다. */
 function useDeckScrollX() {
   const x = useMotionValue(0)
+  const fade = useMotionValue(mobileEdgeFade(0))
   useEffect(() => {
     const deck = document.querySelector('.home-mobile-deck')
     if (!deck) return
-    const onScroll = () => x.set(deck.scrollLeft)
+    const onScroll = () => {
+      x.set(deck.scrollLeft)
+      const span = deck.clientWidth * 3
+      fade.set(mobileEdgeFade(span > 0 ? deck.scrollLeft / span : 0))
+    }
     onScroll()
     deck.addEventListener('scroll', onScroll, { passive: true })
     return () => deck.removeEventListener('scroll', onScroll)
-  }, [x])
-  return x
+  }, [x, fade])
+  return { x, fade }
 }
 
 /** 시차 이동은 바깥 래퍼, 둥실거림(hero-jamo-drift)은 안쪽 글자 — transform이 서로 덮어쓰지 않게 분리 */
@@ -76,23 +90,26 @@ function JamoGlyph({
   g,
   inverse,
   scroll,
+  fade,
   axis,
 }: {
   g: Glyph
   inverse: boolean
   scroll: MotionValue<number>
+  fade: MotionValue<number>
   axis: 'x' | 'y'
 }) {
   const reduce = useReducedMotion()
   const shift = useTransform(scroll, (v) => (reduce ? 0 : v * g.depth))
-  // 3막(다크)에서는 흰 글자라 조금만 낮춘다.
-  const op = inverse ? g.op * (axis === 'x' ? 0.85 : 0.7) : g.op
+  // 3막(다크)에서는 흰 글자라 조금만 낮춘다. 폰 1·4막은 fade로 한 번 더 옅게.
+  const base = inverse ? g.op * (axis === 'x' ? 0.85 : 0.7) : g.op
+  const op = useTransform(fade, (f) => base * (axis === 'x' ? f : 1))
   return (
     <motion.div
       className="absolute"
       style={{ left: g.left, top: g.top, x: axis === 'x' ? shift : 0, y: axis === 'y' ? shift : 0 }}
     >
-      <span
+      <motion.span
         className={`hero-jamo-drift block select-none font-jamo ${axis === 'x' ? 'hero-jamo-drift-x' : ''} ${inverse ? 'text-white' : 'text-ink'}`}
         style={{
           fontSize: g.size,
@@ -104,7 +121,7 @@ function JamoGlyph({
         }}
       >
         {g.ch}
-      </span>
+      </motion.span>
     </motion.div>
   )
 }
@@ -116,13 +133,14 @@ interface HomeJamoFieldProps {
 
 export function HomeJamoField({ tone = 'ink' }: HomeJamoFieldProps) {
   const { scrollY } = useScroll()
-  const scrollX = useDeckScrollX()
+  const { x: scrollX, fade } = useDeckScrollX()
+  const desktopFade = useMotionValue(1)
   const inverse = tone === 'inverse'
   return (
     <>
       <div aria-hidden className="pointer-events-none fixed inset-0 z-[1] hidden overflow-hidden lg:block">
         {GLYPHS.map((g, i) => (
-          <JamoGlyph key={i} g={g} inverse={inverse} scroll={scrollY} axis="y" />
+          <JamoGlyph key={i} g={g} inverse={inverse} scroll={scrollY} fade={desktopFade} axis="y" />
         ))}
       </div>
       <div
@@ -130,7 +148,7 @@ export function HomeJamoField({ tone = 'ink' }: HomeJamoFieldProps) {
         className="home-jamo-mobile pointer-events-none fixed inset-x-0 z-[1] overflow-hidden sm:hidden"
       >
         {GLYPHS_MOBILE.map((g, i) => (
-          <JamoGlyph key={i} g={g} inverse={inverse} scroll={scrollX} axis="x" />
+          <JamoGlyph key={i} g={g} inverse={inverse} scroll={scrollX} fade={fade} axis="x" />
         ))}
       </div>
     </>

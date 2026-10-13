@@ -630,6 +630,7 @@
 
   .hero-jamo-drift-x {
     animation-name: jamo-drift-x;
+    line-height: 1;
   }
 
   @keyframes jamo-drift-x {
