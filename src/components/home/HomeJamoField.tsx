@@ -47,14 +47,12 @@ const GLYPHS = [
  * depth는 덱의 가로 스크롤(px)에 곱한다. PC의 세로 시차와 같은 크기다.
  */
 const GLYPHS_MOBILE = [
-  { ch: 'ㆍ', left: '5%', top: '0.35rem', size: '1.7rem', dur: 16, delay: 0, rot: 4, op: 0.16, depth: -0.018 },
-  { ch: 'ㅅ', left: '18%', top: '2.55rem', size: '1.55rem', dur: 18, delay: 4.2, rot: -5, op: 0.14, depth: 0.016 },
-  { ch: 'ㅿ', left: '34%', top: '0.45rem', size: '2.05rem', dur: 19, delay: 2.4, rot: -6, op: 0.18, depth: 0.02 },
-  { ch: 'ㄱ', left: '50%', top: '2.7rem', size: '1.75rem', dur: 15, delay: 0.8, rot: 7, op: 0.15, depth: -0.016 },
-  { ch: 'ㆁ', left: '64%', top: '0.3rem', size: '1.9rem', dur: 14, delay: 1.1, rot: 5, op: 0.16, depth: -0.014 },
-  { ch: 'ㄴ', left: '80%', top: '2.4rem', size: '1.65rem', dur: 17, delay: 1.6, rot: 5, op: 0.14, depth: 0.014 },
-  { ch: 'ㆍ', left: '92%', top: '0.55rem', size: '1.6rem', dur: 13, delay: 5, rot: -3, op: 0.15, depth: -0.02 },
-  { ch: 'ㅁ', left: '46%', top: '0.2rem', size: '1.45rem', dur: 20, delay: 3.2, rot: -4, op: 0.13, depth: 0.012 },
+  { ch: 'ㆍ', left: '6%', top: '0.4rem', size: '1.7rem', dur: 16, delay: 0, rot: 4, op: 0.13, depth: -0.01 },
+  { ch: 'ㅅ', left: '20%', top: '1.95rem', size: '1.55rem', dur: 18, delay: 4.2, rot: -5, op: 0.11, depth: -0.006 },
+  { ch: 'ㅿ', left: '36%', top: '0.5rem', size: '2.05rem', dur: 19, delay: 2.4, rot: -6, op: 0.14, depth: 0.01 },
+  { ch: 'ㅁ', left: '52%', top: '2.2rem', size: '1.5rem', dur: 20, delay: 3.2, rot: -4, op: 0.1, depth: 0.004 },
+  { ch: 'ㆁ', left: '72%', top: '0.35rem', size: '1.9rem', dur: 14, delay: 1.1, rot: 5, op: 0.13, depth: -0.008 },
+  { ch: 'ㆍ', left: '88%', top: '0.7rem', size: '1.6rem', dur: 13, delay: 5, rot: -3, op: 0.12, depth: -0.008 },
 ] as const
 
 type Glyph = (typeof GLYPHS)[number] | (typeof GLYPHS_MOBILE)[number]
