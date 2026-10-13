@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { MEDIA_MANIFEST } from '@/data/mediaManifest'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
@@ -29,27 +29,81 @@ function hasFile(list: readonly string[], fileName?: string): fileName is string
   return Boolean(fileName) && list.includes(fileName as string)
 }
 
+/** ㄱ.jpg → ㄱ-letter.png. 글자만 투명하게 얹은 겹침 그림이 있을 때 */
+function letterOverlayName(fileName: string): string | undefined {
+  const dot = fileName.lastIndexOf('.')
+  if (dot < 0) return undefined
+  const candidate = `${fileName.slice(0, dot)}-letter.png`
+  return hasFile(MEDIA_MANIFEST.pictograms, candidate) ? candidate : undefined
+}
+
 function PictogramImage({ fileName, label }: { fileName: string; label: string }) {
   const [broken, setBroken] = useState(false)
+  const [hover, setHover] = useState(false)
+  const [held, setHeld] = useState(false)
+  const pointer = useRef<'mouse' | 'touch' | 'key'>('mouse')
   const src = `/images/pictograms/${encodeURIComponent(fileName)}`
+  const letterName = letterOverlayName(fileName)
+  const letterSrc = letterName ? `/images/pictograms/${encodeURIComponent(letterName)}` : undefined
 
   useEffect(() => {
     setBroken(false)
+    setHover(false)
+    setHeld(false)
   }, [src])
 
   if (broken) return null
 
-  return (
+  const shown = hover || held
+  const frame = (
     <div className="relative aspect-video w-full overflow-hidden rounded-sm bg-black/90">
       <Image
         src={src}
-        alt={label}
+        alt={letterSrc ? '' : label}
         fill
         className="object-contain"
         sizes="(max-width: 640px) 100vw, 33vw"
         onError={() => setBroken(true)}
       />
+      {letterSrc ? (
+        <Image
+          src={letterSrc}
+          alt=""
+          fill
+          className={`pointer-events-none object-contain transition-opacity duration-700 ease-in-out ${shown ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100'}`}
+          sizes="(max-width: 640px) 100vw, 33vw"
+        />
+      ) : null}
     </div>
+  )
+
+  if (!letterSrc) return frame
+
+  return (
+    <button
+      type="button"
+      className="group block w-full cursor-pointer touch-manipulation bg-transparent p-0 text-left focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-gold/70"
+      aria-pressed={shown}
+      aria-label={label}
+      onPointerEnter={(e) => {
+        if (e.pointerType === 'mouse') setHover(true)
+      }}
+      onPointerLeave={(e) => {
+        if (e.pointerType === 'mouse') setHover(false)
+      }}
+      onPointerDown={(e) => {
+        pointer.current = e.pointerType === 'mouse' ? 'mouse' : 'touch'
+      }}
+      onKeyDown={() => {
+        pointer.current = 'key'
+      }}
+      onClick={() => {
+        if (pointer.current === 'mouse') return
+        setHeld((v) => !v)
+      }}
+    >
+      {frame}
+    </button>
   )
 }
 
