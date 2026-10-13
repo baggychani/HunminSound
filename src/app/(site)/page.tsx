@@ -233,9 +233,9 @@ export default function HomePage() {
       <section
         ref={act2Ref}
         id="home-act2"
-        className={`home-scroll-margin relative z-10 flex w-full max-sm:px-4 max-sm:py-3 max-sm:pb-10 ${heroHeightDesktop} flex-col sm:items-center sm:justify-center sm:[container-type:size]`}
+        className={`home-scroll-margin relative z-10 flex w-full max-sm:justify-center max-sm:px-5 max-sm:py-6 max-sm:pb-14 ${heroHeightDesktop} flex-col sm:items-center sm:justify-center sm:[container-type:size]`}
       >
-        <div className="relative z-10 grid h-full min-h-0 w-full grid-cols-1 grid-rows-3 gap-2 sm:h-auto sm:w-[70%] sm:max-w-[87.5rem] sm:grid-cols-2 sm:grid-rows-none sm:gap-[min(1.25rem,2.67cqh)]">
+        <div className="relative z-10 grid w-full max-sm:h-auto max-sm:flex-none grid-cols-1 grid-rows-none gap-3 sm:h-auto sm:w-[70%] sm:max-w-[87.5rem] sm:grid-cols-2 sm:grid-rows-none sm:gap-[min(1.25rem,2.67cqh)]">
         <NavCard
           compact
           lang={lang}
@@ -334,8 +334,8 @@ function HunminjeongeumCard({
     <Link
       href={href}
       onMouseMove={handleSpotlightMove}
-      className={`home-act2-nav-card spotlight-card group col-span-1 flex h-full min-h-0 flex-col overflow-hidden rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] sm:col-span-2 lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] ${
-        compact ? 'gap-2 p-3.5 sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
+      className={`home-act2-nav-card spotlight-card group col-span-1 flex h-full max-sm:h-auto min-h-0 flex-col overflow-hidden rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] sm:col-span-2 lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] ${
+        compact ? 'gap-3 px-6 py-5 sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
       }`}
     >
       <span className="sheen-sweep pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden />
@@ -406,8 +406,8 @@ function NavCard({
     <Link
       href={href}
       onMouseMove={handleSpotlightMove}
-      className={`home-act2-nav-card spotlight-card group flex h-full min-h-0 flex-col overflow-hidden rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] ${
-        compact ? 'gap-2 p-3.5 sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
+      className={`home-act2-nav-card spotlight-card group flex h-full max-sm:h-auto min-h-0 flex-col overflow-hidden rounded-sm border border-hanji-border/80 shadow-[0_1px_6px_rgb(var(--ink-rgb)/0.05)] transition-[background-color,box-shadow,border-color,transform] duration-300 hover:border-hanji-border hover:shadow-[0_2px_12px_rgb(var(--ink-rgb)/0.07)] lg:hover:-translate-y-1 lg:hover:shadow-[0_10px_28px_rgb(var(--ink-rgb)/0.1)] ${
+        compact ? 'gap-3 px-6 py-5 sm:gap-[min(1.25rem,2.67cqh)] sm:p-[min(2rem,4.27cqh)]' : 'gap-6 p-10 sm:p-12'
       }`}
     >
       <span className="sheen-sweep pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden />

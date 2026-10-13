@@ -1336,6 +1336,59 @@
     mix-blend-mode: screen;
   }
 
+  /* 폰 훈민정음 카드는 글자와 해례본이 같은 자리에 겹친다. 오른쪽만 옅게 남긴다. */
+  @media (max-width: 639px) {
+    .haeryebon-watermark-feather--mobile {
+      -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        transparent 30%,
+        rgba(0, 0, 0, 0.28) 52%,
+        rgba(0, 0, 0, 0.55) 68%,
+        #000 84%,
+        #000 100%
+      );
+      mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        transparent 30%,
+        rgba(0, 0, 0, 0.28) 52%,
+        rgba(0, 0, 0, 0.55) 68%,
+        #000 84%,
+        #000 100%
+      );
+    }
+
+    .haeryebon-watermark-feather--mobile.haeryebon-watermark-feather--left {
+      -webkit-mask-image: linear-gradient(
+        to left,
+        transparent 0%,
+        transparent 30%,
+        rgba(0, 0, 0, 0.28) 52%,
+        rgba(0, 0, 0, 0.55) 68%,
+        #000 84%,
+        #000 100%
+      );
+      mask-image: linear-gradient(
+        to left,
+        transparent 0%,
+        transparent 30%,
+        rgba(0, 0, 0, 0.28) 52%,
+        rgba(0, 0, 0, 0.55) 68%,
+        #000 84%,
+        #000 100%
+      );
+    }
+
+    .haeryebon-watermark-img {
+      opacity: 0.11;
+    }
+
+    .dark .haeryebon-watermark-img {
+      opacity: 0.1;
+    }
+  }
+
   /*
    * 연구 소개 카드 — 조음 단면 실루엣 워터마크 (우측, 은은한 은색)
    * 위치·스케일 → ResearchCardWatermark.tsx

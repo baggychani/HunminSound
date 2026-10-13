@@ -128,15 +128,16 @@ export function HomeContactSection({ linkFormOnMobile = false }: { linkFormOnMob
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: '-40px' }}
+          className={linkFormOnMobile ? 'max-sm:grid max-sm:grid-cols-[minmax(0,1fr)_9.25rem] max-sm:gap-x-4' : undefined}
         >
-          <h2 className="font-serif text-[clamp(1.65rem,4.5vw,2.5rem)] font-bold leading-[1.24] tracking-tight text-ink">
+          <h2 className={`font-serif text-[clamp(1.65rem,4.5vw,2.5rem)] font-bold leading-[1.24] tracking-tight text-ink ${linkFormOnMobile ? 'max-sm:col-start-1 max-sm:row-start-1' : ''}`}>
             {v2.contactTitle}
           </h2>
-          <p className="mt-5 max-w-md font-sans text-sm font-normal leading-relaxed text-ink-soft sm:mt-6">
+          <p className={`mt-5 max-w-md font-sans text-sm font-normal leading-relaxed text-ink-soft sm:mt-6 ${linkFormOnMobile ? 'max-sm:col-start-1 max-sm:row-start-2 max-sm:mt-3' : ''}`}>
             {formatContactDesc(v2.contactDesc, lang)}
           </p>
 
-          <div className="mt-6 space-y-2 font-sans text-sm">
+          <div className={`mt-6 space-y-2 font-sans text-sm ${linkFormOnMobile ? 'max-sm:col-span-2 max-sm:row-start-3 max-sm:mt-5' : ''}`}>
             <ContactItem icon={<MailIcon />} label={v2.contactEmail}>
               <a href="mailto:sejong@sejongkorea.org" className="text-ink-accent hover:text-gold">
                 sejong@sejongkorea.org
@@ -155,14 +156,14 @@ export function HomeContactSection({ linkFormOnMobile = false }: { linkFormOnMob
           {linkFormOnMobile ? (
             <Link
               href="/contact"
-              className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-sm bg-gold px-4 py-3.5 font-sans text-sm font-medium text-hanji sm:hidden"
+              className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-sm bg-gold px-4 py-3.5 font-sans text-sm font-medium text-hanji max-sm:col-span-2 max-sm:row-start-4 max-sm:mt-6 sm:hidden"
             >
               {v2.contactFormTitle}
               <span aria-hidden>→</span>
             </Link>
           ) : null}
 
-          <div className={`mt-6 w-full max-w-[15rem] rounded-sm border border-hanji-border/60 bg-white px-5 py-4 sm:max-w-[19rem] sm:px-6 sm:py-5 h-short:max-w-[15rem] h-short:px-5 h-short:py-4 h-short:sm:max-w-[15rem] h-short:sm:px-5 h-short:sm:py-4 ${linkFormOnMobile ? 'max-sm:hidden' : ''}`}>
+          <div className={`mt-6 w-full max-w-[15rem] rounded-sm border border-hanji-border/60 bg-white px-5 py-4 sm:max-w-[19rem] sm:px-6 sm:py-5 h-short:max-w-[15rem] h-short:px-5 h-short:py-4 h-short:sm:max-w-[15rem] h-short:sm:px-5 h-short:sm:py-4 ${linkFormOnMobile ? 'max-sm:col-start-2 max-sm:row-start-1 max-sm:row-span-2 max-sm:mt-0 max-sm:w-full max-sm:max-w-none max-sm:self-center max-sm:px-2 max-sm:py-2' : ''}`}>
             <Image
               src="/images/sejongorg.png"
               alt="세종대왕기념사업회"
