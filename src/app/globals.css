@@ -268,6 +268,17 @@
     scroll-snap-align: start;
     scroll-snap-stop: always;
   }
+
+  /* 한지와 거의 같던 카드를 따뜻하게 한 톤만 띄운다. 진한 면은 피한다. */
+  .home-act2-nav-card {
+    background-color: rgb(246 240 230);
+    border-color: rgb(214 204 188 / 0.95);
+  }
+
+  .dark .home-act2-nav-card {
+    background-color: rgb(46 42 38);
+    border-color: rgb(96 88 78 / 0.85);
+  }
 }
 
 @media (max-width: 639px) and (prefers-reduced-motion: no-preference) {
@@ -630,7 +641,6 @@
 
   .hero-jamo-drift-x {
     animation-name: jamo-drift-x;
-    line-height: 1;
   }
 
   @keyframes jamo-drift-x {

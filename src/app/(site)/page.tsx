@@ -285,7 +285,7 @@ export default function HomePage() {
 
       <nav
         aria-label="히어로 이동"
-        className="pointer-events-none fixed inset-x-0 bottom-3 z-30 flex justify-center gap-2 sm:hidden"
+        className="pointer-events-none fixed inset-x-0 bottom-4 z-30 flex justify-center gap-2 sm:hidden"
       >
         {[0, 1, 2, 3].map((index) => (
           <button
@@ -347,7 +347,7 @@ function HunminjeongeumCard({
             {label}
           </span>
         </div>
-        <span className="hidden font-sans text-xs text-ink-muted tracking-[0.06em] sm:inline sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{caption}</span>
+        <span className="font-sans text-xs text-ink-muted tracking-[0.06em] sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{caption}</span>
       </div>
 
       <div
@@ -359,7 +359,7 @@ function HunminjeongeumCard({
           <MagneticGlyph
             key={s}
             className={`font-jamo text-ink-muted group-hover:text-ink transition-colors inline-block ${
-              compact ? 'text-xl sm:text-[min(1.5rem,3.2cqh)] sm:leading-[1.17]' : 'text-2xl'
+              compact ? 'text-[1.15rem] sm:text-[min(1.5rem,3.2cqh)] sm:leading-[1.17]' : 'text-2xl'
             }`}
           >
             {s}
@@ -371,7 +371,7 @@ function HunminjeongeumCard({
         {description}
       </p>
 
-      <div className="relative z-10 flex items-center gap-2 mt-auto sm:text-[clamp(0.625rem,1.87cqh,0.875rem)]">
+      <div className="relative z-10 mt-auto hidden items-center gap-2 sm:flex sm:text-[clamp(0.625rem,1.87cqh,0.875rem)]">
         <span className="font-sans text-xs font-medium text-gold tracking-wider sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{explore}</span>
         <span className="text-gold group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform inline-block">
           →
@@ -417,7 +417,7 @@ function NavCard({
             {label}
           </span>
         </div>
-        <span className="hidden font-sans text-xs font-medium text-ink-muted sm:inline sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{count}</span>
+        <span className="font-sans text-xs font-medium text-ink-muted sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{count}</span>
       </div>
 
       <div
@@ -429,7 +429,7 @@ function NavCard({
           <MagneticGlyph
             key={symbol}
             className={`font-jamo text-ink-muted group-hover:text-ink transition-colors inline-block ${
-              compact ? 'text-xl sm:text-[min(1.5rem,3.2cqh)] sm:leading-[1.17]' : 'text-2xl'
+              compact ? 'text-[1.15rem] sm:text-[min(1.5rem,3.2cqh)] sm:leading-[1.17]' : 'text-2xl'
             }`}
           >
             {symbol}
@@ -445,7 +445,7 @@ function NavCard({
         {description}
       </p>
 
-      <div className="flex items-center gap-2 mt-auto sm:text-[clamp(0.625rem,1.87cqh,0.875rem)]">
+      <div className="mt-auto hidden items-center gap-2 sm:flex sm:text-[clamp(0.625rem,1.87cqh,0.875rem)]">
         <span className="font-sans text-xs font-medium text-gold tracking-wider sm:text-[clamp(0.625rem,1.87cqh,0.875rem)] sm:leading-[1.333]">{explore}</span>
         <span className="text-gold group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform inline-block">
           →

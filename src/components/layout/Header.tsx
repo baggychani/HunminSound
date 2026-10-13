@@ -171,7 +171,7 @@ export function Header() {
       ref={headerRef}
       className="sticky top-0 z-[10001] relative isolate border-b border-hanji-border bg-header shadow-[var(--header-shadow)]"
     >
-      <div className="site-container min-h-[3.5rem] py-3 sm:min-h-[4rem] flex flex-nowrap items-center justify-between gap-2 sm:gap-3">
+      <div className="site-container flex min-h-[3rem] flex-nowrap items-center justify-between gap-2 py-2 sm:min-h-[4rem] sm:gap-3 sm:py-3">
         <Link
           href="/"
           className="group flex min-w-0 flex-1 items-baseline gap-2 sm:flex-initial sm:shrink-0 sm:gap-3"
@@ -299,7 +299,7 @@ export function Header() {
             ref={mobileNavBtnRef}
             type="button"
             onClick={toggleMobileNav}
-            className={`flex h-10 w-10 items-center justify-center rounded-md transition-colors ${
+            className={`flex h-9 w-9 items-center justify-center rounded-md transition-colors ${
               mobileNavOpen ? 'text-ink-accent bg-hanji-warm' : 'text-ink-muted hover:bg-hanji-warm hover:text-ink'
             }`}
             aria-expanded={mobileNavOpen}
@@ -312,7 +312,7 @@ export function Header() {
             ref={mobileLangBtnRef}
             type="button"
             onClick={() => (langOpen ? setLangOpen(false) : openLang())}
-            className={`flex h-10 min-w-[2.75rem] flex-row items-center justify-center gap-0.5 rounded-md px-1 transition-colors ${
+            className={`flex h-9 min-w-[2.5rem] flex-row items-center justify-center gap-0.5 rounded-md px-1 transition-colors ${
               langOpen ? 'text-ink-accent bg-hanji-warm' : 'text-ink-muted hover:bg-hanji-warm hover:text-ink'
             }`}
             aria-expanded={langOpen}
