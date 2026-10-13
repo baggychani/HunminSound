@@ -622,6 +622,28 @@
     }
   }
 
+  /* 폰 자모 — 헤더 아래 좁은 띠. 둥실거림도 가로로만, 진해지는 폭도 작게. */
+  .home-jamo-mobile {
+    top: var(--site-header-h, 3.5rem);
+    height: 3.4rem;
+  }
+
+  .hero-jamo-drift-x {
+    animation-name: jamo-drift-x;
+  }
+
+  @keyframes jamo-drift-x {
+    0%,
+    100% {
+      transform: translateX(0) rotate(var(--drift-rot, 0deg));
+      opacity: var(--drift-op, 0.05);
+    }
+    50% {
+      transform: translateX(8px) rotate(calc(var(--drift-rot, 0deg) * -1));
+      opacity: calc(var(--drift-op, 0.05) * 1.25);
+    }
+  }
+
   /* ── 훈민정음 "책 페이지" — 목판본 광곽(테두리) + 한지 결 ──────────── */
   .book-page {
     position: relative;

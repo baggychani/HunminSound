@@ -1,9 +1,12 @@
 'use client'
 
-import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion'
+import { useEffect } from 'react'
+import { motion, useMotionValue, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion'
 
 /**
- * 홈 배경 — 한지 위에 은은히 떠 있는 자모(옛글자 포함) 장식. 데스크톱 전용.
+ * 홈 배경 — 한지 위에 은은히 떠 있는 자모(옛글자 포함) 장식.
+ * 데스크톱(lg)은 화면 전체에 두고 세로 스크롤에 맞춰 위아래로 조금 흐른다.
+ * 폰은 헤더 바로 아래 띠에만 두고, 좌우로 넘길 때 가로로만 조금 흐른다.
  * `fixed`로 뷰포트에 고정해서, 막을 넘나들어도 흩뿌린 위치가 그대로 유지된다
  * (예전엔 막마다 따로 자기 자리에 절대배치돼서 2막에서 배치가 확 바뀌어 보였음).
  * 1·2·4막은 이 ink 필드가 그대로 보이고, 3막은 불투명한 다크 배경이 이 필드를 덮는 대신
@@ -39,18 +42,58 @@ const GLYPHS = [
   { ch: 'ㆁ', left: '93%', top: '78%', size: '1.5rem', dur: 15, delay: 3.0, rot: -6, op: 0.09, depth: -0.014 },
 ] as const
 
-type Glyph = (typeof GLYPHS)[number]
+/**
+ * 폰 — 헤더 바로 아래 띠에만 둔다. 아래쪽에는 두지 않는다.
+ * depth는 덱의 가로 스크롤(px)에 곱한다. PC의 세로 시차와 같은 크기다.
+ */
+const GLYPHS_MOBILE = [
+  { ch: 'ㆍ', left: '5%', top: '0.15rem', size: '1.05rem', dur: 16, delay: 0, rot: 4, op: 0.07, depth: -0.018 },
+  { ch: 'ㅅ', left: '18%', top: '0.95rem', size: '0.95rem', dur: 18, delay: 4.2, rot: -5, op: 0.05, depth: 0.016 },
+  { ch: 'ㅿ', left: '9%', top: '1.7rem', size: '1.2rem', dur: 19, delay: 2.4, rot: -6, op: 0.045, depth: 0.022 },
+  { ch: 'ㄴ', left: '82%', top: '0.3rem', size: '1rem', dur: 17, delay: 1.6, rot: 5, op: 0.05, depth: 0.014 },
+  { ch: 'ㆍ', left: '93%', top: '1.15rem', size: '1.1rem', dur: 13, delay: 5, rot: -3, op: 0.06, depth: -0.02 },
+  { ch: 'ㅁ', left: '74%', top: '1.75rem', size: '0.95rem', dur: 20, delay: 2, rot: 3, op: 0.04, depth: -0.016 },
+] as const
 
-/** 시차 이동은 바깥 래퍼(y), 둥실거림(hero-jamo-drift)은 안쪽 글자 — transform이 서로 덮어쓰지 않게 분리 */
-function JamoGlyph({ g, inverse, scrollY }: { g: Glyph; inverse: boolean; scrollY: MotionValue<number> }) {
+type Glyph = (typeof GLYPHS)[number] | (typeof GLYPHS_MOBILE)[number]
+
+/** 폰 덱의 scrollLeft. 세로 스크롤이 잠겨 있어 scrollY는 움직이지 않는다. */
+function useDeckScrollX() {
+  const x = useMotionValue(0)
+  useEffect(() => {
+    const deck = document.querySelector('.home-mobile-deck')
+    if (!deck) return
+    const onScroll = () => x.set(deck.scrollLeft)
+    onScroll()
+    deck.addEventListener('scroll', onScroll, { passive: true })
+    return () => deck.removeEventListener('scroll', onScroll)
+  }, [x])
+  return x
+}
+
+/** 시차 이동은 바깥 래퍼, 둥실거림(hero-jamo-drift)은 안쪽 글자 — transform이 서로 덮어쓰지 않게 분리 */
+function JamoGlyph({
+  g,
+  inverse,
+  scroll,
+  axis,
+}: {
+  g: Glyph
+  inverse: boolean
+  scroll: MotionValue<number>
+  axis: 'x' | 'y'
+}) {
   const reduce = useReducedMotion()
-  const y = useTransform(scrollY, (v) => (reduce ? 0 : v * g.depth))
-  // 3막(다크)에서는 존재감을 낮춰 더 연하게
-  const op = inverse ? g.op * 0.7 : g.op
+  const shift = useTransform(scroll, (v) => (reduce ? 0 : v * g.depth))
+  // 3막(다크)에서는 존재감을 낮춘다. 폰 기본값이 이미 옅어서 그만큼만 더 낮춘다.
+  const op = inverse ? g.op * (axis === 'x' ? 0.85 : 0.7) : g.op
   return (
-    <motion.div className="absolute" style={{ left: g.left, top: g.top, y }}>
+    <motion.div
+      className="absolute"
+      style={{ left: g.left, top: g.top, x: axis === 'x' ? shift : 0, y: axis === 'y' ? shift : 0 }}
+    >
       <span
-        className={`hero-jamo-drift block select-none font-jamo ${inverse ? 'text-white' : 'text-ink'}`}
+        className={`hero-jamo-drift block select-none font-jamo ${axis === 'x' ? 'hero-jamo-drift-x' : ''} ${inverse ? 'text-white' : 'text-ink'}`}
         style={{
           fontSize: g.size,
           ['--drift-dur' as string]: `${g.dur}s`,
@@ -73,11 +116,23 @@ interface HomeJamoFieldProps {
 
 export function HomeJamoField({ tone = 'ink' }: HomeJamoFieldProps) {
   const { scrollY } = useScroll()
+  const scrollX = useDeckScrollX()
+  const inverse = tone === 'inverse'
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-[1] hidden overflow-hidden lg:block">
-      {GLYPHS.map((g, i) => (
-        <JamoGlyph key={i} g={g} inverse={tone === 'inverse'} scrollY={scrollY} />
-      ))}
-    </div>
+    <>
+      <div aria-hidden className="pointer-events-none fixed inset-0 z-[1] hidden overflow-hidden lg:block">
+        {GLYPHS.map((g, i) => (
+          <JamoGlyph key={i} g={g} inverse={inverse} scroll={scrollY} axis="y" />
+        ))}
+      </div>
+      <div
+        aria-hidden
+        className="home-jamo-mobile pointer-events-none fixed inset-x-0 z-[1] overflow-hidden sm:hidden"
+      >
+        {GLYPHS_MOBILE.map((g, i) => (
+          <JamoGlyph key={i} g={g} inverse={inverse} scroll={scrollX} axis="x" />
+        ))}
+      </div>
+    </>
   )
 }
