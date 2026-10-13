@@ -159,6 +159,7 @@ function AttachStage() {
   const placedRef = useRef<SlotId | null>(null)
   const draggingRef = useRef(false)
   const animsRef = useRef<AnimationPlaybackControls[]>([])
+  const timerRef = useRef(0)
   const glyphRef = useRef('ㅗ')
   const genRef = useRef(0)
   const rafRef = useRef(0)
@@ -178,6 +179,8 @@ function AttachStage() {
     genRef.current += 1
     animsRef.current.forEach((item) => item.stop())
     animsRef.current = []
+    if (timerRef.current) window.clearTimeout(timerRef.current)
+    timerRef.current = 0
   }, [])
 
   const glideTo = useCallback(
@@ -185,15 +188,15 @@ function AttachStage() {
       stopAnims()
       const id = genRef.current
       const dur = prefersReducedMotion() ? 0.01 : duration
-      const ax = animate(x, px, { duration: dur, ease: EASE })
-      const ay = animate(y, py, { duration: dur, ease: EASE })
-      animsRef.current = [ax, ay]
-      Promise.all([ax.finished, ay.finished])
-        .then(() => {
-          if (genRef.current !== id || draggingRef.current) return
-          after?.()
-        })
-        .catch(() => {})
+      animsRef.current = [
+        animate(x, px, { duration: dur, ease: EASE }),
+        animate(y, py, { duration: dur, ease: EASE }),
+      ]
+      timerRef.current = window.setTimeout(() => {
+        timerRef.current = 0
+        if (genRef.current !== id || draggingRef.current) return
+        after?.()
+      }, dur * 1000)
     },
     [stopAnims, x, y],
   )
