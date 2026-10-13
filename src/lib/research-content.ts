@@ -28,6 +28,8 @@ export interface TeamDirectoryGroup {
   /** 직급 아래 보조 설명 (예: 연구지원인력) */
   subtitle?: string
   names: string[]
+  /** 외국어 화면용 로마자 이름. 없으면 names를 그대로 쓴다. */
+  namesEn?: string[]
 }
 
 export interface TaskInfoRow {
@@ -148,7 +150,12 @@ export function validateResearchContent(data: unknown): true | string {
     team.directory !== undefined &&
     (!Array.isArray(team.directory) ||
       !(team.directory as unknown[]).every(
-        (g) => isObj(g) && isStr(g.role) && isStrArr(g.names) && (g.subtitle === undefined || isStr(g.subtitle)),
+        (g) =>
+          isObj(g) &&
+          isStr(g.role) &&
+          isStrArr(g.names) &&
+          (g.subtitle === undefined || isStr(g.subtitle)) &&
+          (g.namesEn === undefined || isStrArr(g.namesEn)),
       ))
   )
     return 'team.directory'

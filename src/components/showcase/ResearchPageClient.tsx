@@ -512,7 +512,6 @@ function MethodTable({ intro, rows }: {
               {/* 역할 — 3열일 때 최소 높이를 맞춰 pill 첫 줄이 같은 높이에서 시작 */}
               <div
                 className="mb-6 flex w-full max-w-[28ch] flex-col justify-start sm:min-h-[6rem]"
-                lang="ko"
               >
                 <p className="break-keep [overflow-wrap:break-word] font-sans text-[0.92rem] leading-[1.85] text-ink-soft">
                   <RichText text={row.role} />
@@ -583,6 +582,12 @@ export function ResearchPageClient({ content }: Props) {
       { key: 'label.vowelSystem', ko: '모음 체계' },
       { key: 'label.consonantSystem', ko: '자음 체계' },
       { key: 'label.techDev', ko: '기술 개발' },
+      { key: 'pipeline.label', ko: 'AI 파이프라인' },
+      { key: 'pipeline.steps.0', ko: '음성 입력' },
+      { key: 'pipeline.steps.1', ko: 'Mel-spectrogram' },
+      { key: 'pipeline.steps.2', ko: 'LSTM 모델' },
+      { key: 'pipeline.steps.3', ko: 'MR 영상' },
+      { key: 'pipeline.steps.4', ko: 'Optical Flow' },
       ...SIGNIFICANCE_LABELS.map((ko, i) => ({ key: `significance.labels.${i}`, ko })),
       // 테이블 헤더
       { key: 'table.field', ko: '분야' },
@@ -617,7 +622,12 @@ export function ResearchPageClient({ content }: Props) {
         ])
       ),
       ...significance.paragraphs.map((p, i) => ({ key: `significance.paragraphs.${i}`, ko: p })),
-      ...team.rows.map((row, i) => ({ key: `team.rows.${i}.task`, ko: row.task })),
+      ...team.rows.flatMap((row, i) => [
+        { key: `team.rows.${i}.role`, ko: row.role },
+        { key: `team.rows.${i}.affiliation`, ko: row.affiliation },
+        { key: `team.rows.${i}.field`, ko: row.field },
+        { key: `team.rows.${i}.task`, ko: row.task },
+      ]),
       ...(team.directory ?? []).flatMap((group, i) => [
         { key: `team.directory.${i}.role`, ko: group.role },
         ...(group.subtitle ? [{ key: `team.directory.${i}.subtitle`, ko: group.subtitle }] : []),
@@ -698,9 +708,10 @@ export function ResearchPageClient({ content }: Props) {
           Research
         </motion.p>
         <h1
-          className="mb-6 font-jamo leading-none text-ink"
+          className={`mb-6 leading-none text-ink ${lang === 'ko' ? 'font-jamo' : 'font-serif'}`}
           style={{ fontSize: 'clamp(2.25rem, 5.5vw, 3.5rem)' }}
-          lang="ko"
+          dir={lang === 'ar' ? 'rtl' : 'ltr'}
+          lang={lang === 'ko' ? 'ko' : lang}
         >
           <TitleBlurReveal text={m.research} stagger={0.08} />
         </h1>
@@ -819,6 +830,16 @@ export function ResearchPageClient({ content }: Props) {
                 vowelLabel={t('label.vowelSystem', '모음 체계')}
                 consonantLabel={t('label.consonantSystem', '자음 체계')}
                 techLabel={t('label.techDev', '기술 개발')}
+                pipeline={{
+                  label: t('pipeline.label', 'AI 파이프라인'),
+                  steps: [
+                    t('pipeline.steps.0', '음성 입력'),
+                    t('pipeline.steps.1', 'Mel-spectrogram'),
+                    t('pipeline.steps.2', 'LSTM 모델'),
+                    t('pipeline.steps.3', 'MR 영상'),
+                    t('pipeline.steps.4', 'Optical Flow'),
+                  ],
+                }}
                 vowels={overview.achievements.vowels.map((a, i) => ({
                   title: t(`overview.achievements.vowels.${i}.title`, a.title),
                   lines: a.lines.map((l, j) => t(`overview.achievements.vowels.${i}.lines.${j}`, l)),
@@ -849,6 +870,11 @@ export function ResearchPageClient({ content }: Props) {
               rows={team.rows.map((row, i) => ({
                 ...row,
                 name: lang !== 'ko' && row.nameEn ? row.nameEn : row.name,
+                photoName: row.name,
+                isLead: row.role.includes('책임'),
+                role: t(`team.rows.${i}.role`, row.role),
+                affiliation: t(`team.rows.${i}.affiliation`, row.affiliation),
+                field: t(`team.rows.${i}.field`, row.field),
                 task: t(`team.rows.${i}.task`, row.task),
               }))}
             />
@@ -859,7 +885,7 @@ export function ResearchPageClient({ content }: Props) {
                   subtitle: group.subtitle
                     ? t(`team.directory.${i}.subtitle`, group.subtitle)
                     : undefined,
-                  names: group.names,
+                  names: lang !== 'ko' && group.namesEn?.length ? group.namesEn : group.names,
                 }))}
               />
             ) : null}

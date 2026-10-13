@@ -1,9 +1,14 @@
 const SLUG_MAP: Record<string, string> = {
   '김슬옹': 'kim-seul-ong',
+  'Kim Seul-ong': 'kim-seul-ong',
   '최홍식': 'choi-hong-sik',
+  'Choi Hong-sik': 'choi-hong-sik',
   '이호영': 'lee-ho-young',
+  'Lee Ho-young': 'lee-ho-young',
   '김진아': 'kim-jin-a',
+  'Kim Jin-a': 'kim-jin-a',
   '이은상': 'lee-eun-sang',
+  'Lee Eun-sang': 'lee-eun-sang',
   '이승수': 'lee-seung-su',
   '이호현': 'lee-ho-hyeon',
 }

@@ -107,13 +107,12 @@ function AchievementCell({ title, lines }: { title: string; lines: string[] }) {
   )
 }
 
-function TechPipelineStrip() {
-  const steps = ['음성 입력', 'Mel-spectrogram', 'LSTM 모델', 'MR 영상', 'Optical Flow']
+function TechPipelineStrip({ label, steps }: { label: string; steps: string[] }) {
   const boxClass =
     'rounded border border-hanji-border/70 bg-hanji/25 px-3 py-2.5 text-center font-sans text-[11px] leading-snug text-ink-soft sm:text-xs'
   return (
-    <div aria-label="AI 파이프라인" className="col-span-full mt-1 border-t border-hanji-border/50 pt-5 sm:pt-6">
-      <p className="mb-3 font-sans text-[10px] text-ink-muted">AI 파이프라인</p>
+    <div aria-label={label} className="col-span-full mt-1 border-t border-hanji-border/50 pt-5 sm:pt-6">
+      <p className="mb-3 font-sans text-sm font-medium leading-snug text-ink-muted">{label}</p>
       {/* 모바일 — 2열 그리드, 화살표 없음(줄바꿈되면 방향이 애매해짐) */}
       <div className="grid grid-cols-2 gap-2 sm:hidden">
         {steps.map((step) => (
@@ -130,7 +129,7 @@ function TechPipelineStrip() {
           <Fragment key={step}>
             <div className={`flex-1 ${boxClass}`}>{step}</div>
             {i < steps.length - 1 ? (
-              <div className="flex w-7 shrink-0 items-center justify-center text-sm text-ink-muted" aria-hidden>
+              <div className="flex w-7 shrink-0 items-center justify-center text-sm text-ink-muted rtl:rotate-180" aria-hidden>
                 →
               </div>
             ) : null}
@@ -178,12 +177,12 @@ function AchievementPanel({
   label,
   items,
   tone,
-  showPipeline,
+  pipeline,
 }: {
   label: string
   items: { title: string; lines: string[] }[]
   tone: PanelAccent
-  showPipeline?: boolean
+  pipeline?: { label: string; steps: string[] }
 }) {
   return (
     <section className={`overflow-hidden rounded-lg border ${tone.wrapBorder}`}>
@@ -196,7 +195,7 @@ function AchievementPanel({
           {items.map((item) => (
             <AchievementCell key={item.title} title={item.title} lines={item.lines} />
           ))}
-          {showPipeline ? <TechPipelineStrip /> : null}
+          {pipeline ? <TechPipelineStrip label={pipeline.label} steps={pipeline.steps} /> : null}
         </div>
       </div>
     </section>
@@ -210,6 +209,7 @@ export function AchievementsShowcase({
   vowels,
   consonants,
   tech,
+  pipeline,
 }: {
   vowelLabel: string
   consonantLabel: string
@@ -217,12 +217,13 @@ export function AchievementsShowcase({
   vowels: { title: string; lines: string[] }[]
   consonants: { title: string; lines: string[] }[]
   tech: { title: string; lines: string[] }[]
+  pipeline: { label: string; steps: string[] }
 }) {
   return (
     <div className="space-y-5 sm:space-y-6">
       <AchievementPanel label={vowelLabel} items={vowels} tone={VOWEL_ACCENT} />
       <AchievementPanel label={consonantLabel} items={consonants} tone={CONSONANT_ACCENT} />
-      <AchievementPanel label={techLabel} items={tech} tone={TECH_ACCENT} showPipeline />
+      <AchievementPanel label={techLabel} items={tech} tone={TECH_ACCENT} pipeline={pipeline} />
     </div>
   )
 }
@@ -244,9 +245,9 @@ function MemberAvatarFallback() {
   )
 }
 
-function MemberPhoto({ name }: { name: string }) {
+function MemberPhoto({ name, photoName }: { name: string; photoName?: string }) {
   const [failed, setFailed] = useState(false)
-  const src = teamPhotoSrc(name)
+  const src = teamPhotoSrc(photoName || name)
 
   return (
     <div className="absolute inset-0">
@@ -269,9 +270,17 @@ function MemberPhoto({ name }: { name: string }) {
 function TeamMemberCard({
   member,
 }: {
-  member: { role: string; name: string; affiliation: string; task: string; field: string }
+  member: {
+    role: string
+    name: string
+    photoName?: string
+    affiliation: string
+    task: string
+    field: string
+    isLead?: boolean
+  }
 }) {
-  const isLead = member.role.includes('책임')
+  const isLead = member.isLead ?? member.role.includes('책임')
   const affiliation = member.affiliation.trim()
   const showAffiliation = affiliation !== '' && affiliation !== '—' && affiliation !== '-'
   const displayName = member.name.replace(/\s*\n\s*/g, ', ').replace(/\s+/g, ' ').trim()
@@ -290,13 +299,13 @@ function TeamMemberCard({
     >
       <article className="team-member-card group flex h-full flex-col overflow-hidden rounded-lg border border-hanji-border/75 bg-hanji/25 shadow-[0_1px_0_rgb(var(--ink-rgb)/0.03)] transition-shadow duration-300 hover:shadow-[0_6px_20px_-6px_rgb(var(--ink-rgb)/0.18)]">
       <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden border-b border-hanji-border/60 bg-hanji/40">
-        <MemberPhoto name={member.name} />
+        <MemberPhoto name={displayName} photoName={member.photoName ?? member.name} />
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col px-3.5 py-3.5 sm:px-4 sm:py-4">
         <div className="shrink-0">
           <p
-            className={`h-3.5 font-sans text-[10px] font-medium leading-[0.875rem] ${
+            className={`line-clamp-2 font-sans text-xs font-medium leading-snug ${
               isLead ? 'text-gold' : 'text-ink-muted'
             }`}
           >
@@ -321,8 +330,8 @@ function TeamMemberCard({
           <p className="min-h-[2.625rem] line-clamp-3 break-keep font-sans text-[11px] leading-[1.6] text-ink-soft [overflow-wrap:break-word] sm:text-[0.78rem] sm:leading-[1.65]">
             <RichText text={member.task} />
           </p>
-          <div className="mt-2 flex h-6 items-center">
-            <span className="inline-flex max-w-full rounded-full border border-hanji-border/70 bg-hanji/40 px-2.5 py-0.5 font-sans text-[10px] leading-snug text-ink-muted">
+          <div className="mt-2 flex min-h-6 items-center">
+            <span className="inline-flex max-w-full rounded-full border border-hanji-border/70 bg-hanji/40 px-2.5 py-0.5 font-sans text-xs leading-snug text-ink-muted">
               {member.field}
             </span>
           </div>
@@ -336,7 +345,15 @@ function TeamMemberCard({
 export function TeamCardGrid({
   rows,
 }: {
-  rows: { role: string; name: string; affiliation: string; task: string; field: string }[]
+  rows: {
+    role: string
+    name: string
+    photoName?: string
+    affiliation: string
+    task: string
+    field: string
+    isLead?: boolean
+  }[]
 }) {
   const gridRef = useRef<HTMLDivElement>(null)
   const inView = useInView(gridRef, { once: true, margin: '-60px' })
@@ -347,7 +364,7 @@ export function TeamCardGrid({
   }, [])
 
   const animateState = mounted && inView ? 'visible' : 'hidden'
-  const leadIndex = rows.findIndex((row) => row.role.includes('책임'))
+  const leadIndex = rows.findIndex((row) => row.isLead || row.role.includes('책임'))
   const lead = leadIndex >= 0 ? rows[leadIndex] : null
   const members = leadIndex >= 0 ? rows.filter((_, i) => i !== leadIndex) : rows
 
@@ -412,9 +429,9 @@ export function TeamDirectoryList({
       {groups.map((group, i) => (
         <div key={`${group.role}-${i}`}>
           <div className="mb-2.5 flex flex-wrap items-baseline gap-x-1.5 sm:mb-3">
-            <p className="font-sans text-[10px] font-medium text-ink-muted">{group.role}</p>
+            <p className="font-sans text-sm font-medium leading-snug text-ink-muted sm:text-[0.9375rem]">{group.role}</p>
             {group.subtitle?.trim() ? (
-              <p className="font-sans text-[10px] leading-snug text-ink-muted">({group.subtitle.trim()})</p>
+              <p className="font-sans text-sm leading-snug text-ink-muted sm:text-[0.9375rem]">({group.subtitle.trim()})</p>
             ) : null}
           </div>
           <p className="break-keep font-serif text-[0.9rem] leading-[1.85] text-ink/90 sm:text-[0.9375rem]">
