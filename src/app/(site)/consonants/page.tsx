@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description:
     '한국어 19개 자음의 조음 위치, 조음 방법, MRI 영상을 통해 탐구합니다.',
   keywords: ['자음', '한국어 자음', '조음 위치', '조음 방법', 'MRI', 'Korean consonants'],
+  alternates: { canonical: '/consonants' },
+  openGraph: { url: '/consonants' },
 }
 
 /** Sanity에 연결되어 있으면 1시간마다 새 글을 반영 (미연결 시 로컬 데이터 그대로) */

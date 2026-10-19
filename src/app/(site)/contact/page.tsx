@@ -4,6 +4,8 @@ import { HomeContactSection } from '@/components/home/HomeContactSection'
 export const metadata: Metadata = {
   title: '문의하기',
   description: '세종말소리 연구 협력과 문의 메시지를 보냅니다.',
+  alternates: { canonical: '/contact' },
+  openGraph: { url: '/contact' },
 }
 
 export default function ContactPage({

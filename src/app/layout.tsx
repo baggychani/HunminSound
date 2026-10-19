@@ -54,6 +54,7 @@ const gowunBatang = Gowun_Batang({
 /** 브라우저 탭·PWA 이름 — 가운데점(·) 좌우 공백 없음 */
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  alternates: { canonical: '/' },
   title: {
     default: SITE_TAB_TITLE,
     template: `%s·세종말소리`,
