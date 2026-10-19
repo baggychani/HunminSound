@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
@@ -497,106 +496,9 @@ export function ResearchPageClient({ content }: Props) {
   const m = getMessages(lang)
   const { motivation, goals, overview, significance, team, taskInfo, translations } = content
 
-  /** Auto-translated fallbacks: localStorage-cached results from /api/translate */
-  const [autoTrans, setAutoTrans] = useState<Record<string, string>>({})
-
-  useEffect(() => {
-    if (lang === 'ko') { setAutoTrans({}); return }
-
-    const allKeys: { key: string; ko: string }[] = [
-      // 섹션 제목
-      { key: 'section.motivation', ko: '연구 동기' },
-      { key: 'section.goals', ko: '연구 목표' },
-      { key: 'section.overview', ko: '연구 개요' },
-      { key: 'section.significance', ko: '연구의 의의' },
-      // 블록 라벨
-      { key: 'label.finalGoal', ko: '최종 목표' },
-      { key: 'label.specificGoals', ko: '세부 목표' },
-      { key: 'label.method', ko: '연구 방법' },
-      { key: 'label.scale', ko: '연구 규모' },
-      { key: 'label.achievements', ko: '주요 성과' },
-      { key: 'label.vowelSystem', ko: '모음 체계' },
-      { key: 'label.consonantSystem', ko: '자음 체계' },
-      { key: 'label.techDev', ko: '기술 개발' },
-      // 테이블 헤더
-      { key: 'table.field', ko: '분야' },
-      { key: 'table.methodRole', ko: '역할' },
-      { key: 'table.methods', ko: '주요 방법' },
-      { key: 'table.category', ko: '구분' },
-      { key: 'table.name', ko: '성명' },
-      { key: 'table.affiliation', ko: '소속' },
-      { key: 'table.task', ko: '역할' },
-      { key: 'table.major', ko: '전공 분야' },
-      // 본문 콘텐츠
-      ...motivation.paragraphs.map((p, i) => ({ key: `motivation.paragraphs.${i}`, ko: p })),
-      { key: 'goals.final', ko: goals.final },
-      ...goals.specific.flatMap((item, i) => [
-        { key: `goals.specific.${i}.label`, ko: item.label },
-        { key: `goals.specific.${i}.text`, ko: item.text },
-      ]),
-      { key: 'overview.method.intro', ko: overview.method.intro },
-      ...overview.method.rows.flatMap((row, i) => [
-        { key: `overview.method.rows.${i}.field`, ko: row.field },
-        { key: `overview.method.rows.${i}.role`, ko: row.role },
-        ...row.methods.map((mm, j) => ({ key: `overview.method.rows.${i}.methods.${j}`, ko: mm })),
-      ]),
-      ...overview.scale.flatMap((item, i) => [
-        { key: `overview.scale.${i}.label`, ko: item.label },
-        { key: `overview.scale.${i}.text`, ko: item.text },
-      ]),
-      ...(['vowels', 'consonants', 'tech'] as const).flatMap((group) =>
-        overview.achievements[group].flatMap((a, i) => [
-          { key: `overview.achievements.${group}.${i}.title`, ko: a.title },
-          ...a.lines.map((l, j) => ({ key: `overview.achievements.${group}.${i}.lines.${j}`, ko: l })),
-        ])
-      ),
-      ...significance.paragraphs.map((p, i) => ({ key: `significance.paragraphs.${i}`, ko: p })),
-      ...team.rows.map((row, i) => ({ key: `team.rows.${i}.task`, ko: row.task })),
-    ]
-
-    const toFetch: { key: string; ko: string }[] = []
-    const fromCache: Record<string, string> = {}
-
-    for (const { key, ko } of allKeys) {
-      if (translations?.[lang]?.[key]) continue
-      try {
-        const c = JSON.parse(localStorage.getItem(`rmt:${lang}:${key}`) ?? 'null') as { src?: string; v?: string } | null
-        if (c?.src === ko && c?.v) { fromCache[key] = c.v; continue }
-      } catch {}
-      toFetch.push({ key, ko })
-    }
-
-    if (Object.keys(fromCache).length > 0) setAutoTrans(prev => ({ ...prev, ...fromCache }))
-    if (toFetch.length === 0) return
-
-    let cancelled = false
-    ;(async () => {
-      for (const { key, ko } of toFetch) {
-        if (cancelled) break
-        try {
-          const res = await fetch('/api/translate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: ko, target: lang }),
-          })
-          const data = await res.json() as { translated?: string | null }
-          if (typeof data.translated === 'string' && data.translated.trim()) {
-            const v = data.translated
-            setAutoTrans(prev => ({ ...prev, [key]: v }))
-            try { localStorage.setItem(`rmt:${lang}:${key}`, JSON.stringify({ src: ko, v })) } catch {}
-          }
-        } catch {}
-        await new Promise(r => setTimeout(r, 150))
-      }
-    })()
-
-    return () => { cancelled = true }
-  }, [lang]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  /** Stored translation > auto-translated fallback > Korean original */
   const t = (key: string, koValue: string) => {
     if (lang === 'ko') return koValue
-    return translations?.[lang]?.[key] || autoTrans[key] || koValue
+    return translations?.[lang]?.[key] || koValue
   }
 
   return (
