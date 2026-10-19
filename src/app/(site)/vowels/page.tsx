@@ -1,5 +1,6 @@
 import { VowelsPageClient } from '@/components/showcase/VowelsPageClient'
 import { PageHeader } from '@/components/layout/PageHeader'
+import { PhonemeTextIndex } from '@/components/showcase/phonetics/PhonemeTextIndex'
 import { getVowels } from '@/lib/queries'
 import { vowelsData } from '@/data/vowels'
 import type { Metadata } from 'next'
@@ -27,6 +28,7 @@ export default async function VowelsPage() {
       <Suspense fallback={null}>
         <VowelsPageClient vowels={vowels} />
       </Suspense>
+      <PhonemeTextIndex items={vowels} />
     </div>
   )
 }

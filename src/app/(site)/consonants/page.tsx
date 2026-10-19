@@ -1,5 +1,6 @@
 import { PageHeader } from '@/components/layout/PageHeader'
 import { ConsonantsPageClient } from '@/components/showcase/ConsonantsPageClient'
+import { PhonemeTextIndex } from '@/components/showcase/phonetics/PhonemeTextIndex'
 import { getConsonants } from '@/lib/queries'
 import { consonantsData } from '@/data/consonants'
 import type { Metadata } from 'next'
@@ -27,6 +28,7 @@ export default async function ConsonantsPage() {
       <Suspense fallback={null}>
         <ConsonantsPageClient consonants={consonants} />
       </Suspense>
+      <PhonemeTextIndex items={consonants} />
     </div>
   )
 }
