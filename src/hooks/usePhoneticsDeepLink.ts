@@ -3,44 +3,45 @@
 import { useCallback } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import type { ChartViewMode } from '@/components/showcase/PhoneticsViewToggle'
+import type { PhonemeBase } from '@/lib/phonemeRoutes'
 
-function useChartNavigation() {
+function currentHash() {
+  return typeof window === 'undefined' ? '' : window.location.hash
+}
+
+/** 선택한 기호의 주소는 /consonants/b 이다. 보기 모드는 ?view= 로 남긴다. */
+export function usePhoneticsDeepLink(basePath: PhonemeBase, items: readonly { _id: string }[]) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const navigate = useCallback((update: (params: URLSearchParams) => void) => {
-    const params = new URLSearchParams(searchParams.toString())
-    update(params)
-    const query = params.toString()
-    router.push(`${pathname}${query ? `?${query}` : ''}${window.location.hash}`, { scroll: false })
-  }, [pathname, router, searchParams])
-  return { searchParams, navigate }
-}
+  const segment = pathname.startsWith(`${basePath}/`)
+    ? decodeURIComponent(pathname.slice(basePath.length + 1).split('/')[0] ?? '')
+    : ''
+  const activeId = items.some((item) => item._id === segment) ? segment : null
 
-/** URL을 선택 상태의 원본으로 사용해 새로고침·공유·뒤로가기를 일치시킨다. */
-export function usePhoneticsDeepLink(items: readonly { _id: string }[]) {
-  const { searchParams, navigate } = useChartNavigation()
-  const id = searchParams.get('id')
-  const activeId = items.some((item) => item._id === id) ? id : null
   const toggle = useCallback((nextId: string) => {
-    navigate((params) => {
-      if (nextId === activeId) params.delete('id')
-      else params.set('id', nextId)
-    })
-  }, [activeId, navigate])
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('id')
+    const query = params.toString()
+    const path = nextId === activeId ? basePath : `${basePath}/${nextId}`
+    router.push(`${path}${query ? `?${query}` : ''}${currentHash()}`, { scroll: false })
+  }, [activeId, basePath, router, searchParams])
+
   return { activeId, toggle }
 }
 
-/** 아래아 등 제자해 전용 글자도 같은 보기로 공유한다. */
-export function usePhoneticsViewMode() {
-  const { searchParams, navigate } = useChartNavigation()
+/** 보기를 바꾸면 선택 기호는 풀어, 목록 주소로 돌아간다. */
+export function usePhoneticsViewMode(basePath: PhonemeBase) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const viewMode: ChartViewMode = searchParams.get('view') === 'hunmin' ? 'hunmin' : 'modern'
   const setViewMode = useCallback((mode: ChartViewMode) => {
-    navigate((params) => {
-      if (mode === 'hunmin') params.set('view', mode)
-      else params.delete('view')
-      params.delete('id')
-    })
-  }, [navigate])
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('id')
+    if (mode === 'hunmin') params.set('view', mode)
+    else params.delete('view')
+    const query = params.toString()
+    router.push(`${basePath}${query ? `?${query}` : ''}${currentHash()}`, { scroll: false })
+  }, [basePath, router, searchParams])
   return { viewMode, setViewMode }
 }

@@ -7,7 +7,7 @@ import { PhoneticsFadeIn } from '@/components/showcase/phonetics/phoneticsPageMo
 import type { Vowel } from '@/types'
 
 export function VowelsPageClient({ vowels }: { vowels: Vowel[] }) {
-  const { viewMode, setViewMode } = usePhoneticsViewMode()
+  const { viewMode, setViewMode } = usePhoneticsViewMode('/vowels')
 
   return (
     <>

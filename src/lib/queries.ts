@@ -71,6 +71,16 @@ export async function getConsonants(): Promise<Consonant[]> {
   }
 }
 
+export async function loadConsonantList(): Promise<Consonant[]> {
+  const rows = await getConsonants()
+  return rows.length > 0 ? rows : consonantsData
+}
+
+export async function loadVowelList(): Promise<Vowel[]> {
+  const rows = await getVowels()
+  return rows.length > 0 ? rows : vowelsData
+}
+
 export async function getVowels(): Promise<Vowel[]> {
   if (!sanityClient) return []
   try {

@@ -193,7 +193,7 @@ interface ConsonantChartProps {
 }
 
 export function ConsonantChart({ consonants, viewMode = 'modern' }: ConsonantChartProps) {
-  const { activeId, toggle } = usePhoneticsDeepLink(consonants)
+  const { activeId, toggle } = usePhoneticsDeepLink('/consonants', consonants)
   const detailScrollRef = useScrollToSymbolDetail(activeId)
   const { lang } = useLang()
   const m = getMessages(lang)

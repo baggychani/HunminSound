@@ -191,7 +191,7 @@ function ModernVowelSection({
 }
 
 export function VowelChart({ vowels, viewMode = 'modern' }: VowelChartProps) {
-  const { activeId, toggle } = usePhoneticsDeepLink(vowels)
+  const { activeId, toggle } = usePhoneticsDeepLink('/vowels', vowels)
   const detailScrollRef = useScrollToSymbolDetail(activeId)
   const { lang } = useLang()
   const m = getMessages(lang)

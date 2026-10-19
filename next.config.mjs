@@ -34,7 +34,16 @@ const PUBLIC_CSP = [
   "form-action 'self'",
 ].join('; ')
 
-const PUBLIC_PAGE_SOURCES = ['/', '/consonants', '/vowels', '/hunminjeongeum', '/research', '/privacy']
+const PUBLIC_PAGE_SOURCES = [
+  '/',
+  '/consonants',
+  '/consonants/:id',
+  '/vowels',
+  '/vowels/:id',
+  '/hunminjeongeum',
+  '/research',
+  '/privacy',
+]
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
