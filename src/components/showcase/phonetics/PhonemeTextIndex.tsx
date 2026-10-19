@@ -18,9 +18,7 @@ export function PhonemeTextIndex({ items }: { items: readonly PhonemeTextEntry[]
         const place = [item.category, item.articulationGroup].filter(Boolean).join(' · ')
         return (
           <article key={item._id}>
-            <h2>
-              {item.symbol} {item.name}
-            </h2>
+            <h2>{item.name}</h2>
             {place ? <p>{place}</p> : null}
             {item.description ? <p>{item.description}</p> : null}
           </article>
