@@ -68,7 +68,7 @@ function LoginInner() {
         className="mx-auto w-full max-w-[400px]"
       >
         <div className="mb-10 text-center">
-          <p className="mb-3 font-serif text-sm tracking-[0.12em] text-ink-muted/90 dark:text-gold-light/80">관리자</p>
+          <p className="mb-3 font-serif text-sm tracking-normal text-ink-muted/90 dark:text-gold-light/80">관리자</p>
           <h1 className="font-serif text-3xl tracking-normal text-ink sm:text-[2rem]">세종말소리</h1>
           <p className="mt-4 font-sans text-sm leading-relaxed text-ink-muted/85 dark:text-ink-muted/90">
             승인된 관리자만 들어올 수 있는 공간입니다.
@@ -78,7 +78,7 @@ function LoginInner() {
         <div className="rounded-sm border border-hanji-border bg-hanji-warm/85 px-6 py-9 shadow-[0_24px_60px_-32px_rgb(28_25_23/0.28)] backdrop-blur-sm dark:bg-hanji-warm/50 dark:shadow-none sm:px-8 sm:py-10">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="space-y-2">
-              <label htmlFor="admin-user" className="block font-sans text-[11px] uppercase tracking-[0.1em] text-ink-muted">
+              <label htmlFor="admin-user" className="block font-sans text-[11px] uppercase tracking-normal text-ink-muted">
                 관리자 ID
               </label>
               <input
@@ -92,7 +92,7 @@ function LoginInner() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="admin-pass" className="block font-sans text-[11px] uppercase tracking-[0.1em] text-ink-muted">
+              <label htmlFor="admin-pass" className="block font-sans text-[11px] uppercase tracking-normal text-ink-muted">
                 비밀번호
               </label>
               <input
@@ -114,7 +114,7 @@ function LoginInner() {
             <button
               type="submit"
               disabled={submitting}
-              className="mt-1 w-full rounded-sm bg-ink py-3 font-sans text-xs font-medium uppercase tracking-[0.25em] text-hanji transition-opacity hover:opacity-[0.92] disabled:pointer-events-none disabled:opacity-50 dark:bg-gold dark:text-stone-900"
+              className="mt-1 w-full rounded-sm bg-ink py-3 font-sans text-xs font-medium uppercase tracking-normal text-hanji transition-opacity hover:opacity-[0.92] disabled:pointer-events-none disabled:opacity-50 dark:bg-gold dark:text-stone-900"
             >
               {submitting ? '확인 중…' : '로그인'}
             </button>

@@ -221,7 +221,7 @@ function ContactForm() {
       <div className="flex items-center justify-end pt-1">
         <button
           type="submit"
-          className="rounded-sm border border-hanji-border px-5 py-2 font-sans text-[11px] uppercase tracking-[0.08em] text-ink-muted transition-colors hover:border-gold/50 hover:text-gold dark:hover:text-gold-light disabled:opacity-50"
+          className="rounded-sm border border-hanji-border px-5 py-2 font-sans text-[11px] uppercase tracking-normal text-ink-muted transition-colors hover:border-gold/50 hover:text-gold dark:hover:text-gold-light disabled:opacity-50"
         >
           {sent ? '전송 완료 ✓' : '보내기'}
         </button>
@@ -288,7 +288,7 @@ export function AdminDashboard({ username }: { username: string | null }) {
         {/* ── 헤더 ────────────────────────────────────────────────── */}
         <div className="mb-12 flex flex-wrap items-end justify-between gap-4 border-b border-hanji-border pb-8">
           <div>
-            <p className="font-sans text-[11px] uppercase tracking-[0.1em] text-ink-muted">
+            <p className="font-sans text-[11px] uppercase tracking-normal text-ink-muted">
               관리자 대시보드
             </p>
             <h1 className="mt-2 font-serif text-2xl tracking-normal text-ink sm:text-[1.85rem]">
@@ -305,7 +305,7 @@ export function AdminDashboard({ username }: { username: string | null }) {
             type="button"
             disabled={busy}
             onClick={logout}
-            className="font-sans text-[11px] uppercase tracking-[0.08em] text-ink-muted/70 transition-colors hover:text-ink-accent dark:hover:text-gold-light disabled:pointer-events-none"
+            className="font-sans text-[11px] uppercase tracking-normal text-ink-muted/70 transition-colors hover:text-ink-accent dark:hover:text-gold-light disabled:pointer-events-none"
           >
             {busy ? '로그아웃 중…' : '로그아웃'}
           </button>

@@ -166,7 +166,7 @@ export default function AdminHomePage() {
         <p className="font-sans text-xs text-ink-muted">메인 페이지</p>
       </div>
       <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-        <p className="font-sans text-[11px] uppercase tracking-[0.1em] text-ink-muted mb-2">콘텐츠 편집</p>
+        <p className="font-sans text-[11px] uppercase tracking-normal text-ink-muted mb-2">콘텐츠 편집</p>
         <h1 className="font-serif text-2xl text-ink mb-10">메인 페이지</h1>
       </motion.div>
 

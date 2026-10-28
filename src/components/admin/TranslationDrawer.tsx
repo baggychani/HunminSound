@@ -264,7 +264,7 @@ export function TranslationDrawer({
           >
             <div className="border-t border-hanji-border/40 bg-hanji-warm/20 dark:bg-hanji-warm/8">
               <div className="flex items-center justify-between border-b border-hanji-border/40 px-5 py-2">
-                <span className="font-sans text-[10px] uppercase tracking-[0.1em] text-ink-muted/50">다국어 번역 편집</span>
+                <span className="font-sans text-[10px] uppercase tracking-normal text-ink-muted/50">다국어 번역 편집</span>
                 <span className="font-sans text-[10px] text-ink-muted/35">텍스트 더블클릭 또는 수정 버튼</span>
               </div>
               {langs.map(({ code, name }) => (
