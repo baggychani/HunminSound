@@ -71,7 +71,7 @@ function KoreanEditor({
   }
 
   return (
-    <div className="col-span-2 sm:col-start-2 sm:col-span-2">
+    <div className="mt-2">
       {editing ? (
         <div className="flex flex-col gap-2">
           <textarea
@@ -114,23 +114,17 @@ function VowelRow({ vowel }: { vowel: Vowel }) {
 
   return (
     <div>
-      <div className="grid grid-cols-[3rem_minmax(0,1fr)] sm:grid-cols-[3rem_max-content_minmax(0,1fr)] gap-x-4 gap-y-2 px-5 py-4">
+      <div className="grid grid-cols-[3rem_minmax(0,1fr)] gap-x-4 px-5 py-4">
         <span className="font-jamo text-2xl text-ink leading-none self-start pt-1" lang="ko">
           {vowel.symbol}
         </span>
-        <div>
+        <div className="min-w-0">
           <p className="font-sans text-sm text-ink">{vowel.name}</p>
-          <p className="mt-0.5 whitespace-nowrap font-sans text-[10.5px] text-ink-muted/60">
-            ani: <span className="text-gold/70">{vowel.animationFileName ?? '—'}</span>
-          </p>
-          <p className="whitespace-nowrap font-sans text-[10.5px] text-ink-muted/60">
-            mri: <span className="text-gold/70">{vowel.mriFileName ?? '—'}</span>
-          </p>
+          <KoreanEditor
+            type="vowel" id={vowel._id} displayName={vowel.name}
+            baseText={vowel.description} currentText={koreanSource}
+          />
         </div>
-        <KoreanEditor
-          type="vowel" id={vowel._id} displayName={vowel.name}
-          baseText={vowel.description} currentText={koreanSource}
-        />
       </div>
       <TranslationDrawer
         type="vowel" id={vowel._id} displayName={vowel.name}

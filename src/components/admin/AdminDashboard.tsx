@@ -30,7 +30,7 @@ const SECTIONS: AdminSection[] = [
     href: '/admin/content/consonants',
     title: '자음',
     en: 'Consonants',
-    desc: '자음의 설명 텍스트, 분류, 영상 파일명을 확인하고 편집합니다.',
+    desc: '자음의 설명과 번역을 확인하고 편집합니다.',
     ready: true,
   },
   {
@@ -38,7 +38,7 @@ const SECTIONS: AdminSection[] = [
     href: '/admin/content/vowels',
     title: '모음',
     en: 'Vowels',
-    desc: '모음의 설명 텍스트, 분류, 애니메이션·MRI 파일명을 확인하고 편집합니다.',
+    desc: '모음의 설명과 번역을 확인하고 편집합니다.',
     ready: true,
   },
   {

@@ -1,42 +1,25 @@
 'use client'
 
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { useRef, useState } from 'react'
 import {
   HUNMIN_PASSAGE_SECTIONS,
   type HunminPassage,
   type HunminPassageSection,
 } from '@/data/hunminjeongeumPassages'
+import { ADMIN_LANGUAGE_NAMES } from '@/components/admin/adminLanguageNames'
 import { TranslationDrawer } from '@/components/admin/TranslationDrawer'
-import { useOverridesStore, patchOverride } from '@/lib/overrides-store'
+import { patchOverride } from '@/lib/overrides-store'
 import { makeOverrideKey } from '@/lib/i18n-overrides'
 import { buildHunminPassageBaseValues } from '@/lib/cms-base-values'
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 8 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.025, duration: 0.35, ease: [0.22, 1, 0.36, 1] },
-  }),
-}
-
 const SECTION_LABEL: Record<HunminPassageSection['id'], string> = {
-  initial: '초성자(자음자)',
-  medial: '중성자(모음자)',
+  initial: '초성자',
+  medial: '중성자',
   appraisal: '해례본의 평가',
 }
 
-/* ── 영어 풀이 인라인 편집기 ───────────────────────────────────────────────
- * 훈민정음 단락의 다국어 번역은 영어 풀이를 출처(source)로 삼는다.
- * (옛 한국어 표현이 많은 한국어 풀이는 자동 번역 품질이 낮으므로 한 번 정리된
- *  영어 텍스트를 기준으로 한다.)
- *
- * 이 컴포넌트는 영어 텍스트 자체를 편집한다. 영어가 다른 언어의 출처이므로
- *  - sourceSnapshot 은 별도 추적하지 않는다(자기 자신 = 출처).
- *  - 영어 텍스트가 변경되면 다른 언어 행이 stale 로 감지되도록,
- *    다른 언어의 sourceSnapshot 비교 대상이 "현재 영어"가 된다. */
+/* 영어 풀이. 화면에 보이는 글은 코드에 있는 번역이다. */
 function EnglishEditor({
   passage,
   baseText,
@@ -97,16 +80,7 @@ function EnglishEditor({
 
   return (
     <div>
-      <div className="mb-1.5 flex items-baseline gap-2">
-        <span className="font-sans text-[10px] uppercase tracking-[0.1em] text-ink-muted/60">
-          English <span className="ml-1 text-ink-muted/40 normal-case tracking-normal">· 출처 텍스트</span>
-        </span>
-        {hasOverride && (
-          <span className="font-sans text-[10px] text-gold/70 dark:text-gold-light/70">
-            · 편집됨
-          </span>
-        )}
-      </div>
+      <p className="mb-1.5 font-sans text-[10px] text-ink-muted/60">영어</p>
       {editing ? (
         <div className="flex flex-col gap-2">
           <textarea
@@ -139,7 +113,7 @@ function EnglishEditor({
       ) : (
         <p
           onDoubleClick={startEdit}
-          title="더블클릭하여 영어 풀이 편집 — 이 텍스트가 다른 언어 번역의 출처입니다"
+          title="더블클릭하여 영어 풀이 편집"
           className={`cursor-pointer rounded-sm px-2 py-1.5 -mx-2 font-sans text-sm leading-relaxed transition-colors hover:bg-hanji-border/20 ${
             hasOverride
               ? 'text-ink border-l-2 border-gold/40 pl-3'
@@ -154,19 +128,12 @@ function EnglishEditor({
 }
 
 /* ── 단일 행 ──────────────────────────────────────────────────────── */
-function PassageRow({ passage, index }: { passage: HunminPassage; index: number }) {
-  const store = useOverridesStore()
-  const enKey = makeOverrideKey('hunminPassage', passage.number, 'en')
-  const enOverride = store[enKey]?.value
-  const currentEnglish = enOverride ?? passage.translations.en
-
-  /* 한국어 풀이는 데이터 박혀있음 — read-only.
-   * 다른 언어 번역의 자동 번역 source / stale 비교 기준은 "현재 영어 풀이". */
-  const englishSource = currentEnglish
+function PassageRow({ passage }: { passage: HunminPassage }) {
+  const currentEnglish = passage.translations.en
   const displayName = `[${passage.number}] ${passage.originalText.slice(0, 18)}…`
 
   return (
-    <motion.div custom={index} variants={fadeUp} initial="hidden" animate="show">
+    <div>
       <div className="grid grid-cols-[3rem_1fr] gap-x-4 gap-y-3 px-5 py-5">
         {/* 일련번호 + 출처 */}
         <div className="flex flex-col gap-1 self-start pt-0.5">
@@ -192,9 +159,7 @@ function PassageRow({ passage, index }: { passage: HunminPassage; index: number 
 
           {/* 한국어 풀이 (read-only — 옛한국어 표현 포함, 번역 출처로 쓰이지 않음) */}
           <div>
-            <p className="mb-1.5 font-sans text-[10px] uppercase tracking-[0.1em] text-ink-muted/60">
-              한국어 <span className="ml-1 text-ink-muted/40 normal-case tracking-normal">· 표시 전용</span>
-            </p>
+            <p className="mb-1.5 font-sans text-[10px] text-ink-muted/60">한국어</p>
             <p className="font-sans text-xs leading-relaxed text-ink-soft" lang="ko">
               {passage.korean}
             </p>
@@ -214,16 +179,21 @@ function PassageRow({ passage, index }: { passage: HunminPassage; index: number 
         type="hunminPassage"
         id={passage.number}
         displayName={displayName}
-        koreanSource={englishSource}
+        koreanSource={currentEnglish}
         sourceLabel="영어"
         excludeLangs={['en']}
         baseValues={buildHunminPassageBaseValues(passage.translations, ['en'])}
+        languageNames={ADMIN_LANGUAGE_NAMES}
+        registeredFromCode
       />
-    </motion.div>
+    </div>
   )
 }
 
 export default function AdminHunminjeongeumPage() {
+  const [sectionId, setSectionId] = useState<HunminPassageSection['id']>('initial')
+  const section = HUNMIN_PASSAGE_SECTIONS.find((item) => item.id === sectionId) ?? HUNMIN_PASSAGE_SECTIONS[0]
+
   return (
     <div className="mx-auto w-full max-w-4xl flex-1 px-6 py-12 sm:px-10 sm:py-16">
       <div className="mb-10 flex items-center gap-3 border-b border-hanji-border pb-6">
@@ -237,44 +207,33 @@ export default function AdminHunminjeongeumPage() {
         <p className="font-sans text-xs text-ink-muted">훈민정음</p>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <p className="mb-2 font-sans text-[11px] uppercase tracking-[0.1em] text-ink-muted">
-          콘텐츠 편집
-        </p>
-        <h1 className="mb-3 font-serif text-2xl text-ink">훈민정음</h1>
-        <p className="mb-10 max-w-2xl font-sans text-xs leading-relaxed text-ink-muted/80">
-          ≪훈민정음≫ 해례본 단락별 다국어 번역을 관리합니다. 한문 원문과 한국어
-          풀이는 코드에 정의되어 변경되지 않으며 표시 전용입니다. 옛한국어 표현이
-          많아 자동 번역 품질이 낮은 점을 감안해, <strong className="font-semibold text-ink-soft">영어 풀이가 다른 언어 번역의
-          출처</strong>로 사용됩니다. 영어는 인라인으로 직접 편집하고, 그 외 언어는
-          우측 「번역」 드로어에서 편집·수정 불필요 처리·자동 번역 복귀가 가능합니다.
-        </p>
-      </motion.div>
+      <p className="mb-2 font-sans text-sm text-ink-muted">콘텐츠 편집</p>
+      <h1 className="mb-6 font-serif text-2xl text-ink">훈민정음</h1>
+      <div role="tablist" aria-label="훈민정음 단락" className="mb-10 inline-flex border border-hanji-border">
+        {HUNMIN_PASSAGE_SECTIONS.map((item) => {
+          const selected = item.id === section.id
+          return (
+            <button
+              key={item.id}
+              type="button"
+              role="tab"
+              aria-selected={selected}
+              onClick={() => setSectionId(item.id)}
+              className={`px-4 py-2 font-sans text-sm ${
+                selected ? 'bg-hanji-warm text-ink' : 'bg-hanji text-ink-muted hover:text-ink'
+              }`}
+            >
+              {SECTION_LABEL[item.id]}
+            </button>
+          )
+        })}
+      </div>
 
-      {HUNMIN_PASSAGE_SECTIONS.map((section) => (
-        <div key={section.id} className="mb-12">
-          <div className="mb-4 flex items-baseline gap-3">
-            <h2 className="font-serif text-base text-ink">
-              {SECTION_LABEL[section.id]}
-            </h2>
-            <span className="font-sans text-[10.5px] text-ink-muted/60">
-              {section.passages.length}개 단락
-            </span>
-            <span className="font-serif text-[11px] text-ink-muted/40" lang="zh-Hant">
-              {section.classicLabel}
-            </span>
-          </div>
-          <div className="divide-y divide-hanji-border border border-hanji-border rounded-sm">
-            {section.passages.map((p, i) => (
-              <PassageRow key={p.number} passage={p} index={i} />
-            ))}
-          </div>
-        </div>
-      ))}
+      <div className="divide-y divide-hanji-border border border-hanji-border rounded-sm">
+        {section.passages.map((passage) => (
+          <PassageRow key={passage.number} passage={passage} />
+        ))}
+      </div>
     </div>
   )
 }
