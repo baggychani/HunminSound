@@ -234,7 +234,11 @@ export function AdminTopBar() {
                           <div className="border-t border-hanji-border/40 bg-hanji-warm/40 px-4 py-3 dark:bg-hanji-warm/15">
                             <div className="space-y-2">
                               {entry.type === 'research' ? (
-                                <DetailRow label="범위">연구진·과제 정보 전체를 이 변경 전으로 되돌립니다.</DetailRow>
+                                <DetailRow label="범위">
+                                  {entry.action === 'remove'
+                                    ? '연구 소개 전체를 코드 기준본으로 되돌린 기록입니다.'
+                                    : '연구 소개 전체를 이 변경 전 내용으로 되돌립니다.'}
+                                </DetailRow>
                               ) : entry.action === 'save' ? (
                                 <>
                                   <DetailRow label="이전">

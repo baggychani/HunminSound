@@ -166,9 +166,9 @@ export async function saveText(input: {
   expectedVersion: string | null; displayName?: string;
 }, username: string): Promise<OverridesStore> {
   const current = await readCmsState()
-  const before = current.overrides[input.key]
   const baseline = codeBaseline().overrides[input.key]
-  if (!before || !Object.prototype.hasOwnProperty.call(codeBaseline().overrides, input.key)) throw new Error('CMS_INVALID_KEY')
+  if (!baseline) throw new Error('CMS_INVALID_KEY')
+  const before = current.overrides[input.key] ?? { ...baseline }
   if ((before.updatedAt || null) !== input.expectedVersion) throw new CmsConflictError()
   const after = input.remove ? { ...baseline } : input.staleDismissed
     ? { ...before, staleDismissed: true }
@@ -190,6 +190,14 @@ export async function writeResearchContent(data: ResearchContent, version: strin
   if (validateResearchContent(data) !== true) throw new Error('CMS_INVALID_RESEARCH')
   await saveChange(current, { kind: 'research', before: current.research, after: data }, username, 'save', '연구 소개')
   return researchVersion(data)
+}
+export async function restoreResearchBaseline(version: string | null, username: string) {
+  const current = await readCmsState()
+  if (version !== researchVersion(current.research)) throw new CmsConflictError()
+  const after = codeBaseline().research
+  if (validateResearchContent(after) !== true) throw new Error('CMS_INVALID_RESEARCH')
+  await saveChange(current, { kind: 'research', before: current.research, after }, username, 'remove', '연구 소개')
+  return researchVersion(after)
 }
 const PHOTO_NAME = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(jpg|png|webp)$/
 const PHOTO_PREFIX = 'hunminsound:cms:v2:photo:'

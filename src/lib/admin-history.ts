@@ -51,7 +51,10 @@ export function parseOverrideKey(key: string): {
 /** 액션 한국어 요약 */
 export function describeAction(entry: HistoryEntry): string {
   if (entry.action === 'restore') return `${entry.itemName} · 이전 내용으로 복원`
-  if (entry.type === 'research') return '연구 소개 · 연구진·과제 정보 수정'
+  if (entry.type === 'research') {
+    if (entry.action === 'remove') return '연구 소개 · 코드 기준본으로 복원'
+    return '연구 소개 · 연구진·과제 정보 수정'
+  }
   const langMap: Record<string, string> = {
     en: 'English', zh: '中文', ja: '日本語', fr: 'Français', de: 'Deutsch', es: 'Español',
     hi: 'हिन्दी', vi: 'Tiếng Việt', ru: 'Русский', ar: 'العربية',

@@ -499,7 +499,47 @@ export default function AdminResearchPage() {
       </div>
 
       <p className="mb-2 font-sans text-sm text-ink-muted">콘텐츠 편집</p>
-      <h1 className="mb-2 font-serif text-2xl text-ink">연구 소개</h1>
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="font-serif text-2xl text-ink">연구 소개</h1>
+        <button
+          type="button"
+          disabled={saving}
+          onClick={() => {
+            if (!window.confirm('연구 소개 전체를 코드에 있는 기준본으로 되돌릴까요? 지금 내용은 수정 이력에 남습니다.')) return
+            const task = queueRef.current.then(async () => {
+              setSaving(true)
+              setNotice(null)
+              try {
+                const res = await fetch('/api/admin/research-content', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ baseline: true, sha: shaRef.current }),
+                })
+                const body = (await res.json().catch(() => null)) as { message?: string; sha?: string | null; data?: ResearchContent } | null
+                if (res.status === 401) {
+                  throw new Error('로그인이 만료되었습니다. 이 탭은 새로고침하지 말고, 새 탭에서 다시 로그인한 뒤 다시 시도해 주세요.')
+                }
+                if (!res.ok || !body?.data || typeof body.sha !== 'string') {
+                  throw new Error(body?.message ?? '기준본으로 되돌리지 못했습니다.')
+                }
+                dataRef.current = body.data
+                shaRef.current = body.sha
+                setData(body.data)
+                setSha(body.sha)
+                setNotice('저장했습니다. 코드 기준본으로 되돌렸고 사이트에 반영되었습니다.')
+              } catch (err) {
+                setNotice(err instanceof Error ? err.message : '기준본으로 되돌리지 못했습니다.')
+              } finally {
+                setSaving(false)
+              }
+            })
+            queueRef.current = task.catch(() => {})
+          }}
+          className="px-2 py-1 font-sans text-[11px] text-ink-muted/70 hover:text-ink-accent disabled:opacity-50"
+        >
+          기준본으로
+        </button>
+      </div>
       {(saving || notice) && (
         <p className={`mb-8 font-sans text-xs ${saving || notice?.startsWith('저장했습니다') ? 'text-ink-muted' : 'text-red-500'}`}>
           {saving ? '저장 중…' : notice}
