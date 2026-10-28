@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { describeAction, type HistoryEntry } from '@/lib/admin-history'
 
 type NoticeLevel = 'info' | 'warning'
@@ -16,6 +17,8 @@ export type AdminNotice = {
 const STORAGE_PREFIX = 'hunmin-admin-notif-dismissed:'
 
 export function AdminTopBar({ sanityProjectIdConfigured }: { sanityProjectIdConfigured: boolean }) {
+  const pathname = usePathname()
+  const showStaffTools = !pathname.startsWith('/admin/login')
   const notifications = useMemo(
     (): AdminNotice[] => [
       ...(sanityProjectIdConfigured
@@ -107,7 +110,7 @@ export function AdminTopBar({ sanityProjectIdConfigured }: { sanityProjectIdConf
         ← 사이트로
       </Link>
 
-      <div className="fixed right-4 top-4 z-50 flex items-center gap-1 sm:right-6 sm:top-5">
+      {showStaffTools ? <div className="fixed right-4 top-4 z-50 flex items-center gap-1 sm:right-6 sm:top-5">
 
         {/* ── 히스토리 아이콘 ── */}
         <div className="relative flex items-center">
@@ -130,7 +133,7 @@ export function AdminTopBar({ sanityProjectIdConfigured }: { sanityProjectIdConf
               className="absolute right-0 top-[calc(100%+6px)] z-[60] w-[min(calc(100vw-32px),420px)] rounded-sm border border-hanji-border bg-hanji-warm shadow-lg dark:shadow-[0_24px_50px_-20px_rgb(0_0_0/0.45)]"
             >
               <div className="flex items-center justify-between border-b border-hanji-border px-4 py-2.5">
-                <span className="font-sans text-[11px] font-medium uppercase tracking-[0.08em] text-ink-muted">
+                <span className="font-sans text-sm font-medium text-ink">
                   수정 내역
                 </span>
                 <button
@@ -252,7 +255,7 @@ export function AdminTopBar({ sanityProjectIdConfigured }: { sanityProjectIdConf
               className="absolute right-0 top-[calc(100%+6px)] z-[60] w-[min(calc(100vw-32px),380px)] rounded-sm border border-hanji-border bg-hanji-warm shadow-lg dark:bg-hanji-warm dark:shadow-[0_24px_50px_-20px_rgb(0_0_0/0.45)]"
             >
               <div className="flex items-center justify-between border-b border-hanji-border px-4 py-2.5">
-                <span className="font-sans text-[11px] font-medium uppercase tracking-[0.08em] text-ink-muted">
+                <span className="font-sans text-sm font-medium text-ink">
                   알림
                 </span>
                 <button
@@ -302,7 +305,7 @@ export function AdminTopBar({ sanityProjectIdConfigured }: { sanityProjectIdConf
             </div>
           ) : null}
         </div>
-      </div>
+      </div> : null}
     </>
   )
 }
