@@ -6,7 +6,7 @@
  * - 읽기:   /api/admin/history GET
  */
 
-export type HistoryAction = 'save' | 'remove' | 'dismiss'
+export type HistoryAction = 'save' | 'remove' | 'dismiss' | 'restore'
 
 export interface HistoryEntry {
   id: string
@@ -14,12 +14,13 @@ export interface HistoryEntry {
   username: string        // 로그인한 관리자 ID
   action: HistoryAction
   key: string             // "consonant:b:description:en"
-  type: 'consonant' | 'vowel' | 'hunminPassage' | 'home'
+  type: 'consonant' | 'vowel' | 'hunminPassage' | 'home' | 'research'
   itemId: string          // e.g. "b" / "52"
   itemName: string        // e.g. "ㅂ (비읍)" / "[52] 正音二十八字…"
   lang: string            // e.g. "en"
   oldValue?: string       // 이전 번역 (있었을 경우)
   newValue?: string       // 새 번역 (save 액션)
+  restorable?: boolean
 }
 
 export const MAX_HISTORY = 500
@@ -49,6 +50,8 @@ export function parseOverrideKey(key: string): {
 
 /** 액션 한국어 요약 */
 export function describeAction(entry: HistoryEntry): string {
+  if (entry.action === 'restore') return `${entry.itemName} · 이전 내용으로 복원`
+  if (entry.type === 'research') return '연구 소개 · 연구진·과제 정보 수정'
   const langMap: Record<string, string> = {
     en: 'English', zh: '中文', ja: '日本語', fr: 'Français', de: 'Deutsch', es: 'Español',
     hi: 'हिन्दी', vi: 'Tiếng Việt', ru: 'Русский', ar: 'العربية',
@@ -69,7 +72,7 @@ export function describeAction(entry: HistoryEntry): string {
   }
   if (entry.action === 'remove') {
     if (entry.lang === 'ko') return `${typeLabel} ${entry.itemName} · 한국어 설명 원본으로 복원`
-    return `${typeLabel} ${entry.itemName} · ${langLabel} 번역 삭제 (자동 번역으로 복귀)`
+    return `${typeLabel} ${entry.itemName} · ${langLabel} 기준 번역으로 복원`
   }
   if (entry.action === 'dismiss') return `${typeLabel} ${entry.itemName} · ${langLabel} 번역 그대로 유지 확인`
   return entry.key

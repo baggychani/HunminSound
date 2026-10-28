@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import { getV2Messages } from '@/lib/v2-i18n'
@@ -15,6 +15,7 @@ let _fetchPromise: Promise<OverridesStore> | null = null
 const _listeners = new Set<() => void>()
 let _generation = 0
 const CMS_UPDATE_KEY = 'sejong-cms-updated'
+export const PublicContentContext = createContext<OverridesStore>({})
 
 function notify() {
   _listeners.forEach((fn) => fn())
@@ -44,10 +45,11 @@ async function fetchPublicOverrides(): Promise<OverridesStore> {
 }
 
 export function usePublicOverridesStore(): OverridesStore {
-  const [store, setStore] = useState<OverridesStore>(_store ?? {})
+  const initial = useContext(PublicContentContext)
+  const [store, setStore] = useState<OverridesStore>(initial)
 
   useEffect(() => {
-    const listener = () => setStore({ ...(_store ?? {}) })
+    const listener = () => { if (_store) setStore({ ..._store }) }
     const refresh = () => { void fetchPublicOverrides() }
     const onVisible = () => {
       if (document.visibilityState === 'visible') refresh()

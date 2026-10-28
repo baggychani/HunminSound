@@ -13,9 +13,9 @@ interface TeamSectionProps {
   content: ResearchContent
 }
 
-function MemberAvatar({ name }: { name: string }) {
+function MemberAvatar({ name, photo }: { name: string; photo?: string }) {
   const [failed, setFailed] = useState(false)
-  const src = teamPhotoSrc(name)
+  const src = photo || teamPhotoSrc(name)
   const initials = teamInitials(name)
 
   if (src && !failed) {
@@ -25,6 +25,7 @@ function MemberAvatar({ name }: { name: string }) {
         alt={`${name} 연구원 사진`}
         width={56}
         height={56}
+        unoptimized={src.startsWith('/media/team/')}
         className="h-14 w-14 shrink-0 rounded-full object-cover ring-2 ring-indigo-200"
         onError={() => setFailed(true)}
       />
@@ -71,7 +72,7 @@ export function TeamSection({ content }: TeamSectionProps) {
               whileHover={{ y: -6, scale: 1.01 }}
               className="flex gap-4 rounded-xl bg-white/70 p-4 transition hover:bg-white/85 sm:p-5"
             >
-              <MemberAvatar name={member.name} />
+              <MemberAvatar name={member.name} photo={member.photo} />
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-semibold uppercase tracking-wide text-indigo-600">
                   {tr(t, lang, `team.rows.${index}.role`, member.role)}

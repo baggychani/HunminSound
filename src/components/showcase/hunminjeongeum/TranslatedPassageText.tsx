@@ -22,6 +22,7 @@ interface TranslatedPassageTextProps {
  */
 export function TranslatedPassageText({ passage, lang, className }: TranslatedPassageTextProps) {
   const store = usePublicOverridesStore()
+  const korean = store[`hunminPassage:${passage.number}:description:ko`]?.value ?? passage.korean
   const overrideLangCode: SupportedTranslationLang | null = isSupportedTranslationLang(lang)
     ? lang
     : null
@@ -32,9 +33,9 @@ export function TranslatedPassageText({ passage, lang, className }: TranslatedPa
   const savedTranslation = overrideValue?.trim()
     ? overrideValue
     : lang === 'ko'
-      ? passage.korean
+      ? korean
       : passage.translations[lang]
-  const text = lang === 'ko' || !savedTranslation?.trim() ? passage.korean : savedTranslation
+  const text = lang === 'ko' || !savedTranslation?.trim() ? korean : savedTranslation
 
   return (
     <p className={className} lang={lang}>

@@ -15,8 +15,8 @@ export const metadata: Metadata = {
   openGraph: { url: '/vowels' },
 }
 
-/** Sanity에 연결되어 있으면 1시간마다 새 글을 반영 (미연결 시 로컬 데이터 그대로) */
-export const revalidate = 3600
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export default async function VowelsPage({
   searchParams,

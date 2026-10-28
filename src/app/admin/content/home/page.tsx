@@ -73,6 +73,24 @@ function KoreanEditor({
     }
   }
 
+  const restoreBaseline = async () => {
+    setSaving(true)
+    setError(null)
+    try {
+      await patchOverride({
+        key: `home:${id}:description:ko`,
+        remove: true,
+        displayName,
+        lang: 'ko',
+        type: 'home',
+      })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '기준본으로 되돌리지 못했습니다.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
   return (
     <div className="min-w-0 flex-1">
       {editing ? (
@@ -105,15 +123,26 @@ function KoreanEditor({
           </div>
         </div>
       ) : (
-        <p
-          onDoubleClick={startEdit}
-          title="더블클릭하여 한국어 편집"
-          className={`cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-xs leading-relaxed transition-colors hover:bg-hanji-border/20 whitespace-pre-line ${
-            hasOverride ? 'text-ink border-l-2 border-gold/40 pl-3' : 'text-ink-muted/70'
-          }`}
-        >
-          {currentText}
-        </p>
+        <>
+          <p
+            onDoubleClick={startEdit}
+            title="더블클릭하여 한국어 편집"
+            className={`cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-xs leading-relaxed transition-colors hover:bg-hanji-border/20 whitespace-pre-line ${
+              hasOverride ? 'text-ink border-l-2 border-gold/40 pl-3' : 'text-ink-muted/70'
+            }`}
+          >
+            {currentText}
+          </p>
+          {hasOverride && (
+            <div className="mt-1 flex justify-end">
+              <button type="button" onClick={() => void restoreBaseline()} disabled={saving}
+                className="px-2 py-1 font-sans text-[10px] text-ink-muted/50 hover:text-ink-accent transition-colors disabled:opacity-50">
+                {saving ? '되돌리는 중…' : '기준본으로'}
+              </button>
+            </div>
+          )}
+          {error && <p role="alert" className="mt-1 font-sans text-[11px] leading-snug text-red-500">{error}</p>}
+        </>
       )}
     </div>
   )

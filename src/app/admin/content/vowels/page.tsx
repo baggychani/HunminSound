@@ -7,7 +7,7 @@ import { HUNMIN_VOWEL_ROWS, type HunminVowelRow, type HunminVowelSlot } from '@/
 import { ADMIN_LANGUAGE_NAMES } from '@/components/admin/adminLanguageNames'
 import { PhonemeModeSwitch, type PhonemeAdminMode } from '@/components/admin/PhonemeModeSwitch'
 import { TranslationDrawer } from '@/components/admin/TranslationDrawer'
-import { patchOverride, makeKoreanKey } from '@/lib/overrides-store'
+import { patchOverride, makeKoreanKey, useOverridesStore, getCurrentKorean } from '@/lib/overrides-store'
 import { buildPhonemeDescriptionBaseValues } from '@/lib/cms-base-values'
 import type { Vowel } from '@/types'
 
@@ -70,6 +70,18 @@ function KoreanEditor({
     }
   }
 
+  const restoreBaseline = async () => {
+    setSaving(true)
+    setError(null)
+    try {
+      await patchOverride({ key: makeKoreanKey(type, id), remove: true, displayName, lang: 'ko', type })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '기준본으로 되돌리지 못했습니다.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
   return (
     <div className="mt-2">
       {editing ? (
@@ -97,20 +109,32 @@ function KoreanEditor({
           </div>
         </div>
       ) : (
-        <p
-          onDoubleClick={() => { setDraft(currentText); setError(null); setEditing(true); setTimeout(() => textareaRef.current?.focus(), 50) }}
-          title="더블클릭하여 한국어 설명 편집"
-          className={`cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-xs leading-relaxed transition-colors hover:bg-hanji-border/20 ${hasOverride ? 'text-ink border-l-2 border-gold/40 pl-3' : 'text-ink-muted/70'}`}
-        >
-          {currentText}
-        </p>
+        <>
+          <p
+            onDoubleClick={() => { setDraft(currentText); setError(null); setEditing(true); setTimeout(() => textareaRef.current?.focus(), 50) }}
+            title="더블클릭하여 한국어 설명 편집"
+            className={`cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-xs leading-relaxed transition-colors hover:bg-hanji-border/20 ${hasOverride ? 'text-ink border-l-2 border-gold/40 pl-3' : 'text-ink-muted/70'}`}
+          >
+            {currentText}
+          </p>
+          {hasOverride && (
+            <div className="mt-1 flex justify-end">
+              <button type="button" onClick={() => void restoreBaseline()} disabled={saving}
+                className="px-2 py-1 font-sans text-[10px] text-ink-muted/50 hover:text-ink-accent transition-colors disabled:opacity-50">
+                {saving ? '되돌리는 중…' : '기준본으로'}
+              </button>
+            </div>
+          )}
+          {error && <p role="alert" className="mt-1 font-sans text-[11px] leading-snug text-red-500">{error}</p>}
+        </>
       )}
     </div>
   )
 }
 
 function VowelRow({ vowel }: { vowel: Vowel }) {
-  const koreanSource = vowel.description
+  const store = useOverridesStore()
+  const koreanSource = getCurrentKorean(store, 'vowel', vowel._id, vowel.description)
 
   return (
     <div>

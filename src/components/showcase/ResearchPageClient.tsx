@@ -780,7 +780,7 @@ export function ResearchPageClient({ content }: Props) {
                   subtitle: group.subtitle
                     ? t(`team.directory.${i}.subtitle`, group.subtitle)
                     : undefined,
-                  names: lang !== 'ko' && group.namesEn?.length ? group.namesEn : group.names,
+                  names: lang !== 'ko' ? group.names.map((name, j) => group.namesEn?.[j]?.trim() || name) : group.names,
                 }))}
               />
             ) : null}

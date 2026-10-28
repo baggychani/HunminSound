@@ -257,6 +257,7 @@ function MemberPhoto({ name, photoName, src: srcOverride }: { name: string; phot
           alt={`${name} 연구원 사진`}
           fill
           sizes="(max-width: 640px) 50vw, 25vw"
+          unoptimized={src.startsWith('/media/team/')}
           className="object-cover object-[center_14%] transition-transform duration-500 ease-out group-hover:scale-110"
           onError={() => setFailed(true)}
         />

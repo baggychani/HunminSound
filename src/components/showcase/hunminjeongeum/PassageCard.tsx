@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { usePublicOverridesStore } from '@/hooks/useSiteMessages'
 import { useLang } from '@/contexts/LanguageContext'
 import { getMessages } from '@/lib/i18n'
 import { HanjaText } from './HanjaText'
@@ -21,6 +22,8 @@ interface PassageCardProps {
 
 export function PassageCard({ passage }: PassageCardProps) {
   const { lang } = useLang()
+  const store = usePublicOverridesStore()
+  const korean = store[`hunminPassage:${passage.number}:description:ko`]?.value ?? passage.korean
   const m = getMessages(lang)
   const [hovered, setHovered] = useState<{ key: string; char: string } | null>(null)
 
@@ -79,7 +82,7 @@ export function PassageCard({ passage }: PassageCardProps) {
         className="mt-4 break-keep font-serif text-[17px] leading-[2.8] text-ink-soft [overflow-wrap:break-word] sm:text-lg"
         lang="ko"
       >
-        <HunminPassageText text={passage.korean} />
+        <HunminPassageText text={korean} />
       </p>
 
       {/* 추가 언어 풀이 — 사이트 언어가 한국어가 아닐 때, 자동 번역(필요 시) 적용 */}

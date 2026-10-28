@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { ADMIN_LANGUAGE_NAMES } from '@/components/admin/adminLanguageNames'
 import type { ResearchContent, TeamDirectoryGroup, TeamRow } from '@/lib/research-content'
 import { TRANSLATION_LANGS } from '@/lib/i18n-overrides'
+import { CMS_CONTENT_CHANGED } from '@/lib/overrides-store'
 import { teamPhotoSrc } from '@/lib/teamSlugs'
 
 function cloneDeep<T>(value: T): T {
@@ -50,17 +51,20 @@ function ClickEdit({
   empty,
 }: {
   value: string
-  onSave: (value: string) => void
+  onSave: (value: string) => void | Promise<void>
   multiline?: boolean
   className: string
   empty?: string
 }) {
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(value)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const areaRef = useRef<HTMLTextAreaElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const start = () => {
+    setError(null)
     setDraft(value)
     setEditing(true)
     setTimeout(() => (multiline ? areaRef : inputRef).current?.focus(), 40)
@@ -77,13 +81,19 @@ function ClickEdit({
           <input ref={inputRef} value={draft} onChange={(e) => setDraft(e.target.value)} className={fieldClass} />
         )}
         <div className="flex items-center justify-end gap-2">
-          <button type="button" onClick={() => { onSave(draft); setEditing(false) }} className="rounded-sm bg-gold/90 px-3 py-1 font-sans text-[10px] text-hanji hover:bg-gold">
-            저장
+          <button type="button" disabled={saving} onClick={async () => {
+            setSaving(true); setError(null)
+            try { await onSave(draft); setEditing(false) }
+            catch (e) { setError(e instanceof Error ? e.message : '저장하지 못했습니다.') }
+            finally { setSaving(false) }
+          }} className="rounded-sm bg-gold/90 px-3 py-1 font-sans text-[10px] text-hanji hover:bg-gold disabled:opacity-50">
+            {saving ? '저장 중…' : '저장'}
           </button>
-          <button type="button" onClick={() => setEditing(false)} className="px-2 py-1 font-sans text-[10px] text-ink-muted/50 hover:text-ink-soft">
+          <button type="button" disabled={saving} onClick={() => setEditing(false)} className="px-2 py-1 font-sans text-[10px] text-ink-muted/50 hover:text-ink-soft">
             취소
           </button>
         </div>
+        {error && <p role="alert" className="font-sans text-xs text-red-500">{error}</p>}
       </div>
     )
   }
@@ -200,7 +210,7 @@ function MemberEditor({
       const res = await fetch('/api/admin/team-photo', { method: 'POST', body })
       const data = (await res.json().catch(() => ({}))) as { src?: string; message?: string }
       if (!res.ok || !data.src) throw new Error(data.message ?? '사진을 저장하지 못했습니다.')
-      if (data.src !== baseSrc) onPhoto(data.src)
+      if (data.src !== baseSrc) await onPhoto(data.src)
       setBust(Date.now())
     } catch (err) {
       setPhotoError(err instanceof Error ? err.message : '사진을 저장하지 못했습니다.')
@@ -395,18 +405,31 @@ export default function AdminResearchPage() {
   }, [sha])
 
   useEffect(() => {
-    fetch('/api/admin/research-content', { cache: 'no-store' })
-      .then((res) => {
-        if (!res.ok) throw new Error()
-        return res.json()
-      })
-      .then((body: { data: ResearchContent; sha: string | null }) => {
-        dataRef.current = body.data
-        shaRef.current = body.sha
-        setData(body.data)
-        setSha(body.sha)
-      })
-      .catch(() => setError('데이터를 불러오지 못했습니다.'))
+    let cancelled = false
+    let ticket = 0
+    const load = () => {
+      const current = ++ticket
+      fetch('/api/admin/research-content', { cache: 'no-store' })
+        .then((res) => {
+          if (!res.ok) throw new Error()
+          return res.json()
+        })
+        .then((body: { data: ResearchContent; sha: string | null }) => {
+          if (cancelled || current !== ticket) return
+          dataRef.current = body.data
+          shaRef.current = body.sha
+          setData(body.data)
+          setSha(body.sha)
+          setError(null)
+        })
+        .catch(() => { if (!cancelled && current === ticket) setError('데이터를 불러오지 못했습니다.') })
+    }
+    load()
+    window.addEventListener(CMS_CONTENT_CHANGED, load)
+    return () => {
+      cancelled = true
+      window.removeEventListener(CMS_CONTENT_CHANGED, load)
+    }
   }, [])
 
   const persist = useCallback(async (next: ResearchContent) => {
@@ -425,26 +448,31 @@ export default function AdminResearchPage() {
       if (!res.ok) throw new Error(body?.message ?? '저장에 실패했습니다.')
       shaRef.current = body?.sha ?? null
       setSha(body?.sha ?? null)
-      setNotice('저장했습니다. 1~2분 뒤 사이트에 반영됩니다.')
+      setNotice('저장했습니다. 사이트에 반영되었습니다.')
     } catch (err) {
       setNotice(err instanceof Error ? err.message : '저장에 실패했습니다.')
+      throw err
     } finally {
       setSaving(false)
     }
   }, [])
 
   const commit = useCallback((mutator: (draft: ResearchContent) => void) => {
-    const current = dataRef.current
-    if (!current) return
-    const next = cloneDeep(current)
-    mutator(next)
-    dataRef.current = next
-    setData(next)
-    queueRef.current = queueRef.current.then(() => persist(next))
+    const task = queueRef.current.then(async () => {
+      const current = dataRef.current
+      if (!current) throw new Error('현재 내용을 불러오지 못했습니다.')
+      const next = cloneDeep(current)
+      mutator(next)
+      await persist(next)
+      dataRef.current = next
+      setData(next)
+    })
+    queueRef.current = task.catch(() => {})
+    return task
   }, [persist])
 
   const saveTrans = (key: string, lang: string, value: string) => {
-    commit((draft) => {
+    return commit((draft) => {
       const map = { ...(draft.translations[lang] ?? {}) }
       const trimmed = value.trim()
       if (trimmed) map[key] = trimmed

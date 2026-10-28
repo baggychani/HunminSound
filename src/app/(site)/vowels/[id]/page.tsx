@@ -1,18 +1,14 @@
 import { VowelsPageClient } from '@/components/showcase/VowelsPageClient'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { PhonemeTextIndex } from '@/components/showcase/phonetics/PhonemeTextIndex'
-import { vowelsData } from '@/data/vowels'
 import { phonemeMetadata } from '@/lib/phonemeRoutes'
 import { loadVowelList } from '@/lib/queries'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-export const revalidate = 3600
-
-export function generateStaticParams() {
-  return vowelsData.map((item) => ({ id: item._id }))
-}
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const item = (await loadVowelList()).find((row) => row._id === params.id)

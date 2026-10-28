@@ -1,21 +1,23 @@
 import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
-import { ADMIN_SESSION_COOKIE, getAdminSessionSecret, verifyAdminSessionToken } from '@/lib/adminSession'
-import { readAdminHistory } from '@/lib/cms-storage'
-
+import { readCmsState, restoreCmsEntry } from '@/lib/cms-storage'
+import { cmsUser, cmsError, noStore } from '@/lib/cms-api'
 export const runtime = 'nodejs'
-
+export const dynamic = 'force-dynamic'
 export async function GET() {
-  const cookieStore = await cookies()
-  const token = cookieStore.get(ADMIN_SESSION_COOKIE)?.value
-  const secret = getAdminSessionSecret()
-  const username = await verifyAdminSessionToken(secret, token)
-  if (!username) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  if (!(await cmsUser())) return NextResponse.json({}, { status: 401 })
   try {
-    return NextResponse.json(await readAdminHistory())
-  } catch {
-    return NextResponse.json([])
-  }
+    const { history, revision } = await readCmsState()
+    return NextResponse.json({ history, revision }, { headers: noStore })
+  } catch (e) { return cmsError(e) }
+}
+export async function POST(req: Request) {
+  const user = await cmsUser()
+  if (!user) return NextResponse.json({}, { status: 401 })
+  let body
+  try { body = await req.json() } catch { return NextResponse.json({}, { status: 400 }) }
+  if (!body || typeof body.id !== 'string' || typeof body.revision !== 'string') return NextResponse.json({}, { status: 400 })
+  try {
+    await restoreCmsEntry(body.id, body.revision, user)
+    return NextResponse.json({ ok: true }, { headers: noStore })
+  } catch (e) { return cmsError(e) }
 }

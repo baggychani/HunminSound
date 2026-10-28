@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { describeAction, type HistoryEntry } from '@/lib/admin-history'
+import { describeAction, MAX_HISTORY, type HistoryEntry } from '@/lib/admin-history'
+import { notifyCmsContentChanged, refreshAdminOverrides } from '@/lib/overrides-store'
 
 type NoticeLevel = 'info' | 'warning'
 
@@ -37,16 +38,63 @@ export function AdminTopBar() {
   const histPanelRef = useRef<HTMLDivElement>(null)
   const histBtnRef = useRef<HTMLButtonElement>(null)
   const [history, setHistory] = useState<HistoryEntry[]>([])
+  const [revision, setRevision] = useState<string | null>(null)
   const [histLoading, setHistLoading] = useState(false)
+  const [histError, setHistError] = useState<string | null>(null)
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [restoringId, setRestoringId] = useState<string | null>(null)
+  const [restoreError, setRestoreError] = useState<{ id: string; message: string } | null>(null)
 
-  const fetchHistory = () => {
+  const fetchHistory = async () => {
     setHistLoading(true)
-    fetch('/api/admin/history')
-      .then((r) => (r.ok ? r.json() : []))
-      .then((data) => setHistory(Array.isArray(data) ? (data as HistoryEntry[]) : []))
-      .catch(() => {})
-      .finally(() => setHistLoading(false))
+    setHistError(null)
+    try {
+      const response = await fetch('/api/admin/history', { cache: 'no-store' })
+      const data = await response.json().catch(() => null) as {
+        history?: HistoryEntry[]
+        revision?: string
+        message?: string
+      } | null
+      if (!response.ok || !data || !Array.isArray(data.history) || typeof data.revision !== 'string') {
+        throw new Error(data?.message || '수정 내역을 불러오지 못했습니다.')
+      }
+      setHistory(data.history)
+      setRevision(data.revision)
+    } catch (error) {
+      setHistError(error instanceof Error ? error.message : '수정 내역을 불러오지 못했습니다.')
+    } finally {
+      setHistLoading(false)
+    }
+  }
+
+  const restoreEntry = async (entry: HistoryEntry) => {
+    if (!revision || !entry.restorable || restoringId) return
+    setRestoringId(entry.id)
+    setRestoreError(null)
+    try {
+      const response = await fetch('/api/admin/history', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: entry.id, revision }),
+      })
+      const data = await response.json().catch(() => null) as { message?: string } | null
+      if (!response.ok) {
+        if (response.status === 409) await fetchHistory()
+        if (response.status === 401) {
+          throw new Error('로그인이 만료되었습니다. 이 탭은 그대로 두고 새 탭에서 다시 로그인한 뒤, 여기서 다시 되돌려 주세요.')
+        }
+        throw new Error(data?.message || '되돌리지 못했습니다.')
+      }
+      notifyCmsContentChanged()
+      await Promise.all([refreshAdminOverrides(), fetchHistory()])
+    } catch (error) {
+      setRestoreError({
+        id: entry.id,
+        message: error instanceof Error ? error.message : '되돌리지 못했습니다.',
+      })
+    } finally {
+      setRestoringId(null)
+    }
   }
 
   const toggleHist = () => {
@@ -130,9 +178,16 @@ export function AdminTopBar() {
                 </button>
               </div>
 
+              {histError && history.length > 0 && (
+                <p role="alert" className="border-b border-hanji-border px-4 py-2 font-sans text-[11px] leading-snug text-red-500">
+                  {histError}
+                </p>
+              )}
               <ul className="max-h-[min(75vh,26rem)] divide-y divide-hanji-border/70 overflow-y-auto">
-                {histLoading ? (
+                {histLoading && history.length === 0 ? (
                   <li className="px-4 py-8 text-center font-sans text-xs text-ink-muted/50">불러오는 중…</li>
+                ) : histError && history.length === 0 ? (
+                  <li className="px-4 py-8 text-center font-sans text-xs leading-relaxed text-red-500">{histError}</li>
                 ) : history.length === 0 ? (
                   <li className="px-4 py-8 text-center font-sans text-xs text-ink-muted/40">
                     아직 수정 내역이 없습니다.
@@ -178,27 +233,43 @@ export function AdminTopBar() {
                         {isExpanded && (
                           <div className="border-t border-hanji-border/40 bg-hanji-warm/40 px-4 py-3 dark:bg-hanji-warm/15">
                             <div className="space-y-2">
-                              {entry.action === 'save' && (
+                              {entry.type === 'research' ? (
+                                <DetailRow label="범위">연구진·과제 정보 전체를 이 변경 전으로 되돌립니다.</DetailRow>
+                              ) : entry.action === 'save' ? (
                                 <>
                                   <DetailRow label="이전">
-                                    {entry.oldValue ?? <span className="italic text-ink-muted/40">오버라이드 없음</span>}
+                                    {entry.oldValue ?? <span className="italic text-ink-muted/40">이전 내용 없음</span>}
                                   </DetailRow>
                                   <DetailRow label="저장">
                                     <span className="text-emerald-600 dark:text-emerald-400">{entry.newValue ?? '—'}</span>
                                   </DetailRow>
                                 </>
-                              )}
-                              {entry.action === 'remove' && (
-                                <DetailRow label="삭제된 번역">
+                              ) : entry.action === 'remove' ? (
+                                <DetailRow label="되돌린 내용">
                                   <span className="line-through text-ink-muted/60">{entry.oldValue ?? '—'}</span>
                                 </DetailRow>
-                              )}
-                              {entry.action === 'dismiss' && (
+                              ) : entry.action === 'restore' ? (
+                                <DetailRow label="처리">이전 내용을 현재 내용으로 다시 저장했습니다.</DetailRow>
+                              ) : entry.action === 'dismiss' ? (
                                 <DetailRow label="처리">원본이 바뀌었지만 번역을 수정하지 않아도 된다고 확인했습니다.</DetailRow>
+                              ) : null}
+                              {entry.restorable ? (
+                                <button
+                                  type="button"
+                                  onClick={() => void restoreEntry(entry)}
+                                  disabled={!revision || restoringId !== null}
+                                  className="font-sans text-[11px] text-ink-accent underline underline-offset-2 hover:text-gold disabled:opacity-50 dark:text-gold-light"
+                                >
+                                  {restoringId === entry.id ? '되돌리는 중…' : '이 변경 전으로'}
+                                </button>
+                              ) : (
+                                <p className="font-sans text-[11px] leading-snug text-ink-muted/70">
+                                  이 기록은 복원 자료가 없어 되돌릴 수 없습니다.
+                                </p>
                               )}
-                              <DetailRow label="키">
-                                <code className="rounded bg-hanji-border/40 px-1 text-[10px]">{entry.key}</code>
-                              </DetailRow>
+                              {restoreError?.id === entry.id && (
+                                <p role="alert" className="font-sans text-[11px] leading-snug text-red-500">{restoreError.message}</p>
+                              )}
                             </div>
                           </div>
                         )}
@@ -209,7 +280,7 @@ export function AdminTopBar() {
               </ul>
 
               <div className="border-t border-hanji-border px-4 py-2 text-center font-sans text-[10px] leading-snug text-ink-muted/60">
-                최근 {history.length}건 표시 (최대 100건 유지)
+                최근 {history.length}건 표시 (최대 {MAX_HISTORY}건 유지)
               </div>
             </div>
           )}

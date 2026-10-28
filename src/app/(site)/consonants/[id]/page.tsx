@@ -1,18 +1,14 @@
 import { PageHeader } from '@/components/layout/PageHeader'
 import { ConsonantsPageClient } from '@/components/showcase/ConsonantsPageClient'
 import { PhonemeTextIndex } from '@/components/showcase/phonetics/PhonemeTextIndex'
-import { consonantsData } from '@/data/consonants'
 import { phonemeMetadata } from '@/lib/phonemeRoutes'
 import { loadConsonantList } from '@/lib/queries'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-export const revalidate = 3600
-
-export function generateStaticParams() {
-  return consonantsData.map((item) => ({ id: item._id }))
-}
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const item = (await loadConsonantList()).find((row) => row._id === params.id)

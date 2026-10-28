@@ -1,172 +1,27 @@
-/**
- * /api/admin/i18n-overrides
- *
- * GET   → 전체 오버라이드 반환
- * PATCH → 단일 항목 저장·삭제·staleDismissed 처리 + 수정 내역 기록
- */
-
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
-import { ADMIN_SESSION_COOKIE, getAdminSessionSecret, verifyAdminSessionToken } from '@/lib/adminSession'
-import type { TranslationOverride } from '@/lib/i18n-overrides'
-import {
-  makeHistoryEntry, parseOverrideKey, MAX_HISTORY,
-  type HistoryEntry,
-} from '@/lib/admin-history'
-import {
-  readOverridesStore,
-  writeOverridesStore,
-  readAdminHistory,
-  writeAdminHistory,
-  withCmsLock,
-} from '@/lib/cms-storage'
-
+import { readOverridesStore, saveText } from '@/lib/cms-storage'
+import { cmsUser, cmsError, noStore } from '@/lib/cms-api'
 export const runtime = 'nodejs'
-
-async function getAuthUser(): Promise<string | null> {
-  const cookieStore = await cookies()
-  const token = cookieStore.get(ADMIN_SESSION_COOKIE)?.value
-  const secret = getAdminSessionSecret()
-  return verifyAdminSessionToken(secret, token)
-}
-
-function cmsErrorResponse(err: unknown) {
-  const message = err instanceof Error ? err.message : '저장 실패'
-  if (message.includes('CMS_LOCK_TIMEOUT')) {
-    return NextResponse.json(
-      { error: 'busy', message: '다른 분의 저장과 겹쳤습니다. 잠시 뒤 저장을 다시 눌러 주세요.' },
-      { status: 503 },
-    )
-  }
-  if (message.includes('CMS_CLOUD_STORAGE_REQUIRED')) {
-    return NextResponse.json(
-      {
-        error: 'storage_not_configured',
-        message:
-          'Vercel 프로덕션에서 CMS 저장하려면 Upstash Redis 연동이 필요합니다. ' +
-          'Vercel 대시보드 → Storage → Upstash Redis를 이 프로젝트에 연결한 뒤 재배포하세요.',
-      },
-      { status: 503 },
-    )
-  }
-  console.error('[cms] overrides write failed:', err)
-  return NextResponse.json({ error: 'write_failed', message: '저장에 실패했습니다.' }, { status: 500 })
-}
-
-/* ── GET ──────────────────────────────────────────────────────────────────── */
+export const dynamic = 'force-dynamic'
 export async function GET() {
-  if (!(await getAuthUser())) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-  return NextResponse.json(await readOverridesStore())
+  if (!(await cmsUser())) return NextResponse.json({}, { status: 401 })
+  try { return NextResponse.json(await readOverridesStore(), { headers: noStore }) }
+  catch (e) { return cmsError(e) }
 }
-
-/* ── PATCH ────────────────────────────────────────────────────────────────── */
-interface PatchBody {
-  key: string
-  value?: string
-  sourceSnapshot?: string
-  staleDismissed?: boolean
-  remove?: boolean
-  displayName?: string
-  lang?: string
-  type?: string
-}
-
 export async function PATCH(req: NextRequest) {
-  const username = await getAuthUser()
-  if (!username) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const user = await cmsUser()
+  if (!user) return NextResponse.json({}, { status: 401 })
+  let body
+  try { body = await req.json() } catch { return NextResponse.json({}, { status: 400 }) }
+  if (!body || typeof body.key !== 'string' || body.key.length > 200 ||
+      !(body.expectedVersion === null || typeof body.expectedVersion === 'string') ||
+      (body.remove !== undefined && typeof body.remove !== 'boolean') ||
+      (body.staleDismissed !== undefined && typeof body.staleDismissed !== 'boolean') ||
+      (body.displayName !== undefined && (typeof body.displayName !== 'string' || body.displayName.length > 300)) ||
+      (!body.remove && !body.staleDismissed && (typeof body.value !== 'string' || body.value.length > 20000 ||
+        typeof body.sourceSnapshot !== 'string' || body.sourceSnapshot.length > 20000))) {
+    return NextResponse.json({ message: '저장할 내용이 올바르지 않습니다.' }, { status: 400 })
   }
-
-  let body: PatchBody
-  try { body = (await req.json()) as PatchBody }
-  catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }) }
-
-  const { key, value, sourceSnapshot, staleDismissed, remove, displayName } = body
-  // 키는 반드시 "종류:항목:description:언어" 규격 — __proto__ 대입 등 예약어 차단 겸용
-  if (!key || typeof key !== 'string' || key.length > 200 || key.startsWith('__')) {
-    return NextResponse.json({ error: 'invalid key' }, { status: 400 })
-  }
-  const parsed = parseOverrideKey(key)
-  if (!parsed) {
-    return NextResponse.json({ error: 'invalid key' }, { status: 400 })
-  }
-  if (
-    (value !== undefined && (typeof value !== 'string' || value.length > 20000)) ||
-    (sourceSnapshot !== undefined && (typeof sourceSnapshot !== 'string' || sourceSnapshot.length > 20000)) ||
-    (displayName !== undefined && (typeof displayName !== 'string' || displayName.length > 300))
-  ) {
-    return NextResponse.json({ error: 'value too long' }, { status: 400 })
-  }
-
-  try {
-    return await withCmsLock(async () => {
-      const store = await readOverridesStore()
-      const existing = store[key]
-
-      if (remove) {
-        if (parsed) {
-          const history = [
-            makeHistoryEntry({
-              username, action: 'remove', key,
-              type: parsed.type, itemId: parsed.itemId,
-              itemName: displayName ?? parsed.itemId,
-              lang: parsed.lang,
-              oldValue: existing?.value,
-            }),
-            ...(await readAdminHistory()),
-          ].slice(0, MAX_HISTORY)
-          await writeAdminHistory(history)
-        }
-        delete store[key]
-      } else if (staleDismissed === true) {
-        if (existing) {
-          store[key] = { ...existing, staleDismissed: true, updatedAt: new Date().toISOString() }
-          if (parsed) {
-            const history = [
-              makeHistoryEntry({
-                username, action: 'dismiss', key,
-                type: parsed.type, itemId: parsed.itemId,
-                itemName: displayName ?? parsed.itemId,
-                lang: parsed.lang,
-              }),
-              ...(await readAdminHistory()),
-            ].slice(0, MAX_HISTORY)
-            await writeAdminHistory(history)
-          }
-        }
-      } else {
-        if (typeof value !== 'string' || typeof sourceSnapshot !== 'string') {
-          return NextResponse.json({ error: 'value and sourceSnapshot required' }, { status: 400 })
-        }
-        const entry: TranslationOverride = {
-          value,
-          sourceSnapshot,
-          staleDismissed: false,
-          updatedAt: new Date().toISOString(),
-        }
-        store[key] = entry
-        if (parsed) {
-          const history = [
-            makeHistoryEntry({
-              username, action: 'save', key,
-              type: parsed.type, itemId: parsed.itemId,
-              itemName: displayName ?? parsed.itemId,
-              lang: parsed.lang,
-              oldValue: existing?.value,
-              newValue: value,
-            }),
-            ...(await readAdminHistory()),
-          ].slice(0, MAX_HISTORY)
-          await writeAdminHistory(history)
-        }
-      }
-
-      await writeOverridesStore(store)
-      return NextResponse.json({ ok: true, store })
-    })
-  } catch (err) {
-    return cmsErrorResponse(err)
-  }
+  try { return NextResponse.json({ ok: true, store: await saveText(body, user) }, { headers: noStore }) }
+  catch (e) { return cmsError(e) }
 }

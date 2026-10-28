@@ -1,208 +1,258 @@
-/**
- * CMS 영속 저장소 — 로컬은 JSON 파일, Vercel(Upstash Redis)은 클라우드 KV.
- *
- * Vercel 대시보드 → Storage → Upstash Redis 연동 시
- * KV_REST_API_URL / KV_REST_API_TOKEN (또는 UPSTASH_REDIS_REST_*) 가 주입됩니다.
- */
-
-import fs from 'fs'
+import fs from 'fs/promises'
 import path from 'path'
+import { createHash, randomUUID } from 'crypto'
 import { Redis } from '@upstash/redis'
-import type { OverridesStore } from '@/lib/i18n-overrides'
-import type { HistoryEntry } from '@/lib/admin-history'
-import type { ResearchContent } from '@/lib/research-content'
-import researchContentJson from '@/data/research-content.json'
-import {
-  GithubConflictError,
-  isGithubContentEnabled,
-  readGithubFile,
-  writeGithubFile,
-} from '@/lib/githubContent'
+import { codeBaseline } from '@/lib/cms-baseline'
+import type { OverridesStore, TranslationOverride } from '@/lib/i18n-overrides'
+import { makeHistoryEntry, MAX_HISTORY, type HistoryEntry } from '@/lib/admin-history'
+import { validateResearchContent, type ResearchContent } from '@/lib/research-content'
 
-const CMS_KEYS = {
-  overrides: 'hunminsound:cms:i18n-overrides',
-  history: 'hunminsound:cms:admin-history',
-} as const
+const KEY = 'hunminsound:cms:v2:current'
+const BASELINE_KEY = 'hunminsound:cms:v2:baseline'
+export const cmsDirectory = () => process.env.CMS_LOCAL_DIR || path.join(process.cwd(), '.cms')
+export class CmsConflictError extends Error {}
+type Content = { overrides: OverridesStore; research: ResearchContent }
+type State = Content & { version: 2; revision: string; history: HistoryEntry[] }
+type Change = { kind: 'text'; key: string; before: TranslationOverride; after: TranslationOverride }
+  | { kind: 'research'; before: ResearchContent; after: ResearchContent }
+type Event = { change: Change; entry: HistoryEntry }
 
-const FILE_PATHS = {
-  overrides: path.join(process.cwd(), 'src', 'data', 'i18n-overrides.json'),
-  history: path.join(process.cwd(), 'src', 'data', 'admin-history.json'),
-  research: path.join(process.cwd(), 'src', 'data', 'research-content.json'),
-} as const
-
-let _redis: Redis | null | undefined
-
-function resolveRedisCredentials(): { url: string; token: string } | null {
-  const pairs: [string, string][] = [
-    ['KV_REST_API_URL', 'KV_REST_API_TOKEN'],
-    ['UPSTASH_REDIS_REST_URL', 'UPSTASH_REDIS_REST_TOKEN'],
-    ['STORAGE_KV_REST_API_URL', 'STORAGE_KV_REST_API_TOKEN'],
-    ['STORAGE_REST_API_URL', 'STORAGE_REST_API_TOKEN'],
+let redis: Redis | null | undefined
+export function getCmsRedis(): Redis | null {
+  if (redis !== undefined) return redis
+  const pairs = [
+    ['KV_REST_API_URL', 'KV_REST_API_TOKEN'], ['UPSTASH_REDIS_REST_URL', 'UPSTASH_REDIS_REST_TOKEN'],
+    ['STORAGE_KV_REST_API_URL', 'STORAGE_KV_REST_API_TOKEN'], ['STORAGE_REST_API_URL', 'STORAGE_REST_API_TOKEN'],
     ['STORAGE_URL', 'STORAGE_TOKEN'],
+    ...Object.keys(process.env).filter((k) => k.endsWith('_REST_API_URL')).map((k) => [k, k.replace('_REST_API_URL', '_REST_API_TOKEN')]),
   ]
-  for (const [urlKey, tokenKey] of pairs) {
-    const url = process.env[urlKey]
-    const token = process.env[tokenKey]
-    if (url && token) return { url, token }
-  }
-  // Vercel Custom Prefix (예: STORAGE → STORAGE_KV_REST_API_URL)
-  for (const [key, url] of Object.entries(process.env)) {
-    if (!key.endsWith('_REST_API_URL') || !url) continue
-    const tokenKey = key.replace('_REST_API_URL', '_REST_API_TOKEN')
-    const token = process.env[tokenKey]
-    if (token) return { url, token }
-  }
-  return null
+  const pair = pairs.find(([url, token]) => process.env[url] && process.env[token])
+  redis = pair ? new Redis({ url: process.env[pair[0]]!, token: process.env[pair[1]]! }) : null
+  return redis
 }
 
-function getRedis(): Redis | null {
-  if (_redis !== undefined) return _redis
-  const creds = resolveRedisCredentials()
-  if (!creds) {
-    _redis = null
-    return null
-  }
-  _redis = new Redis(creds)
-  return _redis
-}
-
-/** Vercel 등 Redis가 설정된 프로덕션 환경 */
-export function isCloudCmsEnabled(): boolean {
-  return getRedis() !== null
-}
-
-function readFileJson<T>(filePath: string, fallback: T): T {
-  try {
-    return JSON.parse(fs.readFileSync(filePath, 'utf8')) as T
-  } catch {
-    return fallback
+async function readJson<T>(file: string): Promise<T | null> {
+  try { return JSON.parse(await fs.readFile(file, 'utf8')) as T }
+  catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return null
+    throw error // 읽기 실패나 손상을 빈 저장소로 취급하지 않는다.
   }
 }
 
-function writeFileJson(filePath: string, data: unknown): void {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8')
+async function localLock<T>(fn: () => Promise<T>): Promise<T> {
+  await fs.mkdir(cmsDirectory(), { recursive: true })
+  const lock = path.join(cmsDirectory(), 'write.lock')
+  const deadline = Date.now() + 10000
+  let handle
+  while (!handle) {
+    try { handle = await fs.open(lock, 'wx') }
+    catch (e) {
+      if ((e as NodeJS.ErrnoException).code !== 'EEXIST') throw e
+      if (Date.now() >= deadline) throw new Error('CMS_BUSY')
+      await new Promise((r) => setTimeout(r, 40))
+    }
+  }
+  try { return await fn() }
+  finally { await handle.close(); await fs.unlink(lock) }
 }
 
-async function readCloudJson<T>(key: string, seedPath: string, seedFallback: T): Promise<T> {
-  const redis = getRedis()
-  if (!redis) {
-    return readFileJson(seedPath, seedFallback)
-  }
-  const cached = await redis.get<T>(key)
-  if (cached !== null && cached !== undefined) {
-    return cached
-  }
-  const seeded = readFileJson(seedPath, seedFallback)
-  // 관리자 저장과 초기화가 겹쳐도 저장본을 덮어쓰지 않는다.
-  await redis.set(key, seeded, { nx: true })
-  return (await redis.get<T>(key)) ?? seeded
+async function atomicFile(file: string, value: unknown) {
+  const temp = `${file}.${randomUUID()}.tmp`
+  await fs.writeFile(temp, JSON.stringify(value), 'utf8')
+  try { await fs.rename(temp, file) }
+  finally { await fs.unlink(temp).catch(() => {}) }
 }
 
-async function writeCloudJson(key: string, data: unknown, filePath: string): Promise<void> {
-  const redis = getRedis()
-  if (redis) {
-    await redis.set(key, data)
+function checkState(state: State): State {
+  if (state.version !== 2 || !state.revision || !state.overrides || !Array.isArray(state.history) ||
+      validateResearchContent(state.research) !== true) throw new Error('CMS_INVALID_STATE')
+  return state
+}
+
+/** 기존 저장본을 지우지 않고 이동한다. 코드 기준본과 이전 데이터는 별도로 보존한다. */
+async function initialState(): Promise<{ state: State; backup: unknown }> {
+  const baseline = codeBaseline()
+  const client = getCmsRedis()
+  const legacyOverrides = client
+    ? await client.get<OverridesStore>('hunminsound:cms:i18n-overrides')
+    : await readJson<OverridesStore>(path.join(process.cwd(), 'src/data/i18n-overrides.json'))
+  const legacyHistory = client
+    ? await client.get<HistoryEntry[]>('hunminsound:cms:admin-history')
+    : await readJson<HistoryEntry[]>(path.join(process.cwd(), 'src/data/admin-history.json'))
+  // 연구 소개의 기존 정본은 배포된 코드다. 폐기한 과거 Redis 연구 키는 되살리지 않는다.
+  const overrides = { ...baseline.overrides }
+  for (const [key, value] of Object.entries(legacyOverrides ?? {})) {
+    if (Object.prototype.hasOwnProperty.call(overrides, key)) overrides[key] = value
+  }
+  return {
+    state: { version: 2, revision: randomUUID(), overrides, research: baseline.research, history: (legacyHistory ?? []).slice(0, MAX_HISTORY) },
+    backup: { createdAt: new Date().toISOString(), baseline, legacyOverrides, legacyHistory },
+  }
+}
+
+export async function readCmsState(): Promise<State> {
+  const client = getCmsRedis()
+  if (client) {
+    const existing = await client.get<State>(KEY)
+    if (existing) return checkState(existing)
+    const { state, backup } = await initialState()
+    await client.eval(`if redis.call('EXISTS', KEYS[1]) == 0 then
+      if redis.call('EXISTS', KEYS[2]) == 1 then return -1 end
+      redis.call('SET', KEYS[2], ARGV[2]); redis.call('SET', KEYS[1], ARGV[1]); return 1 end return 0`,
+    [KEY, BASELINE_KEY], [JSON.stringify(state), JSON.stringify(backup)])
+    const initialized = await client.get<State>(KEY)
+    if (!initialized) throw new Error('CMS_RECOVERY_REQUIRED')
+    return checkState(initialized)
+  }
+  if (process.env.VERCEL === '1') throw new Error('CMS_CLOUD_STORAGE_REQUIRED')
+  const file = path.join(cmsDirectory(), 'current.json')
+  const existing = await readJson<State>(file)
+  if (existing) return checkState(existing)
+  return localLock(async () => {
+    const current = await readJson<State>(file)
+    if (current) return checkState(current)
+    const { state, backup } = await initialState()
+    // 현재 파일만 사라진 경우 기존 기준본을 덮어쓰거나 조용히 초기화하지 않는다.
+    await fs.writeFile(path.join(cmsDirectory(), 'baseline.json'), JSON.stringify(backup), { flag: 'wx' })
+    await atomicFile(file, state)
+    return state
+  })
+}
+
+async function commit(previous: State, next: State, event: Event): Promise<void> {
+  const client = getCmsRedis()
+  if (client) {
+    const ok = await client.eval(`local current = redis.call('GET', KEYS[1])
+      if not current or cjson.decode(current).revision ~= ARGV[1] then return 0 end
+      redis.call('SET', KEYS[2], ARGV[3]); redis.call('SET', KEYS[1], ARGV[2]); return 1`,
+    [KEY, `hunminsound:cms:v2:event:${event.entry.id}`],
+    [previous.revision, JSON.stringify(next), JSON.stringify(event)])
+    if (ok !== 1) throw new CmsConflictError()
     return
   }
-  if (process.env.VERCEL === '1') {
-    throw new Error(
-      'CMS_CLOUD_STORAGE_REQUIRED: Vercel에서는 Upstash Redis(KV) 연동이 필요합니다. ' +
-        'Vercel 대시보드 → Storage → Upstash Redis를 프로젝트에 연결하세요.',
-    )
-  }
-  writeFileJson(filePath, data)
+  await localLock(async () => {
+    const file = path.join(cmsDirectory(), 'current.json')
+    const current = await readJson<State>(file)
+    if (current?.revision !== previous.revision) throw new CmsConflictError()
+    await fs.mkdir(path.join(cmsDirectory(), 'history'), { recursive: true })
+    // 복원 자료 기록이 성공한 뒤에만 현재 파일을 원자적으로 교체한다.
+    await fs.writeFile(path.join(cmsDirectory(), 'history', `${event.entry.id}.json`), JSON.stringify(event), { flag: 'wx' })
+    await atomicFile(file, next)
+  })
 }
 
-/**
- * 번역·수정 내역은 객체 전체를 읽고 고쳐 다시 쓰므로, 두 관리자가 동시에 저장하면
- * 나중 쓰기가 앞 저장을 지운다. 그 구간을 Redis 잠금으로 한 번에 하나씩만 돌린다.
- */
-export async function withCmsLock<T>(fn: () => Promise<T>): Promise<T> {
-  const redis = getRedis()
-  if (!redis) return fn()
-  const lockKey = 'hunminsound:cms:lock'
-  const token = `${Date.now()}-${Math.random().toString(36).slice(2)}`
-  const deadline = Date.now() + 8000
-  while (!(await redis.set(lockKey, token, { nx: true, px: 10000 }))) {
-    if (Date.now() > deadline) throw new Error('CMS_LOCK_TIMEOUT')
-    await new Promise((r) => setTimeout(r, 100 + Math.random() * 100))
-  }
-  try {
-    return await fn()
-  } finally {
-    if ((await redis.get<string>(lockKey)) === token) await redis.del(lockKey)
+function historyFor(change: Change, username: string, action: HistoryEntry['action'], name?: string): HistoryEntry {
+  const [type, id, , lang] = change.kind === 'text' ? change.key.split(':') : ['research', 'research', '', 'ko']
+  return {
+    ...makeHistoryEntry({ username, action, key: change.kind === 'text' ? change.key : 'research',
+      type: type as HistoryEntry['type'], itemId: id, itemName: name ?? id, lang,
+      oldValue: change.kind === 'text' ? change.before.value.slice(0, 3000) : '연구진·과제 정보 변경 전 내용',
+      newValue: change.kind === 'text' ? change.after.value.slice(0, 3000) : '연구진·과제 정보 변경 후 내용' }),
+    id: randomUUID(), restorable: true,
   }
 }
 
-/* ── i18n overrides ─────────────────────────────────────────────────────── */
-
-export async function readOverridesStore(): Promise<OverridesStore> {
-  return readCloudJson(CMS_KEYS.overrides, FILE_PATHS.overrides, {})
+async function saveChange(previous: State, change: Change, username: string, action: HistoryEntry['action'], name?: string) {
+  const entry = historyFor(change, username, action, name)
+  const next: State = { ...previous, revision: randomUUID(), history: [entry, ...previous.history].slice(0, MAX_HISTORY) }
+  if (change.kind === 'text') next.overrides = { ...previous.overrides, [change.key]: change.after }
+  else next.research = change.after
+  await commit(previous, next, { change, entry })
+  return next
 }
 
-export async function writeOverridesStore(store: OverridesStore): Promise<void> {
-  await writeCloudJson(CMS_KEYS.overrides, store, FILE_PATHS.overrides)
+export async function saveText(input: {
+  key: string; value?: string; sourceSnapshot?: string; remove?: boolean; staleDismissed?: boolean;
+  expectedVersion: string | null; displayName?: string;
+}, username: string): Promise<OverridesStore> {
+  const current = await readCmsState()
+  const before = current.overrides[input.key]
+  const baseline = codeBaseline().overrides[input.key]
+  if (!before || !Object.prototype.hasOwnProperty.call(codeBaseline().overrides, input.key)) throw new Error('CMS_INVALID_KEY')
+  if ((before.updatedAt || null) !== input.expectedVersion) throw new CmsConflictError()
+  const after = input.remove ? { ...baseline } : input.staleDismissed
+    ? { ...before, staleDismissed: true }
+    : { ...before, value: input.value!, sourceSnapshot: input.sourceSnapshot!, staleDismissed: false }
+  after.updatedAt = randomUUID() // 같은 밀리초에 저장해도 구분되는 항목 버전
+  return (await saveChange(current, { kind: 'text', key: input.key, before, after }, username,
+    input.remove ? 'remove' : input.staleDismissed ? 'dismiss' : 'save', input.displayName)).overrides
 }
 
-/* ── admin history ──────────────────────────────────────────────────────── */
+export const researchVersion = (data: ResearchContent) => createHash('sha256').update(JSON.stringify(data)).digest('hex')
+export async function readResearchContent() { return (await readCmsState()).research }
+export async function readResearchContentForAdmin() {
+  const data = await readResearchContent()
+  return { data, sha: researchVersion(data) }
+}
+export async function writeResearchContent(data: ResearchContent, version: string | null, username: string) {
+  const current = await readCmsState()
+  if (version !== researchVersion(current.research)) throw new CmsConflictError()
+  if (validateResearchContent(data) !== true) throw new Error('CMS_INVALID_RESEARCH')
+  await saveChange(current, { kind: 'research', before: current.research, after: data }, username, 'save', '연구 소개')
+  return researchVersion(data)
+}
+const PHOTO_NAME = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(jpg|png|webp)$/
+const PHOTO_PREFIX = 'hunminsound:cms:v2:photo:'
+const MAX_PHOTO_BYTES = 4 * 1024 * 1024
 
-export async function readAdminHistory(): Promise<HistoryEntry[]> {
-  return readCloudJson(CMS_KEYS.history, FILE_PATHS.history, [])
+function photoFile(name: string): string {
+  if (!PHOTO_NAME.test(name)) throw new Error('CMS_INVALID_PHOTO')
+  const dir = path.join(cmsDirectory(), 'photos')
+  const file = path.join(dir, name)
+  const relative = path.relative(dir, file)
+  if (relative.startsWith('..') || path.isAbsolute(relative)) throw new Error('CMS_INVALID_PHOTO')
+  return file
 }
 
-export async function writeAdminHistory(history: HistoryEntry[]): Promise<void> {
-  await writeCloudJson(CMS_KEYS.history, history, FILE_PATHS.history)
-}
-
-/* ── research content ───────────────────────────────────────────────────── */
-
-/**
- * 원본은 코드의 research-content.json 하나다.
- * - 코드로 고치고 푸시 → 재배포로 반영
- * - 관리자 페이지 저장 → 같은 파일을 GitHub에 커밋 → 재배포로 반영
- */
-const RESEARCH_REPO_PATH = 'src/data/research-content.json'
-
-/** 공개 페이지용 — 배포에 포함된 JSON */
-export async function readResearchContent(): Promise<ResearchContent> {
-  return researchContentJson as ResearchContent
-}
-
-/** 기존 파일 형식(4칸 들여쓰기 + 끝 줄바꿈)과 같게 — 관리자 저장 커밋의 diff가 바뀐 줄만 나오도록 */
-function serializeResearch(data: ResearchContent): string {
-  return JSON.stringify(data, null, 4) + '\n'
-}
-
-/**
- * 관리자 편집용 — GitHub 최신본(재배포 전이라도 방금 저장한 내용이 보이도록).
- * sha는 저장 시 동시 수정 감지에 쓴다. 로컬(토큰 없음)에서는 파일을 읽고 sha는 null.
- */
-export async function readResearchContentForAdmin(): Promise<{ data: ResearchContent; sha: string | null }> {
-  if (isGithubContentEnabled()) {
-    const { text, sha } = await readGithubFile(RESEARCH_REPO_PATH)
-    return { data: JSON.parse(text) as ResearchContent, sha }
+export async function writeTeamPhoto(name: string, bytes: Buffer): Promise<string> {
+  if (bytes.length === 0 || bytes.length > MAX_PHOTO_BYTES) throw new Error('CMS_INVALID_PHOTO')
+  const file = photoFile(name)
+  const client = getCmsRedis()
+  if (client) {
+    await client.set(`${PHOTO_PREFIX}${name}`, bytes.toString('base64'))
+    return `/media/team/${name}`
   }
-  return { data: readFileJson(FILE_PATHS.research, researchContentJson as ResearchContent), sha: null }
+  if (process.env.VERCEL === '1') throw new Error('CMS_CLOUD_STORAGE_REQUIRED')
+  await fs.mkdir(path.dirname(file), { recursive: true })
+  const temp = `${file}.${randomUUID()}.tmp`
+  await fs.writeFile(temp, bytes)
+  try { await fs.rename(temp, file) }
+  finally { await fs.unlink(temp).catch(() => {}) }
+  return `/media/team/${name}`
 }
 
-/** 성공 시 새 sha(로컬은 null). 그 사이 코드로 수정됐으면 GithubConflictError */
-export async function writeResearchContent(
-  data: ResearchContent,
-  sha: string | null,
-  editor: string,
-): Promise<string | null> {
-  if (isGithubContentEnabled()) {
-    if (!sha) throw new GithubConflictError()
-    return writeGithubFile(
-      RESEARCH_REPO_PATH,
-      serializeResearch(data),
-      sha,
-      `content: 관리자 페이지에서 연구 소개 수정 (${editor})`,
-    )
+export async function readTeamPhoto(name: string): Promise<Buffer | null> {
+  let file: string
+  try { file = photoFile(name) }
+  catch { return null }
+  const client = getCmsRedis()
+  if (client) {
+    const stored = await client.get<string>(`${PHOTO_PREFIX}${name}`)
+    if (typeof stored !== 'string' || !stored) return null
+    return Buffer.from(stored, 'base64')
   }
-  if (process.env.VERCEL === '1') {
-    throw new Error('GITHUB_NOT_CONFIGURED')
+  if (process.env.VERCEL === '1') throw new Error('CMS_CLOUD_STORAGE_REQUIRED')
+  try { return await fs.readFile(file) }
+  catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return null
+    throw error
   }
-  fs.writeFileSync(FILE_PATHS.research, serializeResearch(data), 'utf8')
-  return null
+}
+
+export async function readOverridesStore() { return (await readCmsState()).overrides }
+export async function readAdminHistory() { return (await readCmsState()).history }
+
+export async function restoreCmsEntry(id: string, expectedRevision: string, username: string) {
+  if (!/^[a-f0-9-]{36}$/.test(id)) throw new Error('CMS_INVALID_HISTORY')
+  const current = await readCmsState()
+  if (current.revision !== expectedRevision) throw new CmsConflictError()
+  const client = getCmsRedis()
+  const event = client ? await client.get<Event>(`hunminsound:cms:v2:event:${id}`)
+    : await readJson<Event>(path.join(cmsDirectory(), 'history', `${id}.json`))
+  if (!event) throw new Error('CMS_INVALID_HISTORY')
+  const change: Change = event.change.kind === 'text'
+    ? { kind: 'text', key: event.change.key, before: current.overrides[event.change.key],
+      after: { ...event.change.before, updatedAt: randomUUID() } }
+    : { kind: 'research', before: current.research, after: event.change.before }
+  await saveChange(current, change, username, 'restore', event.entry.itemName)
 }

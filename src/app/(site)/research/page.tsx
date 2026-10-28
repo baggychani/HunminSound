@@ -2,6 +2,9 @@ import type { Metadata } from 'next'
 import { ResearchPageClient } from '@/components/showcase/ResearchPageClient'
 import { loadResearchContent } from '@/lib/loadResearchContent'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export const metadata: Metadata = {
   title: '연구 소개',
   description: 'NRF 과제 정보, 연구진 소개, 연구 목적과 의의를 소개합니다.',

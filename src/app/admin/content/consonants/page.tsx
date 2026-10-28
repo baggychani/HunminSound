@@ -6,7 +6,7 @@ import { consonantsData } from '@/data/consonants'
 import { HUNMIN_CONSONANT_ROWS, type HunminRow } from '@/data/hunminConsonantLayout'
 import { PhonemeModeSwitch, type PhonemeAdminMode } from '@/components/admin/PhonemeModeSwitch'
 import { TranslationDrawer } from '@/components/admin/TranslationDrawer'
-import { patchOverride, makeKoreanKey } from '@/lib/overrides-store'
+import { patchOverride, makeKoreanKey, useOverridesStore, getCurrentKorean } from '@/lib/overrides-store'
 import { ADMIN_LANGUAGE_NAMES } from '@/components/admin/adminLanguageNames'
 import { buildPhonemeDescriptionBaseValues } from '@/lib/cms-base-values'
 import type { Consonant } from '@/types'
@@ -67,6 +67,18 @@ function KoreanEditor({
     }
   }
 
+  const restoreBaseline = async () => {
+    setSaving(true)
+    setError(null)
+    try {
+      await patchOverride({ key: makeKoreanKey(type, id), remove: true, displayName, lang: 'ko', type })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '기준본으로 되돌리지 못했습니다.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
   return (
     <div className="mt-2">
       {editing ? (
@@ -97,13 +109,24 @@ function KoreanEditor({
           </div>
         </div>
       ) : (
-        <p
-          onDoubleClick={startEdit}
-          title="더블클릭하여 한국어 설명 편집"
-          className={`cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-xs leading-relaxed transition-colors hover:bg-hanji-border/20 ${hasOverride ? 'text-ink border-l-2 border-gold/40 pl-3' : 'text-ink-muted/70'}`}
-        >
-          {currentText}
-        </p>
+        <>
+          <p
+            onDoubleClick={startEdit}
+            title="더블클릭하여 한국어 설명 편집"
+            className={`cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-xs leading-relaxed transition-colors hover:bg-hanji-border/20 ${hasOverride ? 'text-ink border-l-2 border-gold/40 pl-3' : 'text-ink-muted/70'}`}
+          >
+            {currentText}
+          </p>
+          {hasOverride && (
+            <div className="mt-1 flex justify-end">
+              <button type="button" onClick={() => void restoreBaseline()} disabled={saving}
+                className="px-2 py-1 font-sans text-[10px] text-ink-muted/50 hover:text-ink-accent transition-colors disabled:opacity-50">
+                {saving ? '되돌리는 중…' : '기준본으로'}
+              </button>
+            </div>
+          )}
+          {error && <p role="alert" className="mt-1 font-sans text-[11px] leading-snug text-red-500">{error}</p>}
+        </>
       )}
     </div>
   )
@@ -111,7 +134,8 @@ function KoreanEditor({
 
 /* ── 자음 행 ─────────────────────────────────────────────────────────────── */
 function ConsonantRow({ consonant }: { consonant: Consonant }) {
-  const koreanSource = consonant.description
+  const store = useOverridesStore()
+  const koreanSource = getCurrentKorean(store, 'consonant', consonant._id, consonant.description)
 
   return (
     <div>

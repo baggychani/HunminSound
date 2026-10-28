@@ -26,9 +26,8 @@ interface Props {
   /** 언어 칸에 보일 이름. 없으면 언어 고유 이름을 쓴다. */
   languageNames?: Partial<Record<SupportedTranslationLang, string>>
   /**
-   * 코드에 있는 번역을 그 칸의 정식 내용으로 보여 준다.
-   * 따로 저장한 글이 있어도 코드 번역이 있으면 코드 번역을 보여 주고,
-   * 자동 번역이라는 표시는 쓰지 않는다.
+   * 저장본이 있으면 저장본을, 없으면 코드 번역을 보여 준다.
+   * 코드와 달라진 번역은 기준본으로 되돌릴 수 있다.
    */
   registeredFromCode?: boolean
 }
@@ -73,8 +72,9 @@ function LangRow({ langCode, langName, baseValue, override, koreanSource, source
   onSave, onDismissStale, onRemove, registeredFromCode }: RowProps) {
   const codeText = baseValue.trim()
   const savedText = override?.value?.trim() ?? ''
-  const officialText = registeredFromCode ? (codeText || savedText) : ''
-  const stale = !registeredFromCode && override ? isStale(override, koreanSource) : false
+  const officialText = registeredFromCode ? (savedText || codeText) : ''
+  const differsFromCode = !!registeredFromCode && (override?.value ?? '').trim() !== codeText
+  const stale = override ? isStale(override, koreanSource) : false
   const status: StatusKind = registeredFromCode
     ? (officialText ? 'ok' : 'none')
     : (!override ? 'none' : stale ? 'stale' : 'ok')
@@ -165,6 +165,12 @@ function LangRow({ langCode, langName, baseValue, override, koreanSource, source
                 수정 불필요
               </button>
             )}
+            {differsFromCode && (
+              <button onClick={() => run(() => onRemove(langCode))} disabled={saving}
+                className="px-2 py-1 font-sans text-[10px] text-ink-muted/30 hover:text-ink-accent transition-colors disabled:opacity-50">
+                기준본으로
+              </button>
+            )}
             {override && !stale && !registeredFromCode && (
               <button onClick={() => run(() => onRemove(langCode))} disabled={saving}
                 className="px-2 py-1 font-sans text-[10px] text-ink-muted/30 hover:text-ink-accent transition-colors disabled:opacity-50">
@@ -204,7 +210,7 @@ export function TranslationDrawer({
     return !!(codeText || savedText)
   }).length
   const shownCount = registeredFromCode ? filledCount : overrideCount
-  const staleCount = registeredFromCode ? 0 : langs.filter(({ code }) => {
+  const staleCount = langs.filter(({ code }) => {
     const ov = store[getKey(code)]
     return ov ? isStale(ov, koreanSource) : false
   }).length
