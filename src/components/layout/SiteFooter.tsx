@@ -13,15 +13,23 @@ export function SiteFooter() {
     <footer className="relative z-10 mt-12 border-t border-hanji-border bg-hanji">
       <div className="site-container py-8">
         <div className="grid grid-cols-1 items-center gap-4 sm:grid-cols-2 sm:gap-x-4 sm:items-center">
-          <div className="flex flex-col items-center gap-1.5 sm:flex-row sm:items-baseline sm:gap-5 sm:justify-self-start">
+          <div className="flex flex-col items-center gap-1.5 sm:flex-row sm:flex-wrap sm:items-baseline sm:gap-x-5 sm:gap-y-1 sm:justify-self-start">
             <span className="shrink-0 font-serif text-sm text-ink-muted">세종말소리 · Sejong Speech Sounds</span>
-            {/* 개인정보 처리방침은 다른 링크와 구분되게 굵게(개인정보 보호법 시행령 제31조) */}
-            <Link
-              href="/privacy"
-              className="font-sans text-[12px] font-bold text-ink-soft transition-colors hover:text-gold"
-            >
-              {pm.policyLink}
-            </Link>
+            <span className="inline-flex shrink-0 items-baseline gap-3 whitespace-nowrap">
+              {/* 개인정보 처리방침은 다른 링크와 구분되게 굵게(개인정보 보호법 시행령 제31조) */}
+              <Link
+                href="/privacy"
+                className="font-sans text-[12px] font-bold text-ink-soft transition-colors hover:text-gold"
+              >
+                {pm.policyLink}
+              </Link>
+              <Link
+                href="/admin"
+                className="font-sans text-[11px] font-normal text-ink-muted/45 transition-colors hover:text-ink-muted"
+              >
+                관리
+              </Link>
+            </span>
           </div>
           <div className="flex shrink-0 justify-center sm:justify-self-end">
             <ThemeToggle />
