@@ -197,7 +197,14 @@ export function TranslationDrawer({
   const effectiveSourceLabel = sourceLabel ?? '한국어'
 
   const overrideCount = langs.filter(({ code }) => !!store[getKey(code)]).length
-  const staleCount = langs.filter(({ code }) => {
+  const filledCount = langs.filter(({ code }) => {
+    if (!registeredFromCode) return !!store[getKey(code)]
+    const codeText = (baseValues[code] ?? '').trim()
+    const savedText = store[getKey(code)]?.value?.trim() ?? ''
+    return !!(codeText || savedText)
+  }).length
+  const shownCount = registeredFromCode ? filledCount : overrideCount
+  const staleCount = registeredFromCode ? 0 : langs.filter(({ code }) => {
     const ov = store[getKey(code)]
     return ov ? isStale(ov, koreanSource) : false
   }).length
@@ -221,16 +228,16 @@ export function TranslationDrawer({
           aria-expanded={open}
           className={`flex items-center gap-1.5 rounded-sm px-2 py-1 font-sans text-[10.5px] transition-colors ${
             open ? 'bg-hanji-border/30 text-ink-soft'
-              : overrideCount > 0
+              : shownCount > 0
               ? 'text-gold/70 hover:text-gold dark:text-gold-light/70 dark:hover:text-gold-light'
               : 'text-ink-muted/40 hover:text-ink-soft'
           }`}
         >
           <span className="font-serif text-sm leading-none">語</span>
           <span>번역</span>
-          {overrideCount > 0 && (
+          {shownCount > 0 && (
             <span className={`flex h-4 min-w-[1rem] items-center justify-center rounded-full px-1 font-sans text-[9px] font-semibold ${staleCount > 0 ? 'bg-amber-400/80 text-hanji' : 'bg-gold/80 text-hanji dark:bg-gold-light/80'}`}>
-              {overrideCount}
+              {shownCount}
             </span>
           )}
           {staleCount > 0 && (
