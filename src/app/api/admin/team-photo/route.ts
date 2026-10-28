@@ -31,15 +31,21 @@ export async function POST(req: Request) {
   }
 
   const form = await req.formData()
-  const name = String(form.get('name') ?? '').trim()
+  const name = String(form.get('name') ?? '').trim() || '새 연구원'
+  const nameEn = String(form.get('nameEn') ?? '').trim()
+  const currentPhoto = String(form.get('photo') ?? '').trim()
   const file = form.get('file')
-  if (!name || !(file instanceof File)) {
-    return NextResponse.json({ message: '사진과 이름이 필요합니다.' }, { status: 400 })
+  if (!(file instanceof File)) {
+    return NextResponse.json({ message: '사진 파일이 필요합니다.' }, { status: 400 })
   }
-  const slug = teamMemberSlug(name)
-  if (!slug) {
-    return NextResponse.json({ message: '이 이름에 연결된 사진 파일이 없습니다.' }, { status: 400 })
-  }
+  const fromPhoto = currentPhoto.match(/^\/images\/team\/([a-z0-9-]+)\.(jpg|png|webp)$/)?.[1] ?? null
+  const fromEn = nameEn
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+  const slug = fromPhoto || teamMemberSlug(name) || (fromEn ? fromEn.slice(0, 80) : `member-${Date.now()}`)
   if (file.size > MAX_BYTES) {
     return NextResponse.json({ message: '사진은 4MB 이하만 올릴 수 있습니다.' }, { status: 400 })
   }

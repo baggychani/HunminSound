@@ -11,6 +11,28 @@ function cloneDeep<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T
 }
 
+const ROW_TRANSLATION = /^team\.rows\.(\d+)\.(role|affiliation|task|field)$/
+
+function reindexRowKeys(map: Record<string, string>, removed: number): Record<string, string> {
+  const next: Record<string, string> = {}
+  for (const [key, value] of Object.entries(map)) {
+    const match = key.match(ROW_TRANSLATION)
+    if (!match) {
+      next[key] = value
+      continue
+    }
+    const index = Number(match[1])
+    if (index === removed) continue
+    const shifted = index > removed ? index - 1 : index
+    next[`team.rows.${shifted}.${match[2]}`] = value
+  }
+  return next
+}
+
+function emptyMember(): TeamRow {
+  return { role: '', name: '', nameEn: '', affiliation: '', task: '', field: '' }
+}
+
 function ClickEdit({
   value,
   onSave,
@@ -140,6 +162,7 @@ function MemberEditor({
   onPhoto,
   translations,
   onTranslate,
+  onRemove,
 }: {
   row: TeamRow
   index: number
@@ -147,6 +170,7 @@ function MemberEditor({
   onPhoto: (src: string) => void
   translations: ResearchContent['translations']
   onTranslate: (key: string, lang: string, value: string) => void
+  onRemove: () => void
 }) {
   const fileRef = useRef<HTMLInputElement>(null)
   const [bust, setBust] = useState(0)
@@ -161,6 +185,8 @@ function MemberEditor({
     try {
       const body = new FormData()
       body.set('name', row.name)
+      body.set('nameEn', row.nameEn ?? '')
+      body.set('photo', row.photo ?? '')
       body.set('file', file)
       const res = await fetch('/api/admin/team-photo', { method: 'POST', body })
       const data = (await res.json().catch(() => ({}))) as { src?: string; message?: string }
@@ -209,6 +235,13 @@ function MemberEditor({
           }}
         />
         {photoError && <p className="mt-2 font-sans text-xs tracking-normal leading-snug text-red-500">{photoError}</p>}
+        <button
+          type="button"
+          onClick={onRemove}
+          className="mt-2 w-full whitespace-nowrap rounded-sm border border-hanji-border px-3 py-2 font-sans text-sm tracking-normal text-ink-muted hover:border-red-400/50 hover:text-red-500"
+        >
+          이 사람 빼기
+        </button>
       </div>
       <div className="min-w-0 flex-1">
         {fields.map((field) => (
@@ -268,12 +301,12 @@ function DirectoryEditor({
                 onTranslate={(lang, value) => onTranslate(`team.directory.${index}.subtitle`, lang, value)}
               />
             )}
-            <div className="grid grid-cols-2 gap-6 pt-3 font-sans text-xs tracking-normal text-ink-muted">
+            <div className="grid grid-cols-2 gap-4 pt-3 font-sans text-xs tracking-normal text-ink-muted sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
               <p>이름</p>
               <p>영어 이름</p>
             </div>
             {group.names.map((name, nameIndex) => (
-              <div key={nameIndex} className="grid items-start gap-6 border-b border-hanji-border/40 py-3 last:border-b-0 sm:grid-cols-2">
+              <div key={nameIndex} className="grid items-start gap-4 border-b border-hanji-border/40 py-3 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
                 <ClickEdit
                   value={name}
                   onSave={(value) => {
@@ -294,8 +327,32 @@ function DirectoryEditor({
                   }}
                   className="font-sans text-xs tracking-normal leading-relaxed text-ink-muted/80"
                 />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const label = name.trim() || '이 이름'
+                    if (!window.confirm(`${label}을 이 목록에서 뺄까요?`)) return
+                    const names = group.names.filter((_, i) => i !== nameIndex)
+                    const nextEn = namesEn.filter((_, i) => i !== nameIndex)
+                    updateGroup(index, { names, namesEn: nextEn })
+                  }}
+                  className="whitespace-nowrap rounded-sm border border-hanji-border px-3 py-1.5 font-sans text-sm tracking-normal text-ink-muted hover:border-red-400/50 hover:text-red-500"
+                >
+                  빼기
+                </button>
               </div>
             ))}
+            <button
+              type="button"
+              onClick={() => {
+                const padded = [...namesEn]
+                while (padded.length < group.names.length) padded.push('')
+                updateGroup(index, { names: [...group.names, ''], namesEn: [...padded, ''] })
+              }}
+              className="my-3 whitespace-nowrap rounded-sm border border-hanji-border px-3 py-2 font-sans text-sm tracking-normal text-ink hover:bg-hanji-warm"
+            >
+              이름 추가
+            </button>
           </div>
         )
       })}
@@ -420,8 +477,30 @@ export default function AdminResearchPage() {
               draft.team.rows[index] = { ...draft.team.rows[index], photo: src }
             })}
             onTranslate={saveTrans}
+            onRemove={() => {
+              const label = row.name.trim()
+              if (!window.confirm(label ? `${label} 님을 연구진에서 뺄까요?` : '이 사람을 연구진에서 뺄까요?')) return
+              commit((draft) => {
+                draft.team.rows.splice(index, 1)
+                draft.translations = Object.fromEntries(
+                  Object.entries(draft.translations).map(([lang, map]) => [lang, reindexRowKeys(map, index)]),
+                )
+                if (draft.translationSnapshots) {
+                  draft.translationSnapshots = reindexRowKeys(draft.translationSnapshots, index)
+                }
+              })
+            }}
           />
         ))}
+        <button
+          type="button"
+          onClick={() => commit((draft) => {
+            draft.team.rows.push(emptyMember())
+          })}
+          className="whitespace-nowrap rounded-sm border border-hanji-border px-4 py-2 font-sans text-sm tracking-normal text-ink hover:bg-hanji-warm"
+        >
+          사람 추가
+        </button>
       </div>
 
       <DirectoryEditor
