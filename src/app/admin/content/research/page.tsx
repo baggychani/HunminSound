@@ -33,6 +33,15 @@ function emptyMember(): TeamRow {
   return { role: '', name: '', nameEn: '', affiliation: '', task: '', field: '' }
 }
 
+function eul(word: string): '을' | '를' {
+  const last = word.charCodeAt(word.length - 1)
+  if (last < 0xac00 || last > 0xd7a3) return '를'
+  return (last - 0xac00) % 28 === 0 ? '를' : '을'
+}
+
+const iconButtonClass =
+  'flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-hanji-border bg-hanji font-sans text-lg leading-none tracking-normal text-ink-muted hover:border-red-400/50 hover:text-red-500'
+
 function ClickEdit({
   value,
   onSave,
@@ -210,7 +219,17 @@ function MemberEditor({
   ]
 
   return (
-    <div className="flex items-start gap-10 border border-hanji-border px-5 py-5 sm:gap-14">
+    <div className="relative">
+      <button
+        type="button"
+        title="삭제"
+        aria-label="삭제"
+        onClick={onRemove}
+        className={`absolute right-0 top-2 z-10 ${iconButtonClass}`}
+      >
+        <span aria-hidden="true">−</span>
+      </button>
+      <div className="mr-12 flex items-start gap-10 border border-hanji-border px-5 py-5 sm:gap-14">
       <div className="w-40 shrink-0">
         <div className="aspect-[4/5] overflow-hidden border border-hanji-border bg-hanji-warm/40">
           {src ? <img src={src} alt={row.name} className="h-full w-full object-cover" /> : null}
@@ -235,13 +254,6 @@ function MemberEditor({
           }}
         />
         {photoError && <p className="mt-2 font-sans text-xs tracking-normal leading-snug text-red-500">{photoError}</p>}
-        <button
-          type="button"
-          onClick={onRemove}
-          className="mt-2 w-full whitespace-nowrap rounded-sm border border-hanji-border px-3 py-2 font-sans text-sm tracking-normal text-ink-muted hover:border-red-400/50 hover:text-red-500"
-        >
-          이 사람 빼기
-        </button>
       </div>
       <div className="min-w-0 flex-1">
         {fields.map((field) => (
@@ -257,6 +269,7 @@ function MemberEditor({
             onTranslate={field.trans ? (lang, value) => onTranslate(`team.rows.${index}.${field.key}`, lang, value) : undefined}
           />
         ))}
+      </div>
       </div>
     </div>
   )
@@ -301,12 +314,13 @@ function DirectoryEditor({
                 onTranslate={(lang, value) => onTranslate(`team.directory.${index}.subtitle`, lang, value)}
               />
             )}
-            <div className="grid grid-cols-2 gap-4 pt-3 font-sans text-xs tracking-normal text-ink-muted sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
+            <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_2rem] gap-4 pt-3 font-sans text-xs tracking-normal text-ink-muted">
               <p>이름</p>
               <p>영어 이름</p>
+              <span aria-hidden="true" />
             </div>
             {group.names.map((name, nameIndex) => (
-              <div key={nameIndex} className="grid items-start gap-4 border-b border-hanji-border/40 py-3 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
+              <div key={nameIndex} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_2rem] items-center gap-4 border-b border-hanji-border/40 py-3 last:border-b-0">
                 <ClickEdit
                   value={name}
                   onSave={(value) => {
@@ -329,16 +343,18 @@ function DirectoryEditor({
                 />
                 <button
                   type="button"
+                  title="삭제"
+                  aria-label="삭제"
                   onClick={() => {
                     const label = name.trim() || '이 이름'
-                    if (!window.confirm(`${label}을 이 목록에서 뺄까요?`)) return
+                    if (!window.confirm(`${label}${eul(label)} 삭제할까요?`)) return
                     const names = group.names.filter((_, i) => i !== nameIndex)
                     const nextEn = namesEn.filter((_, i) => i !== nameIndex)
                     updateGroup(index, { names, namesEn: nextEn })
                   }}
-                  className="whitespace-nowrap rounded-sm border border-hanji-border px-3 py-1.5 font-sans text-sm tracking-normal text-ink-muted hover:border-red-400/50 hover:text-red-500"
+                  className={iconButtonClass}
                 >
-                  빼기
+                  <span aria-hidden="true">−</span>
                 </button>
               </div>
             ))}
@@ -349,8 +365,9 @@ function DirectoryEditor({
                 while (padded.length < group.names.length) padded.push('')
                 updateGroup(index, { names: [...group.names, ''], namesEn: [...padded, ''] })
               }}
-              className="my-3 whitespace-nowrap rounded-sm border border-hanji-border px-3 py-2 font-sans text-sm tracking-normal text-ink hover:bg-hanji-warm"
+              className="my-3 inline-flex items-center gap-2 whitespace-nowrap rounded-sm border border-hanji-border px-3 py-2 font-sans text-sm tracking-normal text-ink hover:bg-hanji-warm"
             >
+              <span aria-hidden="true" className="text-base leading-none tracking-normal">+</span>
               이름 추가
             </button>
           </div>
@@ -463,7 +480,7 @@ export default function AdminResearchPage() {
       {!saving && !notice && <div className="mb-8" />}
 
       <h2 className="mb-4 font-serif text-base text-ink">연구진 소개</h2>
-      <div className="space-y-4">
+      <div className="space-y-6">
         {data.team.rows.map((row, index) => (
           <MemberEditor
             key={`${row.name}-${index}`}
@@ -479,7 +496,7 @@ export default function AdminResearchPage() {
             onTranslate={saveTrans}
             onRemove={() => {
               const label = row.name.trim()
-              if (!window.confirm(label ? `${label} 님을 연구진에서 뺄까요?` : '이 사람을 연구진에서 뺄까요?')) return
+              if (!window.confirm(label ? `${label} 님을 삭제할까요?` : '이 연구진을 삭제할까요?')) return
               commit((draft) => {
                 draft.team.rows.splice(index, 1)
                 draft.translations = Object.fromEntries(
@@ -497,9 +514,10 @@ export default function AdminResearchPage() {
           onClick={() => commit((draft) => {
             draft.team.rows.push(emptyMember())
           })}
-          className="whitespace-nowrap rounded-sm border border-hanji-border px-4 py-2 font-sans text-sm tracking-normal text-ink hover:bg-hanji-warm"
+          className="inline-flex items-center gap-2 whitespace-nowrap rounded-sm border border-hanji-border px-3 py-2 font-sans text-sm tracking-normal text-ink hover:bg-hanji-warm"
         >
-          사람 추가
+          <span aria-hidden="true" className="text-base leading-none tracking-normal">+</span>
+          연구진 추가
         </button>
       </div>
 
