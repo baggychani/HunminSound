@@ -46,7 +46,7 @@ const SECTIONS: AdminSection[] = [
     href: '/admin/content/hunminjeongeum',
     title: '훈민정음',
     en: 'Hunminjeongeum',
-    desc: '훈민정음 해례본 28자 제자 원리·정인지서 단락별 다국어 번역을 편집합니다.',
+    desc: '훈민정음 해례본 28자 제자 원리·정인지서 단락을 확인하고 편집합니다.',
     ready: true,
   },
   {
@@ -54,7 +54,7 @@ const SECTIONS: AdminSection[] = [
     href: '/admin/content/research',
     title: '연구 소개',
     en: 'Research',
-    desc: '연구진과 과제 정보를 확인하고 편집합니다.',
+    desc: '연구진, 과제 정보를 확인하고 편집합니다.',
     ready: true,
   },
 ]
@@ -115,7 +115,7 @@ function ContactForm() {
     <form ref={formRef} onSubmit={handleSend} className="space-y-3">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1.5 block font-sans text-[10.5px] uppercase tracking-[0.08em] text-ink-muted">
+          <label className="mb-1.5 block font-sans text-[10.5px] uppercase tracking-normal text-ink-muted">
             이름
           </label>
           <input
@@ -127,7 +127,7 @@ function ContactForm() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block font-sans text-[10.5px] uppercase tracking-[0.08em] text-ink-muted">
+          <label className="mb-1.5 block font-sans text-[10.5px] uppercase tracking-normal text-ink-muted">
             답장 받을 이메일
           </label>
           <input
@@ -141,7 +141,7 @@ function ContactForm() {
         </div>
       </div>
       <div>
-        <label className="mb-1.5 block font-sans text-[10.5px] uppercase tracking-[0.08em] text-ink-muted">
+        <label className="mb-1.5 block font-sans text-[10.5px] uppercase tracking-normal text-ink-muted">
           제목
         </label>
         <input
@@ -153,7 +153,7 @@ function ContactForm() {
         />
       </div>
       <div>
-        <label className="mb-1.5 block font-sans text-[10.5px] uppercase tracking-[0.08em] text-ink-muted">
+        <label className="mb-1.5 block font-sans text-[10.5px] uppercase tracking-normal text-ink-muted">
           내용
         </label>
         <textarea

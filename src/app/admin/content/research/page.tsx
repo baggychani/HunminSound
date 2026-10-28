@@ -225,11 +225,11 @@ function MemberEditor({
         title="삭제"
         aria-label="삭제"
         onClick={onRemove}
-        className={`absolute right-0 top-2 z-10 ${iconButtonClass}`}
+        className={`absolute left-full top-2 z-10 ml-2 ${iconButtonClass}`}
       >
         <span aria-hidden="true">−</span>
       </button>
-      <div className="mr-12 flex items-start gap-10 border border-hanji-border px-5 py-5 sm:gap-14">
+      <div className="flex items-start gap-10 border border-hanji-border px-5 py-5 sm:gap-14">
       <div className="w-40 shrink-0">
         <div className="aspect-[4/5] overflow-hidden border border-hanji-border bg-hanji-warm/40">
           {src ? <img src={src} alt={row.name} className="h-full w-full object-cover" /> : null}
@@ -368,7 +368,7 @@ function DirectoryEditor({
               className="my-3 inline-flex items-center gap-2 whitespace-nowrap rounded-sm border border-hanji-border px-3 py-2 font-sans text-sm tracking-normal text-ink hover:bg-hanji-warm"
             >
               <span aria-hidden="true" className="text-base leading-none tracking-normal">+</span>
-              이름 추가
+              연구진 추가
             </button>
           </div>
         )
