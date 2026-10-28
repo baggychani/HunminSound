@@ -6,7 +6,15 @@
  * - 읽기:   /api/admin/history GET
  */
 
-export type HistoryAction = 'save' | 'remove' | 'dismiss' | 'restore'
+export type HistoryAction = 'save' | 'remove' | 'dismiss' | 'restore' | 'code' | 'keep'
+
+export type CodeConflict = {
+  kind: 'text' | 'research'
+  key: string
+  label: string
+  current: string
+  code: string
+}
 
 export interface HistoryEntry {
   id: string
@@ -51,6 +59,14 @@ export function parseOverrideKey(key: string): {
 /** 액션 한국어 요약 */
 export function describeAction(entry: HistoryEntry): string {
   if (entry.action === 'restore') return `${entry.itemName} · 이전 내용으로 복원`
+  if (entry.action === 'code') {
+    if (entry.type === 'research') return '연구 소개 · 코드 수정이 반영됨'
+    return `${entry.itemName} · 코드 수정이 반영됨`
+  }
+  if (entry.action === 'keep') {
+    if (entry.type === 'research') return '연구 소개 · 코드 수정은 반영하지 않고 화면 글을 유지'
+    return `${entry.itemName} · 코드 수정은 반영하지 않고 화면 글을 유지`
+  }
   if (entry.type === 'research') {
     if (entry.action === 'remove') return '연구 소개 · 코드 기준본으로 복원'
     if (entry.itemName && entry.itemName !== '연구 소개') return `연구 소개 · ${entry.itemName}`

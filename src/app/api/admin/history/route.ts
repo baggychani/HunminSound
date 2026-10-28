@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server'
-import { readCmsState, restoreCmsEntry } from '@/lib/cms-storage'
+import { currentCodeConflicts, readCmsState, restoreCmsEntry } from '@/lib/cms-storage'
 import { cmsUser, cmsError, noStore } from '@/lib/cms-api'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export async function GET() {
   if (!(await cmsUser())) return NextResponse.json({}, { status: 401 })
   try {
-    const { history, revision } = await readCmsState()
-    return NextResponse.json({ history, revision }, { headers: noStore })
+    const state = await readCmsState()
+    return NextResponse.json({ history: state.history, revision: state.revision, conflicts: currentCodeConflicts(state) }, { headers: noStore })
   } catch (e) { return cmsError(e) }
 }
 export async function POST(req: Request) {

@@ -1,19 +1,28 @@
 import fs from 'fs/promises'
 import path from 'path'
-import { createHash, randomUUID } from 'crypto'
+import { randomUUID } from 'crypto'
 import { Redis } from '@upstash/redis'
 import { codeBaseline } from '@/lib/cms-baseline'
 import type { OverridesStore, TranslationOverride } from '@/lib/i18n-overrides'
-import { makeHistoryEntry, MAX_HISTORY, type HistoryEntry } from '@/lib/admin-history'
+import { makeHistoryEntry, MAX_HISTORY, type CodeConflict, type HistoryEntry } from '@/lib/admin-history'
 import { validateResearchContent, type ResearchContent } from '@/lib/research-content'
 import { summarizeResearchChange } from '@/lib/research-history'
+import { codeChangeLabel, codeContentStamp, listCodeConflicts, planCodeSync, researchStamp, textStamp } from '@/lib/cms-code-sync'
 
 const KEY = 'hunminsound:cms:v2:current'
 const BASELINE_KEY = 'hunminsound:cms:v2:baseline'
 export const cmsDirectory = () => process.env.CMS_LOCAL_DIR || path.join(process.cwd(), '.cms')
 export class CmsConflictError extends Error {}
 type Content = { overrides: OverridesStore; research: ResearchContent }
-type State = Content & { version: 2; revision: string; history: HistoryEntry[] }
+type State = Content & {
+  version: 2
+  revision: string
+  history: HistoryEntry[]
+  researchCodeVersion?: string
+  researchCodeConflict?: boolean
+  researchCodeDeclined?: string
+  syncedCodeStamp?: string
+}
 type Change = { kind: 'text'; key: string; before: TranslationOverride; after: TranslationOverride }
   | { kind: 'research'; before: ResearchContent; after: ResearchContent }
 type Event = { change: Change; entry: HistoryEntry }
@@ -71,8 +80,17 @@ function checkState(state: State): State {
 }
 
 /** 기존 저장본을 지우지 않고 이동한다. 코드 기준본과 이전 데이터는 별도로 보존한다. */
+let deployedCache: { baseline: ReturnType<typeof codeBaseline>; stamp: string } | null = null
+function deployedCode() {
+  if (!deployedCache) {
+    const baseline = codeBaseline()
+    deployedCache = { baseline, stamp: codeContentStamp(baseline) }
+  }
+  return deployedCache
+}
+
 async function initialState(): Promise<{ state: State; backup: unknown }> {
-  const baseline = codeBaseline()
+  const { baseline, stamp } = deployedCode()
   const client = getCmsRedis()
   const legacyOverrides = client
     ? await client.get<OverridesStore>('hunminsound:cms:i18n-overrides')
@@ -81,17 +99,25 @@ async function initialState(): Promise<{ state: State; backup: unknown }> {
     ? await client.get<HistoryEntry[]>('hunminsound:cms:admin-history')
     : await readJson<HistoryEntry[]>(path.join(process.cwd(), 'src/data/admin-history.json'))
   // 연구 소개의 기존 정본은 배포된 코드다. 폐기한 과거 Redis 연구 키는 되살리지 않는다.
-  const overrides = { ...baseline.overrides }
+  const overrides: OverridesStore = {}
+  for (const [key, entry] of Object.entries(baseline.overrides)) {
+    overrides[key] = { ...entry, codeVersion: textStamp(entry.value) }
+  }
   for (const [key, value] of Object.entries(legacyOverrides ?? {})) {
-    if (Object.prototype.hasOwnProperty.call(overrides, key)) overrides[key] = value
+    if (!overrides[key]) continue
+    overrides[key] = { ...value, codeVersion: textStamp(baseline.overrides[key].value) }
   }
   return {
-    state: { version: 2, revision: randomUUID(), overrides, research: baseline.research, history: (legacyHistory ?? []).slice(0, MAX_HISTORY) },
+    state: {
+      version: 2, revision: randomUUID(), overrides, research: baseline.research,
+      history: (legacyHistory ?? []).slice(0, MAX_HISTORY),
+      researchCodeVersion: researchStamp(baseline.research), researchCodeConflict: false, syncedCodeStamp: stamp,
+    },
     backup: { createdAt: new Date().toISOString(), baseline, legacyOverrides, legacyHistory },
   }
 }
 
-export async function readCmsState(): Promise<State> {
+async function readStoredState(): Promise<State> {
   const client = getCmsRedis()
   if (client) {
     const existing = await client.get<State>(KEY)
@@ -120,14 +146,17 @@ export async function readCmsState(): Promise<State> {
   })
 }
 
-async function commit(previous: State, next: State, event: Event): Promise<void> {
+async function commitMany(previous: State, next: State, events: Event[]): Promise<void> {
   const client = getCmsRedis()
   if (client) {
+    const payload = events.map((event) => ({ key: `hunminsound:cms:v2:event:${event.entry.id}`, value: JSON.stringify(event) }))
     const ok = await client.eval(`local current = redis.call('GET', KEYS[1])
       if not current or cjson.decode(current).revision ~= ARGV[1] then return 0 end
-      redis.call('SET', KEYS[2], ARGV[3]); redis.call('SET', KEYS[1], ARGV[2]); return 1`,
-    [KEY, `hunminsound:cms:v2:event:${event.entry.id}`],
-    [previous.revision, JSON.stringify(next), JSON.stringify(event)])
+      local events = cjson.decode(ARGV[3])
+      for i, event in ipairs(events) do redis.call('SET', event.key, event.value) end
+      redis.call('SET', KEYS[1], ARGV[2])
+      return 1`,
+    [KEY], [previous.revision, JSON.stringify(next), JSON.stringify(payload)])
     if (ok !== 1) throw new CmsConflictError()
     return
   }
@@ -135,11 +164,83 @@ async function commit(previous: State, next: State, event: Event): Promise<void>
     const file = path.join(cmsDirectory(), 'current.json')
     const current = await readJson<State>(file)
     if (current?.revision !== previous.revision) throw new CmsConflictError()
-    await fs.mkdir(path.join(cmsDirectory(), 'history'), { recursive: true })
-    // 복원 자료 기록이 성공한 뒤에만 현재 파일을 원자적으로 교체한다.
-    await fs.writeFile(path.join(cmsDirectory(), 'history', `${event.entry.id}.json`), JSON.stringify(event), { flag: 'wx' })
+    if (events.length) {
+      await fs.mkdir(path.join(cmsDirectory(), 'history'), { recursive: true })
+      for (const event of events) {
+        // 복원 자료 기록이 성공한 뒤에만 현재 파일을 원자적으로 교체한다.
+        await fs.writeFile(path.join(cmsDirectory(), 'history', `${event.entry.id}.json`), JSON.stringify(event), { flag: 'wx' })
+      }
+    }
     await atomicFile(file, next)
   })
+}
+
+async function commit(previous: State, next: State, event: Event): Promise<void> {
+  await commitMany(previous, next, [event])
+}
+
+function eventsForCodePlan(plan: ReturnType<typeof planCodeSync>): Event[] {
+  const events: Event[] = []
+  for (const change of plan.textChanges) {
+    const after = { ...change.after, updatedAt: randomUUID() }
+    plan.overrides[change.key] = after
+    events.push({
+      change: { kind: 'text', key: change.key, before: change.before, after },
+      entry: historyFor({ kind: 'text', key: change.key, before: change.before, after }, '코드', 'code', codeChangeLabel(change.key)),
+    })
+  }
+  if (plan.researchChange) {
+    events.push({
+      change: { kind: 'research', before: plan.researchChange.before, after: plan.researchChange.after },
+      entry: historyFor({ kind: 'research', before: plan.researchChange.before, after: plan.researchChange.after }, '코드', 'code', '연구 소개'),
+    })
+  }
+  return events
+}
+
+async function syncDeployedCode(state: State, allowRetry = true): Promise<State> {
+  const { baseline, stamp } = deployedCode()
+  if (state.syncedCodeStamp === stamp && state.researchCodeVersion) return state
+  const plan = planCodeSync(state, baseline, stamp)
+  if (!plan.changed) return state
+  const events = eventsForCodePlan(plan)
+  const next: State = {
+    ...state,
+    overrides: plan.overrides,
+    research: plan.research,
+    researchCodeVersion: plan.researchCodeVersion,
+    researchCodeConflict: plan.researchCodeConflict,
+    researchCodeDeclined: plan.researchCodeDeclined,
+    syncedCodeStamp: plan.syncedCodeStamp,
+    revision: randomUUID(),
+    history: events.map((event) => event.entry).reverse().concat(state.history).slice(0, MAX_HISTORY),
+  }
+  try {
+    await commitMany(state, next, events)
+  } catch (error) {
+    if (!(error instanceof CmsConflictError) || !allowRetry) throw error
+    return syncDeployedCode(await readStoredState(), false)
+  }
+  if (plan.researchChange) {
+    const kept = new Set(photoNamesOf(plan.researchChange.after))
+    const candidates = photoNamesOf(plan.researchChange.before).filter((name) => !kept.has(name))
+    await releasePhotos(candidates)
+  }
+  return next
+}
+
+export async function readCmsState(): Promise<State> {
+  const state = await readStoredState()
+  try {
+    return await syncDeployedCode(state)
+  } catch (error) {
+    console.error('[cms] code sync failed:', error)
+    return state
+  }
+}
+
+export function currentCodeConflicts(state: State): CodeConflict[] {
+  return listCodeConflicts(state)
 }
 
 function historyFor(change: Change, username: string, action: HistoryEntry['action'], name?: string): HistoryEntry {
@@ -154,8 +255,15 @@ function historyFor(change: Change, username: string, action: HistoryEntry['acti
   }
 }
 
-async function saveChange(previous: State, change: Change, username: string, action: HistoryEntry['action'], name?: string) {
+async function saveChange(
+  previous: State, change: Change, username: string, action: HistoryEntry['action'], name?: string,
+  historyValues?: { oldValue: string; newValue: string },
+) {
   const entry = historyFor(change, username, action, name)
+  if (historyValues) {
+    entry.oldValue = historyValues.oldValue
+    entry.newValue = historyValues.newValue
+  }
   const next: State = { ...previous, revision: randomUUID(), history: [entry, ...previous.history].slice(0, MAX_HISTORY) }
   if (change.kind === 'text') next.overrides = { ...previous.overrides, [change.key]: change.after }
   else next.research = change.after
@@ -186,11 +294,26 @@ export async function saveText(input: {
     ? { ...before, staleDismissed: true }
     : { ...before, value: input.value!, sourceSnapshot: input.sourceSnapshot!, staleDismissed: false }
   after.updatedAt = randomUUID() // 같은 밀리초에 저장해도 구분되는 항목 버전
+  const codeHash = textStamp(baseline.value)
+  if (input.remove) {
+    after.codeVersion = codeHash
+    delete after.pendingCode
+    delete after.codeDeclined
+  } else {
+    after.codeVersion = before.codeVersion ?? codeHash
+    if (before.pendingCode && after.value !== before.pendingCode) after.pendingCode = before.pendingCode
+    if (before.codeDeclined) after.codeDeclined = before.codeDeclined
+    if (after.pendingCode && after.value === after.pendingCode) {
+      after.codeVersion = textStamp(after.pendingCode)
+      delete after.pendingCode
+      delete after.codeDeclined
+    }
+  }
   return (await saveChange(current, { kind: 'text', key: input.key, before, after }, username,
     input.remove ? 'remove' : input.staleDismissed ? 'dismiss' : 'save', input.displayName)).overrides
 }
 
-export const researchVersion = (data: ResearchContent) => createHash('sha256').update(JSON.stringify(data)).digest('hex')
+export const researchVersion = researchStamp
 export async function readResearchContent() { return (await readCmsState()).research }
 export async function readResearchContentForAdmin() {
   const data = await readResearchContent()
@@ -328,15 +451,78 @@ export async function discardTeamPhoto(src: string): Promise<void> {
 export async function readOverridesStore() { return (await readCmsState()).overrides }
 export async function readAdminHistory() { return (await readCmsState()).history }
 
+function pinRestoredText(key: string, previous: TranslationOverride): TranslationOverride {
+  const codeText = deployedCode().baseline.overrides[key]?.value
+  const after: TranslationOverride = { ...previous, updatedAt: randomUUID() }
+  delete after.pendingCode
+  if (codeText === undefined) return after
+  after.codeVersion = textStamp(codeText)
+  if (after.value !== codeText) after.codeDeclined = textStamp(codeText)
+  else delete after.codeDeclined
+  return after
+}
+
 export async function restoreCmsEntry(id: string, expectedRevision: string, username: string) {
   if (!/^[a-f0-9-]{36}$/.test(id)) throw new Error('CMS_INVALID_HISTORY')
   const current = await readCmsState()
   if (current.revision !== expectedRevision) throw new CmsConflictError()
   const event = await readEvent(id)
   if (!event) throw new Error('CMS_INVALID_HISTORY')
-  const change: Change = event.change.kind === 'text'
-    ? { kind: 'text', key: event.change.key, before: current.overrides[event.change.key],
-      after: { ...event.change.before, updatedAt: randomUUID() } }
-    : { kind: 'research', before: current.research, after: event.change.before }
-  await saveChange(current, change, username, 'restore', event.entry.itemName)
+  if (event.change.kind === 'text') {
+    await saveChange(current, {
+      kind: 'text', key: event.change.key, before: current.overrides[event.change.key],
+      after: pinRestoredText(event.change.key, event.change.before),
+    }, username, 'restore', event.entry.itemName)
+    return
+  }
+  const after = event.change.before
+  const codeHash = researchStamp(deployedCode().baseline.research)
+  const prepared: State = {
+    ...current,
+    researchCodeConflict: false,
+    researchCodeDeclined: researchStamp(after) === codeHash ? undefined : codeHash,
+  }
+  await saveChange(prepared, { kind: 'research', before: current.research, after }, username, 'restore', event.entry.itemName)
+}
+
+export async function resolveCodeConflict(
+  input: { kind: 'text' | 'research'; key?: string; choice: 'code' | 'keep' },
+  revision: string,
+  username: string,
+) {
+  if (input.choice !== 'code' && input.choice !== 'keep') throw new Error('CMS_INVALID_CONFLICT')
+  const current = await readCmsState()
+  if (current.revision !== revision) throw new CmsConflictError()
+  if (input.kind === 'research') {
+    if (!current.researchCodeConflict) throw new Error('CMS_INVALID_CONFLICT')
+    const codeResearch = deployedCode().baseline.research
+    const codeHash = researchStamp(codeResearch)
+    if (input.choice === 'code') {
+      const prepared: State = { ...current, researchCodeVersion: codeHash, researchCodeConflict: false, researchCodeDeclined: undefined }
+      await saveChange(prepared, { kind: 'research', before: current.research, after: codeResearch }, username, 'code', '연구 소개')
+      return
+    }
+    const prepared: State = { ...current, researchCodeConflict: false, researchCodeDeclined: codeHash }
+    await saveChange(prepared, { kind: 'research', before: current.research, after: current.research }, username, 'keep', '연구 소개', {
+      oldValue: '배포된 코드의 연구 소개', newValue: '화면에 저장한 연구 소개',
+    })
+    return
+  }
+  if (input.kind !== 'text' || !input.key) throw new Error('CMS_INVALID_CONFLICT')
+  const before = current.overrides[input.key]
+  if (!before?.pendingCode || !deployedCode().baseline.overrides[input.key]) throw new Error('CMS_INVALID_CONFLICT')
+  if (input.choice === 'code') {
+    const after: TranslationOverride = {
+      ...before, value: before.pendingCode, codeVersion: textStamp(before.pendingCode), updatedAt: randomUUID(),
+    }
+    delete after.pendingCode
+    delete after.codeDeclined
+    await saveChange(current, { kind: 'text', key: input.key, before, after }, username, 'code', codeChangeLabel(input.key))
+    return
+  }
+  const after: TranslationOverride = { ...before, codeDeclined: textStamp(before.pendingCode) }
+  delete after.pendingCode
+  await saveChange(current, { kind: 'text', key: input.key, before, after }, username, 'keep', codeChangeLabel(input.key), {
+    oldValue: before.pendingCode, newValue: before.value,
+  })
 }

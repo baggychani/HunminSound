@@ -43,6 +43,12 @@ export interface TranslationOverride {
   /** 원본이 바뀌었지만 "수정 불필요" 확인 처리된 경우 true */
   staleDismissed: boolean
   updatedAt: string
+  /** 마지막으로 확인한 코드 문장의 지문. 코드가 바뀌었는지 구분한다. */
+  codeVersion?: string
+  /** 코드도 바뀌었고 화면 글도 따로 바뀌어, 사람이 고르기 전 코드 문장. */
+  pendingCode?: string
+  /** 이 지문의 코드 문장은 반영하지 않기로 한 기록. */
+  codeDeclined?: string
 }
 
 /** 저장소 전체: key → override */

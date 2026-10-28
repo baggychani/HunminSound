@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { describeAction, MAX_HISTORY, type HistoryEntry } from '@/lib/admin-history'
+import { describeAction, MAX_HISTORY, type CodeConflict, type HistoryEntry } from '@/lib/admin-history'
 import { notifyCmsContentChanged, refreshAdminOverrides } from '@/lib/overrides-store'
 
 type NoticeLevel = 'info' | 'warning'
@@ -44,6 +44,9 @@ export function AdminTopBar() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [restoringId, setRestoringId] = useState<string | null>(null)
   const [restoreError, setRestoreError] = useState<{ id: string; message: string } | null>(null)
+  const [conflicts, setConflicts] = useState<CodeConflict[]>([])
+  const [choosingKey, setChoosingKey] = useState<string | null>(null)
+  const [choiceError, setChoiceError] = useState<string | null>(null)
 
   const fetchHistory = async () => {
     setHistLoading(true)
@@ -53,6 +56,7 @@ export function AdminTopBar() {
       const data = await response.json().catch(() => null) as {
         history?: HistoryEntry[]
         revision?: string
+        conflicts?: CodeConflict[]
         message?: string
       } | null
       if (!response.ok || !data || !Array.isArray(data.history) || typeof data.revision !== 'string') {
@@ -60,6 +64,7 @@ export function AdminTopBar() {
       }
       setHistory(data.history)
       setRevision(data.revision)
+      setConflicts(Array.isArray(data.conflicts) ? data.conflicts : [])
     } catch (error) {
       setHistError(error instanceof Error ? error.message : '수정 내역을 불러오지 못했습니다.')
     } finally {
@@ -94,6 +99,34 @@ export function AdminTopBar() {
       })
     } finally {
       setRestoringId(null)
+    }
+  }
+
+  useEffect(() => {
+    if (showStaffTools) void fetchHistory()
+  }, [showStaffTools])
+
+  const chooseConflict = async (conflict: CodeConflict, choice: 'code' | 'keep') => {
+    if (!revision || choosingKey) return
+    setChoosingKey(conflict.key)
+    setChoiceError(null)
+    try {
+      const response = await fetch('/api/admin/code-conflict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: conflict.kind, key: conflict.key, choice, revision }),
+      })
+      const data = await response.json().catch(() => null) as { message?: string } | null
+      if (!response.ok) {
+        if (response.status === 409) await fetchHistory()
+        throw new Error(data?.message || '선택을 저장하지 못했습니다.')
+      }
+      notifyCmsContentChanged()
+      await Promise.all([refreshAdminOverrides(), fetchHistory()])
+    } catch (error) {
+      setChoiceError(error instanceof Error ? error.message : '선택을 저장하지 못했습니다.')
+    } finally {
+      setChoosingKey(null)
     }
   }
 
@@ -144,6 +177,15 @@ export function AdminTopBar() {
       </Link>
 
       {showStaffTools ? <div className="fixed right-4 top-4 z-50 flex items-center gap-1 sm:right-6 sm:top-5">
+        {conflicts.length > 0 ? (
+          <button
+            type="button"
+            onClick={() => { setNotifOpen(false); setHistOpen(true); void fetchHistory() }}
+            className="mr-1 font-sans text-[11px] text-ink-accent underline underline-offset-2 hover:text-gold dark:text-gold-light"
+          >
+            코드와 다른 글 {conflicts.length}
+          </button>
+        ) : null}
 
         {/* ── 히스토리 아이콘 ── */}
         <div className="relative flex items-center">
@@ -183,6 +225,41 @@ export function AdminTopBar() {
                   {histError}
                 </p>
               )}
+              {conflicts.length > 0 && (
+                <div className="border-b border-hanji-border px-4 py-3">
+                  <p className="font-sans text-[11px] leading-relaxed text-ink-soft">
+                    코드와 화면이 서로 다르게 고친 글입니다. 어느 쪽을 현재 글로 둘까요?
+                  </p>
+                  <ul className="mt-2 space-y-3">
+                    {conflicts.map((conflict) => (
+                      <li key={conflict.key}>
+                        <p className="font-sans text-[11px] text-ink">{conflict.label}</p>
+                        <p className="mt-1 font-sans text-[11px] leading-relaxed text-ink-muted">화면 · {conflict.current}</p>
+                        <p className="font-sans text-[11px] leading-relaxed text-ink-muted">코드 · {conflict.code}</p>
+                        <div className="mt-1 flex gap-3">
+                          <button
+                            type="button"
+                            disabled={choosingKey !== null}
+                            onClick={() => void chooseConflict(conflict, 'code')}
+                            className="font-sans text-[11px] text-ink-accent underline underline-offset-2 hover:text-gold disabled:opacity-50 dark:text-gold-light"
+                          >
+                            {choosingKey === conflict.key ? '저장 중…' : '코드 글 사용'}
+                          </button>
+                          <button
+                            type="button"
+                            disabled={choosingKey !== null}
+                            onClick={() => void chooseConflict(conflict, 'keep')}
+                            className="font-sans text-[11px] text-ink-muted underline underline-offset-2 hover:text-ink disabled:opacity-50"
+                          >
+                            화면 글 유지
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                  {choiceError && <p role="alert" className="mt-2 font-sans text-[11px] leading-snug text-red-500">{choiceError}</p>}
+                </div>
+              )}
               <ul className="max-h-[min(75vh,26rem)] divide-y divide-hanji-border/70 overflow-y-auto">
                 {histLoading && history.length === 0 ? (
                   <li className="px-4 py-8 text-center font-sans text-xs text-ink-muted/50">불러오는 중…</li>
@@ -208,7 +285,11 @@ export function AdminTopBar() {
                           <div className="flex items-start justify-between gap-2">
                             <div className="min-w-0">
                               <p className="font-sans text-xs font-medium leading-snug text-ink-soft">
-                                관리자 <span className="text-ink">{entry.username}</span>님이 수정했습니다.
+                                {entry.action === 'code'
+                                  ? '코드의 수정이 화면에 반영되었습니다.'
+                                  : entry.action === 'keep'
+                                    ? '코드의 수정은 반영하지 않고 화면 글을 유지했습니다.'
+                                    : <>관리자 <span className="text-ink">{entry.username}</span>님이 수정했습니다.</>}
                               </p>
                               <p className="mt-0.5 font-sans text-[11px] leading-snug text-ink-muted/70">
                                 {describeAction(entry)}
@@ -250,7 +331,7 @@ export function AdminTopBar() {
                                     </DetailRow>
                                   </>
                                 )
-                              ) : entry.action === 'save' ? (
+                              ) : entry.action === 'save' || entry.action === 'code' || entry.action === 'keep' ? (
                                 <>
                                   <DetailRow label="이전">
                                     {entry.oldValue ?? <span className="italic text-ink-muted/40">이전 내용 없음</span>}
