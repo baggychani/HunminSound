@@ -16,25 +16,10 @@ export type AdminNotice = {
 
 const STORAGE_PREFIX = 'hunmin-admin-notif-dismissed:'
 
-export function AdminTopBar({ sanityProjectIdConfigured }: { sanityProjectIdConfigured: boolean }) {
+export function AdminTopBar() {
   const pathname = usePathname()
   const showStaffTools = !pathname.startsWith('/admin/login')
-  const notifications = useMemo(
-    (): AdminNotice[] => [
-      ...(sanityProjectIdConfigured
-        ? []
-        : [
-            {
-              id: 'sanity-id-empty',
-              level: 'warning' as const,
-              title: 'Sanity「프로젝트 번호」가 비어 있습니다.',
-              detail:
-                '웹만 볼 때는 그대로 둬도 됩니다. CMS에 저장하려면 가입 후 받은 번호를 이 파일 안의 SANITY 줄에 적으면 됩니다.',
-            },
-          ]),
-    ],
-    [sanityProjectIdConfigured],
-  )
+  const notifications: AdminNotice[] = []
 
   const ids = notifications.map((n) => n.id)
   const [dismissTick, setDismissTick] = useState(0)
@@ -133,7 +118,7 @@ export function AdminTopBar({ sanityProjectIdConfigured }: { sanityProjectIdConf
               className="absolute right-0 top-[calc(100%+6px)] z-[60] w-[min(calc(100vw-32px),420px)] rounded-sm border border-hanji-border bg-hanji-warm shadow-lg dark:shadow-[0_24px_50px_-20px_rgb(0_0_0/0.45)]"
             >
               <div className="flex items-center justify-between border-b border-hanji-border px-4 py-2.5">
-                <span className="font-sans text-sm font-medium text-ink">
+                <span className="font-sans text-xs font-medium text-ink">
                   수정 내역
                 </span>
                 <button
@@ -255,16 +240,18 @@ export function AdminTopBar({ sanityProjectIdConfigured }: { sanityProjectIdConf
               className="absolute right-0 top-[calc(100%+6px)] z-[60] w-[min(calc(100vw-32px),380px)] rounded-sm border border-hanji-border bg-hanji-warm shadow-lg dark:bg-hanji-warm dark:shadow-[0_24px_50px_-20px_rgb(0_0_0/0.45)]"
             >
               <div className="flex items-center justify-between border-b border-hanji-border px-4 py-2.5">
-                <span className="font-sans text-sm font-medium text-ink">
+                <span className="font-sans text-xs font-medium text-ink">
                   알림
                 </span>
-                <button
-                  type="button"
-                  className="font-sans text-[11px] text-ink-accent underline underline-offset-2 hover:text-gold dark:text-gold-light"
-                  onClick={() => clearDismissed()}
-                >
-                  가리기 초기화
-                </button>
+                {dismissed.size > 0 ? (
+                  <button
+                    type="button"
+                    className="font-sans text-xs text-ink-accent underline underline-offset-2 hover:text-gold dark:text-gold-light"
+                    onClick={() => clearDismissed()}
+                  >
+                    숨긴 알림 다시 보기
+                  </button>
+                ) : null}
               </div>
               <ul className="max-h-[min(70vh,21rem)] divide-y divide-hanji-border/80 overflow-y-auto">
                 {shown.length === 0 ? (
@@ -288,10 +275,10 @@ export function AdminTopBar({ sanityProjectIdConfigured }: { sanityProjectIdConf
                           <p className="mt-1 font-sans text-[11px] leading-relaxed text-ink-muted">{n.detail}</p>
                           <button
                             type="button"
-                            className="mt-2 font-sans text-[10px] uppercase tracking-wider text-ink-muted/40 underline-offset-2 hover:text-ink-accent hover:underline dark:hover:text-gold-light"
+                            className="mt-2 font-sans text-xs text-ink-muted underline-offset-2 hover:text-ink-accent hover:underline dark:hover:text-gold-light"
                             onClick={() => dismissOne(n.id)}
                           >
-                            가리기
+                            숨기기
                           </button>
                         </div>
                       </div>
@@ -299,9 +286,6 @@ export function AdminTopBar({ sanityProjectIdConfigured }: { sanityProjectIdConf
                   ))
                 )}
               </ul>
-              <div className="border-t border-hanji-border px-4 py-2 text-center font-sans text-[10px] leading-snug text-ink-muted/90">
-                브라우저 이 컴퓨터 안에만「가린 항목」이 저장됩니다.
-              </div>
             </div>
           ) : null}
         </div>
