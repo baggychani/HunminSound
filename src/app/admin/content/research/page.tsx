@@ -64,58 +64,69 @@ function ClickEdit({
   )
 }
 
-function LangDrawer({
+function FieldLine({
   label,
+  value,
+  onSave,
+  multiline,
+  empty,
   translationKey,
   translations,
-  onSave,
+  onTranslate,
 }: {
   label: string
-  translationKey: string
-  translations: ResearchContent['translations']
-  onSave: (lang: string, value: string) => void
+  value: string
+  onSave: (value: string) => void
+  multiline?: boolean
+  empty?: string
+  translationKey?: string
+  translations?: ResearchContent['translations']
+  onTranslate?: (lang: string, value: string) => void
 }) {
   const [open, setOpen] = useState(false)
-  const count = TRANSLATION_LANGS.filter(({ code }) => (translations[code]?.[translationKey] ?? '').trim()).length
+  const count = translationKey && translations
+    ? TRANSLATION_LANGS.filter(({ code }) => (translations[code]?.[translationKey] ?? '').trim()).length
+    : 0
 
   return (
-    <div className="border-t border-hanji-border/40">
-      <div className="flex items-center justify-end px-5 py-1.5">
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          className={`flex items-center gap-1.5 rounded-sm px-2 py-1 font-sans text-[10.5px] transition-colors ${open ? 'bg-hanji-border/30 text-ink-soft' : 'text-gold/70 hover:text-gold'}`}
-        >
-          <span className="font-serif text-sm leading-none">語</span>
-          <span>번역</span>
-          <span className="font-sans text-[10px] text-ink-muted/50">{label}</span>
-          <span className="flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-gold/80 px-1 font-sans text-[9px] font-semibold text-hanji">
-            {count}
-          </span>
-        </button>
+    <div className="border-b border-hanji-border/40 py-3 last:border-b-0">
+      <div className="flex items-start gap-6">
+        <p className="w-16 shrink-0 pt-1 font-sans text-xs tracking-normal text-ink-muted">{label}</p>
+        <div className="min-w-0 flex-1">
+          <ClickEdit
+            value={value}
+            multiline={multiline}
+            empty={empty}
+            onSave={onSave}
+            className="font-sans text-xs tracking-normal leading-relaxed text-ink"
+          />
+        </div>
+        {translationKey && onTranslate && (
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-sm border border-hanji-border px-2.5 py-1 font-sans text-xs tracking-normal text-ink-muted hover:border-gold/50 hover:text-gold"
+          >
+            번역
+            <span className="font-sans text-[11px] tracking-normal text-gold">{count}</span>
+          </button>
+        )}
       </div>
-      {open && (
-        <div className="border-t border-hanji-border/40 bg-hanji-warm/20">
-          <div className="flex items-center justify-between border-b border-hanji-border/40 px-5 py-2">
-            <span className="font-sans text-[10px] uppercase tracking-[0.1em] text-ink-muted/50">다국어 번역 편집</span>
-            <span className="font-sans text-[10px] text-ink-muted/35">텍스트 더블클릭 또는 수정 버튼</span>
-          </div>
-          {TRANSLATION_LANGS.map(({ code }) => {
-            const text = translations[code]?.[translationKey] ?? ''
-            return (
-              <div key={code} className="grid grid-cols-[5.5rem_minmax(0,1fr)] items-start gap-3 border-b border-hanji-border/30 px-5 py-3 last:border-b-0">
-                <p className="pt-1 font-sans text-xs text-ink">{ADMIN_LANGUAGE_NAMES[code] ?? code}</p>
-                <ClickEdit
-                  value={text}
-                  multiline
-                  empty="번역 없음"
-                  onSave={(value) => onSave(code, value)}
-                  className="font-sans text-xs leading-relaxed text-ink-muted/70"
-                />
-              </div>
-            )
-          })}
+      {open && translationKey && translations && onTranslate && (
+        <div className="mt-3 space-y-2 pl-[5.5rem]">
+          {TRANSLATION_LANGS.map(({ code }) => (
+            <div key={code} className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-start gap-3">
+              <p className="pt-1 font-sans text-xs tracking-normal text-ink-muted">{ADMIN_LANGUAGE_NAMES[code] ?? code}</p>
+              <ClickEdit
+                value={translations[code]?.[translationKey] ?? ''}
+                multiline
+                empty="번역 없음"
+                onSave={(next) => onTranslate(code, next)}
+                className="font-sans text-xs tracking-normal leading-relaxed text-ink-muted/80"
+              />
+            </div>
+          ))}
         </div>
       )}
     </div>
@@ -143,7 +154,6 @@ function MemberEditor({
   const [uploading, setUploading] = useState(false)
   const baseSrc = row.photo || teamPhotoSrc(row.name)
   const src = baseSrc ? (bust ? `${baseSrc}?v=${bust}` : baseSrc) : null
-  const textClass = 'font-sans text-xs leading-relaxed text-ink-muted/70'
 
   const upload = async (file: File) => {
     setUploading(true)
@@ -174,57 +184,47 @@ function MemberEditor({
   ]
 
   return (
-    <div className="border border-hanji-border">
-      <div className="flex gap-4 px-5 py-5">
-        <div className="w-[5.5rem] shrink-0">
-          <div className="relative aspect-[4/5] overflow-hidden border border-hanji-border bg-hanji-warm/40">
-            {src ? <img src={src} alt={row.name} className="h-full w-full object-cover" /> : null}
-          </div>
-          <button
-            type="button"
-            disabled={uploading}
-            onClick={() => fileRef.current?.click()}
-            className="mt-2 font-sans text-[10px] text-gold/80 hover:text-gold disabled:opacity-50"
-          >
-            {uploading ? '올리는 중…' : '사진 바꾸기'}
-          </button>
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0]
-              e.target.value = ''
-              if (file) void upload(file)
-            }}
-          />
-          {photoError && <p className="mt-1 font-sans text-[10px] leading-snug text-red-500">{photoError}</p>}
+    <div className="flex items-start gap-10 border border-hanji-border px-5 py-5 sm:gap-14">
+      <div className="w-40 shrink-0">
+        <div className="aspect-[4/5] overflow-hidden border border-hanji-border bg-hanji-warm/40">
+          {src ? <img src={src} alt={row.name} className="h-full w-full object-cover" /> : null}
         </div>
-        <div className="min-w-0 flex-1 space-y-2">
-          {fields.map((field) => (
-            <div key={field.key} className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-start gap-2">
-              <p className="pt-1 font-sans text-xs text-ink-muted">{field.label}</p>
-              <ClickEdit
-                value={row[field.key] ?? ''}
-                multiline={field.multiline}
-                empty={field.key === 'nameEn' ? '영어 이름 없음' : '내용 없음'}
-                onSave={(value) => onChange({ [field.key]: value })}
-                className={textClass}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-      {fields.filter((field) => field.trans).map((field) => (
-        <LangDrawer
-          key={field.key}
-          label={field.label}
-          translationKey={`team.rows.${index}.${field.key}`}
-          translations={translations}
-          onSave={(lang, value) => onTranslate(`team.rows.${index}.${field.key}`, lang, value)}
+        <button
+          type="button"
+          disabled={uploading}
+          onClick={() => fileRef.current?.click()}
+          className="mt-3 w-full whitespace-nowrap rounded-sm border border-hanji-border bg-hanji px-3 py-2 font-sans text-sm tracking-normal text-ink hover:bg-hanji-warm disabled:opacity-50"
+        >
+          {uploading ? '올리는 중…' : '사진 바꾸기'}
+        </button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0]
+            e.target.value = ''
+            if (file) void upload(file)
+          }}
         />
-      ))}
+        {photoError && <p className="mt-2 font-sans text-xs tracking-normal leading-snug text-red-500">{photoError}</p>}
+      </div>
+      <div className="min-w-0 flex-1">
+        {fields.map((field) => (
+          <FieldLine
+            key={field.key}
+            label={field.label}
+            value={row[field.key] ?? ''}
+            multiline={field.multiline}
+            empty={field.key === 'nameEn' ? '영어 이름 없음' : '내용 없음'}
+            onSave={(value) => onChange({ [field.key]: value })}
+            translationKey={field.trans ? `team.rows.${index}.${field.key}` : undefined}
+            translations={field.trans ? translations : undefined}
+            onTranslate={field.trans ? (lang, value) => onTranslate(`team.rows.${index}.${field.key}`, lang, value) : undefined}
+          />
+        ))}
+      </div>
     </div>
   )
 }
@@ -240,11 +240,8 @@ function DirectoryEditor({
   onChange: (groups: TeamDirectoryGroup[]) => void
   onTranslate: (key: string, lang: string, value: string) => void
 }) {
-  const textClass = 'font-sans text-xs leading-relaxed text-ink-muted/70'
-
   const updateGroup = (index: number, patch: Partial<TeamDirectoryGroup>) => {
-    const next = groups.map((group, i) => (i === index ? { ...group, ...patch } : group))
-    onChange(next)
+    onChange(groups.map((group, i) => (i === index ? { ...group, ...patch } : group)))
   }
 
   return (
@@ -252,47 +249,53 @@ function DirectoryEditor({
       {groups.map((group, index) => {
         const namesEn = group.namesEn ?? group.names.map(() => '')
         return (
-          <div key={`${group.role}-${index}`} className="border border-hanji-border">
-            <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-start gap-2 px-5 py-4">
-              <p className="pt-1 font-sans text-xs text-ink-muted">직위</p>
-              <ClickEdit value={group.role} onSave={(role) => updateGroup(index, { role })} className="font-sans text-sm text-ink" />
-            </div>
+          <div key={`${group.role}-${index}`} className="border border-hanji-border px-5 py-2">
+            <FieldLine
+              label="직위"
+              value={group.role}
+              onSave={(role) => updateGroup(index, { role })}
+              translationKey={`team.directory.${index}.role`}
+              translations={translations}
+              onTranslate={(lang, value) => onTranslate(`team.directory.${index}.role`, lang, value)}
+            />
             {group.subtitle !== undefined && (
-              <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-start gap-2 px-5 pb-4">
-                <p className="pt-1 font-sans text-xs text-ink-muted">괄호</p>
-                <ClickEdit value={group.subtitle} onSave={(subtitle) => updateGroup(index, { subtitle })} className={textClass} />
+              <FieldLine
+                label="괄호"
+                value={group.subtitle}
+                onSave={(subtitle) => updateGroup(index, { subtitle })}
+                translationKey={`team.directory.${index}.subtitle`}
+                translations={translations}
+                onTranslate={(lang, value) => onTranslate(`team.directory.${index}.subtitle`, lang, value)}
+              />
+            )}
+            <div className="grid grid-cols-2 gap-6 pt-3 font-sans text-xs tracking-normal text-ink-muted">
+              <p>이름</p>
+              <p>영어 이름</p>
+            </div>
+            {group.names.map((name, nameIndex) => (
+              <div key={nameIndex} className="grid items-start gap-6 border-b border-hanji-border/40 py-3 last:border-b-0 sm:grid-cols-2">
+                <ClickEdit
+                  value={name}
+                  onSave={(value) => {
+                    const names = [...group.names]
+                    names[nameIndex] = value
+                    updateGroup(index, { names })
+                  }}
+                  className="font-sans text-xs tracking-normal leading-relaxed text-ink"
+                />
+                <ClickEdit
+                  value={namesEn[nameIndex] ?? ''}
+                  empty="영어 이름 없음"
+                  onSave={(value) => {
+                    const nextEn = [...namesEn]
+                    while (nextEn.length < group.names.length) nextEn.push('')
+                    nextEn[nameIndex] = value
+                    updateGroup(index, { namesEn: nextEn })
+                  }}
+                  className="font-sans text-xs tracking-normal leading-relaxed text-ink-muted/80"
+                />
               </div>
-            )}
-            <div className="divide-y divide-hanji-border/50 border-t border-hanji-border/50">
-              {group.names.map((name, nameIndex) => (
-                <div key={nameIndex} className="grid gap-2 px-5 py-3 sm:grid-cols-2">
-                  <ClickEdit
-                    value={name}
-                    onSave={(value) => {
-                      const names = [...group.names]
-                      names[nameIndex] = value
-                      updateGroup(index, { names })
-                    }}
-                    className={textClass}
-                  />
-                  <ClickEdit
-                    value={namesEn[nameIndex] ?? ''}
-                    empty="영어 이름 없음"
-                    onSave={(value) => {
-                      const nextEn = [...namesEn]
-                      while (nextEn.length < group.names.length) nextEn.push('')
-                      nextEn[nameIndex] = value
-                      updateGroup(index, { namesEn: nextEn })
-                    }}
-                    className={textClass}
-                  />
-                </div>
-              ))}
-            </div>
-            <LangDrawer label="직위" translationKey={`team.directory.${index}.role`} translations={translations} onSave={(lang, value) => onTranslate(`team.directory.${index}.role`, lang, value)} />
-            {group.subtitle !== undefined && (
-              <LangDrawer label="괄호" translationKey={`team.directory.${index}.subtitle`} translations={translations} onSave={(lang, value) => onTranslate(`team.directory.${index}.subtitle`, lang, value)} />
-            )}
+            ))}
           </div>
         )
       })}
@@ -431,28 +434,30 @@ export default function AdminResearchPage() {
       />
 
       <h2 className="mb-4 mt-12 font-serif text-base text-ink">과제 정보</h2>
-      <div className="divide-y divide-hanji-border border border-hanji-border">
+      <div className="space-y-4">
         {data.taskInfo.rows.map((row, index) => (
-          <div key={`${row.label}-${index}`}>
-            <div className="grid gap-3 px-5 py-4 sm:grid-cols-[9rem_minmax(0,1fr)]">
-              <ClickEdit
-                value={row.label}
-                onSave={(label) => commit((draft) => {
-                  draft.taskInfo.rows[index] = { ...draft.taskInfo.rows[index], label }
-                })}
-                className="font-sans text-xs text-ink"
-              />
-              <ClickEdit
-                value={row.value}
-                multiline
-                onSave={(value) => commit((draft) => {
-                  draft.taskInfo.rows[index] = { ...draft.taskInfo.rows[index], value }
-                })}
-                className="font-sans text-xs leading-relaxed text-ink-muted/70"
-              />
-            </div>
-            <LangDrawer label="항목" translationKey={`taskInfo.rows.${index}.label`} translations={data.translations} onSave={(lang, value) => saveTrans(`taskInfo.rows.${index}.label`, lang, value)} />
-            <LangDrawer label="내용" translationKey={`taskInfo.rows.${index}.value`} translations={data.translations} onSave={(lang, value) => saveTrans(`taskInfo.rows.${index}.value`, lang, value)} />
+          <div key={index} className="border border-hanji-border px-5 py-2">
+            <FieldLine
+              label="항목"
+              value={row.label}
+              onSave={(label) => commit((draft) => {
+                draft.taskInfo.rows[index] = { ...draft.taskInfo.rows[index], label }
+              })}
+              translationKey={`taskInfo.rows.${index}.label`}
+              translations={data.translations}
+              onTranslate={(lang, value) => saveTrans(`taskInfo.rows.${index}.label`, lang, value)}
+            />
+            <FieldLine
+              label="내용"
+              value={row.value}
+              multiline
+              onSave={(value) => commit((draft) => {
+                draft.taskInfo.rows[index] = { ...draft.taskInfo.rows[index], value }
+              })}
+              translationKey={`taskInfo.rows.${index}.value`}
+              translations={data.translations}
+              onTranslate={(lang, value) => saveTrans(`taskInfo.rows.${index}.value`, lang, value)}
+            />
           </div>
         ))}
       </div>
