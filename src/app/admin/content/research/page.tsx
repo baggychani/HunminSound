@@ -1,770 +1,461 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
-import type { ResearchContent, AchievementEntry, BulletEntry, MethodRow, TeamRow, TaskInfoRow } from '@/lib/research-content'
-import { AdminFooter } from '@/components/admin/AdminFooter'
-import { ResearchTranslationModal } from '@/components/admin/ResearchTranslationModal'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { ADMIN_LANGUAGE_NAMES } from '@/components/admin/adminLanguageNames'
+import type { ResearchContent, TeamDirectoryGroup, TeamRow } from '@/lib/research-content'
+import { TRANSLATION_LANGS } from '@/lib/i18n-overrides'
+import { teamPhotoSrc } from '@/lib/teamSlugs'
 
-/* ── 번역 헬퍼 ────────────────────────────────────────────────────────── */
-interface TransHelpers {
-  translations: Record<string, Record<string, string>>
-  snapshots: Record<string, string>
-  onSave: (key: string, lang: string, value: string, koSource: string) => void
-  onRemove: (key: string, lang: string) => void
-  onDismissStale: (key: string, lang: string) => void
+function cloneDeep<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T
 }
 
-function langVals(translations: Record<string, Record<string, string>>, key: string): Record<string, string> {
-  const result: Record<string, string> = {}
-  for (const [lang, map] of Object.entries(translations)) {
-    if (map[key]) result[lang] = map[key]
+function ClickEdit({
+  value,
+  onSave,
+  multiline,
+  className,
+  empty,
+}: {
+  value: string
+  onSave: (value: string) => void
+  multiline?: boolean
+  className: string
+  empty?: string
+}) {
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState(value)
+  const areaRef = useRef<HTMLTextAreaElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const start = () => {
+    setDraft(value)
+    setEditing(true)
+    setTimeout(() => (multiline ? areaRef : inputRef).current?.focus(), 40)
   }
-  return result
-}
 
-/* ── 유틸 ────────────────────────────────────────────────────────────── */
-function cloneDeep<T>(v: T): T {
-  return JSON.parse(JSON.stringify(v))
-}
+  if (editing) {
+    const fieldClass =
+      'w-full rounded-sm border border-gold/40 bg-hanji px-3 py-2 font-sans text-xs text-ink outline-none focus-visible:border-gold/70 focus-visible:shadow-[inset_0_0_0_1px_rgb(var(--gold-rgb)/0.25)] leading-relaxed'
+    return (
+      <div className="flex flex-col gap-2">
+        {multiline ? (
+          <textarea ref={areaRef} value={draft} rows={3} onChange={(e) => setDraft(e.target.value)} className={`${fieldClass} resize-none`} />
+        ) : (
+          <input ref={inputRef} value={draft} onChange={(e) => setDraft(e.target.value)} className={fieldClass} />
+        )}
+        <div className="flex items-center justify-end gap-2">
+          <button type="button" onClick={() => { onSave(draft); setEditing(false) }} className="rounded-sm bg-gold/90 px-3 py-1 font-sans text-[10px] text-hanji hover:bg-gold">
+            저장
+          </button>
+          <button type="button" onClick={() => setEditing(false)} className="px-2 py-1 font-sans text-[10px] text-ink-muted/50 hover:text-ink-soft">
+            취소
+          </button>
+        </div>
+      </div>
+    )
+  }
 
-/* ── 공통 UI ──────────────────────────────────────────────────────────── */
-function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="border border-hanji-border/60 rounded-xl bg-surface p-6 space-y-5">
-      <h2 className="font-serif text-lg text-ink">{title}</h2>
-      {children}
-    </section>
+    <p onDoubleClick={start} title="더블클릭하여 편집" className={`cursor-pointer rounded-sm px-2 py-1 -ml-2 transition-colors hover:bg-hanji-border/20 ${className}`}>
+      {value.trim() ? value : (empty ?? '내용 없음')}
+    </p>
   )
 }
 
-function FieldLabel({ children, hint }: { children: React.ReactNode; hint?: string }) {
-  return (
-    <div className="mb-1.5">
-      <p className="font-sans text-xs font-medium text-ink-muted/60 uppercase tracking-wide">{children}</p>
-      {hint && <p className="font-sans text-[0.7rem] text-ink-muted/40 mt-0.5">{hint}</p>}
-    </div>
-  )
-}
-
-function TextArea({ value, onChange, rows = 3 }: { value: string; onChange: (v: string) => void; rows?: number }) {
-  return (
-    <textarea
-      className="w-full font-sans text-sm text-ink bg-background border border-hanji-border/60 rounded-lg px-3 py-2.5 leading-relaxed resize-y focus:outline-none focus:ring-1 focus:ring-gold/50"
-      rows={rows}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
-  )
-}
-
-function TextInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  return (
-    <input
-      type="text"
-      className="w-full font-sans text-sm text-ink bg-background border border-hanji-border/60 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gold/50"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
-  )
-}
-
-function AddButton({ onClick, label = '+ 항목 추가' }: { onClick: () => void; label?: string }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="font-sans text-xs text-gold/70 hover:text-gold border border-dashed border-gold/30 hover:border-gold/50 rounded-lg px-3 py-1.5 transition-colors"
-    >
-      {label}
-    </button>
-  )
-}
-
-function RemoveButton({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="font-sans text-[0.7rem] text-red-400/60 hover:text-red-500 transition-colors shrink-0"
-    >
-      삭제
-    </button>
-  )
-}
-
-/* ── 단락 목록 편집 ───────────────────────────────────────────────────── */
-function ParagraphsEditor({
-  paragraphs, onChange, keyPrefix, trans,
+function LangDrawer({
+  label,
+  translationKey,
+  translations,
+  onSave,
 }: {
-  paragraphs: string[]
-  onChange: (v: string[]) => void
-  keyPrefix: string
-  trans: TransHelpers
+  label: string
+  translationKey: string
+  translations: ResearchContent['translations']
+  onSave: (lang: string, value: string) => void
 }) {
+  const [open, setOpen] = useState(false)
+  const count = TRANSLATION_LANGS.filter(({ code }) => (translations[code]?.[translationKey] ?? '').trim()).length
+
   return (
-    <div className="space-y-3">
-      <FieldLabel hint="<b>강조</b> 태그 사용 가능">단락</FieldLabel>
-      {paragraphs.map((p, i) => {
-        const tKey = `${keyPrefix}.${i}`
-        return (
-          <div key={i} className="border border-hanji-border/40 rounded-xl bg-background overflow-hidden">
-            <div className="flex gap-2 items-start p-3">
-              <div className="flex-1">
-                <TextArea value={p} onChange={(v) => {
-                  const next = [...paragraphs]
-                  next[i] = v
-                  onChange(next)
-                }} rows={3} />
-              </div>
-              <RemoveButton onClick={() => onChange(paragraphs.filter((_, idx) => idx !== i))} />
-            </div>
-            <ResearchTranslationModal
-              translationKey={tKey}
-              koreanSource={p}
-              langValues={langVals(trans.translations, tKey)}
-              snapshot={trans.snapshots[tKey]}
-              onSave={(lang, value, snap) => trans.onSave(tKey, lang, value, snap)}
-              onRemove={(lang) => trans.onRemove(tKey, lang)}
-              onDismissStale={(lang) => trans.onDismissStale(tKey, lang)}
-            />
+    <div className="border-t border-hanji-border/40">
+      <div className="flex items-center justify-end px-5 py-1.5">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          className={`flex items-center gap-1.5 rounded-sm px-2 py-1 font-sans text-[10.5px] transition-colors ${open ? 'bg-hanji-border/30 text-ink-soft' : 'text-gold/70 hover:text-gold'}`}
+        >
+          <span className="font-serif text-sm leading-none">語</span>
+          <span>번역</span>
+          <span className="font-sans text-[10px] text-ink-muted/50">{label}</span>
+          <span className="flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-gold/80 px-1 font-sans text-[9px] font-semibold text-hanji">
+            {count}
+          </span>
+        </button>
+      </div>
+      {open && (
+        <div className="border-t border-hanji-border/40 bg-hanji-warm/20">
+          <div className="flex items-center justify-between border-b border-hanji-border/40 px-5 py-2">
+            <span className="font-sans text-[10px] uppercase tracking-[0.1em] text-ink-muted/50">다국어 번역 편집</span>
+            <span className="font-sans text-[10px] text-ink-muted/35">텍스트 더블클릭 또는 수정 버튼</span>
           </div>
-        )
-      })}
-      <AddButton onClick={() => onChange([...paragraphs, ''])} label="+ 단락 추가" />
+          {TRANSLATION_LANGS.map(({ code }) => {
+            const text = translations[code]?.[translationKey] ?? ''
+            return (
+              <div key={code} className="grid grid-cols-[5.5rem_minmax(0,1fr)] items-start gap-3 border-b border-hanji-border/30 px-5 py-3 last:border-b-0">
+                <p className="pt-1 font-sans text-xs text-ink">{ADMIN_LANGUAGE_NAMES[code] ?? code}</p>
+                <ClickEdit
+                  value={text}
+                  multiline
+                  empty="번역 없음"
+                  onSave={(value) => onSave(code, value)}
+                  className="font-sans text-xs leading-relaxed text-ink-muted/70"
+                />
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }
 
-/* ── BulletEntry 목록 편집 ───────────────────────────────────────────── */
-function BulletListEditor({
-  items, onChange, labelName = '라벨', keyPrefix, trans,
+function MemberEditor({
+  row,
+  index,
+  onChange,
+  onPhoto,
+  translations,
+  onTranslate,
 }: {
-  items: BulletEntry[]
-  onChange: (v: BulletEntry[]) => void
-  labelName?: string
-  keyPrefix?: string
-  trans?: TransHelpers
+  row: TeamRow
+  index: number
+  onChange: (patch: Partial<TeamRow>) => void
+  onPhoto: (src: string) => void
+  translations: ResearchContent['translations']
+  onTranslate: (key: string, lang: string, value: string) => void
 }) {
+  const fileRef = useRef<HTMLInputElement>(null)
+  const [bust, setBust] = useState(0)
+  const [photoError, setPhotoError] = useState<string | null>(null)
+  const [uploading, setUploading] = useState(false)
+  const baseSrc = row.photo || teamPhotoSrc(row.name)
+  const src = baseSrc ? (bust ? `${baseSrc}?v=${bust}` : baseSrc) : null
+  const textClass = 'font-sans text-xs leading-relaxed text-ink-muted/70'
+
+  const upload = async (file: File) => {
+    setUploading(true)
+    setPhotoError(null)
+    try {
+      const body = new FormData()
+      body.set('name', row.name)
+      body.set('file', file)
+      const res = await fetch('/api/admin/team-photo', { method: 'POST', body })
+      const data = (await res.json().catch(() => ({}))) as { src?: string; message?: string }
+      if (!res.ok || !data.src) throw new Error(data.message ?? '사진을 저장하지 못했습니다.')
+      if (data.src !== baseSrc) onPhoto(data.src)
+      setBust(Date.now())
+    } catch (err) {
+      setPhotoError(err instanceof Error ? err.message : '사진을 저장하지 못했습니다.')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const fields: { label: string; key: keyof TeamRow; multiline?: boolean; trans?: boolean }[] = [
+    { label: '직위', key: 'role', trans: true },
+    { label: '이름', key: 'name' },
+    { label: '영어 이름', key: 'nameEn' },
+    { label: '소속', key: 'affiliation', multiline: true, trans: true },
+    { label: '역할', key: 'task', multiline: true, trans: true },
+    { label: '분야', key: 'field', trans: true },
+  ]
+
   return (
-    <div className="space-y-4">
-      {items.map((item, i) => {
-        const tKey = keyPrefix ? `${keyPrefix}.${i}.text` : undefined
-        return (
-          <div key={i} className="border border-hanji-border/40 rounded-xl bg-background overflow-hidden">
-            <div className="p-3 space-y-2">
-              <div className="flex justify-between items-center">
-                <p className="font-sans text-xs text-ink-muted/50">{labelName} #{i + 1}</p>
-                <RemoveButton onClick={() => onChange(items.filter((_, idx) => idx !== i))} />
-              </div>
-              <div>
-                <FieldLabel>{labelName}</FieldLabel>
-                <TextInput value={item.label} onChange={(v) => {
-                  const next = cloneDeep(items)
-                  next[i].label = v
-                  onChange(next)
-                }} />
-              </div>
-              <div>
-                <FieldLabel hint="<b>강조</b> 태그 사용 가능">내용</FieldLabel>
-                <TextArea value={item.text} onChange={(v) => {
-                  const next = cloneDeep(items)
-                  next[i].text = v
-                  onChange(next)
-                }} rows={2} />
-              </div>
-            </div>
-            {tKey && trans && (
-              <ResearchTranslationModal
-                translationKey={tKey}
-                koreanSource={item.text}
-                langValues={langVals(trans.translations, tKey)}
-                snapshot={trans.snapshots[tKey]}
-                onSave={(lang, value, snap) => trans.onSave(tKey, lang, value, snap)}
-                onRemove={(lang) => trans.onRemove(tKey, lang)}
-                onDismissStale={(lang) => trans.onDismissStale(tKey, lang)}
+    <div className="border border-hanji-border">
+      <div className="flex gap-4 px-5 py-5">
+        <div className="w-[5.5rem] shrink-0">
+          <div className="relative aspect-[4/5] overflow-hidden border border-hanji-border bg-hanji-warm/40">
+            {src ? <img src={src} alt={row.name} className="h-full w-full object-cover" /> : null}
+          </div>
+          <button
+            type="button"
+            disabled={uploading}
+            onClick={() => fileRef.current?.click()}
+            className="mt-2 font-sans text-[10px] text-gold/80 hover:text-gold disabled:opacity-50"
+          >
+            {uploading ? '올리는 중…' : '사진 바꾸기'}
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              e.target.value = ''
+              if (file) void upload(file)
+            }}
+          />
+          {photoError && <p className="mt-1 font-sans text-[10px] leading-snug text-red-500">{photoError}</p>}
+        </div>
+        <div className="min-w-0 flex-1 space-y-2">
+          {fields.map((field) => (
+            <div key={field.key} className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-start gap-2">
+              <p className="pt-1 font-sans text-xs text-ink-muted">{field.label}</p>
+              <ClickEdit
+                value={row[field.key] ?? ''}
+                multiline={field.multiline}
+                empty={field.key === 'nameEn' ? '영어 이름 없음' : '내용 없음'}
+                onSave={(value) => onChange({ [field.key]: value })}
+                className={textClass}
               />
+            </div>
+          ))}
+        </div>
+      </div>
+      {fields.filter((field) => field.trans).map((field) => (
+        <LangDrawer
+          key={field.key}
+          label={field.label}
+          translationKey={`team.rows.${index}.${field.key}`}
+          translations={translations}
+          onSave={(lang, value) => onTranslate(`team.rows.${index}.${field.key}`, lang, value)}
+        />
+      ))}
+    </div>
+  )
+}
+
+function DirectoryEditor({
+  groups,
+  translations,
+  onChange,
+  onTranslate,
+}: {
+  groups: TeamDirectoryGroup[]
+  translations: ResearchContent['translations']
+  onChange: (groups: TeamDirectoryGroup[]) => void
+  onTranslate: (key: string, lang: string, value: string) => void
+}) {
+  const textClass = 'font-sans text-xs leading-relaxed text-ink-muted/70'
+
+  const updateGroup = (index: number, patch: Partial<TeamDirectoryGroup>) => {
+    const next = groups.map((group, i) => (i === index ? { ...group, ...patch } : group))
+    onChange(next)
+  }
+
+  return (
+    <div className="mt-8 space-y-6 border-t border-hanji-border pt-8">
+      {groups.map((group, index) => {
+        const namesEn = group.namesEn ?? group.names.map(() => '')
+        return (
+          <div key={`${group.role}-${index}`} className="border border-hanji-border">
+            <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-start gap-2 px-5 py-4">
+              <p className="pt-1 font-sans text-xs text-ink-muted">직위</p>
+              <ClickEdit value={group.role} onSave={(role) => updateGroup(index, { role })} className="font-sans text-sm text-ink" />
+            </div>
+            {group.subtitle !== undefined && (
+              <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-start gap-2 px-5 pb-4">
+                <p className="pt-1 font-sans text-xs text-ink-muted">괄호</p>
+                <ClickEdit value={group.subtitle} onSave={(subtitle) => updateGroup(index, { subtitle })} className={textClass} />
+              </div>
+            )}
+            <div className="divide-y divide-hanji-border/50 border-t border-hanji-border/50">
+              {group.names.map((name, nameIndex) => (
+                <div key={nameIndex} className="grid gap-2 px-5 py-3 sm:grid-cols-2">
+                  <ClickEdit
+                    value={name}
+                    onSave={(value) => {
+                      const names = [...group.names]
+                      names[nameIndex] = value
+                      updateGroup(index, { names })
+                    }}
+                    className={textClass}
+                  />
+                  <ClickEdit
+                    value={namesEn[nameIndex] ?? ''}
+                    empty="영어 이름 없음"
+                    onSave={(value) => {
+                      const nextEn = [...namesEn]
+                      while (nextEn.length < group.names.length) nextEn.push('')
+                      nextEn[nameIndex] = value
+                      updateGroup(index, { namesEn: nextEn })
+                    }}
+                    className={textClass}
+                  />
+                </div>
+              ))}
+            </div>
+            <LangDrawer label="직위" translationKey={`team.directory.${index}.role`} translations={translations} onSave={(lang, value) => onTranslate(`team.directory.${index}.role`, lang, value)} />
+            {group.subtitle !== undefined && (
+              <LangDrawer label="괄호" translationKey={`team.directory.${index}.subtitle`} translations={translations} onSave={(lang, value) => onTranslate(`team.directory.${index}.subtitle`, lang, value)} />
             )}
           </div>
         )
       })}
-      <AddButton onClick={() => onChange([...items, { label: '', text: '' }])} />
     </div>
   )
 }
 
-/* ── AchievementEntry 목록 편집 ──────────────────────────────────────── */
-function AchievementsEditor({
-  items, onChange, keyPrefix, trans,
-}: {
-  items: AchievementEntry[]
-  onChange: (v: AchievementEntry[]) => void
-  keyPrefix: string
-  trans: TransHelpers
-}) {
-  return (
-    <div className="space-y-4">
-      {items.map((item, i) => {
-        const titleKey = `${keyPrefix}.${i}.title`
-        return (
-          <div key={i} className="border border-hanji-border/40 rounded-xl bg-background overflow-hidden">
-            <div className="p-3 space-y-3">
-              <div className="flex justify-between items-center">
-                <p className="font-sans text-xs text-ink-muted/50">항목 #{i + 1}</p>
-                <RemoveButton onClick={() => onChange(items.filter((_, idx) => idx !== i))} />
-              </div>
-              <div>
-                <FieldLabel>제목 (굵게 표시)</FieldLabel>
-                <TextInput value={item.title} onChange={(v) => {
-                  const next = cloneDeep(items)
-                  next[i].title = v
-                  onChange(next)
-                }} />
-              </div>
-              <div className="space-y-2">
-                <FieldLabel hint="<b>강조</b> 태그 사용 가능. 각 줄이 불릿 항목으로 표시됩니다.">줄 목록</FieldLabel>
-                {item.lines.map((line, j) => {
-                  const lineKey = `${keyPrefix}.${i}.lines.${j}`
-                  return (
-                    <div key={j} className="border border-hanji-border/30 rounded-lg overflow-hidden bg-surface/50">
-                      <div className="flex gap-2 items-start p-2.5">
-                        <div className="flex-1">
-                          <TextArea value={line} onChange={(v) => {
-                            const next = cloneDeep(items)
-                            next[i].lines[j] = v
-                            onChange(next)
-                          }} rows={2} />
-                        </div>
-                        <RemoveButton onClick={() => {
-                          const next = cloneDeep(items)
-                          next[i].lines = next[i].lines.filter((_, idx) => idx !== j)
-                          onChange(next)
-                        }} />
-                      </div>
-                      <ResearchTranslationModal
-                        translationKey={lineKey}
-                        koreanSource={line}
-                        langValues={langVals(trans.translations, lineKey)}
-                        snapshot={trans.snapshots[lineKey]}
-                        onSave={(lang, value, snap) => trans.onSave(lineKey, lang, value, snap)}
-                        onRemove={(lang) => trans.onRemove(lineKey, lang)}
-                        onDismissStale={(lang) => trans.onDismissStale(lineKey, lang)}
-                      />
-                    </div>
-                  )
-                })}
-                <AddButton onClick={() => {
-                  const next = cloneDeep(items)
-                  next[i].lines.push('')
-                  onChange(next)
-                }} label="+ 줄 추가" />
-              </div>
-            </div>
-            <ResearchTranslationModal
-              translationKey={titleKey}
-              koreanSource={item.title}
-              langValues={langVals(trans.translations, titleKey)}
-              snapshot={trans.snapshots[titleKey]}
-              onSave={(lang, value, snap) => trans.onSave(titleKey, lang, value, snap)}
-              onRemove={(lang) => trans.onRemove(titleKey, lang)}
-              onDismissStale={(lang) => trans.onDismissStale(titleKey, lang)}
-            />
-          </div>
-        )
-      })}
-      <AddButton onClick={() => onChange([...items, { title: '', lines: [''] }])} label="+ 성과 항목 추가" />
-    </div>
-  )
-}
-
-/* ── 연구 방법 표 편집 ──────────────────────────────────────────────── */
-function MethodTableEditor({ rows, onChange }: { rows: MethodRow[]; onChange: (v: MethodRow[]) => void }) {
-  return (
-    <div className="space-y-4">
-      {rows.map((row, i) => (
-        <div key={i} className="border border-hanji-border/40 rounded-lg p-3 space-y-3 bg-background">
-          <div className="flex justify-between items-center">
-            <p className="font-sans text-xs font-semibold text-ink">{row.field || `행 #${i + 1}`}</p>
-            <RemoveButton onClick={() => onChange(rows.filter((_, idx) => idx !== i))} />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <FieldLabel>분야</FieldLabel>
-              <TextInput value={row.field} onChange={(v) => {
-                const next = cloneDeep(rows)
-                next[i].field = v
-                onChange(next)
-              }} />
-            </div>
-            <div>
-              <FieldLabel hint="<b>강조</b> 태그 사용 가능">역할</FieldLabel>
-              <TextArea value={row.role} onChange={(v) => {
-                const next = cloneDeep(rows)
-                next[i].role = v
-                onChange(next)
-              }} rows={2} />
-            </div>
-          </div>
-          <div>
-            <FieldLabel>주요 방법 (한 줄씩)</FieldLabel>
-            {row.methods.map((m, j) => (
-              <div key={j} className="flex gap-2 items-center mb-1.5">
-                <div className="flex-1">
-                  <TextInput value={m} onChange={(v) => {
-                    const next = cloneDeep(rows)
-                    next[i].methods[j] = v
-                    onChange(next)
-                  }} />
-                </div>
-                <RemoveButton onClick={() => {
-                  const next = cloneDeep(rows)
-                  next[i].methods = next[i].methods.filter((_, idx) => idx !== j)
-                  onChange(next)
-                }} />
-              </div>
-            ))}
-            <AddButton onClick={() => {
-              const next = cloneDeep(rows)
-              next[i].methods.push('')
-              onChange(next)
-            }} label="+ 방법 추가" />
-          </div>
-        </div>
-      ))}
-      <AddButton onClick={() => onChange([...rows, { field: '', role: '', methods: [''] }])} label="+ 행 추가" />
-    </div>
-  )
-}
-
-/* ── 연구진 표 편집 ─────────────────────────────────────────────────── */
-function TeamTableEditor({ rows, onChange }: { rows: TeamRow[]; onChange: (v: TeamRow[]) => void }) {
-  return (
-    <div className="space-y-3">
-      {rows.map((row, i) => (
-        <div key={i} className="border border-hanji-border/40 rounded-lg p-3 space-y-2.5 bg-background">
-          <div className="flex justify-between items-center">
-            <p className="font-sans text-xs font-semibold text-ink">{row.name || `행 #${i + 1}`}</p>
-            <RemoveButton onClick={() => onChange(rows.filter((_, idx) => idx !== i))} />
-          </div>
-          <div className="grid grid-cols-2 gap-2.5">
-            {([['role', '구분'], ['name', '성명'], ['affiliation', '소속'], ['field', '전공 분야']] as [keyof TeamRow, string][]).map(([key, label]) => (
-              <div key={key}>
-                <FieldLabel>{label}</FieldLabel>
-                <TextInput value={row[key] ?? ''} onChange={(v) => {
-                  const next = cloneDeep(rows)
-                  next[i][key] = v
-                  onChange(next)
-                }} />
-              </div>
-            ))}
-          </div>
-          <div>
-            <FieldLabel hint="<b>강조</b> 태그 사용 가능">역할</FieldLabel>
-            <TextArea value={row.task} onChange={(v) => {
-              const next = cloneDeep(rows)
-              next[i].task = v
-              onChange(next)
-            }} rows={2} />
-          </div>
-        </div>
-      ))}
-      <AddButton onClick={() => onChange([...rows, { role: '', name: '', affiliation: '', task: '', field: '' }])} label="+ 연구원 추가" />
-    </div>
-  )
-}
-
-/* ── 과제 정보 표 편집 ──────────────────────────────────────────────── */
-function TaskInfoEditor({ rows, onChange }: { rows: TaskInfoRow[]; onChange: (v: TaskInfoRow[]) => void }) {
-  return (
-    <div className="space-y-3">
-      {rows.map((row, i) => (
-        <div key={i} className="flex gap-3 items-start">
-          <div className="w-44 shrink-0">
-            <FieldLabel>항목명</FieldLabel>
-            <TextInput value={row.label} onChange={(v) => {
-              const next = cloneDeep(rows)
-              next[i].label = v
-              onChange(next)
-            }} />
-          </div>
-          <div className="flex-1">
-            <FieldLabel hint="<b>강조</b> 태그 사용 가능">값</FieldLabel>
-            <TextArea value={row.value} onChange={(v) => {
-              const next = cloneDeep(rows)
-              next[i].value = v
-              onChange(next)
-            }} rows={2} />
-          </div>
-          <div className="pt-6">
-            <RemoveButton onClick={() => onChange(rows.filter((_, idx) => idx !== i))} />
-          </div>
-        </div>
-      ))}
-      <AddButton onClick={() => onChange([...rows, { label: '', value: '' }])} label="+ 행 추가" />
-    </div>
-  )
-}
-
-/* ── 저장 버튼 ───────────────────────────────────────────────────────── */
-function SaveBar({
-  dirty,
-  saving,
-  notice,
-  onSave,
-  onReset,
-}: {
-  dirty: boolean
-  saving: boolean
-  notice: { ok: boolean; text: string } | null
-  onSave: () => void
-  onReset: () => void
-}) {
-  if (!dirty && !saving) {
-    if (!notice) return null
-    return (
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[90vw] bg-hanji border border-hanji-border shadow-xl rounded-2xl px-5 py-3">
-        <p className={`font-sans text-sm ${notice.ok ? 'text-ink-muted' : 'text-red-500'}`}>{notice.text}</p>
-      </div>
-    )
-  }
-  return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex max-w-[90vw] items-center gap-3 bg-hanji border border-hanji-border shadow-xl rounded-2xl px-5 py-3">
-      <p className={`font-sans text-sm ${notice && !notice.ok ? 'text-red-500' : 'text-ink-muted'}`}>
-        {notice && !notice.ok ? notice.text : '저장되지 않은 변경사항이 있습니다.'}
-      </p>
-      <button
-        onClick={onReset}
-        className="font-sans text-sm text-ink-muted/60 hover:text-ink transition-colors"
-      >
-        되돌리기
-      </button>
-      <button
-        onClick={onSave}
-        disabled={saving}
-        className="font-sans text-sm font-medium bg-gold text-white rounded-lg px-4 py-1.5 hover:bg-gold/90 transition-colors disabled:opacity-60"
-      >
-        {saving ? '저장 중…' : '저장'}
-      </button>
-    </div>
-  )
-}
-
-/* ── 메인 페이지 ─────────────────────────────────────────────────────── */
 export default function AdminResearchPage() {
-  const [original, setOriginal] = useState<ResearchContent | null>(null)
   const [data, setData] = useState<ResearchContent | null>(null)
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  /** 저장 시 동시 수정 감지용 — 불러온 시점의 파일 버전 */
   const [sha, setSha] = useState<string | null>(null)
-  const [saveNotice, setSaveNotice] = useState<{ ok: boolean; text: string } | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
+  const [saving, setSaving] = useState(false)
+  const dataRef = useRef<ResearchContent | null>(null)
+  const shaRef = useRef<string | null>(null)
+  const queueRef = useRef(Promise.resolve())
+
+  useEffect(() => {
+    dataRef.current = data
+  }, [data])
+  useEffect(() => {
+    shaRef.current = sha
+  }, [sha])
 
   useEffect(() => {
     fetch('/api/admin/research-content', { cache: 'no-store' })
-      .then((r) => {
-        if (!r.ok) throw new Error()
-        return r.json()
+      .then((res) => {
+        if (!res.ok) throw new Error()
+        return res.json()
       })
-      .then((d: { data: ResearchContent; sha: string | null }) => {
-        setOriginal(cloneDeep(d.data))
-        setData(cloneDeep(d.data))
-        setSha(d.sha)
+      .then((body: { data: ResearchContent; sha: string | null }) => {
+        dataRef.current = body.data
+        shaRef.current = body.sha
+        setData(body.data)
+        setSha(body.sha)
       })
       .catch(() => setError('데이터를 불러오지 못했습니다.'))
   }, [])
 
-  const dirty = !!data && JSON.stringify(data) !== JSON.stringify(original)
-
-  useEffect(() => {
-    if (!dirty) return
-    const warn = (e: BeforeUnloadEvent) => {
-      e.preventDefault()
-      e.returnValue = ''
-    }
-    // 번역 줄의 '저장'은 화면에만 적용되므로, 아래 저장 막대를 누르기 전에 떠나면 사라진다
-    const guardLinks = (e: MouseEvent) => {
-      const a = (e.target as Element | null)?.closest?.('a[href]')
-      if (!a || a.getAttribute('target') === '_blank') return
-      if (!window.confirm('저장하지 않은 변경사항이 있습니다. 아래 저장 막대에서 저장하지 않고 나가면 사라집니다. 그래도 나갈까요?')) {
-        e.preventDefault()
-        e.stopPropagation()
-      }
-    }
-    window.addEventListener('beforeunload', warn)
-    document.addEventListener('click', guardLinks, true)
-    return () => {
-      window.removeEventListener('beforeunload', warn)
-      document.removeEventListener('click', guardLinks, true)
-    }
-  }, [dirty])
-
-  const save = useCallback(async () => {
-    if (!data) return
+  const persist = useCallback(async (next: ResearchContent) => {
     setSaving(true)
-    setSaveNotice(null)
+    setNotice(null)
     try {
       const res = await fetch('/api/admin/research-content', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data, sha }),
+        body: JSON.stringify({ data: next, sha: shaRef.current }),
       })
       const body = (await res.json().catch(() => null)) as { message?: string; sha?: string | null } | null
       if (res.status === 401) {
-        throw new Error('로그인이 만료되었습니다. 이 탭은 새로고침하지 말고, 새 탭에서 다시 로그인한 뒤 여기서 저장을 다시 눌러 주세요.')
+        throw new Error('로그인이 만료되었습니다. 이 탭은 새로고침하지 말고, 새 탭에서 다시 로그인한 뒤 저장을 다시 눌러 주세요.')
       }
       if (!res.ok) throw new Error(body?.message ?? '저장에 실패했습니다.')
+      shaRef.current = body?.sha ?? null
       setSha(body?.sha ?? null)
-      setOriginal(cloneDeep(data))
-      setSaveNotice({ ok: true, text: '저장했습니다. 1~2분 뒤 사이트에 반영됩니다.' })
+      setNotice('저장했습니다. 1~2분 뒤 사이트에 반영됩니다.')
     } catch (err) {
-      setSaveNotice({ ok: false, text: err instanceof Error ? err.message : '저장에 실패했습니다.' })
+      setNotice(err instanceof Error ? err.message : '저장에 실패했습니다.')
     } finally {
       setSaving(false)
     }
-  }, [data, sha])
-
-  const reset = useCallback(() => {
-    if (original) setData(cloneDeep(original))
-  }, [original])
-
-  const update = useCallback((patch: Partial<ResearchContent>) => {
-    setData((prev) => prev ? { ...prev, ...patch } : prev)
   }, [])
 
-  const updateTrans = useCallback((key: string, lang: string, value: string, koSource: string) => {
-    setData((prev) => {
-      if (!prev) return prev
-      const existing = prev.translations ?? {}
-      const langMap = { ...(existing[lang] ?? {}) }
-      if (value.trim()) { langMap[key] = value } else { delete langMap[key] }
-      const snaps = { ...(prev.translationSnapshots ?? {}), [key]: koSource }
-      return { ...prev, translations: { ...existing, [lang]: langMap }, translationSnapshots: snaps }
+  const commit = useCallback((mutator: (draft: ResearchContent) => void) => {
+    const current = dataRef.current
+    if (!current) return
+    const next = cloneDeep(current)
+    mutator(next)
+    dataRef.current = next
+    setData(next)
+    queueRef.current = queueRef.current.then(() => persist(next))
+  }, [persist])
+
+  const saveTrans = (key: string, lang: string, value: string) => {
+    commit((draft) => {
+      const map = { ...(draft.translations[lang] ?? {}) }
+      const trimmed = value.trim()
+      if (trimmed) map[key] = trimmed
+      else delete map[key]
+      draft.translations = { ...draft.translations, [lang]: map }
     })
-  }, [])
+  }
 
-  const removeTrans = useCallback((key: string, lang: string) => {
-    setData((prev) => {
-      if (!prev) return prev
-      const existing = prev.translations ?? {}
-      const langMap = { ...(existing[lang] ?? {}) }
-      delete langMap[key]
-      return { ...prev, translations: { ...existing, [lang]: langMap } }
-    })
-  }, [])
-
-  const dismissStale = useCallback((key: string, _lang: string) => {
-    setData((prev) => {
-      if (!prev) return prev
-      const koreanText = (() => {
-        if (key.startsWith('motivation.paragraphs.')) {
-          const idx = parseInt(key.split('.').pop() ?? '0')
-          return prev.motivation.paragraphs[idx] ?? ''
-        }
-        if (key === 'goals.final') return prev.goals.final
-        if (key.startsWith('goals.specific.')) {
-          const idx = parseInt(key.split('.')[2])
-          return prev.goals.specific[idx]?.text ?? ''
-        }
-        if (key === 'overview.method.intro') return prev.overview.method.intro
-        if (key.startsWith('significance.paragraphs.')) {
-          const idx = parseInt(key.split('.').pop() ?? '0')
-          return prev.significance.paragraphs[idx] ?? ''
-        }
-        return ''
-      })()
-      const snaps = { ...(prev.translationSnapshots ?? {}), [key]: koreanText }
-      return { ...prev, translationSnapshots: snaps }
-    })
-  }, [])
-
-
-  if (error) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <p className="font-sans text-red-500">{error}</p>
-    </div>
-  )
-  if (!data) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <p className="font-sans text-sm text-ink-muted">불러오는 중…</p>
-    </div>
-  )
-
-  const trans: TransHelpers = {
-    translations: data.translations ?? {},
-    snapshots: data.translationSnapshots ?? {},
-    onSave: updateTrans,
-    onRemove: removeTrans,
-    onDismissStale: dismissStale,
+  if (error) {
+    return <div className="flex flex-1 items-center justify-center"><p className="font-sans text-sm text-red-500">{error}</p></div>
+  }
+  if (!data) {
+    return <div className="flex flex-1 items-center justify-center"><p className="font-sans text-sm text-ink-muted">불러오는 중…</p></div>
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="max-w-3xl mx-auto px-6 py-10 space-y-8">
+    <div className="mx-auto w-full max-w-4xl flex-1 px-6 py-12 sm:px-10 sm:py-16">
+      <div className="mb-10 flex items-center gap-3 border-b border-hanji-border pb-6">
+        <Link href="/admin" className="font-sans text-xs text-ink-muted/60 hover:text-ink-accent transition-colors">
+          ← 대시보드
+        </Link>
+        <span className="text-hanji-border">/</span>
+        <p className="font-sans text-xs text-ink-muted">연구 소개</p>
+      </div>
 
-        {/* 헤더 */}
-        <div className="flex items-center gap-3 mb-2">
-          <Link href="/admin" className="font-sans text-sm text-ink-muted/50 hover:text-ink-muted transition-colors">
-            ← 대시보드
-          </Link>
-          <span className="text-ink-muted/30">/</span>
-          <p className="font-sans text-sm text-ink-muted">연구 소개 편집</p>
-        </div>
+      <p className="mb-2 font-sans text-sm text-ink-muted">콘텐츠 편집</p>
+      <h1 className="mb-2 font-serif text-2xl text-ink">연구 소개</h1>
+      {(saving || notice) && (
+        <p className={`mb-8 font-sans text-xs ${saving || notice?.startsWith('저장했습니다') ? 'text-ink-muted' : 'text-red-500'}`}>
+          {saving ? '저장 중…' : notice}
+        </p>
+      )}
+      {!saving && !notice && <div className="mb-8" />}
 
-        <div>
-          <h1 className="font-serif text-2xl text-ink mb-1">연구 소개 편집</h1>
-          <p className="font-sans text-xs text-ink-muted/50">
-            <span className="font-mono bg-hanji-border/30 px-1 rounded">&lt;b&gt;강조할 텍스트&lt;/b&gt;</span>
-            를 입력하면 굵게 표시됩니다.
-          </p>
-        </div>
-
-        {/* 1. 연구 동기 */}
-        <SectionCard title="연구 동기">
-          <ParagraphsEditor
-            paragraphs={data.motivation.paragraphs}
-            onChange={(v) => update({ motivation: { paragraphs: v } })}
-            keyPrefix="motivation.paragraphs"
-            trans={trans}
+      <h2 className="mb-4 font-serif text-base text-ink">연구진 소개</h2>
+      <div className="space-y-4">
+        {data.team.rows.map((row, index) => (
+          <MemberEditor
+            key={`${row.name}-${index}`}
+            row={row}
+            index={index}
+            translations={data.translations}
+            onChange={(patch) => commit((draft) => {
+              draft.team.rows[index] = { ...draft.team.rows[index], ...patch }
+            })}
+            onPhoto={(src) => commit((draft) => {
+              draft.team.rows[index] = { ...draft.team.rows[index], photo: src }
+            })}
+            onTranslate={saveTrans}
           />
-        </SectionCard>
+        ))}
+      </div>
 
-        {/* 2. 연구 목표 */}
-        <SectionCard title="연구 목표">
-          <div className="space-y-6">
-            <div>
-              <FieldLabel hint="<b>강조</b> 태그 사용 가능">최종 목표</FieldLabel>
-              <div className="border border-hanji-border/40 rounded-xl bg-background overflow-hidden">
-                <div className="p-3">
-                  <TextArea
-                    value={data.goals.final}
-                    onChange={(v) => update({ goals: { ...data.goals, final: v } })}
-                    rows={3}
-                  />
-                </div>
-                <ResearchTranslationModal
-                  translationKey="goals.final"
-                  koreanSource={data.goals.final}
-                  langValues={langVals(trans.translations, 'goals.final')}
-                  snapshot={trans.snapshots['goals.final']}
-                  onSave={(lang, value, snap) => trans.onSave('goals.final', lang, value, snap)}
-                  onRemove={(lang) => trans.onRemove('goals.final', lang)}
-                  onDismissStale={(lang) => trans.onDismissStale('goals.final', lang)}
-                />
-              </div>
-            </div>
-            <div>
-              <p className="font-sans text-xs font-medium text-ink-muted/60 uppercase tracking-wide mb-3">세부 목표</p>
-              <BulletListEditor
-                items={data.goals.specific}
-                onChange={(v) => update({ goals: { ...data.goals, specific: v } })}
-                labelName="목표명"
-                keyPrefix="goals.specific"
-                trans={trans}
+      <DirectoryEditor
+        groups={data.team.directory ?? []}
+        translations={data.translations}
+        onChange={(groups) => commit((draft) => {
+          draft.team.directory = groups
+        })}
+        onTranslate={saveTrans}
+      />
+
+      <h2 className="mb-4 mt-12 font-serif text-base text-ink">과제 정보</h2>
+      <div className="divide-y divide-hanji-border border border-hanji-border">
+        {data.taskInfo.rows.map((row, index) => (
+          <div key={`${row.label}-${index}`}>
+            <div className="grid gap-3 px-5 py-4 sm:grid-cols-[9rem_minmax(0,1fr)]">
+              <ClickEdit
+                value={row.label}
+                onSave={(label) => commit((draft) => {
+                  draft.taskInfo.rows[index] = { ...draft.taskInfo.rows[index], label }
+                })}
+                className="font-sans text-xs text-ink"
+              />
+              <ClickEdit
+                value={row.value}
+                multiline
+                onSave={(value) => commit((draft) => {
+                  draft.taskInfo.rows[index] = { ...draft.taskInfo.rows[index], value }
+                })}
+                className="font-sans text-xs leading-relaxed text-ink-muted/70"
               />
             </div>
+            <LangDrawer label="항목" translationKey={`taskInfo.rows.${index}.label`} translations={data.translations} onSave={(lang, value) => saveTrans(`taskInfo.rows.${index}.label`, lang, value)} />
+            <LangDrawer label="내용" translationKey={`taskInfo.rows.${index}.value`} translations={data.translations} onSave={(lang, value) => saveTrans(`taskInfo.rows.${index}.value`, lang, value)} />
           </div>
-        </SectionCard>
-
-        {/* 3. 연구 개요 — 연구 방법 */}
-        <SectionCard title="연구 개요 — 연구 방법">
-          <div className="space-y-4">
-            <div>
-              <FieldLabel>소개 문장</FieldLabel>
-              <div className="border border-hanji-border/40 rounded-xl bg-background overflow-hidden">
-                <div className="p-3">
-                  <TextArea
-                    value={data.overview.method.intro}
-                    onChange={(v) => update({ overview: { ...data.overview, method: { ...data.overview.method, intro: v } } })}
-                    rows={2}
-                  />
-                </div>
-                <ResearchTranslationModal
-                  translationKey="overview.method.intro"
-                  koreanSource={data.overview.method.intro}
-                  langValues={langVals(trans.translations, 'overview.method.intro')}
-                  snapshot={trans.snapshots['overview.method.intro']}
-                  onSave={(lang, value, snap) => trans.onSave('overview.method.intro', lang, value, snap)}
-                  onRemove={(lang) => trans.onRemove('overview.method.intro', lang)}
-                  onDismissStale={(lang) => trans.onDismissStale('overview.method.intro', lang)}
-                />
-              </div>
-            </div>
-            <p className="font-sans text-xs font-medium text-ink-muted/60 uppercase tracking-wide">표 행</p>
-            <MethodTableEditor
-              rows={data.overview.method.rows}
-              onChange={(v) => update({ overview: { ...data.overview, method: { ...data.overview.method, rows: v } } })}
-            />
-          </div>
-        </SectionCard>
-
-        {/* 4. 연구 개요 — 연구 규모 */}
-        <SectionCard title="연구 개요 — 연구 규모">
-          <BulletListEditor
-            items={data.overview.scale}
-            onChange={(v) => update({ overview: { ...data.overview, scale: v } })}
-            labelName="항목명"
-          />
-        </SectionCard>
-
-        {/* 5. 연구 개요 — 주요 성과 */}
-        <SectionCard title="연구 개요 — 주요 성과: 모음 체계">
-          <AchievementsEditor
-            items={data.overview.achievements.vowels}
-            onChange={(v) => update({ overview: { ...data.overview, achievements: { ...data.overview.achievements, vowels: v } } })}
-            keyPrefix="overview.achievements.vowels"
-            trans={trans}
-          />
-        </SectionCard>
-
-        <SectionCard title="연구 개요 — 주요 성과: 자음 체계">
-          <AchievementsEditor
-            items={data.overview.achievements.consonants}
-            onChange={(v) => update({ overview: { ...data.overview, achievements: { ...data.overview.achievements, consonants: v } } })}
-            keyPrefix="overview.achievements.consonants"
-            trans={trans}
-          />
-        </SectionCard>
-
-        <SectionCard title="연구 개요 — 주요 성과: 기술 개발">
-          <AchievementsEditor
-            items={data.overview.achievements.tech}
-            onChange={(v) => update({ overview: { ...data.overview, achievements: { ...data.overview.achievements, tech: v } } })}
-            keyPrefix="overview.achievements.tech"
-            trans={trans}
-          />
-        </SectionCard>
-
-        {/* 6. 연구의 의의 */}
-        <SectionCard title="연구의 의의">
-          <ParagraphsEditor
-            paragraphs={data.significance.paragraphs}
-            onChange={(v) => update({ significance: { paragraphs: v } })}
-            keyPrefix="significance.paragraphs"
-            trans={trans}
-          />
-        </SectionCard>
-
-        {/* 7. 연구진 소개 */}
-        <SectionCard title="연구진 소개">
-          <TeamTableEditor
-            rows={data.team.rows}
-            onChange={(v) => update({ team: { ...data.team, rows: v } })}
-          />
-        </SectionCard>
-
-        {/* 8. 과제 정보 */}
-        <SectionCard title="과제 정보">
-          <TaskInfoEditor
-            rows={data.taskInfo.rows}
-            onChange={(v) => update({ taskInfo: { rows: v } })}
-          />
-        </SectionCard>
-
-        <div className="h-20" />
-      </main>
-
-      <AdminFooter />
-      <SaveBar dirty={dirty} saving={saving} notice={saveNotice} onSave={save} onReset={reset} />
+        ))}
+      </div>
     </div>
   )
 }

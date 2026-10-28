@@ -765,6 +765,7 @@ export function ResearchPageClient({ content }: Props) {
                 ...row,
                 name: lang !== 'ko' && row.nameEn ? row.nameEn : row.name,
                 photoName: row.name,
+                photo: row.photo,
                 isLead: row.role.includes('책임'),
                 role: t(`team.rows.${i}.role`, row.role),
                 affiliation: t(`team.rows.${i}.affiliation`, row.affiliation),

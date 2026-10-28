@@ -56,6 +56,46 @@ export async function readGithubFile(path: string): Promise<{ text: string; sha:
   return { text: Buffer.from(body.content, 'base64').toString('utf8'), sha: body.sha }
 }
 
+/** 파일이 없으면 null. 있으면 그 커밋의 sha. */
+export async function readGithubFileSha(path: string): Promise<string | null> {
+  const cfg = config()
+  if (!cfg) throw new Error('GITHUB_NOT_CONFIGURED')
+  const res = await fetch(`${contentsUrl(cfg.repo, path)}?ref=${encodeURIComponent(cfg.branch)}`, {
+    headers: headers(cfg.token),
+    cache: 'no-store',
+  })
+  if (res.status === 404) return null
+  if (!res.ok) throw new Error(`GITHUB_READ_FAILED ${res.status}`)
+  const body = (await res.json()) as { sha: string }
+  return body.sha
+}
+
+/** 이미지처럼 글자가 아닌 파일. sha가 없으면 새로 만든다. */
+export async function writeGithubBytes(
+  path: string,
+  bytes: Buffer,
+  sha: string | null,
+  message: string,
+): Promise<string> {
+  const cfg = config()
+  if (!cfg) throw new Error('GITHUB_NOT_CONFIGURED')
+  const res = await fetch(contentsUrl(cfg.repo, path), {
+    method: 'PUT',
+    headers: headers(cfg.token),
+    cache: 'no-store',
+    body: JSON.stringify({
+      message,
+      content: bytes.toString('base64'),
+      ...(sha ? { sha } : {}),
+      branch: cfg.branch,
+    }),
+  })
+  if (res.status === 409 || res.status === 422) throw new GithubConflictError()
+  if (!res.ok) throw new Error(`GITHUB_WRITE_FAILED ${res.status}`)
+  const body = (await res.json()) as { content: { sha: string } }
+  return body.content.sha
+}
+
 /** sha가 브랜치 최신과 다르면(그 사이 코드로 수정됨) GithubConflictError. 성공 시 새 sha 반환 */
 export async function writeGithubFile(
   path: string,

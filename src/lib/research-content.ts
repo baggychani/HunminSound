@@ -20,7 +20,10 @@ export interface TeamRow {
   nameEn?: string
   affiliation: string
   task: string
+  /** 카드 아래 동그란 칸에 보이는 분야 */
   field: string
+  /** 있으면 이 경로의 사진을 쓴다. 없으면 이름에 연결된 기본 사진. */
+  photo?: string
 }
 
 export interface TeamDirectoryGroup {
@@ -110,7 +113,8 @@ function isMethodRow(v: unknown): boolean {
 function isTeamRow(v: unknown): boolean {
   return (
     isObj(v) && isStr(v.role) && isStr(v.name) && isStr(v.affiliation) &&
-    isStr(v.task) && isStr(v.field) && (v.nameEn === undefined || isStr(v.nameEn))
+    isStr(v.task) && isStr(v.field) && (v.nameEn === undefined || isStr(v.nameEn)) &&
+    (v.photo === undefined || isStr(v.photo))
   )
 }
 

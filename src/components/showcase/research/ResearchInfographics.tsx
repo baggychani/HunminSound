@@ -245,9 +245,9 @@ function MemberAvatarFallback() {
   )
 }
 
-function MemberPhoto({ name, photoName }: { name: string; photoName?: string }) {
+function MemberPhoto({ name, photoName, src: srcOverride }: { name: string; photoName?: string; src?: string }) {
   const [failed, setFailed] = useState(false)
-  const src = teamPhotoSrc(photoName || name)
+  const src = srcOverride || teamPhotoSrc(photoName || name)
 
   return (
     <div className="absolute inset-0">
@@ -274,6 +274,7 @@ function TeamMemberCard({
     role: string
     name: string
     photoName?: string
+    photo?: string
     affiliation: string
     task: string
     field: string
@@ -299,7 +300,7 @@ function TeamMemberCard({
     >
       <article className="team-member-card group flex h-full flex-col overflow-hidden rounded-lg border border-hanji-border/75 bg-hanji/25 shadow-[0_1px_0_rgb(var(--ink-rgb)/0.03)] transition-shadow duration-300 hover:shadow-[0_6px_20px_-6px_rgb(var(--ink-rgb)/0.18)]">
       <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden border-b border-hanji-border/60 bg-hanji/40">
-        <MemberPhoto name={displayName} photoName={member.photoName ?? member.name} />
+        <MemberPhoto name={displayName} photoName={member.photoName ?? member.name} src={member.photo} />
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col px-3.5 py-3.5 sm:px-4 sm:py-4">
@@ -349,6 +350,7 @@ export function TeamCardGrid({
     role: string
     name: string
     photoName?: string
+    photo?: string
     affiliation: string
     task: string
     field: string

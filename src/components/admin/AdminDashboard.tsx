@@ -1,9 +1,10 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 import { AdminFooter } from '@/components/admin/AdminFooter'
+import { teamPhotoSrc } from '@/lib/teamSlugs'
 
 /* ── 관리 섹션 목록 ──────────────────────────────────────────────────────── */
 type AdminSection = {
@@ -54,8 +55,8 @@ const SECTIONS: AdminSection[] = [
     href: '/admin/content/research',
     title: '연구 소개',
     en: 'Research',
-    desc: '연구 동기, 목표, 개요, 의의, 연구진, 과제 정보를 편집합니다.',
-    ready: false,
+    desc: '연구진과 과제 정보를 확인하고 편집합니다.',
+    ready: true,
   },
 ]
 
@@ -230,6 +231,45 @@ function ContactForm() {
   )
 }
 
+function ResearchThumbs() {
+  const [people, setPeople] = useState<{ name: string; src: string }[]>([])
+
+  useEffect(() => {
+    let cancelled = false
+    fetch('/api/admin/research-content', { cache: 'no-store' })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((body: { data?: { team?: { rows?: { name?: string; photo?: string }[] } } } | null) => {
+        if (cancelled || !body?.data?.team?.rows) return
+        const next = body.data.team.rows.flatMap((row) => {
+          const name = row.name?.trim()
+          if (!name) return []
+          const src = row.photo || teamPhotoSrc(name)
+          return src ? [{ name, src }] : []
+        })
+        setPeople(next)
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  if (people.length === 0) return null
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {people.map((person) => (
+        <img
+          key={person.name}
+          src={person.src}
+          alt={person.name}
+          className="h-16 w-[3.25rem] border border-hanji-border object-cover"
+        />
+      ))}
+    </div>
+  )
+}
+
 function SectionCard({ section, className }: { section: AdminSection; className?: string }) {
   const body = (
     <>
@@ -245,6 +285,7 @@ function SectionCard({ section, className }: { section: AdminSection; className?
         <p className="font-sans text-xs leading-relaxed text-ink-muted/80">
           {section.desc}
         </p>
+        {section.id === 'research' ? <ResearchThumbs /> : null}
       </div>
       {section.ready ? (
         <div className="flex items-center gap-1.5 text-gold">
