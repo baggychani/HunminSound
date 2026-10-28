@@ -8,6 +8,12 @@ export const HOME_KO_BASE = {
     '세종대왕은 580년 전, 인간의 발성 기관을 정밀하게 관찰하여 한글을 창제했습니다.\n현대의 3T MRI 기술과 AI 분석으로 그 놀라운 과학적 통찰을 실증합니다.',
   contactDesc:
     '한국어 음성학, MRI 음성 과학, 언어 유산 연구에 관심 있는 연구자·기관과의 협력을 환영합니다.',
+  consonantsCardDesc:
+    '파열음, 마찰음, 파찰음, 비음, 유음 등 19개 자음의 조음 과정을 탐구합니다.',
+  vowelsCardDesc:
+    '단모음과 이중모음 21개 모음의 혀 위치와 조음 특성을 살펴봅니다.',
+  hunminjeongeumCardDesc:
+    '1443년 세종이 창제한 훈민정음에 담긴 상형 원리와 조음 과학의 만남을 탐구합니다.',
 } as const
 
 export type HomeCmsFieldId = keyof typeof HOME_KO_BASE
@@ -19,9 +25,12 @@ export const HOME_CMS_FIELDS: {
 }[] = [
   { id: 'homeSubtitle', section: '히어로', label: '부제' },
   { id: 'homeIntro', section: '히어로', label: '소개' },
+  { id: 'consonantsCardDesc', section: '자음 · 모음 · 훈민정음', label: '자음' },
+  { id: 'vowelsCardDesc', section: '자음 · 모음 · 훈민정음', label: '모음' },
+  { id: 'hunminjeongeumCardDesc', section: '자음 · 모음 · 훈민정음', label: '훈민정음' },
   { id: 'homeResearchTitle', section: '연구 소개', label: '제목' },
   { id: 'homeResearchDesc', section: '연구 소개', label: '본문' },
-  { id: 'contactDesc', section: '문의하기', label: '협력 안내' },
+  { id: 'contactDesc', section: '문의하기', label: '안내' },
 ]
 
 export function joinHomeLines(...parts: string[]): string {

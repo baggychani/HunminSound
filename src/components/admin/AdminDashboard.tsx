@@ -20,7 +20,7 @@ const MAIN_SECTION: AdminSection = {
   href: '/admin/content/home',
   title: '메인 페이지',
   en: 'Main',
-  desc: '히어로 문구, 섹션 설명, 카드 내용 등 메인 화면의 텍스트를 관리합니다.',
+  desc: '메인 페이지의 문구와 번역을 확인하고 편집합니다.',
   ready: true,
 }
 
@@ -46,7 +46,7 @@ const SECTIONS: AdminSection[] = [
     href: '/admin/content/hunminjeongeum',
     title: '훈민정음',
     en: 'Hunminjeongeum',
-    desc: '≪훈민정음≫ 해례본 28자 제자 원리·정인지서 단락별 다국어 번역을 편집합니다.',
+    desc: '훈민정음 해례본 28자 제자 원리·정인지서 단락별 다국어 번역을 편집합니다.',
     ready: true,
   },
   {

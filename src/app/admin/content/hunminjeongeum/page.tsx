@@ -35,6 +35,7 @@ function KoreanEditor({
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const hasOverride = currentText !== baseText
   const displayName = `[${passage.number}] ${passage.originalText.slice(0, 18)}…`
 
   const startEdit = () => {
@@ -76,7 +77,7 @@ function KoreanEditor({
   }
 
   return (
-    <div className="mt-3">
+    <div className="mt-2">
       {editing ? (
         <div className="flex flex-col gap-2">
           <textarea
@@ -84,7 +85,7 @@ function KoreanEditor({
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             rows={4}
-            className="w-full rounded-sm border border-gold/40 bg-hanji px-3 py-2 font-sans text-sm text-ink outline-none resize-none focus-visible:border-gold/70 focus-visible:shadow-[inset_0_0_0_1px_rgb(var(--gold-rgb)/0.25)] leading-relaxed"
+            className="w-full rounded-sm border border-gold/40 bg-hanji px-3 py-2 font-sans text-xs text-ink outline-none resize-none focus-visible:border-gold/70 focus-visible:shadow-[inset_0_0_0_1px_rgb(var(--gold-rgb)/0.25)] leading-relaxed"
           />
           {error && <p role="alert" className="font-sans text-[11px] leading-snug text-red-500">{error}</p>}
           <div className="flex items-center justify-end gap-2">
@@ -107,7 +108,7 @@ function KoreanEditor({
         <p
           onDoubleClick={startEdit}
           title="더블클릭하여 한국어 편집"
-          className="cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-sm leading-relaxed text-ink-soft transition-colors hover:bg-hanji-border/20"
+          className={`cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-xs leading-relaxed transition-colors hover:bg-hanji-border/20 ${hasOverride ? 'text-ink border-l-2 border-gold/40 pl-3' : 'text-ink-muted/70'}`}
         >
           {currentText}
         </p>

@@ -27,6 +27,9 @@ export function getHomeFieldBaseTranslation(
   if (fieldId === 'contactDesc') {
     return HOME_CONTACT_BY_LANG[lang].contactDesc
   }
+  if (fieldId === 'consonantsCardDesc') return messages[lang].consonantsCardDesc
+  if (fieldId === 'vowelsCardDesc') return messages[lang].vowelsCardDesc
+  if (fieldId === 'hunminjeongeumCardDesc') return messages[lang].hunminjeongeumCardDesc
   return ''
 }
 
@@ -50,5 +53,6 @@ export function getHomeFieldForLang(fieldId: HomeCmsFieldId, lang: Lang): string
     const r = HOME_RESEARCH_BY_LANG[lang]
     return joinHomeLines(r.homeResearchDesc1, r.homeResearchDesc2)
   }
-  return HOME_CONTACT_BY_LANG[lang].contactDesc
+  if (fieldId === 'contactDesc') return HOME_CONTACT_BY_LANG[lang].contactDesc
+  return messages[lang][fieldId]
 }

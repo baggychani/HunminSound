@@ -46,6 +46,24 @@ export function applyHomeOverridesToMessages(
       lang,
       getHomeFieldForLang('homeResearchDesc', lang),
     ),
+    consonantsCardDesc: applyField(
+      store,
+      'consonantsCardDesc',
+      lang,
+      getHomeFieldForLang('consonantsCardDesc', lang),
+    ),
+    vowelsCardDesc: applyField(
+      store,
+      'vowelsCardDesc',
+      lang,
+      getHomeFieldForLang('vowelsCardDesc', lang),
+    ),
+    hunminjeongeumCardDesc: applyField(
+      store,
+      'hunminjeongeumCardDesc',
+      lang,
+      getHomeFieldForLang('hunminjeongeumCardDesc', lang),
+    ),
   }
 }
 

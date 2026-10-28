@@ -60,7 +60,7 @@ export function describeAction(entry: HistoryEntry): string {
       : entry.type === 'vowel'
         ? '모음'
         : entry.type === 'home'
-          ? '홈'
+          ? '메인 페이지'
           : '훈민정음'
   const langLabel = langMap[entry.lang] ?? entry.lang
   if (entry.action === 'save') {

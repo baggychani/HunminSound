@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { TranslationDrawer } from '@/components/admin/TranslationDrawer'
+import { ADMIN_LANGUAGE_NAMES } from '@/components/admin/adminLanguageNames'
 import { useOverridesStore, patchOverride, getCurrentKorean } from '@/lib/overrides-store'
 import { HOME_CMS_FIELDS, HOME_KO_BASE, type HomeCmsFieldId } from '@/data/home-content'
 import { getHomeFieldBaseValues } from '@/lib/home-i18n-base'
@@ -140,7 +141,10 @@ function HomeFieldRow({ fieldId, label, index }: { fieldId: HomeCmsFieldId; labe
         id={fieldId}
         displayName={displayName}
         koreanSource={koreanSource}
+        sourceLabel="한국어"
         baseValues={getHomeFieldBaseValues(fieldId)}
+        languageNames={ADMIN_LANGUAGE_NAMES}
+        registeredFromCode
       />
     </motion.div>
   )
@@ -159,23 +163,19 @@ export default function AdminHomePage() {
           ← 대시보드
         </Link>
         <span className="text-hanji-border">/</span>
-        <p className="font-sans text-xs text-ink-muted">홈</p>
+        <p className="font-sans text-xs text-ink-muted">메인 페이지</p>
       </div>
       <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
         <p className="font-sans text-[11px] uppercase tracking-[0.1em] text-ink-muted mb-2">콘텐츠 편집</p>
-        <h1 className="font-serif text-2xl text-ink mb-3">홈</h1>
-        <p className="font-sans text-xs text-ink-muted/70 mb-10 leading-relaxed">
-          메인 화면 히어로, 연구 소개, 문의하기 섹션의 텍스트입니다. 한국어 원문을 클릭해 수정하고, 「語 번역」에서 다국어를 관리합니다.
-        </p>
+        <h1 className="font-serif text-2xl text-ink mb-10">메인 페이지</h1>
       </motion.div>
 
       {sections.map((section) => {
         const fields = HOME_CMS_FIELDS.filter((f) => f.section === section)
         return (
           <div key={section} className="mb-12">
-            <div className="mb-4 flex items-baseline gap-3">
+            <div className="mb-4">
               <h2 className="font-serif text-base text-ink">{section}</h2>
-              <span className="font-sans text-[10.5px] text-ink-muted/60">{fields.length}개</span>
             </div>
             <div className="divide-y divide-hanji-border border border-hanji-border rounded-sm">
               {fields.map((field, i) => (
