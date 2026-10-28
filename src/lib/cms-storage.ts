@@ -6,6 +6,7 @@ import { codeBaseline } from '@/lib/cms-baseline'
 import type { OverridesStore, TranslationOverride } from '@/lib/i18n-overrides'
 import { makeHistoryEntry, MAX_HISTORY, type HistoryEntry } from '@/lib/admin-history'
 import { validateResearchContent, type ResearchContent } from '@/lib/research-content'
+import { summarizeResearchChange } from '@/lib/research-history'
 
 const KEY = 'hunminsound:cms:v2:current'
 const BASELINE_KEY = 'hunminsound:cms:v2:baseline'
@@ -142,12 +143,13 @@ async function commit(previous: State, next: State, event: Event): Promise<void>
 }
 
 function historyFor(change: Change, username: string, action: HistoryEntry['action'], name?: string): HistoryEntry {
+  const research = change.kind === 'research' ? summarizeResearchChange(change.before, change.after) : null
   const [type, id, , lang] = change.kind === 'text' ? change.key.split(':') : ['research', 'research', '', 'ko']
   return {
     ...makeHistoryEntry({ username, action, key: change.kind === 'text' ? change.key : 'research',
-      type: type as HistoryEntry['type'], itemId: id, itemName: name ?? id, lang,
-      oldValue: change.kind === 'text' ? change.before.value.slice(0, 3000) : '연구진·과제 정보 변경 전 내용',
-      newValue: change.kind === 'text' ? change.after.value.slice(0, 3000) : '연구진·과제 정보 변경 후 내용' }),
+      type: type as HistoryEntry['type'], itemId: id, itemName: research?.label ?? name ?? id, lang,
+      oldValue: change.kind === 'text' ? change.before.value.slice(0, 3000) : research!.oldValue,
+      newValue: change.kind === 'text' ? change.after.value.slice(0, 3000) : research!.newValue }),
     id: randomUUID(), restorable: true,
   }
 }
@@ -158,6 +160,16 @@ async function saveChange(previous: State, change: Change, username: string, act
   if (change.kind === 'text') next.overrides = { ...previous.overrides, [change.key]: change.after }
   else next.research = change.after
   await commit(previous, next, { change, entry })
+  const dropped = previous.history.slice(MAX_HISTORY - 1)
+  if (change.kind === 'research' || dropped.some((item) => item.type === 'research' && item.restorable)) {
+    const candidates: string[] = []
+    if (change.kind === 'research') {
+      const kept = new Set(photoNamesOf(change.after))
+      for (const photoName of photoNamesOf(change.before)) if (!kept.has(photoName)) candidates.push(photoName)
+    }
+    for (const item of dropped) candidates.push(...await eventPhotoNames(item))
+    await releasePhotos(candidates)
+  }
   return next
 }
 
@@ -247,6 +259,72 @@ export async function readTeamPhoto(name: string): Promise<Buffer | null> {
   }
 }
 
+function mediaPhotoName(src: string | undefined): string | null {
+  const name = src?.startsWith('/media/team/') ? src.slice('/media/team/'.length) : ''
+  return PHOTO_NAME.test(name) ? name : null
+}
+
+function photoNamesOf(data: ResearchContent): string[] {
+  const names: string[] = []
+  for (const row of data.team.rows) {
+    const name = mediaPhotoName(row.photo)
+    if (name && !names.includes(name)) names.push(name)
+  }
+  return names
+}
+
+async function readEvent(id: string): Promise<Event | null> {
+  if (!/^[a-f0-9-]{36}$/.test(id)) return null
+  const client = getCmsRedis()
+  return client
+    ? client.get<Event>(`hunminsound:cms:v2:event:${id}`)
+    : readJson<Event>(path.join(cmsDirectory(), 'history', `${id}.json`))
+}
+
+async function eventPhotoNames(entry: HistoryEntry): Promise<string[]> {
+  if (entry.type !== 'research' || !entry.restorable) return []
+  const event = await readEvent(entry.id)
+  if (!event || event.change.kind !== 'research') return []
+  return [...photoNamesOf(event.change.before), ...photoNamesOf(event.change.after)]
+}
+
+export async function deleteTeamPhoto(name: string): Promise<void> {
+  const file = photoFile(name)
+  const client = getCmsRedis()
+  if (client) {
+    await client.del(`${PHOTO_PREFIX}${name}`)
+    return
+  }
+  if (process.env.VERCEL === '1') throw new Error('CMS_CLOUD_STORAGE_REQUIRED')
+  await fs.unlink(file).catch((error: NodeJS.ErrnoException) => {
+    if (error.code !== 'ENOENT') throw error
+  })
+}
+
+// 현재 페이지나 되돌릴 수 있는 수정 이력이 아직 쓰는 사진은 지우지 않는다.
+async function releasePhotos(candidates: string[]) {
+  const pending = Array.from(new Set(candidates))
+  if (pending.length === 0) return
+  try {
+    const state = await readCmsState()
+    const keep = new Set(photoNamesOf(state.research))
+    for (const entry of state.history) {
+      for (const name of await eventPhotoNames(entry)) keep.add(name)
+    }
+    for (const name of pending) {
+      if (!keep.has(name)) await deleteTeamPhoto(name)
+    }
+  } catch (error) {
+    console.error('[cms] unused photo cleanup failed:', error)
+  }
+}
+
+export async function discardTeamPhoto(src: string): Promise<void> {
+  const name = mediaPhotoName(src)
+  if (!name) throw new Error('CMS_INVALID_PHOTO')
+  await releasePhotos([name])
+}
+
 export async function readOverridesStore() { return (await readCmsState()).overrides }
 export async function readAdminHistory() { return (await readCmsState()).history }
 
@@ -254,9 +332,7 @@ export async function restoreCmsEntry(id: string, expectedRevision: string, user
   if (!/^[a-f0-9-]{36}$/.test(id)) throw new Error('CMS_INVALID_HISTORY')
   const current = await readCmsState()
   if (current.revision !== expectedRevision) throw new CmsConflictError()
-  const client = getCmsRedis()
-  const event = client ? await client.get<Event>(`hunminsound:cms:v2:event:${id}`)
-    : await readJson<Event>(path.join(cmsDirectory(), 'history', `${id}.json`))
+  const event = await readEvent(id)
   if (!event) throw new Error('CMS_INVALID_HISTORY')
   const change: Change = event.change.kind === 'text'
     ? { kind: 'text', key: event.change.key, before: current.overrides[event.change.key],

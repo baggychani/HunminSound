@@ -210,7 +210,18 @@ function MemberEditor({
       const res = await fetch('/api/admin/team-photo', { method: 'POST', body })
       const data = (await res.json().catch(() => ({}))) as { src?: string; message?: string }
       if (!res.ok || !data.src) throw new Error(data.message ?? '사진을 저장하지 못했습니다.')
-      if (data.src !== baseSrc) await onPhoto(data.src)
+      if (data.src !== baseSrc) {
+        try {
+          await onPhoto(data.src)
+        } catch (err) {
+          await fetch('/api/admin/team-photo', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ src: data.src }),
+          }).catch(() => {})
+          throw err
+        }
+      }
       setBust(Date.now())
     } catch (err) {
       setPhotoError(err instanceof Error ? err.message : '사진을 저장하지 못했습니다.')

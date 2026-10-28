@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
 import { cmsError, cmsUser } from '@/lib/cms-api'
-import { writeTeamPhoto } from '@/lib/cms-storage'
+import { discardTeamPhoto, writeTeamPhoto } from '@/lib/cms-storage'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -43,6 +43,26 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, src })
   } catch (error) {
     console.error('[cms] team photo write failed:', error)
+    return cmsError(error)
+  }
+}
+
+export async function DELETE(req: Request) {
+  if (!(await cmsUser())) {
+    return NextResponse.json(
+      { message: '로그인이 만료되었습니다. 이 탭은 그대로 두고 새 탭에서 다시 로그인한 뒤, 사진을 다시 올려 주세요.' },
+      { status: 401 },
+    )
+  }
+  const body = await req.json().catch(() => null) as { src?: string } | null
+  if (!body?.src) return NextResponse.json({ message: '사진 경로가 필요합니다.' }, { status: 400 })
+  try {
+    await discardTeamPhoto(body.src)
+    return NextResponse.json({ ok: true })
+  } catch (error) {
+    if (error instanceof Error && error.message === 'CMS_INVALID_PHOTO') {
+      return NextResponse.json({ message: '지울 수 있는 사진이 아닙니다.' }, { status: 400 })
+    }
     return cmsError(error)
   }
 }

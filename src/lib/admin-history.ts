@@ -53,6 +53,7 @@ export function describeAction(entry: HistoryEntry): string {
   if (entry.action === 'restore') return `${entry.itemName} · 이전 내용으로 복원`
   if (entry.type === 'research') {
     if (entry.action === 'remove') return '연구 소개 · 코드 기준본으로 복원'
+    if (entry.itemName && entry.itemName !== '연구 소개') return `연구 소개 · ${entry.itemName}`
     return '연구 소개 · 연구진·과제 정보 수정'
   }
   const langMap: Record<string, string> = {
