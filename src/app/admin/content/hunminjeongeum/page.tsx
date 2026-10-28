@@ -84,7 +84,7 @@ function KoreanEditor({
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             rows={4}
-            className="w-full rounded-sm border border-gold/40 bg-hanji px-3 py-2 font-sans text-base text-ink outline-none resize-none focus-visible:border-gold/70 focus-visible:shadow-[inset_0_0_0_1px_rgb(var(--gold-rgb)/0.25)] leading-relaxed"
+            className="w-full rounded-sm border border-gold/40 bg-hanji px-3 py-2 font-sans text-sm text-ink outline-none resize-none focus-visible:border-gold/70 focus-visible:shadow-[inset_0_0_0_1px_rgb(var(--gold-rgb)/0.25)] leading-relaxed"
           />
           {error && <p role="alert" className="font-sans text-[11px] leading-snug text-red-500">{error}</p>}
           <div className="flex items-center justify-end gap-2">
@@ -107,7 +107,7 @@ function KoreanEditor({
         <p
           onDoubleClick={startEdit}
           title="더블클릭하여 한국어 편집"
-          className="cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-base leading-relaxed text-ink transition-colors hover:bg-hanji-border/20"
+          className="cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-sm leading-relaxed text-ink-soft transition-colors hover:bg-hanji-border/20"
         >
           {currentText}
         </p>
