@@ -498,9 +498,11 @@ function outboxReason(item: CodeOutboxNotice): string {
     return '코드에서도 같은 글을 따로 고쳐서 덮지 않았습니다. 그 코드가 배포되면 위에서 어느 쪽을 쓸지 고르게 됩니다.'
   }
   if (item.status === 'failed') {
-    return item.error === 'GITHUB_NOT_CONFIGURED'
-      ? 'GitHub에 쓸 권한이 아직 설정되지 않았습니다.'
-      : `GitHub에 넣지 못했습니다(${item.error ?? '알 수 없는 오류'}). 다시 시도합니다.`
+    if (item.error === 'GITHUB_NOT_CONFIGURED') return 'GitHub 토큰이 설정되지 않았습니다. 사이트에는 정상으로 저장됐습니다.'
+    if (/ (401|403|404)$/.test(item.error ?? '')) {
+      return 'GitHub 토큰이 만료됐거나 권한이 없습니다. 사이트에는 정상으로 저장됐습니다. 코드로 고칠 사람은 npm run pull-site-text 를 먼저 실행해야 합니다.'
+    }
+    return `GitHub에 넣지 못했습니다(${item.error ?? '알 수 없는 오류'}). 사이트에는 저장됐고, 다시 시도합니다.`
   }
   return '코드에 넣는 중입니다.'
 }

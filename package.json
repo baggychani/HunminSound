@@ -11,7 +11,8 @@
     "lint": "next lint",
     "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\"",
     "check-env": "node scripts/check-deploy-env.mjs",
-    "media-manifest": "node scripts/generate-media-manifest.mjs"
+    "media-manifest": "node scripts/generate-media-manifest.mjs",
+    "pull-site-text": "node scripts/pull-site-text.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^9.122.0",
