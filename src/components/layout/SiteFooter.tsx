@@ -25,7 +25,7 @@ export function SiteFooter() {
               </Link>
               <Link
                 href="/admin"
-                className="font-sans text-[12px] font-normal text-ink-muted/55 transition-colors hover:text-ink-muted"
+                className="hidden font-sans text-[12px] font-normal text-ink-muted/55 transition-colors hover:text-ink-muted sm:inline"
               >
                 관리자 페이지
               </Link>
