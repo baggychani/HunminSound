@@ -23,6 +23,8 @@ interface Props {
   excludeLangs?: SupportedTranslationLang[]
   /** 행의 placeholder/툴팁용 라벨(예: 자/모음 '한국어', 훈민정음 '영어'). */
   sourceLabel?: string
+  /** 언어 칸에 보일 이름. 없으면 언어 고유 이름을 쓴다. */
+  languageNames?: Partial<Record<SupportedTranslationLang, string>>
 }
 
 /* ── 상태 뱃지 ──────────────────────────────────────────────────────────── */
@@ -165,7 +167,7 @@ function LangRow({ langCode, langName, baseValue, override, koreanSource, source
 /* ── TranslationDrawer ───────────────────────────────────────────────────── */
 export function TranslationDrawer({
   type, id, displayName, koreanSource, baseValues,
-  excludeLangs, sourceLabel,
+  excludeLangs, sourceLabel, languageNames,
 }: Props) {
   const [open, setOpen] = useState(false)
   const store = useOverridesStore()
@@ -245,7 +247,7 @@ export function TranslationDrawer({
                 <span className="font-sans text-[10px] text-ink-muted/35">텍스트 클릭 또는 수정 버튼</span>
               </div>
               {langs.map(({ code, name }) => (
-                <LangRow key={code} langCode={code} langName={name}
+                <LangRow key={code} langCode={code} langName={languageNames?.[code] ?? name}
                   baseValue={baseValues[code] ?? ''} override={store[getKey(code)]}
                   koreanSource={koreanSource} sourceLabel={effectiveSourceLabel}
                   onSave={handleSave} onDismissStale={handleDismissStale} onRemove={handleRemove}
