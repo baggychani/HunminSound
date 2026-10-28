@@ -6,7 +6,7 @@ import { consonantsData } from '@/data/consonants'
 import { HUNMIN_CONSONANT_ROWS, type HunminRow } from '@/data/hunminConsonantLayout'
 import { PhonemeModeSwitch, type PhonemeAdminMode } from '@/components/admin/PhonemeModeSwitch'
 import { TranslationDrawer } from '@/components/admin/TranslationDrawer'
-import { useOverridesStore, patchOverride, makeKoreanKey, getCurrentKorean } from '@/lib/overrides-store'
+import { patchOverride, makeKoreanKey } from '@/lib/overrides-store'
 import { ADMIN_LANGUAGE_NAMES } from '@/components/admin/adminLanguageNames'
 import { buildPhonemeDescriptionBaseValues } from '@/lib/cms-base-values'
 import type { Consonant } from '@/types'
@@ -111,8 +111,7 @@ function KoreanEditor({
 
 /* ── 자음 행 ─────────────────────────────────────────────────────────────── */
 function ConsonantRow({ consonant }: { consonant: Consonant }) {
-  const store = useOverridesStore()
-  const koreanSource = getCurrentKorean(store, 'consonant', consonant._id, consonant.description)
+  const koreanSource = consonant.description
 
   return (
     <div>
@@ -137,6 +136,7 @@ function ConsonantRow({ consonant }: { consonant: Consonant }) {
         koreanSource={koreanSource}
         baseValues={buildPhonemeDescriptionBaseValues(consonant)}
         languageNames={ADMIN_LANGUAGE_NAMES}
+        registeredFromCode
       />
     </div>
   )

@@ -25,12 +25,18 @@ interface Props {
   sourceLabel?: string
   /** 언어 칸에 보일 이름. 없으면 언어 고유 이름을 쓴다. */
   languageNames?: Partial<Record<SupportedTranslationLang, string>>
+  /**
+   * 코드에 있는 번역을 그 칸의 정식 내용으로 보여 준다.
+   * 따로 저장한 글이 있어도 코드 번역이 있으면 코드 번역을 보여 주고,
+   * 자동 번역이라는 표시는 쓰지 않는다.
+   */
+  registeredFromCode?: boolean
 }
 
 /* ── 상태 뱃지 ──────────────────────────────────────────────────────────── */
 type StatusKind = 'none' | 'ok' | 'stale'
 
-function StatusDot({ kind, sourceLabel }: { kind: StatusKind; sourceLabel: string }) {
+function StatusDot({ kind, sourceLabel, emptyTitle, filledTitle }: { kind: StatusKind; sourceLabel: string; emptyTitle?: string; filledTitle?: string }) {
   if (kind === 'stale') {
     return (
       <span title={`${sourceLabel} 원본이 변경됨 — 확인 필요`} aria-label="stale"
@@ -42,10 +48,10 @@ function StatusDot({ kind, sourceLabel }: { kind: StatusKind; sourceLabel: strin
     )
   }
   if (kind === 'ok') {
-    return <span title="저장된 번역" aria-label="ok"
+    return <span title={filledTitle ?? '저장된 번역'} aria-label="ok"
       className="inline-block h-2 w-2 shrink-0 rounded-full bg-emerald-500/80" />
   }
-  return <span title="자동 번역 사용 중" aria-label="none"
+  return <span title={emptyTitle ?? '자동 번역 사용 중'} aria-label="none"
     className="inline-block h-2 w-2 shrink-0 rounded-full bg-ink-muted/25" />
 }
 
@@ -60,20 +66,26 @@ interface RowProps {
   onSave: (lang: SupportedTranslationLang, value: string) => Promise<void>
   onDismissStale: (lang: SupportedTranslationLang) => Promise<void>
   onRemove: (lang: SupportedTranslationLang) => Promise<void>
+  registeredFromCode?: boolean
 }
 
 function LangRow({ langCode, langName, baseValue, override, koreanSource, sourceLabel,
-  onSave, onDismissStale, onRemove }: RowProps) {
-  const stale = override ? isStale(override, koreanSource) : false
-  const status: StatusKind = !override ? 'none' : stale ? 'stale' : 'ok'
-  const currentValue = override?.value ?? baseValue
+  onSave, onDismissStale, onRemove, registeredFromCode }: RowProps) {
+  const codeText = baseValue.trim()
+  const savedText = override?.value?.trim() ?? ''
+  const officialText = registeredFromCode ? (codeText || savedText) : ''
+  const stale = !registeredFromCode && override ? isStale(override, koreanSource) : false
+  const status: StatusKind = registeredFromCode
+    ? (officialText ? 'ok' : 'none')
+    : (!override ? 'none' : stale ? 'stale' : 'ok')
+  const currentValue = registeredFromCode ? officialText : (override?.value ?? baseValue)
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(currentValue)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const hasValue = !!(override?.value)
+  const hasValue = registeredFromCode ? !!officialText : !!(override?.value)
 
   const startEdit = () => { setDraft(currentValue); setError(null); setEditing(true); setTimeout(() => textareaRef.current?.focus(), 50) }
   const cancelEdit = () => { setError(null); setEditing(false) }
@@ -97,19 +109,21 @@ function LangRow({ langCode, langName, baseValue, override, koreanSource, source
   return (
     <div className={`grid grid-cols-[6rem_1fr_6rem] sm:grid-cols-[8rem_1fr_7rem] items-start gap-3 border-b border-hanji-border/50 px-5 py-3 last:border-0 transition-colors ${stale ? 'bg-amber-400/[0.05]' : ''}`}>
       <div className="flex items-center gap-1.5 pt-0.5">
-        <StatusDot kind={status} sourceLabel={sourceLabel} />
+        <StatusDot kind={status} sourceLabel={sourceLabel}
+          emptyTitle={registeredFromCode ? '번역 없음' : undefined}
+          filledTitle={registeredFromCode ? '등록된 번역' : undefined} />
         <span className="font-sans text-[11px] text-ink-muted/80">{langName}</span>
       </div>
 
       <div>
         {editing ? (
           <textarea ref={textareaRef} value={draft} onChange={(e) => setDraft(e.target.value)} rows={3}
-            placeholder="비워두면 자동 번역 사용으로 돌아갑니다"
+            placeholder={registeredFromCode ? '번역을 입력합니다' : '비워두면 자동 번역 사용으로 돌아갑니다'}
             className="w-full rounded-sm border border-hanji-border bg-hanji px-2.5 py-2 font-sans text-xs text-ink outline-none resize-none focus-visible:border-gold/60 focus-visible:shadow-[inset_0_0_0_1px_rgb(var(--gold-rgb)/0.25)] placeholder:text-ink-muted/30" />
         ) : (
           <p onClick={startEdit} title="클릭하여 편집"
             className={`cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-xs leading-relaxed transition-colors hover:bg-hanji-border/20 ${stale ? 'text-amber-600/80 dark:text-amber-400/70' : hasValue ? 'text-ink-soft' : 'italic text-ink-muted/40'}`}>
-            {hasValue ? override!.value : '자동 번역 사용'}
+            {hasValue ? (registeredFromCode ? officialText : override!.value) : (registeredFromCode ? '번역 없음' : '자동 번역 사용')}
           </p>
         )}
         {stale && !editing && (
@@ -151,7 +165,7 @@ function LangRow({ langCode, langName, baseValue, override, koreanSource, source
                 수정 불필요
               </button>
             )}
-            {override && !stale && (
+            {override && !stale && !registeredFromCode && (
               <button onClick={() => run(() => onRemove(langCode))} disabled={saving}
                 className="px-2 py-1 font-sans text-[10px] text-ink-muted/30 hover:text-ink-accent transition-colors disabled:opacity-50">
                 고정 해제
@@ -167,7 +181,7 @@ function LangRow({ langCode, langName, baseValue, override, koreanSource, source
 /* ── TranslationDrawer ───────────────────────────────────────────────────── */
 export function TranslationDrawer({
   type, id, displayName, koreanSource, baseValues,
-  excludeLangs, sourceLabel, languageNames,
+  excludeLangs, sourceLabel, languageNames, registeredFromCode,
 }: Props) {
   const [open, setOpen] = useState(false)
   const store = useOverridesStore()
@@ -251,6 +265,7 @@ export function TranslationDrawer({
                   baseValue={baseValues[code] ?? ''} override={store[getKey(code)]}
                   koreanSource={koreanSource} sourceLabel={effectiveSourceLabel}
                   onSave={handleSave} onDismissStale={handleDismissStale} onRemove={handleRemove}
+                  registeredFromCode={registeredFromCode}
                 />
               ))}
             </div>
