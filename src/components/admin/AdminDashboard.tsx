@@ -12,7 +12,6 @@ type AdminSection = {
   title: string
   en: string
   desc: string
-  meta: string
   ready: boolean
 }
 
@@ -22,7 +21,6 @@ const MAIN_SECTION: AdminSection = {
   title: '메인 페이지',
   en: 'Main',
   desc: '히어로 문구, 섹션 설명, 카드 내용 등 메인 화면의 텍스트를 관리합니다.',
-  meta: '',
   ready: true,
 }
 
@@ -32,8 +30,7 @@ const SECTIONS: AdminSection[] = [
     href: '/admin/content/consonants',
     title: '자음',
     en: 'Consonants',
-    desc: '19개 자음의 설명 텍스트, 분류, 영상 파일명을 확인하고 편집합니다.',
-    meta: '19개 항목',
+    desc: '자음의 설명 텍스트, 분류, 영상 파일명을 확인하고 편집합니다.',
     ready: true,
   },
   {
@@ -41,8 +38,7 @@ const SECTIONS: AdminSection[] = [
     href: '/admin/content/vowels',
     title: '모음',
     en: 'Vowels',
-    desc: '21개 모음의 설명 텍스트, 분류, 애니메이션·MRI 파일명을 확인하고 편집합니다.',
-    meta: '21개 항목',
+    desc: '모음의 설명 텍스트, 분류, 애니메이션·MRI 파일명을 확인하고 편집합니다.',
     ready: true,
   },
   {
@@ -51,7 +47,6 @@ const SECTIONS: AdminSection[] = [
     title: '훈민정음',
     en: 'Hunminjeongeum',
     desc: '≪훈민정음≫ 해례본 28자 제자 원리·정인지서 단락별 다국어 번역을 편집합니다.',
-    meta: '3개 섹션',
     ready: true,
   },
   {
@@ -60,7 +55,6 @@ const SECTIONS: AdminSection[] = [
     title: '연구 소개',
     en: 'Research',
     desc: '연구 동기, 목표, 개요, 의의, 연구진, 과제 정보를 편집합니다.',
-    meta: '8개 섹션',
     ready: false,
   },
 ]
@@ -239,13 +233,6 @@ function ContactForm() {
 function SectionCard({ section, className }: { section: AdminSection; className?: string }) {
   const body = (
     <>
-      {section.meta ? (
-        <div className="flex justify-end">
-          <span className="font-sans text-[10px] uppercase tracking-[0.08em] text-gold/80 dark:text-gold-light/70">
-            {section.meta}
-          </span>
-        </div>
-      ) : null}
       <div className="flex-1">
         <div className="mb-1.5 flex items-baseline gap-2">
           <span className={`font-serif text-lg ${section.ready ? 'text-ink group-hover:text-ink-accent' : 'text-ink'} transition-colors`}>

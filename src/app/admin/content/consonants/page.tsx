@@ -68,7 +68,7 @@ function KoreanEditor({
   }
 
   return (
-    <div className="sm:col-start-2 sm:col-span-2">
+    <div className="col-span-2 sm:col-start-2 sm:col-span-2">
       {editing ? (
         <div className="flex flex-col gap-2">
           <textarea
@@ -98,8 +98,8 @@ function KoreanEditor({
         </div>
       ) : (
         <p
-          onClick={startEdit}
-          title="클릭하여 한국어 설명 편집"
+          onDoubleClick={startEdit}
+          title="더블클릭하여 한국어 설명 편집"
           className={`cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-xs leading-relaxed transition-colors hover:bg-hanji-border/20 ${hasOverride ? 'text-ink border-l-2 border-gold/40 pl-3' : 'text-ink-muted/70'}`}
         >
           {currentText}
@@ -115,15 +115,17 @@ function ConsonantRow({ consonant }: { consonant: Consonant }) {
 
   return (
     <div>
-      <div className="grid grid-cols-[3rem_1fr] sm:grid-cols-[3rem_11rem_1fr] gap-x-4 gap-y-2 px-5 py-4">
+      <div className="grid grid-cols-[3rem_minmax(0,1fr)] sm:grid-cols-[3rem_max-content_minmax(0,1fr)] gap-x-4 gap-y-2 px-5 py-4">
         <span className="font-jamo text-2xl text-ink leading-none self-start pt-1" lang="ko">
           {consonant.symbol}
         </span>
         <div>
           <p className="font-sans text-sm text-ink">{consonant.name}</p>
-          <p className="font-sans text-[10.5px] text-ink-muted/60 mt-0.5 space-x-2">
-            <span>ani: <span className="text-gold/70">{consonant.animationFileName ?? '—'}</span></span>
-            <span>mri: <span className="text-gold/70">{consonant.mriFileName ?? '—'}</span></span>
+          <p className="mt-0.5 whitespace-nowrap font-sans text-[10.5px] text-ink-muted/60">
+            ani: <span className="text-gold/70">{consonant.animationFileName ?? '—'}</span>
+          </p>
+          <p className="whitespace-nowrap font-sans text-[10.5px] text-ink-muted/60">
+            mri: <span className="text-gold/70">{consonant.mriFileName ?? '—'}</span>
           </p>
         </div>
         <KoreanEditor

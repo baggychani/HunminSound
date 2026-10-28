@@ -80,8 +80,8 @@ function LangRow({ langCode, langName, value, isStale, onSave, onRemove, onDismi
           />
         ) : (
           <p
-            onClick={startEdit}
-            title="클릭하여 편집"
+            onDoubleClick={startEdit}
+            title="더블클릭하여 편집"
             className={`cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-xs leading-relaxed transition-colors hover:bg-hanji-border/20 ${
               isStale ? 'text-amber-600/80 dark:text-amber-400/70'
               : hasValue ? 'text-ink-soft'

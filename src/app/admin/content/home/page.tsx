@@ -105,8 +105,8 @@ function KoreanEditor({
         </div>
       ) : (
         <p
-          onClick={startEdit}
-          title="클릭하여 한국어 편집"
+          onDoubleClick={startEdit}
+          title="더블클릭하여 한국어 편집"
           className={`cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-xs leading-relaxed transition-colors hover:bg-hanji-border/20 whitespace-pre-line ${
             hasOverride ? 'text-ink border-l-2 border-gold/40 pl-3' : 'text-ink-muted/70'
           }`}

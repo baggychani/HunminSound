@@ -7,7 +7,7 @@ import { HUNMIN_VOWEL_ROWS, type HunminVowelRow, type HunminVowelSlot } from '@/
 import { ADMIN_LANGUAGE_NAMES } from '@/components/admin/adminLanguageNames'
 import { PhonemeModeSwitch, type PhonemeAdminMode } from '@/components/admin/PhonemeModeSwitch'
 import { TranslationDrawer } from '@/components/admin/TranslationDrawer'
-import { useOverridesStore, patchOverride, makeKoreanKey, getCurrentKorean } from '@/lib/overrides-store'
+import { patchOverride, makeKoreanKey } from '@/lib/overrides-store'
 import { buildPhonemeDescriptionBaseValues } from '@/lib/cms-base-values'
 import type { Vowel } from '@/types'
 
@@ -71,7 +71,7 @@ function KoreanEditor({
   }
 
   return (
-    <div className="sm:col-start-2 sm:col-span-2">
+    <div className="col-span-2 sm:col-start-2 sm:col-span-2">
       {editing ? (
         <div className="flex flex-col gap-2">
           <textarea
@@ -98,8 +98,8 @@ function KoreanEditor({
         </div>
       ) : (
         <p
-          onClick={() => { setDraft(currentText); setEditing(true); setTimeout(() => textareaRef.current?.focus(), 50) }}
-          title="클릭하여 한국어 설명 편집"
+          onDoubleClick={() => { setDraft(currentText); setError(null); setEditing(true); setTimeout(() => textareaRef.current?.focus(), 50) }}
+          title="더블클릭하여 한국어 설명 편집"
           className={`cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-xs leading-relaxed transition-colors hover:bg-hanji-border/20 ${hasOverride ? 'text-ink border-l-2 border-gold/40 pl-3' : 'text-ink-muted/70'}`}
         >
           {currentText}
@@ -110,20 +110,21 @@ function KoreanEditor({
 }
 
 function VowelRow({ vowel }: { vowel: Vowel }) {
-  const store = useOverridesStore()
-  const koreanSource = getCurrentKorean(store, 'vowel', vowel._id, vowel.description)
+  const koreanSource = vowel.description
 
   return (
     <div>
-      <div className="grid grid-cols-[3rem_1fr] sm:grid-cols-[3rem_12rem_1fr] gap-x-4 gap-y-2 px-5 py-4">
+      <div className="grid grid-cols-[3rem_minmax(0,1fr)] sm:grid-cols-[3rem_max-content_minmax(0,1fr)] gap-x-4 gap-y-2 px-5 py-4">
         <span className="font-jamo text-2xl text-ink leading-none self-start pt-1" lang="ko">
           {vowel.symbol}
         </span>
         <div>
           <p className="font-sans text-sm text-ink">{vowel.name}</p>
-          <p className="font-sans text-[10.5px] text-ink-muted/60 mt-0.5 space-x-2">
-            <span>ani: <span className="text-gold/70">{vowel.animationFileName ?? '—'}</span></span>
-            <span>mri: <span className="text-gold/70">{vowel.mriFileName ?? '—'}</span></span>
+          <p className="mt-0.5 whitespace-nowrap font-sans text-[10.5px] text-ink-muted/60">
+            ani: <span className="text-gold/70">{vowel.animationFileName ?? '—'}</span>
+          </p>
+          <p className="whitespace-nowrap font-sans text-[10.5px] text-ink-muted/60">
+            mri: <span className="text-gold/70">{vowel.mriFileName ?? '—'}</span>
           </p>
         </div>
         <KoreanEditor
@@ -136,6 +137,7 @@ function VowelRow({ vowel }: { vowel: Vowel }) {
         koreanSource={koreanSource}
         baseValues={buildPhonemeDescriptionBaseValues(vowel)}
         languageNames={ADMIN_LANGUAGE_NAMES}
+        registeredFromCode
       />
     </div>
   )

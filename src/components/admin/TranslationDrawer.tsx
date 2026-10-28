@@ -121,7 +121,7 @@ function LangRow({ langCode, langName, baseValue, override, koreanSource, source
             placeholder={registeredFromCode ? '번역을 입력합니다' : '비워두면 자동 번역 사용으로 돌아갑니다'}
             className="w-full rounded-sm border border-hanji-border bg-hanji px-2.5 py-2 font-sans text-xs text-ink outline-none resize-none focus-visible:border-gold/60 focus-visible:shadow-[inset_0_0_0_1px_rgb(var(--gold-rgb)/0.25)] placeholder:text-ink-muted/30" />
         ) : (
-          <p onClick={startEdit} title="클릭하여 편집"
+          <p onDoubleClick={startEdit} title="더블클릭하여 편집"
             className={`cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-xs leading-relaxed transition-colors hover:bg-hanji-border/20 ${stale ? 'text-amber-600/80 dark:text-amber-400/70' : hasValue ? 'text-ink-soft' : 'italic text-ink-muted/40'}`}>
             {hasValue ? (registeredFromCode ? officialText : override!.value) : (registeredFromCode ? '번역 없음' : '자동 번역 사용')}
           </p>
@@ -258,7 +258,7 @@ export function TranslationDrawer({
             <div className="border-t border-hanji-border/40 bg-hanji-warm/20 dark:bg-hanji-warm/8">
               <div className="flex items-center justify-between border-b border-hanji-border/40 px-5 py-2">
                 <span className="font-sans text-[10px] uppercase tracking-[0.1em] text-ink-muted/50">다국어 번역 편집</span>
-                <span className="font-sans text-[10px] text-ink-muted/35">텍스트 클릭 또는 수정 버튼</span>
+                <span className="font-sans text-[10px] text-ink-muted/35">텍스트 더블클릭 또는 수정 버튼</span>
               </div>
               {langs.map(({ code, name }) => (
                 <LangRow key={code} langCode={code} langName={languageNames?.[code] ?? name}

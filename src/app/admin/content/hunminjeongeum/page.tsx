@@ -138,8 +138,8 @@ function EnglishEditor({
         </div>
       ) : (
         <p
-          onClick={startEdit}
-          title="클릭하여 영어 풀이 편집 — 이 텍스트가 다른 언어 번역의 출처입니다"
+          onDoubleClick={startEdit}
+          title="더블클릭하여 영어 풀이 편집 — 이 텍스트가 다른 언어 번역의 출처입니다"
           className={`cursor-pointer rounded-sm px-2 py-1.5 -mx-2 font-sans text-sm leading-relaxed transition-colors hover:bg-hanji-border/20 ${
             hasOverride
               ? 'text-ink border-l-2 border-gold/40 pl-3'
