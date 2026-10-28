@@ -1,23 +1,40 @@
 'use client'
 
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { vowelsData } from '@/data/vowels'
+import { HUNMIN_VOWEL_ROWS, type HunminVowelRow, type HunminVowelSlot } from '@/data/hunminVowelLayout'
+import { ADMIN_LANGUAGE_NAMES } from '@/components/admin/adminLanguageNames'
+import { PhonemeModeSwitch, type PhonemeAdminMode } from '@/components/admin/PhonemeModeSwitch'
 import { TranslationDrawer } from '@/components/admin/TranslationDrawer'
 import { useOverridesStore, patchOverride, makeKoreanKey, getCurrentKorean } from '@/lib/overrides-store'
 import { buildPhonemeDescriptionBaseValues } from '@/lib/cms-base-values'
 import type { Vowel } from '@/types'
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 8 },
-  show: (i: number) => ({
-    opacity: 1, y: 0,
-    transition: { delay: i * 0.03, duration: 0.35, ease: [0.22, 1, 0.36, 1] },
-  }),
+const CATEGORY_ORDER = ['단모음', '이중모음']
+
+function slotSymbol(slot: HunminVowelSlot): string | null {
+  if (slot.kind === 'symbol') return slot.mapTo ?? slot.value
+  if (slot.kind === 'compound') return slot.mapTo ?? null
+  if (slot.kind === 'image') return slot.mapTo ?? null
+  return null
 }
 
-const CATEGORY_ORDER = ['단모음', '이중모음']
+function vowelsInHunminRow(row: HunminVowelRow, bySymbol: Map<string, Vowel>): Vowel[] {
+  const seen = new Set<string>()
+  const out: Vowel[] = []
+  for (const segment of [...row.basicSegments, ...row.combinedSegments]) {
+    for (const slot of segment.slots) {
+      const symbol = slotSymbol(slot)
+      if (!symbol || seen.has(symbol)) continue
+      seen.add(symbol)
+      const vowel = bySymbol.get(symbol)
+      if (!vowel) continue
+      out.push(vowel)
+    }
+  }
+  return out
+}
 
 function KoreanEditor({
   type, id, displayName, baseText, currentText,
@@ -92,12 +109,12 @@ function KoreanEditor({
   )
 }
 
-function VowelRow({ vowel, index }: { vowel: Vowel; index: number }) {
+function VowelRow({ vowel }: { vowel: Vowel }) {
   const store = useOverridesStore()
   const koreanSource = getCurrentKorean(store, 'vowel', vowel._id, vowel.description)
 
   return (
-    <motion.div custom={index} variants={fadeUp} initial="hidden" animate="show">
+    <div>
       <div className="grid grid-cols-[3rem_1fr] sm:grid-cols-[3rem_12rem_1fr] gap-x-4 gap-y-2 px-5 py-4">
         <span className="font-jamo text-2xl text-ink leading-none self-start pt-1" lang="ko">
           {vowel.symbol}
@@ -118,13 +135,20 @@ function VowelRow({ vowel, index }: { vowel: Vowel; index: number }) {
         type="vowel" id={vowel._id} displayName={vowel.name}
         koreanSource={koreanSource}
         baseValues={buildPhonemeDescriptionBaseValues(vowel)}
+        languageNames={ADMIN_LANGUAGE_NAMES}
       />
-    </motion.div>
+    </div>
   )
 }
 
 export default function AdminVowelsPage() {
-  const grouped = CATEGORY_ORDER.reduce<Record<string, typeof vowelsData>>((acc, cat) => {
+  const [mode, setMode] = useState<PhonemeAdminMode>('modern')
+  const bySymbol = useMemo(() => {
+    const map = new Map<string, Vowel>()
+    for (const vowel of vowelsData) map.set(vowel.symbol, vowel)
+    return map
+  }, [])
+  const grouped = CATEGORY_ORDER.reduce<Record<string, Vowel[]>>((acc, cat) => {
     acc[cat] = vowelsData.filter((v) => v.category === cat)
     return acc
   }, {})
@@ -138,24 +162,42 @@ export default function AdminVowelsPage() {
         <span className="text-hanji-border">/</span>
         <p className="font-sans text-xs text-ink-muted">모음</p>
       </div>
-      <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-        <p className="font-sans text-[11px] uppercase tracking-[0.1em] text-ink-muted mb-2">콘텐츠 편집</p>
-        <h1 className="font-serif text-2xl text-ink mb-10">모음</h1>
-      </motion.div>
-      {CATEGORY_ORDER.map((category) => {
-        const items = grouped[category] ?? []
-        return (
-          <div key={category} className="mb-12">
-            <div className="mb-4 flex items-baseline gap-3">
-              <h2 className="font-serif text-base text-ink">{category}</h2>
-              <span className="font-sans text-[10.5px] text-ink-muted/60">{items.length}개</span>
+      <p className="font-sans text-sm text-ink-muted mb-2">콘텐츠 편집</p>
+      <h1 className="font-serif text-2xl text-ink mb-6">모음</h1>
+      <PhonemeModeSwitch mode={mode} onChange={setMode} label="모음 배열" />
+      {mode === 'modern' ? (
+        CATEGORY_ORDER.map((category) => {
+          const items = grouped[category] ?? []
+          if (items.length === 0) return null
+          return (
+            <div key={category} className="mb-12">
+              <div className="mb-4 flex items-baseline gap-3">
+                <h2 className="font-serif text-base text-ink">{category}</h2>
+                <span className="font-sans text-xs text-ink-muted/60">{items.length}개</span>
+              </div>
+              <div className="divide-y divide-hanji-border border border-hanji-border rounded-sm">
+                {items.map((vowel) => <VowelRow key={vowel._id} vowel={vowel} />)}
+              </div>
             </div>
-            <div className="divide-y divide-hanji-border border border-hanji-border rounded-sm">
-              {items.map((v, i) => <VowelRow key={v._id} vowel={v} index={i} />)}
+          )
+        })
+      ) : (
+        HUNMIN_VOWEL_ROWS.map((row) => {
+          const items = vowelsInHunminRow(row, bySymbol)
+          if (items.length === 0) return null
+          return (
+            <div key={row.id} className="mb-12">
+              <div className="mb-4 flex items-baseline gap-3">
+                <h2 className="font-serif text-base text-ink">{row.title}</h2>
+                <span className="font-sans text-xs text-ink-muted/60">{items.length}개</span>
+              </div>
+              <div className="divide-y divide-hanji-border border border-hanji-border rounded-sm">
+                {items.map((vowel) => <VowelRow key={vowel._id} vowel={vowel} />)}
+              </div>
             </div>
-          </div>
-        )
-      })}
+          )
+        })
+      )}
     </div>
   )
 }
