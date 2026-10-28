@@ -322,9 +322,8 @@ export function AdminDashboard({ username }: { username: string | null }) {
           ))}
         </div>
 
-        {/* ── 개발자 문의 ─────────────────────────────────────────── */}
-        <div className="mt-16 border-t border-hanji-border pt-10">
-          <h2 className="mb-1 font-sans text-lg font-medium tracking-normal text-ink">
+        <div className="mt-10 border border-hanji-border bg-hanji p-7 sm:p-8">
+          <h2 className="mb-1 font-sans text-base font-medium tracking-normal text-ink">
             개발자에게 문의하기
           </h2>
           <p className="mb-6 font-sans text-xs text-ink-muted/50">

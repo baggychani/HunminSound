@@ -9,8 +9,7 @@ import {
 } from '@/data/hunminjeongeumPassages'
 import { ADMIN_LANGUAGE_NAMES } from '@/components/admin/adminLanguageNames'
 import { TranslationDrawer } from '@/components/admin/TranslationDrawer'
-import { patchOverride } from '@/lib/overrides-store'
-import { makeOverrideKey } from '@/lib/i18n-overrides'
+import { patchOverride, useOverridesStore } from '@/lib/overrides-store'
 import { buildHunminPassageBaseValues } from '@/lib/cms-base-values'
 
 const SECTION_LABEL: Record<HunminPassageSection['id'], string> = {
@@ -19,32 +18,31 @@ const SECTION_LABEL: Record<HunminPassageSection['id'], string> = {
   appraisal: '해례본의 평가',
 }
 
-/* 영어 풀이. 화면에 보이는 글은 코드에 있는 번역이다. */
-function EnglishEditor({
+function koreanKey(number: string) {
+  return `hunminPassage:${number}:description:ko`
+}
+
+function KoreanEditor({
   passage,
-  baseText,
   currentText,
 }: {
   passage: HunminPassage
-  baseText: string
   currentText: string
 }) {
+  const baseText = passage.korean
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(currentText)
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const hasOverride = currentText !== baseText
-
   const displayName = `[${passage.number}] ${passage.originalText.slice(0, 18)}…`
-  const key = makeOverrideKey('hunminPassage', passage.number, 'en')
 
   const startEdit = () => {
     setDraft(currentText)
+    setError(null)
     setEditing(true)
     setTimeout(() => textareaRef.current?.focus(), 50)
   }
-
-  const [error, setError] = useState<string | null>(null)
 
   const save = async () => {
     setSaving(true)
@@ -53,20 +51,19 @@ function EnglishEditor({
       const trimmed = draft.trim()
       if (!trimmed || trimmed === baseText) {
         await patchOverride({
-          key,
+          key: koreanKey(passage.number),
           remove: true,
           displayName,
-          lang: 'en',
+          lang: 'ko',
           type: 'hunminPassage',
         })
       } else {
         await patchOverride({
-          key,
+          key: koreanKey(passage.number),
           value: trimmed,
-          /* 영어가 출처이므로 자체 텍스트를 snapshot 으로 둔다(부수 검사용). */
-          sourceSnapshot: trimmed,
+          sourceSnapshot: baseText,
           displayName,
-          lang: 'en',
+          lang: 'ko',
           type: 'hunminPassage',
         })
       }
@@ -79,8 +76,7 @@ function EnglishEditor({
   }
 
   return (
-    <div>
-      <p className="mb-1.5 font-sans text-[10px] text-ink-muted/60">영어</p>
+    <div className="mt-3">
       {editing ? (
         <div className="flex flex-col gap-2">
           <textarea
@@ -88,13 +84,10 @@ function EnglishEditor({
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             rows={4}
-            className="w-full rounded-sm border border-gold/40 bg-hanji px-3 py-2 font-sans text-sm text-ink outline-none resize-none focus-visible:border-gold/70 focus-visible:shadow-[inset_0_0_0_1px_rgb(var(--gold-rgb)/0.25)] leading-relaxed"
+            className="w-full rounded-sm border border-gold/40 bg-hanji px-3 py-2 font-sans text-base text-ink outline-none resize-none focus-visible:border-gold/70 focus-visible:shadow-[inset_0_0_0_1px_rgb(var(--gold-rgb)/0.25)] leading-relaxed"
           />
           {error && <p role="alert" className="font-sans text-[11px] leading-snug text-red-500">{error}</p>}
-          <div className="flex items-center gap-2 justify-end">
-            {draft !== baseText && draft !== currentText && (
-              <span className="font-sans text-[10px] text-ink-muted/40">원본과 다름</span>
-            )}
+          <div className="flex items-center justify-end gap-2">
             <button
               onClick={save}
               disabled={saving}
@@ -113,12 +106,8 @@ function EnglishEditor({
       ) : (
         <p
           onDoubleClick={startEdit}
-          title="더블클릭하여 영어 풀이 편집"
-          className={`cursor-pointer rounded-sm px-2 py-1.5 -mx-2 font-sans text-sm leading-relaxed transition-colors hover:bg-hanji-border/20 ${
-            hasOverride
-              ? 'text-ink border-l-2 border-gold/40 pl-3'
-              : 'text-ink-soft'
-          }`}
+          title="더블클릭하여 한국어 편집"
+          className="cursor-pointer rounded-sm px-2 py-1 -ml-2 font-sans text-base leading-relaxed text-ink transition-colors hover:bg-hanji-border/20"
         >
           {currentText}
         </p>
@@ -129,60 +118,30 @@ function EnglishEditor({
 
 /* ── 단일 행 ──────────────────────────────────────────────────────── */
 function PassageRow({ passage }: { passage: HunminPassage }) {
-  const currentEnglish = passage.translations.en
+  const store = useOverridesStore()
+  const currentKorean = store[koreanKey(passage.number)]?.value ?? passage.korean
   const displayName = `[${passage.number}] ${passage.originalText.slice(0, 18)}…`
 
   return (
     <div>
-      <div className="grid grid-cols-[3rem_1fr] gap-x-4 gap-y-3 px-5 py-5">
-        {/* 일련번호 + 출처 */}
-        <div className="flex flex-col gap-1 self-start pt-0.5">
-          <span className="font-serif text-base leading-none text-ink-muted/80">
-            [{passage.number}]
-          </span>
-        </div>
-
-        {/* 본문 */}
-        <div className="space-y-4">
-          {/* 한문 원문 */}
-          <p
-            className="font-serif text-lg leading-relaxed tracking-[0.03em] text-ink"
-            lang="ko"
-          >
+      <div className="grid grid-cols-[3rem_minmax(0,1fr)] gap-x-4 px-5 py-5">
+        <span className="pt-1 font-serif text-base leading-none text-ink-muted/80">
+          [{passage.number}]
+        </span>
+        <div className="min-w-0">
+          <p className="font-serif text-lg leading-relaxed text-ink" lang="ko">
             {passage.originalText}
           </p>
-
-          {/* 출처 */}
-          <p className="font-sans text-[10px] uppercase tracking-[0.14em] text-ink-muted/55">
-            {passage.reference}
-          </p>
-
-          {/* 한국어 풀이 (read-only — 옛한국어 표현 포함, 번역 출처로 쓰이지 않음) */}
-          <div>
-            <p className="mb-1.5 font-sans text-[10px] text-ink-muted/60">한국어</p>
-            <p className="font-sans text-xs leading-relaxed text-ink-soft" lang="ko">
-              {passage.korean}
-            </p>
-          </div>
-
-          {/* 영어 풀이 (편집 가능 · 다른 언어 번역의 출처) */}
-          <EnglishEditor
-            passage={passage}
-            baseText={passage.translations.en}
-            currentText={currentEnglish}
-          />
+          <KoreanEditor passage={passage} currentText={currentKorean} />
         </div>
       </div>
-
-      {/* 다국어 번역 드로어 (영어 제외 — 영어가 출처이기 때문) */}
       <TranslationDrawer
         type="hunminPassage"
         id={passage.number}
         displayName={displayName}
-        koreanSource={currentEnglish}
-        sourceLabel="영어"
-        excludeLangs={['en']}
-        baseValues={buildHunminPassageBaseValues(passage.translations, ['en'])}
+        koreanSource={currentKorean}
+        sourceLabel="한국어"
+        baseValues={buildHunminPassageBaseValues(passage.translations)}
         languageNames={ADMIN_LANGUAGE_NAMES}
         registeredFromCode
       />
