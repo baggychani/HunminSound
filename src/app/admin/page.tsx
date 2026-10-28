@@ -7,11 +7,30 @@ import Link from 'next/link'
 import { AdminFooter } from '@/components/admin/AdminFooter'
 
 /* ── 관리 섹션 목록 ──────────────────────────────────────────────────────── */
-const SECTIONS = [
+type AdminSection = {
+  id: string
+  href: string
+  title: string
+  en: string
+  desc: string
+  meta: string
+  ready: boolean
+}
+
+const MAIN_SECTION: AdminSection = {
+  id: 'home',
+  href: '/admin/content/home',
+  title: '메인 페이지',
+  en: 'Main',
+  desc: '히어로 문구, 섹션 설명, 카드 내용 등 메인 화면의 텍스트를 관리합니다.',
+  meta: '',
+  ready: true,
+}
+
+const SECTIONS: AdminSection[] = [
   {
     id: 'consonants',
     href: '/admin/content/consonants',
-    glyph: 'ㄱ',
     title: '자음',
     en: 'Consonants',
     desc: '19개 자음의 설명 텍스트, 분류, 영상 파일명을 확인하고 편집합니다.',
@@ -21,7 +40,6 @@ const SECTIONS = [
   {
     id: 'vowels',
     href: '/admin/content/vowels',
-    glyph: 'ㅏ',
     title: '모음',
     en: 'Vowels',
     desc: '21개 모음의 설명 텍스트, 분류, 애니메이션·MRI 파일명을 확인하고 편집합니다.',
@@ -31,7 +49,6 @@ const SECTIONS = [
   {
     id: 'hunminjeongeum',
     href: '/admin/content/hunminjeongeum',
-    glyph: '訓',
     title: '훈민정음',
     en: 'Hunminjeongeum',
     desc: '≪훈민정음≫ 해례본 28자 제자 원리·정인지서 단락별 다국어 번역을 편집합니다.',
@@ -39,26 +56,15 @@ const SECTIONS = [
     ready: true,
   },
   {
-    id: 'home',
-    href: '/admin/content/home',
-    glyph: '主',
-    title: '홈 페이지',
-    en: 'Home',
-    desc: '히어로 문구, 섹션 설명, 카드 내용 등 홈 화면의 텍스트를 관리합니다.',
-    meta: '',
-    ready: true,
-  },
-  {
     id: 'research',
     href: '/admin/content/research',
-    glyph: '研',
     title: '연구 소개',
     en: 'Research',
     desc: '연구 동기, 목표, 개요, 의의, 연구진, 과제 정보를 편집합니다.',
     meta: '8개 섹션',
     ready: false,
   },
-] as const
+]
 
 const fadeUp = {
   hidden: { opacity: 0, y: 10 },
@@ -240,6 +246,51 @@ function ContactForm() {
   )
 }
 
+function SectionCard({ section, className }: { section: AdminSection; className?: string }) {
+  const body = (
+    <>
+      {section.meta ? (
+        <div className="flex justify-end">
+          <span className="font-sans text-[10px] uppercase tracking-[0.08em] text-gold/80 dark:text-gold-light/70">
+            {section.meta}
+          </span>
+        </div>
+      ) : null}
+      <div className="flex-1">
+        <div className="mb-1.5 flex items-baseline gap-2">
+          <span className={`font-serif text-lg ${section.ready ? 'text-ink group-hover:text-ink-accent' : 'text-ink'} transition-colors`}>
+            {section.title}
+          </span>
+          <span className="font-sans text-[10.5px] uppercase tracking-wider text-ink-muted/60">
+            {section.en}
+          </span>
+        </div>
+        <p className="font-sans text-xs leading-relaxed text-ink-muted/80">
+          {section.desc}
+        </p>
+      </div>
+      {section.ready ? (
+        <div className="flex items-center gap-1.5 text-gold">
+          <span className="font-sans text-[11px] tracking-[0.06em]">편집하기</span>
+          <span className="text-sm transition-transform group-hover:translate-x-1">→</span>
+        </div>
+      ) : null}
+    </>
+  )
+
+  const box = `flex h-full flex-col gap-4 bg-hanji p-7 sm:p-8 ${className ?? ''}`
+
+  if (!section.ready) {
+    return <div className={box}>{body}</div>
+  }
+
+  return (
+    <Link href={section.href} className={`group ${box} transition-colors hover:bg-hanji-warm`}>
+      {body}
+    </Link>
+  )
+}
+
 function useAdminUsername() {
   const [username, setUsername] = useState<string | null>(null)
   useEffect(() => {
@@ -265,9 +316,6 @@ export default function AdminHomePage() {
       router.refresh()
     }
   }
-
-  const readySections = SECTIONS.filter((s) => s.ready)
-  const pendingSections = SECTIONS.filter((s) => !s.ready)
 
   return (
     <>
@@ -303,98 +351,27 @@ export default function AdminHomePage() {
           </button>
         </motion.div>
 
-        {/* ── 편집 가능 섹션 ──────────────────────────────────────── */}
-        <div className="mb-12">
-          <p className="mb-5 font-sans text-[11px] uppercase tracking-[0.1em] text-ink-muted">
-            편집 가능
-          </p>
-          <div className="grid grid-cols-1 gap-px bg-hanji-border sm:grid-cols-2">
-            {readySections.map((s, i) => (
-              <motion.div
-                key={s.id}
-                custom={i}
-                variants={fadeUp}
-                initial="hidden"
-                animate="show"
-              >
-                <Link
-                  href={s.href}
-                  className="group flex h-full flex-col gap-4 bg-hanji p-7 transition-colors hover:bg-hanji-warm sm:p-8"
-                >
-                  <div className="flex items-start justify-between">
-                    <span className="font-serif text-3xl leading-none text-ink-muted/40 group-hover:text-ink-muted/60 transition-colors select-none" lang="ko">
-                      {s.glyph}
-                    </span>
-                    <span className="font-sans text-[10px] uppercase tracking-[0.08em] text-gold/80 dark:text-gold-light/70">
-                      {s.meta}
-                    </span>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-baseline gap-2 mb-1.5">
-                      <span className="font-serif text-lg text-ink group-hover:text-ink-accent transition-colors">
-                        {s.title}
-                      </span>
-                      <span className="font-sans text-[10.5px] text-ink-muted/60 uppercase tracking-wider">
-                        {s.en}
-                      </span>
-                    </div>
-                    <p className="font-sans text-xs leading-relaxed text-ink-muted/80">
-                      {s.desc}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-gold">
-                    <span className="font-sans text-[11px] tracking-[0.06em]">편집하기</span>
-                    <span className="text-sm transition-transform group-hover:translate-x-1">→</span>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── 준비 중 섹션 ────────────────────────────────────────── */}
-        <div>
-          <p className="mb-5 font-sans text-[11px] uppercase tracking-[0.1em] text-ink-muted/60">
-            준비 중
-          </p>
-          <div className="grid grid-cols-1 gap-px bg-hanji-border/60 sm:grid-cols-2 lg:grid-cols-3">
-            {pendingSections.map((s, i) => (
-              <motion.div
-                key={s.id}
-                custom={readySections.length + i}
-                variants={fadeUp}
-                initial="hidden"
-                animate="show"
-              >
-                <div className="flex h-full flex-col gap-4 bg-hanji p-7 opacity-50 sm:p-8">
-                  <div className="flex items-start justify-between">
-                    <span className="font-serif text-3xl leading-none text-ink-muted/30 select-none">
-                      {s.glyph}
-                    </span>
-                    {s.meta ? (
-                      <span className="font-sans text-[10px] uppercase tracking-[0.08em] text-ink-muted/50">
-                        {s.meta}
-                      </span>
-                    ) : null}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-baseline gap-2 mb-1.5">
-                      <span className="font-serif text-lg text-ink-muted">{s.title}</span>
-                      <span className="font-sans text-[10.5px] text-ink-muted/50 uppercase tracking-wider">
-                        {s.en}
-                      </span>
-                    </div>
-                    <p className="font-sans text-xs leading-relaxed text-ink-muted/60">
-                      {s.desc}
-                    </p>
-                  </div>
-                  <span className="font-sans text-[11px] text-ink-muted/40 tracking-[0.06em]">
-                    준비 중
-                  </span>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+        <div className="mb-12 grid grid-cols-1 gap-px bg-hanji-border sm:grid-cols-2">
+          <motion.div
+            custom={0}
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            className="sm:col-span-2"
+          >
+            <SectionCard section={MAIN_SECTION} />
+          </motion.div>
+          {SECTIONS.map((section, i) => (
+            <motion.div
+              key={section.id}
+              custom={i + 1}
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+            >
+              <SectionCard section={section} />
+            </motion.div>
+          ))}
         </div>
 
         {/* ── 개발자 문의 ─────────────────────────────────────────── */}
@@ -404,9 +381,9 @@ export default function AdminHomePage() {
           transition={{ delay: 0.4, duration: 0.4 }}
           className="mt-16 border-t border-hanji-border pt-10"
         >
-          <p className="mb-1 font-sans text-[11px] uppercase tracking-[0.1em] text-ink-muted/60">
+          <h2 className="mb-1 font-sans text-lg font-medium tracking-normal text-ink">
             개발자에게 문의하기
-          </p>
+          </h2>
           <p className="mb-6 font-sans text-xs text-ink-muted/50">
             사이트 오류, 기능 요청, 수정 사항 등을 전달할 수 있습니다.
           </p>
