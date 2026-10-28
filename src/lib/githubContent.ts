@@ -1,6 +1,6 @@
 /**
  * 관리자 저장 → GitHub 저장소 파일에 직접 커밋.
- * main에 커밋되면 Vercel이 자동 재배포하므로, 코드와 관리자 페이지가 같은 파일 하나를 원본으로 쓴다.
+ * 화면은 저장 즉시 바뀌고, 이 커밋은 코드도 같은 글을 갖게 하려는 것이다(재빌드는 vercel.json 이 건너뛴다).
  *
  * 필요한 환경 변수(서버 전용):
  *   GITHUB_CONTENT_TOKEN  — 이 저장소 Contents 읽기/쓰기 권한이 있는 fine-grained 토큰
@@ -50,6 +50,7 @@ export async function readGithubFile(path: string): Promise<{ text: string; sha:
   const res = await fetch(`${contentsUrl(cfg.repo, path)}?ref=${encodeURIComponent(cfg.branch)}`, {
     headers: headers(cfg.token),
     cache: 'no-store',
+    signal: AbortSignal.timeout(15000),
   })
   if (!res.ok) throw new Error(`GITHUB_READ_FAILED ${res.status}`)
   const body = (await res.json()) as { content: string; sha: string }
@@ -63,6 +64,7 @@ export async function readGithubFileSha(path: string): Promise<string | null> {
   const res = await fetch(`${contentsUrl(cfg.repo, path)}?ref=${encodeURIComponent(cfg.branch)}`, {
     headers: headers(cfg.token),
     cache: 'no-store',
+    signal: AbortSignal.timeout(15000),
   })
   if (res.status === 404) return null
   if (!res.ok) throw new Error(`GITHUB_READ_FAILED ${res.status}`)
@@ -83,6 +85,7 @@ export async function writeGithubBytes(
     method: 'PUT',
     headers: headers(cfg.token),
     cache: 'no-store',
+    signal: AbortSignal.timeout(15000),
     body: JSON.stringify({
       message,
       content: bytes.toString('base64'),
@@ -109,6 +112,7 @@ export async function writeGithubFile(
     method: 'PUT',
     headers: headers(cfg.token),
     cache: 'no-store',
+    signal: AbortSignal.timeout(15000),
     body: JSON.stringify({
       message,
       content: Buffer.from(text, 'utf8').toString('base64'),

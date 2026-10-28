@@ -43,6 +43,7 @@ export async function patchOverride(body: { key: string; [key: string]: unknown 
   }
   _globalStore = data.store ?? {}
   notify()
+  notifyCmsSaved()
   try {
     const { resetPublicOverridesCache } = await import('@/hooks/useSiteMessages')
     resetPublicOverridesCache()
@@ -66,6 +67,14 @@ export const CMS_CONTENT_CHANGED = 'hunmin-cms-content-changed'
 export function notifyCmsContentChanged() {
   if (typeof window === 'undefined') return
   window.dispatchEvent(new Event(CMS_CONTENT_CHANGED))
+}
+
+/** 편집 화면에서 저장한 뒤 상단 막대가 수정 내역과 코드 반영 상태를 다시 읽게 한다. */
+export const CMS_SAVED = 'hunmin-cms-saved'
+
+export function notifyCmsSaved() {
+  if (typeof window === 'undefined') return
+  window.dispatchEvent(new Event(CMS_SAVED))
 }
 
 export function refreshAdminOverrides(): Promise<void> {

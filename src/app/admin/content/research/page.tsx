@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { ADMIN_LANGUAGE_NAMES } from '@/components/admin/adminLanguageNames'
 import type { ResearchContent, TeamDirectoryGroup, TeamRow } from '@/lib/research-content'
 import { TRANSLATION_LANGS } from '@/lib/i18n-overrides'
-import { CMS_CONTENT_CHANGED } from '@/lib/overrides-store'
+import { CMS_CONTENT_CHANGED, notifyCmsSaved } from '@/lib/overrides-store'
 import { teamPhotoSrc } from '@/lib/teamSlugs'
 
 function cloneDeep<T>(value: T): T {
@@ -460,6 +460,7 @@ export default function AdminResearchPage() {
       shaRef.current = body?.sha ?? null
       setSha(body?.sha ?? null)
       setNotice('저장했습니다. 사이트에 반영되었습니다.')
+      notifyCmsSaved()
     } catch (err) {
       setNotice(err instanceof Error ? err.message : '저장에 실패했습니다.')
       throw err
@@ -538,6 +539,7 @@ export default function AdminResearchPage() {
                 setData(body.data)
                 setSha(body.sha)
                 setNotice('저장했습니다. 코드 기준본으로 되돌렸고 사이트에 반영되었습니다.')
+                notifyCmsSaved()
               } catch (err) {
                 setNotice(err instanceof Error ? err.message : '기준본으로 되돌리지 못했습니다.')
               } finally {

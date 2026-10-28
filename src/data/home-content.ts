@@ -1,20 +1,18 @@
-/** 홈 CMS 편집 대상 — 한국어 canonical 원문 */
+import { homeText } from '@/data/home-text'
+
+const koText = (id: string) => homeText(id, 'ko')
+
+/** 홈 CMS 편집 대상 — 한국어 원문은 src/data/text/home.json */
 export const HOME_KO_BASE = {
-  homeSubtitle: '훈민정음 창제 원리의 과학적 재조명',
-  homeIntro:
-    '1443년 세종이 훈민정음(訓民正音)을 창제하며 제시한 상형 원리를,\n580여 년이 지난 오늘 MRI 영상·음성공학·AI 융합 기술로 실증합니다.',
-  homeResearchTitle: 'MRI로 밝히는 훈민정음의 비밀',
-  homeResearchDesc:
-    '세종대왕은 580년 전, 인간의 발성 기관을 정밀하게 관찰하여 한글을 창제했습니다.\n현대의 3T MRI 기술과 AI 분석으로 그 놀라운 과학적 통찰을 실증합니다.',
-  contactDesc:
-    '한국어 음성학, MRI 음성 과학, 언어 유산 연구에 관심 있는 연구자·기관과의 협력을 환영합니다.',
-  consonantsCardDesc:
-    '파열음, 마찰음, 파찰음, 비음, 유음 등 19개 자음의 조음 과정을 탐구합니다.',
-  vowelsCardDesc:
-    '단모음과 이중모음 21개 모음의 혀 위치와 조음 특성을 살펴봅니다.',
-  hunminjeongeumCardDesc:
-    '1443년 세종이 창제한 훈민정음에 담긴 상형 원리와 조음 과학의 만남을 탐구합니다.',
-} as const
+  homeSubtitle: koText('homeSubtitle'),
+  homeIntro: koText('homeIntro'),
+  homeResearchTitle: koText('homeResearchTitle'),
+  homeResearchDesc: koText('homeResearchDesc'),
+  contactDesc: koText('contactDesc'),
+  consonantsCardDesc: koText('consonantsCardDesc'),
+  vowelsCardDesc: koText('vowelsCardDesc'),
+  hunminjeongeumCardDesc: koText('hunminjeongeumCardDesc'),
+}
 
 export type HomeCmsFieldId = keyof typeof HOME_KO_BASE
 

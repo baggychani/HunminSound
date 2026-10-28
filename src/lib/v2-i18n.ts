@@ -1,5 +1,6 @@
 import type { Lang } from '@/lib/i18n'
 import { HOME_CONTACT_BY_LANG } from '@/lib/homeContact-i18n'
+import { homeText } from '@/data/home-text'
 
 const ko = {
   navOverview: '연구',
@@ -53,7 +54,7 @@ const ko = {
   newsReadMore: 'Read more',
   contactLabel: '함께 연구하기',
   contactTitle: '문의하기',
-  contactDesc: '한국어 음성학, MRI 음성 과학, 언어 유산 연구에 관심 있는 연구자·기관과의 협력을 환영합니다.',
+  contactDesc: homeText('contactDesc', 'ko'),
   contactEmail: '이메일',
   contactPhone: '전화',
   contactAddress: '주소',
@@ -131,7 +132,7 @@ const en: Record<keyof typeof ko, string> = {
   newsReadMore: 'Read more',
   contactLabel: 'Collaborate',
   contactTitle: 'Get in touch',
-  contactDesc: 'We welcome collaboration with researchers and institutions interested in Korean phonetics, MRI speech science, and linguistic heritage.',
+  contactDesc: homeText('contactDesc', 'en'),
   contactEmail: 'Email',
   contactPhone: 'Phone',
   contactAddress: 'Address',

@@ -1,4 +1,5 @@
 import { HOME_RESEARCH_BY_LANG } from './homeResearch-i18n'
+import { homeLine, homeText } from '@/data/home-text'
 import {
   isSupportedTranslationLang,
   makeOverrideKey,
@@ -58,13 +59,13 @@ const ko = {
   siteTitle: '세종말소리',
   consonants: '자음',
   vowels: '모음',
-  homeSubtitle: '훈민정음 창제 원리의 과학적 재조명',
+  homeSubtitle: homeText('homeSubtitle', 'ko'),
   /** KO: hero uses homeIntro only; this string unused. */
   homeDescription: '',
   homeSub: '',
   homeIntroPart1:
-    '1443년 세종이 훈민정음(訓民正音)을 창제하며 제시한 상형 원리를,',
-  homeIntroPart2: '580여 년이 지난 오늘 MRI 영상·음성공학·AI 융합 기술로 실증합니다.',
+    homeLine('homeIntro', 'ko', 1),
+  homeIntroPart2: homeLine('homeIntro', 'ko', 2),
   navSubConsonants: 'Consonants',
   navSubVowels: 'Vowels',
   navSubLanguage: 'Language',
@@ -105,9 +106,9 @@ const ko = {
   consonantsCount: '19개',
   vowelsCount: '21개',
   consonantsCardDesc:
-    '파열음, 마찰음, 파찰음, 비음, 유음 등 19개 자음의 조음 과정을 탐구합니다.',
+    homeText('consonantsCardDesc', 'ko'),
   vowelsCardDesc:
-    '단모음과 이중모음 21개 모음의 혀 위치와 조음 특성을 살펴봅니다.',
+    homeText('vowelsCardDesc', 'ko'),
   clickToExplore: '기호를 클릭하면 조음 설명과 MRI 영상을 확인할 수 있습니다.',
   monophthongDesc: '단일 조음 위치로 발음되는 순수 모음',
   diphthongDesc: '반모음과 단모음이 결합한 복합 모음',
@@ -130,11 +131,11 @@ const ko = {
   researchCardDesc: 'NRF 과제 정보, 연구진 소개, 연구 목적과 의의를 소개합니다.',
   researchCta: '소개 보기',
   homeResearchLabel: 'SCIENTIFIC APPROACH',
-  homeResearchTitle: 'MRI로 밝히는 훈민정음의 비밀',
+  homeResearchTitle: homeText('homeResearchTitle', 'ko'),
   homeResearchDesc1:
-    '세종대왕은 580년 전, 인간의 발성 기관을 정밀하게 관찰하여 한글을 창제했습니다.',
+    homeLine('homeResearchDesc', 'ko', 1),
   homeResearchDesc2:
-    '현대의 3T MRI 기술과 AI 분석으로 그 놀라운 과학적 통찰을 실증합니다.',
+    homeLine('homeResearchDesc', 'ko', 2),
   homeResearchFeature1Title: '3T MRI 촬영',
   homeResearchFeature1Sub: '고해상도 발성 영상',
   homeResearchFeature2Title: 'AI 파이프라인',
@@ -149,7 +150,7 @@ const ko = {
   homeResearchStatSub: '서울·제주·중국어 화자',
   hunminjeongeum: '훈민정음',
   navSubHunminjeongeum: 'Hunminjeongeum',
-  hunminjeongeumCardDesc: '1443년 세종이 창제한 훈민정음에 담긴 상형 원리와 조음 과학의 만남을 탐구합니다.',
+  hunminjeongeumCardDesc: homeText('hunminjeongeumCardDesc', 'ko'),
   hunminjeongeumPageDesc:
     '스물여덟 자(字)의 모양에 깃든 발음 기관의 상형 원리와, 천지인(天地人) 삼재(三才)에서 비롯한 모음의 철학적 체계를, 해례본 원문과 풀이를 따라 한 단락씩 짚어 봅니다.',
   hunminjeongeumCaption: '訓民正音 · 1443 창제 · 1446 반포',
@@ -192,14 +193,14 @@ const en: Messages = {
   siteTitle: 'Sejong Speech Sounds',
   consonants: 'Consonants',
   vowels: 'Vowels',
-  homeSubtitle: 'A Scientific Reillumination of the Creation Principles of Hunminjeongeum',
+  homeSubtitle: homeText('homeSubtitle', 'en'),
   homeDescription:
     'A research archive exploring the articulation of\nKorean consonants and vowels through MRI imaging.',
   homeSub: 'Hunminjeongeum Research Project · King Sejong, 1443',
   homeIntroPart1:
-    'The principles of Sanghyeong proposed by King Sejong during the creation of Hunminjeongeum in 1443—',
+    homeLine('homeIntro', 'en', 1),
   homeIntroPart2:
-    'are empirically validated today, after 580 years, through the convergence of MRI, speech engineering, and AI.',
+    homeLine('homeIntro', 'en', 2),
   navSubConsonants: 'Consonants',
   navSubVowels: 'Vowels',
   navSubLanguage: 'Language',
@@ -240,9 +241,9 @@ const en: Messages = {
   consonantsCount: '19',
   vowelsCount: '21',
   consonantsCardDesc:
-    'Explore the articulation of 19 Korean consonants: plosives, fricatives, affricates, nasals, and liquids.',
+    homeText('consonantsCardDesc', 'en'),
   vowelsCardDesc:
-    'Explore the tongue position and articulatory features of 21 Korean vowels.',
+    homeText('vowelsCardDesc', 'en'),
   clickToExplore: 'Click a symbol to view articulation details and MRI video.',
   monophthongDesc: 'Pure vowels with a single articulatory target',
   diphthongDesc: 'Vowels combining a glide and a monophthong',
@@ -265,11 +266,11 @@ const en: Messages = {
   researchCardDesc: 'NRF project information, research team, and research objectives.',
   researchCta: 'View intro',
   homeResearchLabel: 'SCIENTIFIC APPROACH',
-  homeResearchTitle: 'The Secret of Hunminjeongeum, Revealed by MRI',
+  homeResearchTitle: homeText('homeResearchTitle', 'en'),
   homeResearchDesc1:
-    '580 years ago, King Sejong observed the human vocal organs with precision and created Hangeul.',
+    homeLine('homeResearchDesc', 'en', 1),
   homeResearchDesc2:
-    'Modern 3T MRI and AI analysis now empirically validate that remarkable scientific insight.',
+    homeLine('homeResearchDesc', 'en', 2),
   homeResearchFeature1Title: '3T MRI Imaging',
   homeResearchFeature1Sub: 'High-resolution articulation',
   homeResearchFeature2Title: 'AI Pipeline',
@@ -284,7 +285,7 @@ const en: Messages = {
   homeResearchStatSub: 'Seoul · Jeju · Mandarin speakers',
   hunminjeongeum: 'Hunminjeongeum',
   navSubHunminjeongeum: 'Hunminjeongeum',
-  hunminjeongeumCardDesc: 'Explore the iconic principles behind Hunminjeongeum (訓民正音) — where articulation and philosophy meet.',
+  hunminjeongeumCardDesc: homeText('hunminjeongeumCardDesc', 'en'),
   hunminjeongeumPageDesc:
     'Tracing the 28 letters paragraph by paragraph through the Haerye, we examine how each form distills the shape of an articulatory organ — and how the philosophy of Heaven, Earth, and Humanity (天地人) is woven into the medial vowels.',
   hunminjeongeumCaption: '訓民正音 · Created 1443 · Promulgated 1446',
@@ -325,11 +326,11 @@ const zh: Messages = {
   siteTitle: '世宗语音',
   consonants: '辅音',
   vowels: '元音',
-  homeSubtitle: '科学再探训民正音的创制原理',
+  homeSubtitle: homeText('homeSubtitle', 'zh'),
   homeDescription: '通过MRI影像探索韩语辅音和元音\n发音过程的音声学研究档案。',
   homeSub: '训民正音研究项目 · 世宗大王 1443年',
-  homeIntroPart1: '1443年世宗大王创制《训民正音》时所提出的"象形原理"，',
-  homeIntroPart2: '历经580余年后的今天，通过MRI图像、语音工程及AI融合技术得以科学实证。',
+  homeIntroPart1: homeLine('homeIntro', 'zh', 1),
+  homeIntroPart2: homeLine('homeIntro', 'zh', 2),
   navSubConsonants: '辅音',
   navSubVowels: '元音',
   navSubLanguage: '语言',
@@ -369,8 +370,8 @@ const zh: Messages = {
   explore: '探索',
   consonantsCount: '19个',
   vowelsCount: '21个',
-  consonantsCardDesc: '探索19个韩语辅音（爆破音、摩擦音、塞擦音、鼻音、流音）的发音过程。',
-  vowelsCardDesc: '了解21个韩语元音的舌位和发音特点。',
+  consonantsCardDesc: homeText('consonantsCardDesc', 'zh'),
+  vowelsCardDesc: homeText('vowelsCardDesc', 'zh'),
   clickToExplore: '点击符号查看发音说明和MRI影像。',
   monophthongDesc: '单一发音目标的纯元音',
   diphthongDesc: '滑音与单元音结合的复合元音',
@@ -391,11 +392,11 @@ const zh: Messages = {
   researchCardDesc: 'NRF 项目信息、研究团队介绍及研究目的与意义。',
   researchCta: '查看介绍',
   homeResearchLabel: 'SCIENTIFIC APPROACH',
-  homeResearchTitle: 'The Secret of Hunminjeongeum, Revealed by MRI',
+  homeResearchTitle: homeText('homeResearchTitle', 'zh'),
   homeResearchDesc1:
-    '580 years ago, King Sejong observed the human vocal organs with precision and created Hangeul.',
+    homeLine('homeResearchDesc', 'zh', 1),
   homeResearchDesc2:
-    'Modern 3T MRI and AI analysis now empirically validate that remarkable scientific insight.',
+    homeLine('homeResearchDesc', 'zh', 2),
   homeResearchFeature1Title: '3T MRI Imaging',
   homeResearchFeature1Sub: 'High-resolution articulation',
   homeResearchFeature2Title: 'AI Pipeline',
@@ -410,7 +411,7 @@ const zh: Messages = {
   homeResearchStatSub: 'Seoul · Jeju · Mandarin speakers',
   hunminjeongeum: '训民正音',
   navSubHunminjeongeum: 'Hunminjeongeum',
-  hunminjeongeumCardDesc: '探索1443年世宗大王创制的训民正音（訓民正音）所蕴含的象形原理与发音科学。',
+  hunminjeongeumCardDesc: homeText('hunminjeongeumCardDesc', 'zh'),
   hunminjeongeumPageDesc:
     '依《解例本》逐段对照，探究二十八字如何将发音器官的形象凝缩于笔画，并将天地人（三才）的哲学体系融入中声的构造。',
   hunminjeongeumCaption: '訓民正音 · 1443年创制 · 1446年颁布',
@@ -450,11 +451,11 @@ const ja: Messages = {
   siteTitle: '世宗の音声',
   consonants: '子音',
   vowels: '母音',
-  homeSubtitle: '訓民正音創製原理の科学的再照明',
+  homeSubtitle: homeText('homeSubtitle', 'ja'),
   homeDescription: 'MRI映像で韓国語の子音と母音の\n調音過程を探求する音声学研究アーカイブ。',
   homeSub: '訓民正音研究プロジェクト · 世宗大王 1443年',
-  homeIntroPart1: '1443年に世宗大王が『訓民正音』を創製する際に提示した「象形の原理」を、',
-  homeIntroPart2: '580余年が経過した今日、MRI画像・音声工学・AIの融合技術によって実証します。',
+  homeIntroPart1: homeLine('homeIntro', 'ja', 1),
+  homeIntroPart2: homeLine('homeIntro', 'ja', 2),
   navSubConsonants: '子音',
   navSubVowels: '母音',
   navSubLanguage: '言語',
@@ -494,8 +495,8 @@ const ja: Messages = {
   explore: '探求する',
   consonantsCount: '19個',
   vowelsCount: '21個',
-  consonantsCardDesc: '19個の韓国語子音（閉鎖音・摩擦音・破擦音・鼻音・流音）の調音を探求します。',
-  vowelsCardDesc: '21個の韓国語母音の舌の位置と調音特性を学びます。',
+  consonantsCardDesc: homeText('consonantsCardDesc', 'ja'),
+  vowelsCardDesc: homeText('vowelsCardDesc', 'ja'),
   clickToExplore: '記号をクリックすると調音説明とMRI映像が表示されます。',
   monophthongDesc: '単一の調音目標を持つ純粋な母音',
   diphthongDesc: '半母音と単母音が結合した複合母音',
@@ -516,11 +517,11 @@ const ja: Messages = {
   researchCardDesc: 'NRF プロジェクト情報、研究チーム紹介、研究目的と意義。',
   researchCta: '紹介を見る',
   homeResearchLabel: 'SCIENTIFIC APPROACH',
-  homeResearchTitle: 'The Secret of Hunminjeongeum, Revealed by MRI',
+  homeResearchTitle: homeText('homeResearchTitle', 'ja'),
   homeResearchDesc1:
-    '580 years ago, King Sejong observed the human vocal organs with precision and created Hangeul.',
+    homeLine('homeResearchDesc', 'ja', 1),
   homeResearchDesc2:
-    'Modern 3T MRI and AI analysis now empirically validate that remarkable scientific insight.',
+    homeLine('homeResearchDesc', 'ja', 2),
   homeResearchFeature1Title: '3T MRI Imaging',
   homeResearchFeature1Sub: 'High-resolution articulation',
   homeResearchFeature2Title: 'AI Pipeline',
@@ -535,7 +536,7 @@ const ja: Messages = {
   homeResearchStatSub: 'Seoul · Jeju · Mandarin speakers',
   hunminjeongeum: '訓民正音',
   navSubHunminjeongeum: 'Hunminjeongeum',
-  hunminjeongeumCardDesc: '1443年に世宗大王が創製した訓民正音（훈민정음）に込められた象形原理と調音科学を探求します。',
+  hunminjeongeumCardDesc: homeText('hunminjeongeumCardDesc', 'ja'),
   hunminjeongeumPageDesc:
     '解例本の原文と訳を一段ずつ辿りながら、二十八字の形に宿る調音器官の象形原理と、天地人（三才）の哲学的体系がいかに中声に編み込まれているかを読み解きます。',
   hunminjeongeumCaption: '訓民正音 · 1443年制定 · 1446年頒布',
@@ -576,14 +577,14 @@ const fr: Messages = {
   siteTitle: 'Sejong Speech Sounds',
   consonants: 'Consonnes',
   vowels: 'Voyelles',
-  homeSubtitle: 'Nouvel éclairage scientifique sur les principes de création du Hunminjeongeum',
+  homeSubtitle: homeText('homeSubtitle', 'fr'),
   homeDescription:
     "Une archive de recherche explorant l'articulation\ndes consonnes et voyelles coréennes par IRM.",
   homeSub: 'Projet Hunminjeongeum · Roi Sejong, 1443',
   homeIntroPart1:
-    'Les principes de Sanghyeong (imitation des formes) proposés par le roi Sejong lors de la création du Hunminjeongeum en 1443,',
+    homeLine('homeIntro', 'fr', 1),
   homeIntroPart2:
-    "sont validés empiriquement aujourd'hui, plus de 580 ans après, par la convergence de l'imagerie RM, de la technologie vocale et de l'IA.",
+    homeLine('homeIntro', 'fr', 2),
   navSubConsonants: 'Consonnes',
   navSubVowels: 'Voyelles',
   navSubLanguage: 'Langue',
@@ -624,9 +625,9 @@ const fr: Messages = {
   consonantsCount: '19',
   vowelsCount: '21',
   consonantsCardDesc:
-    "Explorez l'articulation de 19 consonnes coréennes : occlusives, fricatives, affriquées, nasales et liquides.",
+    homeText('consonantsCardDesc', 'fr'),
   vowelsCardDesc:
-    "Explorez la position de la langue et les caractéristiques articulatoires des 21 voyelles coréennes.",
+    homeText('vowelsCardDesc', 'fr'),
   clickToExplore: "Cliquez sur un symbole pour voir les détails d'articulation et la vidéo IRM.",
   monophthongDesc: 'Voyelles pures avec une cible articulatoire unique',
   diphthongDesc: 'Voyelles combinant une semi-voyelle et une monophtongue',
@@ -649,11 +650,11 @@ const fr: Messages = {
   researchCardDesc: "Informations sur le projet NRF, présentation de l'équipe et objectifs de la recherche.",
   researchCta: 'Voir',
   homeResearchLabel: 'SCIENTIFIC APPROACH',
-  homeResearchTitle: 'The Secret of Hunminjeongeum, Revealed by MRI',
+  homeResearchTitle: homeText('homeResearchTitle', 'fr'),
   homeResearchDesc1:
-    '580 years ago, King Sejong observed the human vocal organs with precision and created Hangeul.',
+    homeLine('homeResearchDesc', 'fr', 1),
   homeResearchDesc2:
-    'Modern 3T MRI and AI analysis now empirically validate that remarkable scientific insight.',
+    homeLine('homeResearchDesc', 'fr', 2),
   homeResearchFeature1Title: '3T MRI Imaging',
   homeResearchFeature1Sub: 'High-resolution articulation',
   homeResearchFeature2Title: 'AI Pipeline',
@@ -668,7 +669,7 @@ const fr: Messages = {
   homeResearchStatSub: 'Seoul · Jeju · Mandarin speakers',
   hunminjeongeum: 'Hunminjeongeum',
   navSubHunminjeongeum: 'Hunminjeongeum',
-  hunminjeongeumCardDesc: "Explorez les principes d'iconicité et de phonétique articulatoire du Hunminjeongeum (訓民正音) créé par le roi Sejong en 1443.",
+  hunminjeongeumCardDesc: homeText('hunminjeongeumCardDesc', 'fr'),
   hunminjeongeumPageDesc:
     "Au fil des paragraphes du Haerye, nous suivons comment chacune des 28 lettres condense la forme d'un organe articulatoire — et comment la philosophie du Ciel, de la Terre et de l'Humanité (天地人) s'inscrit dans les voyelles médianes.",
   hunminjeongeumCaption: '訓民正音 · Créé en 1443 · Promulgué en 1446',
@@ -709,14 +710,14 @@ const de: Messages = {
   siteTitle: 'Sejong Speech Sounds',
   consonants: 'Konsonanten',
   vowels: 'Vokale',
-  homeSubtitle: 'Wissenschaftliche Neubeleuchtung der Entstehungsprinzipien des Hunminjeongeum',
+  homeSubtitle: homeText('homeSubtitle', 'de'),
   homeDescription:
     'Ein Forschungsarchiv zur Artikulation koreanischer Konsonanten und Vokale\nmithilfe von MRT-Bildgebung.',
   homeSub: 'Hunminjeongeum-Forschungsprojekt · König Sejong, 1443',
   homeIntroPart1:
-    'Die von König Sejong bei der Erschaffung des Hunminjeongeum im Jahr 1443 vorgeschlagenen Prinzipien des Sanghyeong —',
+    homeLine('homeIntro', 'de', 1),
   homeIntroPart2:
-    'werden heute, mehr als 580 Jahre später, durch die Konvergenz von MRT-Bildgebung, Sprachtechnologie und KI empirisch nachgewiesen.',
+    homeLine('homeIntro', 'de', 2),
   navSubConsonants: 'Konsonanten',
   navSubVowels: 'Vokale',
   navSubLanguage: 'Sprache',
@@ -757,9 +758,9 @@ const de: Messages = {
   consonantsCount: '19',
   vowelsCount: '21',
   consonantsCardDesc:
-    'Erkunden Sie die Artikulation von 19 koreanischen Konsonanten: Plosive, Frikative, Affrikaten, Nasale und Liquide.',
+    homeText('consonantsCardDesc', 'de'),
   vowelsCardDesc:
-    'Erkunden Sie Zungenstellung und artikulatorische Merkmale der 21 koreanischen Vokale.',
+    homeText('vowelsCardDesc', 'de'),
   clickToExplore:
     'Klicken Sie auf ein Symbol für Artikulationsdetails und das MRT-Video.',
   monophthongDesc: 'Reine Vokale mit einem einzigen artikulatorischen Ziel',
@@ -783,11 +784,11 @@ const de: Messages = {
   researchCardDesc: 'NRF-Projektinformationen, Vorstellung des Forschungsteams und Forschungsziele.',
   researchCta: 'Zur Übersicht',
   homeResearchLabel: 'SCIENTIFIC APPROACH',
-  homeResearchTitle: 'The Secret of Hunminjeongeum, Revealed by MRI',
+  homeResearchTitle: homeText('homeResearchTitle', 'de'),
   homeResearchDesc1:
-    '580 years ago, King Sejong observed the human vocal organs with precision and created Hangeul.',
+    homeLine('homeResearchDesc', 'de', 1),
   homeResearchDesc2:
-    'Modern 3T MRI and AI analysis now empirically validate that remarkable scientific insight.',
+    homeLine('homeResearchDesc', 'de', 2),
   homeResearchFeature1Title: '3T MRI Imaging',
   homeResearchFeature1Sub: 'High-resolution articulation',
   homeResearchFeature2Title: 'AI Pipeline',
@@ -802,7 +803,7 @@ const de: Messages = {
   homeResearchStatSub: 'Seoul · Jeju · Mandarin speakers',
   hunminjeongeum: 'Hunminjeongeum',
   navSubHunminjeongeum: 'Hunminjeongeum',
-  hunminjeongeumCardDesc: 'Die Ikonizitätsprinzipien und Artikulationswissenschaft des Hunminjeongeum (訓民正音) von König Sejong (1443).',
+  hunminjeongeumCardDesc: homeText('hunminjeongeumCardDesc', 'de'),
   hunminjeongeumPageDesc:
     'Wir folgen den 28 Buchstaben Absatz für Absatz durch den Haerye und betrachten, wie jede Form ein Artikulationsorgan abbildet — und wie die Philosophie von Himmel, Erde und Mensch (天地人) in den Medialvokalen aufscheint.',
   hunminjeongeumCaption: '訓民正音 · Erschaffen 1443 · Verkündet 1446',
@@ -843,14 +844,14 @@ const es: Messages = {
   siteTitle: 'Sejong Speech Sounds',
   consonants: 'Consonantes',
   vowels: 'Vocales',
-  homeSubtitle: 'Una nueva perspectiva científica sobre los principios de creación del Hunminjeongeum',
+  homeSubtitle: homeText('homeSubtitle', 'es'),
   homeDescription:
     'Un archivo de investigación que explora la articulación de las consonantes\ny vocales coreanas mediante imágenes por resonancia magnética.',
   homeSub: 'Proyecto Hunminjeongeum · Rey Sejong, 1443',
   homeIntroPart1:
-    'Los principios de Sanghyeong (imitación de formas) propuestos por el rey Sejong al crear el Hunminjeongeum en 1443,',
+    homeLine('homeIntro', 'es', 1),
   homeIntroPart2:
-    'se validan empíricamente hoy, más de 580 años después, mediante la convergencia de imágenes de RM, ingeniería de la voz e IA.',
+    homeLine('homeIntro', 'es', 2),
   navSubConsonants: 'Consonantes',
   navSubVowels: 'Vocales',
   navSubLanguage: 'Idioma',
@@ -891,9 +892,9 @@ const es: Messages = {
   consonantsCount: '19',
   vowelsCount: '21',
   consonantsCardDesc:
-    'Explore la articulación de 19 consonantes coreanas: oclusivas, fricativas, africadas, nasales y líquidas.',
+    homeText('consonantsCardDesc', 'es'),
   vowelsCardDesc:
-    'Explore la posición de la lengua y los rasgos articulatorios de las 21 vocales coreanas.',
+    homeText('vowelsCardDesc', 'es'),
   clickToExplore:
     'Pulse un símbolo para ver los detalles articulatorios y el video de RM.',
   monophthongDesc: 'Vocales puras con un único objetivo articulatorio',
@@ -917,11 +918,11 @@ const es: Messages = {
   researchCardDesc: 'Información del proyecto NRF, presentación del equipo investigador y objetivos.',
   researchCta: 'Ver',
   homeResearchLabel: 'SCIENTIFIC APPROACH',
-  homeResearchTitle: 'The Secret of Hunminjeongeum, Revealed by MRI',
+  homeResearchTitle: homeText('homeResearchTitle', 'es'),
   homeResearchDesc1:
-    '580 years ago, King Sejong observed the human vocal organs with precision and created Hangeul.',
+    homeLine('homeResearchDesc', 'es', 1),
   homeResearchDesc2:
-    'Modern 3T MRI and AI analysis now empirically validate that remarkable scientific insight.',
+    homeLine('homeResearchDesc', 'es', 2),
   homeResearchFeature1Title: '3T MRI Imaging',
   homeResearchFeature1Sub: 'High-resolution articulation',
   homeResearchFeature2Title: 'AI Pipeline',
@@ -936,7 +937,7 @@ const es: Messages = {
   homeResearchStatSub: 'Seoul · Jeju · Mandarin speakers',
   hunminjeongeum: 'Hunminjeongeum',
   navSubHunminjeongeum: 'Hunminjeongeum',
-  hunminjeongeumCardDesc: 'Explore los principios icónicos y fonéticos del Hunminjeongeum (訓民正音) creado por el rey Sejong en 1443.',
+  hunminjeongeumCardDesc: homeText('hunminjeongeumCardDesc', 'es'),
   hunminjeongeumPageDesc:
     'Recorremos el Haerye párrafo a párrafo y examinamos cómo cada una de las 28 letras condensa la forma de un órgano articulatorio — y cómo la filosofía del Cielo, la Tierra y la Humanidad (天地人) se inscribe en las vocales mediales.',
   hunminjeongeumCaption: '訓民正音 · Creado en 1443 · Promulgado en 1446',
@@ -977,14 +978,14 @@ const hi: Messages = {
   siteTitle: 'सेजोंग स्पीच साउंड्स',
   consonants: 'व्यंजन',
   vowels: 'स्वर',
-  homeSubtitle: 'हुनमिनजोंगम के निर्माण सिद्धांतों पर वैज्ञानिक पुनर्दृष्टि',
+  homeSubtitle: homeText('homeSubtitle', 'hi'),
   homeDescription:
     'MRI इमेजिंग के माध्यम से कोरियाई व्यंजनों और\nस्वरों के उच्चारण की खोज करने वाला शोध संग्रह।',
   homeSub: 'हुनमिनजोंगऊम शोध परियोजना · राजा सेजोंग, 1443',
   homeIntroPart1:
-    "1443 में राजा सेजोंग द्वारा 'हुनमिनजोंगम' के निर्माण के समय प्रस्तुत किए गए 'सांघियोंग' के सिद्धांतों को,",
+    homeLine('homeIntro', 'hi', 1),
   homeIntroPart2:
-    '580 से अधिक वर्षों बाद आज, एमआरआई छवियों, वाक्-इंजीनियरिंग और एआई संलयन तकनीक से सिद्ध किया जा रहा है।',
+    homeLine('homeIntro', 'hi', 2),
   navSubConsonants: 'व्यंजन',
   navSubVowels: 'स्वर',
   navSubLanguage: 'भाषा',
@@ -1024,8 +1025,8 @@ const hi: Messages = {
   explore: 'अन्वेषण',
   consonantsCount: '19',
   vowelsCount: '21',
-  consonantsCardDesc: '19 कोरियाई व्यंजनों के उच्चारण का अन्वेषण करें।',
-  vowelsCardDesc: '21 कोरियाई स्वरों की जीभ की स्थिति और उच्चारण विशेषताओं का अन्वेषण करें।',
+  consonantsCardDesc: homeText('consonantsCardDesc', 'hi'),
+  vowelsCardDesc: homeText('vowelsCardDesc', 'hi'),
   clickToExplore: 'उच्चारण विवरण और MRI वीडियो देखने के लिए किसी प्रतीक पर क्लिक करें।',
   monophthongDesc: 'एकल उच्चारण लक्ष्य वाले शुद्ध स्वर',
   diphthongDesc: 'अर्धस्वर और एकल स्वर का संयोजन',
@@ -1046,11 +1047,11 @@ const hi: Messages = {
   researchCardDesc: 'NRF परियोजना, शोध दल और अनुसंधान उद्देश्य।',
   researchCta: 'पढ़ें',
   homeResearchLabel: 'SCIENTIFIC APPROACH',
-  homeResearchTitle: 'The Secret of Hunminjeongeum, Revealed by MRI',
+  homeResearchTitle: homeText('homeResearchTitle', 'hi'),
   homeResearchDesc1:
-    '580 years ago, King Sejong observed the human vocal organs with precision and created Hangeul.',
+    homeLine('homeResearchDesc', 'hi', 1),
   homeResearchDesc2:
-    'Modern 3T MRI and AI analysis now empirically validate that remarkable scientific insight.',
+    homeLine('homeResearchDesc', 'hi', 2),
   homeResearchFeature1Title: '3T MRI Imaging',
   homeResearchFeature1Sub: 'High-resolution articulation',
   homeResearchFeature2Title: 'AI Pipeline',
@@ -1065,7 +1066,7 @@ const hi: Messages = {
   homeResearchStatSub: 'Seoul · Jeju · Mandarin speakers',
   hunminjeongeum: 'हुनमिनजोंगइम',
   navSubHunminjeongeum: 'Hunminjeongeum',
-  hunminjeongeumCardDesc: '1443 में राजा सेजोंग द्वारा रचित हुनमिनजोंगइम में निहित प्रतीकात्मक और उच्चारण सिद्धांतों की खोज।',
+  hunminjeongeumCardDesc: homeText('hunminjeongeumCardDesc', 'hi'),
   hunminjeongeumPageDesc:
     'हाएरये के अनुच्छेद-दर-अनुच्छेद के साथ चलते हुए, हम देखते हैं कि 28 अक्षरों में से प्रत्येक उच्चारण अंग की आकृति को कैसे संक्षिप्त करता है—और मध्य स्वरों में स्वर्ग, पृथ्वी और मानव (天地人) के दर्शन को कैसे बुना गया है।',
   hunminjeongeumCaption: '訓民正音 · 1443 में निर्मित · 1446 में घोषित',
@@ -1112,14 +1113,14 @@ const vi: Messages = {
   navSubLanguage: 'Ngôn ngữ',
   navSubResearch: 'Nghiên cứu',
   siteTitle: 'Sejong Speech Sounds',
-  homeSubtitle: 'Tái chiếu rọi khoa học về nguyên lý cấu tạo của Hunminjeongeum',
+  homeSubtitle: homeText('homeSubtitle', 'vi'),
   homeDescription:
     'Lưu trữ nghiên cứu khám phá quá trình điều âm\nnguyên âm và phụ âm tiếng Hàn qua hình ảnh MRI.',
   homeSub: 'Dự án Hunminjeongeum · Vua Sejong, 1443',
   homeIntroPart1:
-    "Nguyên lý 'Sanghyeong' (Tượng hình) được vua Sejong đề xuất khi sáng tạo Hunminjeongeum vào năm 1443,",
+    homeLine('homeIntro', 'vi', 1),
   homeIntroPart2:
-    'sau hơn 580 năm, nay được thực nghiệm hóa thông qua công nghệ kết hợp giữa hình ảnh MRI, công nghệ giọng nói và AI.',
+    homeLine('homeIntro', 'vi', 2),
   language: 'Ngôn ngữ',
   footerRight: 'Lưu trữ nghiên cứu âm học điều âm tiếng Hàn',
   themeLight: 'Sáng',
@@ -1149,9 +1150,9 @@ const vi: Messages = {
   consonantsCount: '19',
   vowelsCount: '21',
   consonantsCardDesc:
-    'Khám phá quá trình điều âm của 19 phụ âm tiếng Hàn: âm bật nổ, ma sát, tắc-xát, mũi và cạnh.',
+    homeText('consonantsCardDesc', 'vi'),
   vowelsCardDesc:
-    'Khám phá vị trí lưỡi và đặc trưng điều âm của 21 nguyên âm tiếng Hàn.',
+    homeText('vowelsCardDesc', 'vi'),
   clickToExplore: 'Nhấp vào ký hiệu để xem mô tả điều âm và video MRI.',
   monophthongDesc: 'Nguyên âm thuần với một mục tiêu điều âm',
   diphthongDesc: 'Nguyên âm ghép nửa nguyên âm và nguyên âm đơn',
@@ -1170,7 +1171,7 @@ const vi: Messages = {
   },
   hunminjeongeum: 'Hunminjeongeum',
   hunminjeongeumCardDesc:
-    'Khám phá các nguyên lý tượng hình và khoa học điều âm trong Hunminjeongeum (訓民正音) do vua Sejong tạo nên năm 1443.',
+    homeText('hunminjeongeumCardDesc', 'vi'),
   hunminjeongeumPageDesc:
     'Lần theo từng đoạn trong Haerye, chúng ta khảo sát 28 chữ cái đã chắt lọc hình dạng các cơ quan phát âm ra sao, và triết lý Thiên–Địa–Nhân (天地人) đã được dệt vào các nguyên âm trung tâm như thế nào.',
   hunminjeongeumCaption: '訓民正音 · Ra đời năm 1443 · Ban hành năm 1446',
@@ -1187,11 +1188,11 @@ const vi: Messages = {
   researchCardDesc: 'Thông tin dự án NRF, giới thiệu nhóm nghiên cứu, mục tiêu và ý nghĩa.',
   researchCta: 'Xem giới thiệu',
   homeResearchLabel: 'SCIENTIFIC APPROACH',
-  homeResearchTitle: 'The Secret of Hunminjeongeum, Revealed by MRI',
+  homeResearchTitle: homeText('homeResearchTitle', 'vi'),
   homeResearchDesc1:
-    '580 years ago, King Sejong observed the human vocal organs with precision and created Hangeul.',
+    homeLine('homeResearchDesc', 'vi', 1),
   homeResearchDesc2:
-    'Modern 3T MRI and AI analysis now empirically validate that remarkable scientific insight.',
+    homeLine('homeResearchDesc', 'vi', 2),
   homeResearchFeature1Title: '3T MRI Imaging',
   homeResearchFeature1Sub: 'High-resolution articulation',
   homeResearchFeature2Title: 'AI Pipeline',
@@ -1221,14 +1222,14 @@ const ru: Messages = {
   navSubLanguage: 'Язык',
   navSubResearch: 'Исследование',
   siteTitle: 'Звуки речи Седжона',
-  homeSubtitle: 'Научное переосмысление принципов создания Хунмин чёныма',
+  homeSubtitle: homeText('homeSubtitle', 'ru'),
   homeDescription:
     'Исследовательский архив, изучающий артикуляцию\nкорейских согласных и гласных с помощью МРТ.',
   homeSub: 'Проект Хунминчонъым · король Сечжон, 1443',
   homeIntroPart1:
-    'Принципы «Санхёна» (подражания формам), предложенные королем Седжоном при создании «Хунмин чёныма» в 1443 году,',
+    homeLine('homeIntro', 'ru', 1),
   homeIntroPart2:
-    'спустя более 580 лет эмпирически подтверждаются сегодня с помощью конвергенции МРТ-визуализации, речевых технологий и ИИ.',
+    homeLine('homeIntro', 'ru', 2),
   language: 'Язык',
   footerRight: 'Архив исследований корейской артикуляторной фонетики',
   themeLight: 'Светлая',
@@ -1258,9 +1259,9 @@ const ru: Messages = {
   consonantsCount: '19',
   vowelsCount: '21',
   consonantsCardDesc:
-    'Исследуйте артикуляцию 19 корейских согласных: смычные, щелевые, аффрикаты, носовые и дрожащие.',
+    homeText('consonantsCardDesc', 'ru'),
   vowelsCardDesc:
-    'Исследуйте положение языка и артикуляторные признаки 21 корейской гласной.',
+    homeText('vowelsCardDesc', 'ru'),
   clickToExplore: 'Нажмите на символ, чтобы увидеть описание артикуляции и видео МРТ.',
   monophthongDesc: 'Чистые гласные с одной артикуляторной целью',
   diphthongDesc: 'Гласные, сочетающие скольжение и монофтонг',
@@ -1279,7 +1280,7 @@ const ru: Messages = {
   },
   hunminjeongeum: 'Хунминчонъым',
   hunminjeongeumCardDesc:
-    'Иконические принципы и артикуляторная наука Хунминчонъыма (訓民正音), созданного королём Сечжоном в 1443 году.',
+    homeText('hunminjeongeumCardDesc', 'ru'),
   hunminjeongeumPageDesc:
     'Шаг за шагом по Хэрё мы прослеживаем, как каждая из 28 букв запечатлевает форму артикуляционного органа и как философия Неба, Земли и Человека (天地人) вписана в медиальные гласные.',
   hunminjeongeumCaption: '訓民正音 · Создан в 1443 · Провозглашён в 1446',
@@ -1312,14 +1313,14 @@ const ar: Messages = {
   navSubLanguage: 'اللغة',
   navSubResearch: 'البحث',
   siteTitle: 'أصوات كلام سيجونغ',
-  homeSubtitle: 'إعادة تسليط الضوء العلمي على مبادئ إنشاء الهونمين جيونغوم',
+  homeSubtitle: homeText('homeSubtitle', 'ar'),
   homeDescription:
     'أرشيف بحثي يستكشف ارتباط\nالمقاطع والحركات الكورية من خلال تصوير الرنين المغناطيسي.',
   homeSub: 'مشروع هونمينجونغئوم · الملك سيجونغ، 1443',
   homeIntroPart1:
-    'إن مبادئ "سانغهيونغ" (محاكاة الأشكال) التي طرحها الملك سيجونغ عند إنشاء "الهونمين جيونغوم" عام 1443،',
+    homeLine('homeIntro', 'ar', 1),
   homeIntroPart2:
-    'نثبتها اليوم تجريبيًا، بعد مرور أكثر من 580 عامًا، عبر تكامل تقنيات صور الرنين المغناطيسي (MRI)، وهندسة الصوت، والذكاء الاصطناعي (AI).',
+    homeLine('homeIntro', 'ar', 2),
   language: 'اللغة',
   footerRight: 'أرشيف أبحاث الصوتيات التعبيرية الكورية',
   themeLight: 'فاتح',
@@ -1349,9 +1350,9 @@ const ar: Messages = {
   consonantsCount: '19',
   vowelsCount: '21',
   consonantsCardDesc:
-    'استكشف ارتباط 19 مقطعًا كوريًا: انفجارية، احتكاكية، انفجارية-احتكاكية، أنفية، وسائلة.',
+    homeText('consonantsCardDesc', 'ar'),
   vowelsCardDesc:
-    'استكشف موضع اللسان وخصائص النطق لـ 21 حركة كورية.',
+    homeText('vowelsCardDesc', 'ar'),
   clickToExplore: 'انقر رمزًا لعرض وصف النطق وفيديو الرنين.',
   monophthongDesc: 'حركات صافية بهدف نطقي واحد',
   diphthongDesc: 'حركات تجمع انزلاقًا وحركة أحادية',
@@ -1370,7 +1371,7 @@ const ar: Messages = {
   },
   hunminjeongeum: 'هونمينجونغئوم',
   hunminjeongeumCardDesc:
-    'استكشف المبادئ التصويرية وعلم النطق المتمثلة في هونمينجونغئوم (訓民正音) الذي أنشأه الملك سيجونغ عام 1443.',
+    homeText('hunminjeongeumCardDesc', 'ar'),
   hunminjeongeumPageDesc:
     'نتتبع الـ28 حرفًا فقرةً فقرة عبر هاريي، فنتأمل كيف يكثّف كل شكل صورة عضو نطق، وكيف تنحفر فلسفة السماء والأرض والإنسان (天地人) في الحركات الوسطية.',
   hunminjeongeumCaption: '訓民正音 · أُنشئ عام 1443 · أُعلن عام 1446',
@@ -1398,16 +1399,16 @@ const tr: Messages = {
   ...en,
   consonants: 'Ünsüzler',
   vowels: 'Ünlüler',
-  homeSubtitle: 'Hunminjeongeum’un yaratılış ilkelerine bilimsel bir yeniden bakış',
+  homeSubtitle: homeText('homeSubtitle', 'tr'),
   homeIntroPart1:
-    'Sejong’un 1443’te Hunminjeongeum’u (訓民正音) yaratırken ortaya koyduğu biçim benzetmesi ilkesini,',
+    homeLine('homeIntro', 'tr', 1),
   homeIntroPart2:
-    '580 yılı aşkın süre sonra bugün MRI görüntüleri, konuşma mühendisliği ve yapay zekâ ile doğruluyoruz.',
+    homeLine('homeIntro', 'tr', 2),
   consonantsCount: '19',
   vowelsCount: '21',
   consonantsCardDesc:
-    'Patlamalı, sürtünmeli, yarı kapantılı, genizsil ve akıcı 19 ünsüzün boğumlanmasını inceler.',
-  vowelsCardDesc: '21 ünlünün dil konumu ve boğumlanma özelliklerine bakar.',
+    homeText('consonantsCardDesc', 'tr'),
+  vowelsCardDesc: homeText('vowelsCardDesc', 'tr'),
   explore: 'İncele',
   language: 'Dil',
   languagePickerAria: 'Dil seçin',
@@ -1418,7 +1419,7 @@ const tr: Messages = {
   research: 'Araştırma',
   hunminjeongeum: 'Hunminjeongeum',
   hunminjeongeumCardDesc:
-    'Sejong’un 1443’te yarattığı Hunminjeongeum’da biçim benzetmesi ile boğumlanma biliminin buluşmasını inceler.',
+    homeText('hunminjeongeumCardDesc', 'tr'),
   hunminjeongeumCaption: '訓民正音 · 1443’te yaratıldı · 1446’da yayımlandı',
   footerRight: 'Hunminjeongeum’un yaratılış ilkelerine bilimsel bir yeniden bakış',
   categories: {
@@ -1480,16 +1481,16 @@ const id: Messages = {
   ...en,
   consonants: 'Konsonan',
   vowels: 'Vokal',
-  homeSubtitle: 'Tinjauan ilmiah atas prinsip penciptaan Hunminjeongeum',
+  homeSubtitle: homeText('homeSubtitle', 'id'),
   homeIntroPart1:
-    'Prinsip sanghyeong yang diajukan Sejong saat menciptakan Hunminjeongeum (訓民正音) pada tahun 1443,',
+    homeLine('homeIntro', 'id', 1),
   homeIntroPart2:
-    'kini, lebih dari 580 tahun kemudian, kami buktikan melalui citra MRI, rekayasa wicara, dan teknologi AI.',
+    homeLine('homeIntro', 'id', 2),
   consonantsCount: '19',
   vowelsCount: '21',
   consonantsCardDesc:
-    'Menelusuri pelafalan 19 konsonan: letup, frikatif, afrikat, nasal, dan likuida.',
-  vowelsCardDesc: 'Melihat posisi lidah dan ciri artikulasi 21 vokal.',
+    homeText('consonantsCardDesc', 'id'),
+  vowelsCardDesc: homeText('vowelsCardDesc', 'id'),
   explore: 'Jelajahi',
   language: 'Bahasa',
   languagePickerAria: 'Pilih bahasa',
@@ -1500,7 +1501,7 @@ const id: Messages = {
   research: 'Penelitian',
   hunminjeongeum: 'Hunminjeongeum',
   hunminjeongeumCardDesc:
-    'Menelusuri pertemuan prinsip bentuk dan ilmu artikulasi dalam Hunminjeongeum yang diciptakan Sejong pada tahun 1443.',
+    homeText('hunminjeongeumCardDesc', 'id'),
   hunminjeongeumCaption: '訓民正音 · Diciptakan 1443 · Diumumkan 1446',
   footerRight: 'Tinjauan ilmiah atas prinsip penciptaan Hunminjeongeum',
   categories: {
@@ -1562,16 +1563,16 @@ const th: Messages = {
   ...en,
   consonants: 'พยัญชนะ',
   vowels: 'สระ',
-  homeSubtitle: 'การทบทวนเชิงวิทยาศาสตร์ต่อหลักการสร้างอักษรฮุนมินจองอึม',
+  homeSubtitle: homeText('homeSubtitle', 'th'),
   homeIntroPart1:
-    'หลักการถอดแบบอวัยวะที่พระเจ้าเซจงเสนอเมื่อสร้างฮุนมินจองอึม (訓民正音) ในปี 1443',
+    homeLine('homeIntro', 'th', 1),
   homeIntroPart2:
-    'วันนี้ กว่า 580 ปีให้หลัง เราพิสูจน์ด้วยภาพ MRI วิศวกรรมเสียงพูด และเทคโนโลยี AI',
+    homeLine('homeIntro', 'th', 2),
   consonantsCount: '19',
   vowelsCount: '21',
   consonantsCardDesc:
-    'สำรวจการออกเสียงพยัญชนะ 19 ตัว ทั้งเสียงระเบิด เสียงเสียดแทรก เสียงกักเสียดแทรก เสียงนาสิก และเสียงเปิด',
-  vowelsCardDesc: 'ดูตำแหน่งลิ้นและลักษณะการออกเสียงของสระ 21 ตัว',
+    homeText('consonantsCardDesc', 'th'),
+  vowelsCardDesc: homeText('vowelsCardDesc', 'th'),
   explore: 'สำรวจ',
   language: 'ภาษา',
   languagePickerAria: 'เลือกภาษา',
@@ -1582,7 +1583,7 @@ const th: Messages = {
   research: 'งานวิจัย',
   hunminjeongeum: 'ฮุนมินจองอึม',
   hunminjeongeumCardDesc:
-    'สำรวจจุดที่หลักการถอดแบบอวัยวะพบกับศาสตร์การออกเสียง ในฮุนมินจองอึมที่พระเจ้าเซจงสร้างขึ้นในปี 1443',
+    homeText('hunminjeongeumCardDesc', 'th'),
   hunminjeongeumCaption: '訓民正音 · สร้างปี 1443 · ประกาศปี 1446',
   footerRight: 'การทบทวนเชิงวิทยาศาสตร์ต่อหลักการสร้างอักษรฮุนมินจองอึม',
   categories: {

@@ -16,6 +16,16 @@ export type CodeConflict = {
   code: string
 }
 
+/** 화면에는 저장됐지만 아직 GitHub 코드에 들어가지 않은 글 */
+export type CodeOutboxNotice = {
+  key: string
+  label: string
+  username: string
+  at: string
+  status?: 'blocked' | 'failed'
+  error?: string
+}
+
 export interface HistoryEntry {
   id: string
   timestamp: string       // ISO-8601

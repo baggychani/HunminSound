@@ -8,9 +8,12 @@ import { makeHistoryEntry, MAX_HISTORY, type CodeConflict, type HistoryEntry } f
 import { validateResearchContent, type ResearchContent } from '@/lib/research-content'
 import { summarizeResearchChange } from '@/lib/research-history'
 import { codeChangeLabel, codeContentStamp, listCodeConflicts, planCodeSync, researchStamp, textStamp } from '@/lib/cms-code-sync'
+import { codeAcceptStamp, pushOutboxToGithub, type CodeOutboxItem } from '@/lib/cms-code-writeback'
 
 const KEY = 'hunminsound:cms:v2:current'
 const BASELINE_KEY = 'hunminsound:cms:v2:baseline'
+const OUTBOX_KEY = 'hunminsound:cms:v2:code-outbox'
+const BACKFILL_KEY = 'hunminsound:cms:v2:code-backfill'
 export const cmsDirectory = () => process.env.CMS_LOCAL_DIR || path.join(process.cwd(), '.cms')
 export class CmsConflictError extends Error {}
 type Content = { overrides: OverridesStore; research: ResearchContent }
@@ -221,6 +224,9 @@ async function syncDeployedCode(state: State, allowRetry = true): Promise<State>
     if (!(error instanceof CmsConflictError) || !allowRetry) throw error
     return syncDeployedCode(await readStoredState(), false)
   }
+  const takenByCode = plan.textChanges.map((change) => change.key)
+  if (plan.researchChange) takenByCode.push('research')
+  if (takenByCode.length) await dropOutbox(takenByCode).catch((error) => console.error('[cms] code outbox cleanup failed:', error))
   if (plan.researchChange) {
     const kept = new Set(photoNamesOf(plan.researchChange.after))
     const candidates = photoNamesOf(plan.researchChange.before).filter((name) => !kept.has(name))
@@ -309,8 +315,10 @@ export async function saveText(input: {
       delete after.codeDeclined
     }
   }
-  return (await saveChange(current, { kind: 'text', key: input.key, before, after }, username,
-    input.remove ? 'remove' : input.staleDismissed ? 'dismiss' : 'save', input.displayName)).overrides
+  const next = await saveChange(current, { kind: 'text', key: input.key, before, after }, username,
+    input.remove ? 'remove' : input.staleDismissed ? 'dismiss' : 'save', input.displayName)
+  if (after.value !== before.value) await sendTextToCode(input.key, before.value, after.value, username)
+  return next.overrides
 }
 
 export const researchVersion = researchStamp
@@ -324,6 +332,7 @@ export async function writeResearchContent(data: ResearchContent, version: strin
   if (version !== researchVersion(current.research)) throw new CmsConflictError()
   if (validateResearchContent(data) !== true) throw new Error('CMS_INVALID_RESEARCH')
   await saveChange(current, { kind: 'research', before: current.research, after: data }, username, 'save', '연구 소개')
+  await sendResearchToCode(current.research, data, username)
   return researchVersion(data)
 }
 export async function restoreResearchBaseline(version: string | null, username: string) {
@@ -332,6 +341,7 @@ export async function restoreResearchBaseline(version: string | null, username: 
   const after = codeBaseline().research
   if (validateResearchContent(after) !== true) throw new Error('CMS_INVALID_RESEARCH')
   await saveChange(current, { kind: 'research', before: current.research, after }, username, 'remove', '연구 소개')
+  await sendResearchToCode(current.research, after, username)
   return researchVersion(after)
 }
 const PHOTO_NAME = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(jpg|png|webp)$/
@@ -469,10 +479,11 @@ export async function restoreCmsEntry(id: string, expectedRevision: string, user
   const event = await readEvent(id)
   if (!event) throw new Error('CMS_INVALID_HISTORY')
   if (event.change.kind === 'text') {
-    await saveChange(current, {
-      kind: 'text', key: event.change.key, before: current.overrides[event.change.key],
-      after: pinRestoredText(event.change.key, event.change.before),
-    }, username, 'restore', event.entry.itemName)
+    const key = event.change.key
+    const before = current.overrides[key]
+    const after = pinRestoredText(key, event.change.before)
+    await saveChange(current, { kind: 'text', key, before, after }, username, 'restore', event.entry.itemName)
+    if (after.value !== before?.value) await sendTextToCode(key, before?.value ?? '', after.value, username)
     return
   }
   const after = event.change.before
@@ -483,6 +494,7 @@ export async function restoreCmsEntry(id: string, expectedRevision: string, user
     researchCodeDeclined: researchStamp(after) === codeHash ? undefined : codeHash,
   }
   await saveChange(prepared, { kind: 'research', before: current.research, after }, username, 'restore', event.entry.itemName)
+  await sendResearchToCode(current.research, after, username)
 }
 
 export async function resolveCodeConflict(
@@ -500,12 +512,14 @@ export async function resolveCodeConflict(
     if (input.choice === 'code') {
       const prepared: State = { ...current, researchCodeVersion: codeHash, researchCodeConflict: false, researchCodeDeclined: undefined }
       await saveChange(prepared, { kind: 'research', before: current.research, after: codeResearch }, username, 'code', '연구 소개')
+      await dropOutbox(['research'])
       return
     }
     const prepared: State = { ...current, researchCodeConflict: false, researchCodeDeclined: codeHash }
     await saveChange(prepared, { kind: 'research', before: current.research, after: current.research }, username, 'keep', '연구 소개', {
       oldValue: '배포된 코드의 연구 소개', newValue: '화면에 저장한 연구 소개',
     })
+    await sendResearchToCode(codeResearch, current.research, username)
     return
   }
   if (input.kind !== 'text' || !input.key) throw new Error('CMS_INVALID_CONFLICT')
@@ -518,6 +532,7 @@ export async function resolveCodeConflict(
     delete after.pendingCode
     delete after.codeDeclined
     await saveChange(current, { kind: 'text', key: input.key, before, after }, username, 'code', codeChangeLabel(input.key))
+    await dropOutbox([input.key])
     return
   }
   const after: TranslationOverride = { ...before, codeDeclined: textStamp(before.pendingCode) }
@@ -525,4 +540,173 @@ export async function resolveCodeConflict(
   await saveChange(current, { kind: 'text', key: input.key, before, after }, username, 'keep', codeChangeLabel(input.key), {
     oldValue: before.pendingCode, newValue: before.value,
   })
+  await sendTextToCode(input.key, before.pendingCode, before.value, username)
+}
+
+// ── 관리자 화면 저장 → GitHub 코드 ─────────────────────────────────────────────
+// 화면 글은 위에서 이미 바뀌었다. 여기서 실패해도 저장은 그대로 두고, 대기열에 남겨 다시 시도한다.
+
+type OutboxSettle = { key: string; id: string; remove: boolean; status?: CodeOutboxItem['status']; error?: string }
+
+const outboxFile = () => path.join(cmsDirectory(), 'code-outbox.json')
+
+function parseOutboxValue(value: unknown): CodeOutboxItem | null {
+  const item = typeof value === 'string' ? JSON.parse(value) as CodeOutboxItem : value as CodeOutboxItem
+  return item && typeof item.key === 'string' && typeof item.id === 'string' ? item : null
+}
+
+export async function readCodeOutbox(): Promise<CodeOutboxItem[]> {
+  const client = getCmsRedis()
+  const raw = client
+    ? await client.hgetall<Record<string, unknown>>(OUTBOX_KEY)
+    : await readJson<Record<string, CodeOutboxItem>>(outboxFile())
+  return Object.values(raw ?? {}).map(parseOutboxValue).filter((item): item is CodeOutboxItem => item !== null)
+    .sort((a, b) => a.at.localeCompare(b.at))
+}
+
+async function putOutbox(items: CodeOutboxItem[]): Promise<void> {
+  if (items.length === 0) return
+  const client = getCmsRedis()
+  const merge = (previous: CodeOutboxItem | null, item: CodeOutboxItem): CodeOutboxItem =>
+    previous ? { ...item, accept: Array.from(new Set([...item.accept, ...previous.accept])) } : item
+  if (client) {
+    for (const item of items) {
+      const previous = parseOutboxValue(await client.hget(OUTBOX_KEY, item.key))
+      await client.hset(OUTBOX_KEY, { [item.key]: JSON.stringify(merge(previous, item)) })
+    }
+    return
+  }
+  if (process.env.VERCEL === '1') throw new Error('CMS_CLOUD_STORAGE_REQUIRED')
+  await localLock(async () => {
+    const all = (await readJson<Record<string, CodeOutboxItem>>(outboxFile())) ?? {}
+    for (const item of items) all[item.key] = merge(all[item.key] ?? null, item)
+    await atomicFile(outboxFile(), all)
+  })
+}
+
+/** 그 사이 같은 글이 다시 저장됐다면(id가 다르면) 건드리지 않는다. */
+async function settleOutbox(updates: OutboxSettle[]): Promise<void> {
+  if (updates.length === 0) return
+  const client = getCmsRedis()
+  if (client) {
+    for (const update of updates) {
+      await client.eval(`local current = redis.call('HGET', KEYS[1], ARGV[1])
+        if not current then return 0 end
+        local item = cjson.decode(current)
+        if item.id ~= ARGV[2] then return 0 end
+        if ARGV[3] == '1' then redis.call('HDEL', KEYS[1], ARGV[1]) return 1 end
+        item.status = ARGV[4]
+        item.error = ARGV[5]
+        redis.call('HSET', KEYS[1], ARGV[1], cjson.encode(item))
+        return 1`,
+      [OUTBOX_KEY], [update.key, update.id, update.remove ? '1' : '0', update.status ?? '', update.error ?? ''])
+    }
+    return
+  }
+  await localLock(async () => {
+    const all = (await readJson<Record<string, CodeOutboxItem>>(outboxFile())) ?? {}
+    for (const update of updates) {
+      const item = all[update.key]
+      if (!item || item.id !== update.id) continue
+      if (update.remove) delete all[update.key]
+      else all[update.key] = { ...item, status: update.status, error: update.error }
+    }
+    await atomicFile(outboxFile(), all)
+  })
+}
+
+async function dropOutbox(keys: string[]): Promise<void> {
+  const client = getCmsRedis()
+  if (client) {
+    await client.hdel(OUTBOX_KEY, ...keys)
+    return
+  }
+  if (process.env.VERCEL === '1') return
+  await localLock(async () => {
+    const all = await readJson<Record<string, CodeOutboxItem>>(outboxFile())
+    if (!all) return
+    for (const key of keys) delete all[key]
+    await atomicFile(outboxFile(), all)
+  })
+}
+
+function outboxItem(key: string, value: string, accept: string[], label: string, username: string): CodeOutboxItem {
+  return {
+    id: randomUUID(), key, value, label, username, at: new Date().toISOString(),
+    accept: Array.from(new Set(accept.map((text) => codeAcceptStamp(key, text)))),
+  }
+}
+
+async function sendTextToCode(key: string, before: string, after: string, username: string) {
+  const codeText = deployedCode().baseline.overrides[key]?.value
+  const accept = codeText === undefined ? [before] : [before, codeText]
+  await sendToCode([outboxItem(key, after, accept, codeChangeLabel(key), username)])
+}
+
+async function sendResearchToCode(before: ResearchContent, after: ResearchContent, username: string) {
+  if (researchStamp(before) === researchStamp(after)) return
+  const accept = [JSON.stringify(before), JSON.stringify(deployedCode().baseline.research)]
+  await sendToCode([outboxItem('research', JSON.stringify(after), accept, '연구 소개', username)])
+}
+
+async function sendToCode(items: CodeOutboxItem[]) {
+  try {
+    await putOutbox(items)
+    await flushCodeOutbox()
+  } catch (error) {
+    console.error('[cms] code outbox failed:', error)
+  }
+}
+
+/** 이 기능 이전에 화면에서만 고쳐 둔 글도 한 번은 코드에 넣는다. */
+async function backfillOutbox(state: State): Promise<void> {
+  const client = getCmsRedis()
+  if (client) {
+    if ((await client.set(BACKFILL_KEY, new Date().toISOString(), { nx: true })) === null) return
+  } else {
+    try { await fs.writeFile(path.join(cmsDirectory(), 'code-backfill'), new Date().toISOString(), { flag: 'wx' }) }
+    catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'EEXIST') return
+      throw error
+    }
+  }
+  const { baseline } = deployedCode()
+  const lastEditor = (key: string) => state.history.find((entry) => entry.key === key)?.username ?? '관리자'
+  const items: CodeOutboxItem[] = []
+  for (const [key, entry] of Object.entries(state.overrides)) {
+    const codeText = baseline.overrides[key]?.value
+    if (codeText === undefined || entry.value === codeText || entry.pendingCode) continue
+    items.push(outboxItem(key, entry.value, [codeText], codeChangeLabel(key), lastEditor(key)))
+  }
+  if (!state.researchCodeConflict && researchStamp(state.research) !== researchStamp(baseline.research)) {
+    items.push(outboxItem('research', JSON.stringify(state.research), [JSON.stringify(baseline.research)], '연구 소개', lastEditor('research')))
+  }
+  await putOutbox(items)
+}
+
+let flushing: Promise<void> | null = null
+
+/** 대기 중인 글을 GitHub 코드에 넣는다. 코드에서 같은 글을 따로 고쳤으면 덮지 않고 남겨 둔다. */
+export function flushCodeOutbox(): Promise<void> {
+  if (!flushing) {
+    flushing = (async () => {
+      await backfillOutbox(await readCmsState())
+      const items = await readCodeOutbox()
+      if (items.length === 0) return
+      const result = await pushOutboxToGithub(items)
+      const byId = new Map(items.map((item) => [item.id, item]))
+      const updates: OutboxSettle[] = []
+      for (const id of result.done) updates.push({ key: byId.get(id)!.key, id, remove: true })
+      for (const id of result.blocked) {
+        const item = byId.get(id)!
+        if (item.status !== 'blocked') updates.push({ key: item.key, id, remove: false, status: 'blocked' })
+      }
+      for (const { id, error } of result.failed) {
+        const item = byId.get(id)!
+        if (item.status !== 'failed' || item.error !== error) updates.push({ key: item.key, id, remove: false, status: 'failed', error })
+      }
+      await settleOutbox(updates)
+    })().finally(() => { flushing = null })
+  }
+  return flushing
 }

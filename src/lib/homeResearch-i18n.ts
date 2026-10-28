@@ -1,4 +1,5 @@
 import type { Lang } from '@/lib/i18n'
+import { homeLine, homeText } from '@/data/home-text'
 
 export type HomeResearchMessages = {
   homeResearchLabel: string
@@ -22,10 +23,10 @@ export type HomeResearchMessages = {
 export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
   ko: {
     homeResearchLabel: 'SCIENTIFIC APPROACH',
-    homeResearchTitle: 'MRI로 밝히는 훈민정음의 비밀',
+    homeResearchTitle: homeText('homeResearchTitle', 'ko'),
     homeResearchDesc1:
-      '세종대왕은 580년 전, 인간의 발성 기관을 정밀하게 관찰하여 한글을 창제했습니다.',
-    homeResearchDesc2: '현대의 3T MRI 기술과 AI 분석으로 그 놀라운 과학적 통찰을 실증합니다.',
+      homeLine('homeResearchDesc', 'ko', 1),
+    homeResearchDesc2: homeLine('homeResearchDesc', 'ko', 2),
     homeResearchFeature1Title: '3T MRI 촬영',
     homeResearchFeature1Sub: '고해상도 발성 영상',
     homeResearchFeature2Title: 'AI 파이프라인',
@@ -41,11 +42,11 @@ export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
   },
   en: {
     homeResearchLabel: 'SCIENTIFIC APPROACH',
-    homeResearchTitle: 'The Secrets of Hunminjeongeum Revealed by MRI',
+    homeResearchTitle: homeText('homeResearchTitle', 'en'),
     homeResearchDesc1:
-      'King Sejong created Hangeul 580 years ago by precisely observing the human vocal organs.',
+      homeLine('homeResearchDesc', 'en', 1),
     homeResearchDesc2:
-      'Today, we empirically validate that remarkable scientific insight through modern 3T MRI technology and AI analysis.',
+      homeLine('homeResearchDesc', 'en', 2),
     homeResearchFeature1Title: '3T MRI Imaging',
     homeResearchFeature1Sub: 'High-resolution articulation',
     homeResearchFeature2Title: 'AI Pipeline',
@@ -61,11 +62,11 @@ export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
   },
   ja: {
     homeResearchLabel: '科学的アプローチ',
-    homeResearchTitle: 'MRIで明かされる訓民正音の秘密',
+    homeResearchTitle: homeText('homeResearchTitle', 'ja'),
     homeResearchDesc1:
-      '世宗大王は580年前、人間の発声器官を精密に観察してハングルを創製しました。',
+      homeLine('homeResearchDesc', 'ja', 1),
     homeResearchDesc2:
-      '現代の3T MRI技術とAI分析により、その驚くべき科学的洞察を実証します。',
+      homeLine('homeResearchDesc', 'ja', 2),
     homeResearchFeature1Title: '3T MRI撮影',
     homeResearchFeature1Sub: '高解像度発声映像',
     homeResearchFeature2Title: 'AIパイプライン',
@@ -81,10 +82,10 @@ export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
   },
   zh: {
     homeResearchLabel: '科学方法',
-    homeResearchTitle: 'MRI揭开的训民正音之谜',
-    homeResearchDesc1: '580年前，世宗大王通过精密观察人类的发声器官创制了韩文。',
+    homeResearchTitle: homeText('homeResearchTitle', 'zh'),
+    homeResearchDesc1: homeLine('homeResearchDesc', 'zh', 1),
     homeResearchDesc2:
-      '今天，我们利用现代3T MRI技术与AI analysis，科学实证这一惊人的科学洞察。',
+      homeLine('homeResearchDesc', 'zh', 2),
     homeResearchFeature1Title: '3T MRI成像',
     homeResearchFeature1Sub: '高分辨率发音影像',
     homeResearchFeature2Title: 'AI分析流程',
@@ -100,11 +101,11 @@ export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
   },
   fr: {
     homeResearchLabel: 'APPROCHE SCIENTIFIQUE',
-    homeResearchTitle: "Les secrets du Hunminjeongeum révélés par l'IRM",
+    homeResearchTitle: homeText('homeResearchTitle', 'fr'),
     homeResearchDesc1:
-      'Il y a 580 ans, le roi Sejong a créé le hangeul en observant précisément les organes vocaux humains.',
+      homeLine('homeResearchDesc', 'fr', 1),
     homeResearchDesc2:
-      "Aujourd'hui, nous validons empiriquement cette remarquable intuition scientifique grâce à la technologie IRM 3T moderne et à l'analyse de l'IA.",
+      homeLine('homeResearchDesc', 'fr', 2),
     homeResearchFeature1Title: 'Imagerie IRM 3T',
     homeResearchFeature1Sub: 'Articulation haute résolution',
     homeResearchFeature2Title: 'Pipeline IA',
@@ -120,11 +121,11 @@ export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
   },
   de: {
     homeResearchLabel: 'WISSENSCHAFTLICHER ANSATZ',
-    homeResearchTitle: 'Die durch MRT enthüllten Geheimnisse des Hunminjeongeum',
+    homeResearchTitle: homeText('homeResearchTitle', 'de'),
     homeResearchDesc1:
-      'Vor 580 Jahren schuf König Sejong das Hangeul, indem er die menschlichen Sprechorgane präzise beobachtete.',
+      homeLine('homeResearchDesc', 'de', 1),
     homeResearchDesc2:
-      'Heute weisen wir diese erstaunliche wissenschaftliche Erkenntnis durch moderne 3T-MRT-Technologie und KI-Analyse empirisch nach.',
+      homeLine('homeResearchDesc', 'de', 2),
     homeResearchFeature1Title: '3T-MRT-Aufnahme',
     homeResearchFeature1Sub: 'Hochauflösende Artikulation',
     homeResearchFeature2Title: 'KI-Pipeline',
@@ -140,11 +141,11 @@ export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
   },
   es: {
     homeResearchLabel: 'ENFOQUE CIENTÍFICO',
-    homeResearchTitle: 'Los secretos del Hunminjeongeum revelados por la RM',
+    homeResearchTitle: homeText('homeResearchTitle', 'es'),
     homeResearchDesc1:
-      'Hace 580 años, el gran rey Sejong creó el hangeul observando con precisión los órganos vocales humanos.',
+      homeLine('homeResearchDesc', 'es', 1),
     homeResearchDesc2:
-      'Hoy, validamos empíricamente esa sorprendente percepción científica mediante la tecnología moderna de RM 3T y el análisis de IA.',
+      homeLine('homeResearchDesc', 'es', 2),
     homeResearchFeature1Title: 'Imagen RM 3T',
     homeResearchFeature1Sub: 'Articulación de alta resolución',
     homeResearchFeature2Title: 'Pipeline de IA',
@@ -160,11 +161,11 @@ export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
   },
   hi: {
     homeResearchLabel: 'वैज्ञानिक दृष्टिकोण',
-    homeResearchTitle: 'एमआरआई (MRI) द्वारा अनावरण किए गए हुनमिनजोंगम के रहस्य',
+    homeResearchTitle: homeText('homeResearchTitle', 'hi'),
     homeResearchDesc1:
-      'राजा सेजोंग ने 580 वर्ष पहले मानव आवाज अंगों का सटीक अवलोकन करके हंगुल का निर्माण किया था।',
+      homeLine('homeResearchDesc', 'hi', 1),
     homeResearchDesc2:
-      'आज, हम आधुनिक 3T एमआरआई तकनीक और एआई विश्लेषण के माध्यम से उस अद्भुत वैज्ञानिक अंतर्दृष्टि को अनुभवजन्य रूप से सिद्ध करते हैं।',
+      homeLine('homeResearchDesc', 'hi', 2),
     homeResearchFeature1Title: '3T MRI imaging',
     homeResearchFeature1Sub: 'उच्च-रिज़ॉल्यूशन उच्चारण',
     homeResearchFeature2Title: 'AI pipeline',
@@ -180,11 +181,11 @@ export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
   },
   vi: {
     homeResearchLabel: 'TIẾP CẬN KHOA HỌC',
-    homeResearchTitle: 'Bí mật của Hunminjeongeum được hé lộ qua MRI',
+    homeResearchTitle: homeText('homeResearchTitle', 'vi'),
     homeResearchDesc1:
-      '580 năm trước, vua Sejong đã sáng tạo ra chữ Hangeul bằng cách quan sát tỉ mỉ các cơ quan phát âm của con người.',
+      homeLine('homeResearchDesc', 'vi', 1),
     homeResearchDesc2:
-      'Giờ đây, chúng tôi thực nghiệm hóa thông tin chi tiết khoa học đáng kinh ngạc đó thông qua công nghệ MRI 3T hiện đại và phân tích AI.',
+      homeLine('homeResearchDesc', 'vi', 2),
     homeResearchFeature1Title: 'Chụp MRI 3T',
     homeResearchFeature1Sub: 'Hình ảnh phát âm độ phân giải cao',
     homeResearchFeature2Title: 'Pipeline AI',
@@ -200,11 +201,11 @@ export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
   },
   ru: {
     homeResearchLabel: 'НАУЧНЫЙ ПОДХОД',
-    homeResearchTitle: 'Тайны Хунмин чёныма, раскрытые с помощью МРТ',
+    homeResearchTitle: homeText('homeResearchTitle', 'ru'),
     homeResearchDesc1:
-      '580 лет назад великий король Седжон создал Хангыль, тщательно изучив речевой аппарат человека.',
+      homeLine('homeResearchDesc', 'ru', 1),
     homeResearchDesc2:
-      'Современные технологии 3Т МРТ и ИИ-анализ позволяют нам эмпирически подтвердить эту поразительную научную интуицию.',
+      homeLine('homeResearchDesc', 'ru', 2),
     homeResearchFeature1Title: '3T МРТ-съёмка',
     homeResearchFeature1Sub: 'Высокое разрешение артикуляции',
     homeResearchFeature2Title: 'ИИ-конвейер',
@@ -220,11 +221,11 @@ export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
   },
   ar: {
     homeResearchLabel: 'نهج علمي',
-    homeResearchTitle: 'أسرار الهونمين جيونغوم التي كشف عنها الرنين المغناطيسي (MRI)',
+    homeResearchTitle: homeText('homeResearchTitle', 'ar'),
     homeResearchDesc1:
-      'قبل 580 عامًا، أنشأ الملك العظيم سيجونغ لغة الهانغول من خلال المراقبة الدقيقة لأعضاء الصوت البشري.',
+      homeLine('homeResearchDesc', 'ar', 1),
     homeResearchDesc2:
-      'واليوم، نثبت تجريبيًا تلك الرؤية العلمية المذهلة من خلال تقنية الرنين المغناطيسي 3T الحديثة وتحليل الذكاء الاصطناعي (AI).',
+      homeLine('homeResearchDesc', 'ar', 2),
     homeResearchFeature1Title: 'تصوير رنين 3T',
     homeResearchFeature1Sub: 'ارتباط عالي الدقة',
     homeResearchFeature2Title: 'خط أنابيب الذكاء الاصطناعي',
@@ -240,11 +241,11 @@ export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
   },
   tr: {
     homeResearchLabel: 'BİLİMSEL YAKLAŞIM',
-    homeResearchTitle: 'MRI ile açığa çıkan Hunminjeongeum’un sırrı',
+    homeResearchTitle: homeText('homeResearchTitle', 'tr'),
     homeResearchDesc1:
-      'Sejong, 580 yıl önce insanın ses organlarını dikkatle gözlemleyerek Hangıl’i yarattı.',
+      homeLine('homeResearchDesc', 'tr', 1),
     homeResearchDesc2:
-      'Bugün bu bilimsel kavrayışı 3T MRI ve yapay zekâ analiziyle deneysel olarak doğruluyoruz.',
+      homeLine('homeResearchDesc', 'tr', 2),
     homeResearchFeature1Title: '3T MRI çekimi',
     homeResearchFeature1Sub: 'Yüksek çözünürlüklü boğumlanma',
     homeResearchFeature2Title: 'Yapay zekâ hattı',
@@ -260,11 +261,11 @@ export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
   },
   id: {
     homeResearchLabel: 'PENDEKATAN ILMIAH',
-    homeResearchTitle: 'Rahasia Hunminjeongeum yang diungkap MRI',
+    homeResearchTitle: homeText('homeResearchTitle', 'id'),
     homeResearchDesc1:
-      'Raja Sejong menciptakan Hangul 580 tahun lalu dengan mengamati organ wicara manusia secara saksama.',
+      homeLine('homeResearchDesc', 'id', 1),
     homeResearchDesc2:
-      'Kini kami membuktikan wawasan ilmiah itu melalui MRI 3T dan analisis AI.',
+      homeLine('homeResearchDesc', 'id', 2),
     homeResearchFeature1Title: 'Pencitraan MRI 3T',
     homeResearchFeature1Sub: 'Artikulasi beresolusi tinggi',
     homeResearchFeature2Title: 'Alur AI',
@@ -280,11 +281,11 @@ export const HOME_RESEARCH_BY_LANG: Record<Lang, HomeResearchMessages> = {
   },
   th: {
     homeResearchLabel: 'แนวทางวิทยาศาสตร์',
-    homeResearchTitle: 'ความลับของฮุนมินจองอึมที่ MRI เผยให้เห็น',
+    homeResearchTitle: homeText('homeResearchTitle', 'th'),
     homeResearchDesc1:
-      'เมื่อ 580 ปีก่อน พระเจ้าเซจงสังเกตอวัยวะในการออกเสียงของมนุษย์อย่างละเอียด แล้วสร้างอักษรฮันกึล',
+      homeLine('homeResearchDesc', 'th', 1),
     homeResearchDesc2:
-      'วันนี้เราพิสูจน์ความเข้าใจทางวิทยาศาสตร์นั้นด้วย MRI 3T และการวิเคราะห์ AI',
+      homeLine('homeResearchDesc', 'th', 2),
     homeResearchFeature1Title: 'การถ่าย MRI 3T',
     homeResearchFeature1Sub: 'ภาพการออกเสียงความละเอียดสูง',
     homeResearchFeature2Title: 'กระบวนการ AI',

@@ -4,14 +4,13 @@
  * - `originalText`  : 한문 원문(가나다 토씨 포함). 한자만 호버 가능.
  * - `charGlosses`   : 등장 한자 → 한국어 훈음(예: 正 → "바를 정").
  *                     같은 한자가 여러 번 나와도 한 번만 기록.
- * - `korean`        : 한국어 풀이.
- * - `translations`  : 한국어를 제외한 사이트 언어별 풀이(en 필수, 나머지는 비어 있으면 en으로 fallback).
+ * - `korean`, `translations` : 풀이 글. src/data/text/hunmin-passages.json 에서 번호로 붙인다.
  * - `glyphLinks`    : 본문에 등장하는 한글 자모를 자음/모음 차트 페이지로 보내기 위한 링크 메타.
  *
  * 출처: 세종 외 8인 원저(1446) / 김슬옹 편저(2025). ≪훈민정음 해례본 함께 읽기≫. 마리북스.
  */
 
-import { hunminPassageI18n } from '@/data/hunminPassageBundle'
+import passageText from '@/data/text/hunmin-passages.json'
 
 export type HunminPassageSectionId = 'initial' | 'medial' | 'appraisal'
 
@@ -63,7 +62,7 @@ export interface HunminPassageSection {
 }
 
 /* ── 초성자(자음자) [52]–[61] ─────────────────────────────────────────── */
-const INITIAL: HunminPassage[] = [
+const INITIAL: PassageSource[] = [
   {
     number: '52',
     reference: '정음해례1ㄴ:2-3 · 제자해',
@@ -83,10 +82,6 @@ const INITIAL: HunminPassage[] = [
       制: '만들 제',
       之: '그것 지',
     },
-    korean: '정음 스물여덟 자는 각각 그 모양을 본떠서 만들었다.',
-    translations: {
-      en: 'All of the 28 letters of Hunminjeongeum are each created by imitating their respective shapes.',
-    },
   },
   {
     number: '53',
@@ -100,8 +95,6 @@ const INITIAL: HunminPassage[] = [
       七: '일곱 칠',
       字: '글자 자',
     },
-    korean: '첫소리글자는 모두 열일곱 자다.',
-    translations: { en: 'There are 17 initial consonant letters.' },
   },
   {
     number: '54',
@@ -117,10 +110,6 @@ const INITIAL: HunminPassage[] = [
       喉: '목구멍 후',
       之: '어조사 지',
       形: '모양 형',
-    },
-    korean: '어금닛소리글자 ㄱ[기]는 혀뿌리가 목구멍을 막는 모양을 본떴다.',
-    translations: {
-      en: 'The molar sound (velar consonant) letter ㄱ /k/ resembles the blocking of the throat with the back of the tongue.',
     },
     glyphLinks: [{ symbol: 'ㄱ', id: 'g', target: 'consonants' }],
   },
@@ -138,10 +127,6 @@ const INITIAL: HunminPassage[] = [
       之: '어조사 지',
       形: '모양 형',
     },
-    korean: '혓소리글자 ㄴ[니]는 혀가 윗잇몸에 닿는 모양을 본떴다.',
-    translations: {
-      en: 'The lingual sound (alveolar consonant) letter ㄴ /n/ resembles the tongue touching the upper gums (teeth-ridge).',
-    },
     glyphLinks: [{ symbol: 'ㄴ', id: 'n', target: 'consonants' }],
   },
   {
@@ -155,10 +140,6 @@ const INITIAL: HunminPassage[] = [
       口: '입 구',
       形: '모양 형',
     },
-    korean: '입술소리글자 ㅁ[미]는 입 모양을 본떴다.',
-    translations: {
-      en: 'The lip sound (labial consonant) letter ㅁ /m/ resembles the shape of the mouth.',
-    },
     glyphLinks: [{ symbol: 'ㅁ', id: 'm', target: 'consonants' }],
   },
   {
@@ -171,10 +152,6 @@ const INITIAL: HunminPassage[] = [
       象: '본뜰 상',
       形: '모양 형',
     },
-    korean: '잇소리글자 ㅅ[시]는 이 모양을 본떴다.',
-    translations: {
-      en: 'The dental sound (alveolar consonant) letter ㅅ /s/ resembles the shape of a tooth.',
-    },
     glyphLinks: [{ symbol: 'ㅅ', id: 's', target: 'consonants' }],
   },
   {
@@ -186,10 +163,6 @@ const INITIAL: HunminPassage[] = [
       音: '소리 음',
       象: '본뜰 상',
       形: '모양 형',
-    },
-    korean: '목구멍소리글자 ㅇ[이]는 목구멍 모양을 본떴다.',
-    translations: {
-      en: 'The guttural sound (laryngeal consonant) letter ㅇ /ɦ/ resembles the shape of the throat.',
     },
     glyphLinks: [{ symbol: 'ㅇ', id: 'ng', target: 'consonants' }],
   },
@@ -206,10 +179,6 @@ const INITIAL: HunminPassage[] = [
       故: '연고 고',
       加: '더할 가',
       畫: '그을 획',
-    },
-    korean: 'ㅋ[키]는 ㄱ[기]에 비해서 소리가 조금 세게 나는 까닭으로 획을 더하였다.',
-    translations: {
-      en: 'The sound of ㅋ /kʰ/ is more strongly pronounced than ㄱ /k/, so one more stroke is added to the letter.',
     },
     glyphLinks: [
       { symbol: 'ㅋ', id: 'k', target: 'consonants' },
@@ -236,11 +205,6 @@ const INITIAL: HunminPassage[] = [
       爲: '될 위',
       異: '다를 이',
     },
-    korean:
-      'ㄴ[니]에서 ㄷ[디], ㄷ[디]에서 ㅌ[티], ㅁ[미]에서 ㅂ[비], ㅂ[비]에서 ㅍ[피], ㅅ[시]에서 ㅈ[지], ㅈ[지]에서 ㅊ[치], ㅇ[이]에서 ㆆ[ᅙᅵ], ㆆ[ᅙᅵ]에서 ㅎ[히]가 됨도 그 소리로 말미암아 획을 더한 뜻은 같으나, 다만 ㆁ[ᅌᅵ]만은 다르다.',
-    translations: {
-      en: 'In this system ㄷ /t/ comes from ㄴ /n/, ㅌ /tʰ/ from ㄷ /t/, ㅂ /p/ from ㅁ /m/, ㅍ /pʰ/ from ㅂ /p/, ㅈ /ts/ from ㅅ /s/, ㅊ /tsʰ/ from ㅈ /ts/, ㆆ /ʔ/ from ㅇ /ɦ/, and ㅎ /h/ from ㆆ /ʔ/ — each adding a stroke to mark a stronger sound, with the sole exception of ㆁ /ŋ/.',
-    },
   },
   {
     number: '61',
@@ -265,17 +229,12 @@ const INITIAL: HunminPassage[] = [
       義: '뜻 의',
       焉: '따름 언',
     },
-    korean:
-      '반혓소리글자 ㄹ[리], 반잇소리글자 ㅿ[ᅀᅵ]도 또한 혀와 이의 모양을 본떴으나, 그 짜임새를 달리해서 만들었기에 획을 더한 뜻은 없다.',
-    translations: {
-      en: 'The semi-lingual letter ㄹ /ɾ/ and the semi-dental letter ㅿ /z/ likewise depict the shape of the tongue and tooth, but their forms follow a different system, so the meaning of adding strokes does not apply.',
-    },
     glyphLinks: [{ symbol: 'ㄹ', id: 'r', target: 'consonants' }],
   },
 ]
 
 /* ── 중성자(모음자) [98]–[113] ─────────────────────────────────────── */
-const MEDIAL: HunminPassage[] = [
+const MEDIAL: PassageSource[] = [
   {
     number: '98',
     reference: '정음해례4ㄴ:5 · 제자해',
@@ -288,8 +247,6 @@ const MEDIAL: HunminPassage[] = [
       一: '한 일',
       字: '글자 자',
     },
-    korean: '가운뎃소리글자는 모두 열한 자다.',
-    translations: { en: 'As for medial vowel letters, there are eleven letters.' },
   },
   {
     number: '99',
@@ -306,10 +263,6 @@ const MEDIAL: HunminPassage[] = [
       於: '어조사 어',
       子: '첫째지지 자',
       也: '어조사 야',
-    },
-    korean: 'ㆍ는 혀가 오그라드니 소리가 깊어서, 하늘이 자시(밤 11시~오전 1시)에서 열리는 것과 같다.',
-    translations: {
-      en: 'ㆍ /ʌ/ is pronounced by contracting the tongue, so the sound becomes deep — like when Heaven opens at the hour of the Rat (11 pm–1 am).',
     },
     glyphLinks: [{ symbol: 'ㆍ', id: 'araea', target: 'vowels' }],
   },
@@ -332,10 +285,6 @@ const MEDIAL: HunminPassage[] = [
       丑: '둘째지지 축',
       也: '어조사 야',
     },
-    korean: 'ㅡ는 혀가 조금 오그라드니 소리가 깊지도 얕지도 않으므로 땅이 축시(오전 1시~3시)에서 열리는 것과 같다.',
-    translations: {
-      en: 'ㅡ /ɨ/ is pronounced by slightly contracting the tongue — neither deep nor shallow, like when the Earth opens at the hour of the Ox (1 am–3 am).',
-    },
     glyphLinks: [{ symbol: 'ㅡ', id: 'eu', target: 'vowels' }],
   },
   {
@@ -355,10 +304,6 @@ const MEDIAL: HunminPassage[] = [
       寅: '셋째지지 인',
       也: '어조사 야',
     },
-    korean: 'ㅣ는 혀가 오그라지지 않아 소리는 얕으니, 사람이 인시(오전 3시~5시)에서 생기는 것과 같다.',
-    translations: {
-      en: 'As for ㅣ /i/, the tongue is not contracted so the sound is light — like when humans are born during the hour of the Tiger (3 am–5 am).',
-    },
     glyphLinks: [{ symbol: 'ㅣ', id: 'i', target: 'vowels' }],
   },
   {
@@ -373,10 +318,6 @@ const MEDIAL: HunminPassage[] = [
       一: '한 일',
       闔: '거의 닫을 합',
       闢: '열 벽',
-    },
-    korean: '다음 여덟 가운뎃소리는 어떤 것은 입을 오므려서, 어떤 것은 입을 벌려서 발음한다.',
-    translations: {
-      en: 'The following eight medial sounds are pronounced — some with the lips puckered (rounded) and others with the lips spread open.',
     },
   },
   {
@@ -403,11 +344,6 @@ const MEDIAL: HunminPassage[] = [
       之: '어조사 지',
       義: '뜻 의',
       也: '어조사 야',
-    },
-    korean:
-      'ㅗ는 ㆍ와 같은 가운뎃소리[양성모음]이나 입을 더 오므리며, 그 모양이 ㆍ가 ㅡ와 합해서 이루어진 것은 하늘과 땅이 처음으로 사귄다는 뜻을 담았다.',
-    translations: {
-      en: 'ㅗ /o/ shares the same medial quality (positive vowel) as ㆍ /ʌ/, but is pronounced with the lips more puckered; its shape, formed by combining ㆍ with ㅡ /ɨ/, signifies the first interaction of Heaven and Earth.',
     },
     glyphLinks: [{ symbol: 'ㅗ', id: 'o', target: 'vowels' }],
   },
@@ -440,11 +376,6 @@ const MEDIAL: HunminPassage[] = [
       人: '사람 인',
       也: '어조사 야',
     },
-    korean:
-      'ㅏ는 ㆍ와 같은 가운뎃소리[양성모음]이나 입을 더 벌리며, 그 모양은 ㅣ와 ㆍ가 서로 합하여 이루어진 것으로, 하늘과 땅의 작용이 만물로 드러나되 사람이 있어야 비로소 완성된다는 뜻을 담은 것이다.',
-    translations: {
-      en: 'ㅏ /a/ shares the same medial quality (positive vowel) as ㆍ /ʌ/ but is pronounced with the mouth opened wider; its shape, formed by joining ㅣ /i/ and ㆍ /ʌ/, signifies that the workings of Heaven and Earth manifest in all things yet require humanity to bring them to completion.',
-    },
     glyphLinks: [{ symbol: 'ㅏ', id: 'a', target: 'vowels' }],
   },
   {
@@ -472,11 +403,6 @@ const MEDIAL: HunminPassage[] = [
       之: '어조사 지',
       義: '뜻 의',
       也: '어조사 야',
-    },
-    korean:
-      'ㅜ는 ㅡ와 같은 가운뎃소리[음성모음]이나 입을 더 오므리며, 그 모양이 ㅡ가 ㆍ와 합해서 이루어진 것은 역시 하늘과 땅이 처음으로 사귄다는 뜻을 담았다.',
-    translations: {
-      en: 'ㅜ /u/ shares the same medial quality (negative vowel) as ㅡ /ɨ/ but is pronounced with the lips more puckered; its shape, formed by combining ㅡ with ㆍ /ʌ/, also represents the first interaction of Heaven and Earth.',
     },
     glyphLinks: [{ symbol: 'ㅜ', id: 'u', target: 'vowels' }],
   },
@@ -510,11 +436,6 @@ const MEDIAL: HunminPassage[] = [
       人: '사람 인',
       也: '어조사 야',
     },
-    korean:
-      'ㅓ는 ㅡ와 같은 가운뎃소리[음성모음]이나 입을 더 벌리니, 그 모양은 ㆍ와 ㅣ가 합해서 이루어진 것이며, 역시 하늘과 땅의 쓰임이 일과 사물에서 나타나되 사람을 기다려서 이루어진다는 뜻을 담은 것이다.',
-    translations: {
-      en: 'ㅓ /ə/ is the same medial sound (negative vowel) as ㅡ /ɨ/ but pronounced with the mouth opened wider; the shape is formed by joining ㆍ /ʌ/ and ㅣ /i/, again signifying that all things begin with Heaven and Earth yet wait upon humans for their completion.',
-    },
     glyphLinks: [{ symbol: 'ㅓ', id: 'eo', target: 'vowels' }],
   },
   {
@@ -527,10 +448,6 @@ const MEDIAL: HunminPassage[] = [
       而: '말이을 이',
       起: '일어날 기',
       於: '어조사 어',
-    },
-    korean: 'ㅛ는 ㅗ와 같은 입을 오므리는 소리로 ㅣ에서 비롯된다.',
-    translations: {
-      en: 'ㅛ /jo/ is the same lip-rounding sound as ㅗ /o/, but is pronounced by starting with ㅣ /i/.',
     },
     glyphLinks: [{ symbol: 'ㅛ', id: 'yo', target: 'vowels' }],
   },
@@ -545,10 +462,6 @@ const MEDIAL: HunminPassage[] = [
       起: '일어날 기',
       於: '어조사 어',
     },
-    korean: 'ㅑ는 ㅏ와 같은 입을 벌리는 소리로 ㅣ에서 비롯된다.',
-    translations: {
-      en: 'ㅑ /ja/ is the same mouth-opening sound as ㅏ /a/, but is pronounced by starting with ㅣ /i/.',
-    },
     glyphLinks: [{ symbol: 'ㅑ', id: 'ya', target: 'vowels' }],
   },
   {
@@ -561,10 +474,6 @@ const MEDIAL: HunminPassage[] = [
       而: '말이을 이',
       起: '일어날 기',
       於: '어조사 어',
-    },
-    korean: 'ㅠ는 ㅜ와 같은 입을 오므리는 소리로 ㅣ에서 비롯된다.',
-    translations: {
-      en: 'ㅠ /ju/ is the same lip-rounding sound as ㅜ /u/, but is pronounced by starting with ㅣ /i/.',
     },
     glyphLinks: [{ symbol: 'ㅠ', id: 'yu', target: 'vowels' }],
   },
@@ -579,16 +488,12 @@ const MEDIAL: HunminPassage[] = [
       起: '일어날 기',
       於: '어조사 어',
     },
-    korean: 'ㅕ는 ㅓ와 같은 입을 벌리는 소리로 ㅣ에서 비롯된다.',
-    translations: {
-      en: 'ㅕ /jə/ is the same mouth-opening sound as ㅓ /ə/, but is pronounced by starting with ㅣ /i/.',
-    },
     glyphLinks: [{ symbol: 'ㅕ', id: 'yeo', target: 'vowels' }],
   },
 ]
 
 /* ── 해례본의 평가(정인지서) [352]–[358] ───────────────────────────── */
-const APPRAISAL: HunminPassage[] = [
+const APPRAISAL: PassageSource[] = [
   {
     number: '352',
     reference: '정음해례28ㄱ:1-2 · 정인지서',
@@ -608,10 +513,6 @@ const APPRAISAL: HunminPassage[] = [
       要: '요긴할 요',
       精: '정할 정',
       通: '통할 통',
-    },
-    korean: '스물여덟 자로 끝없이 바꿀 수 있어, 간결하면서도 요점을 잘 드러내고, 정밀한 뜻을 담으면서도 두루 통할 수 있다.',
-    translations: {
-      en: 'The 28 letters are used in infinite combinations — while simple they express what is vital, while precise they can be easily communicated.',
     },
   },
   {
@@ -633,10 +534,6 @@ const APPRAISAL: HunminPassage[] = [
       旬: '열흘 순',
       學: '배울 학',
     },
-    korean: '그러므로 슬기로운 사람은 아침밥을 먹기 전에 깨치고, 슬기롭지 못한 이라도 열흘이면 배울 수 있다.',
-    translations: {
-      en: 'Therefore, wise people can master it before finishing their morning meal, and even those who are not wise can learn it within ten days.',
-    },
   },
   {
     number: '354',
@@ -652,10 +549,6 @@ const APPRAISAL: HunminPassage[] = [
       其: '그 기',
       義: '뜻 의',
     },
-    korean: '훈민정음으로 한문을 풀이하면 그 뜻을 알 수 있다.',
-    translations: {
-      en: 'When written in these characters one can understand the meaning of the Chinese classics.',
-    },
   },
   {
     number: '355',
@@ -670,10 +563,6 @@ const APPRAISAL: HunminPassage[] = [
       得: '알 득',
       其: '그 기',
       情: '실정 정',
-    },
-    korean: '훈민정음으로 소송 사건을 기록하면, 그 속사정을 이해할 수 있다.',
-    translations: {
-      en: 'Moreover, using these characters when dealing with lawsuit cases allows one to understand the real situation.',
     },
   },
   {
@@ -696,10 +585,6 @@ const APPRAISAL: HunminPassage[] = [
       克: '능할 극',
       諧: '어울릴 해',
     },
-    korean: '글자 소리로는 맑고 흐린 소리를 구별할 수 있고, 음악 노래로는 노랫가락을 어울리게 할 수 있다.',
-    translations: {
-      en: 'As for the phonetics of the characters, they can discern clear and thick sounds; and as for music and songs, they perfectly harmonize with the musical pitches.',
-    },
   },
   {
     number: '357',
@@ -714,10 +599,6 @@ const APPRAISAL: HunminPassage[] = [
       備: '갖출 비',
       往: '갈 왕',
       達: '통달할 달',
-    },
-    korean: '글을 쓸 때에 글자가 갖추어지지 않은 바가 없으며, 어디서든 뜻을 두루 통하지 못하는 바가 없다.',
-    translations: {
-      en: 'When writing, there is nothing that cannot be expressed with these letters, and there is nowhere their meaning cannot be thoroughly communicated.',
     },
   },
   {
@@ -741,10 +622,6 @@ const APPRAISAL: HunminPassage[] = [
       書: '쓸 서',
       矣: '어조사 의',
     },
-    korean: '비록 바람 소리, 두루미 울음소리, 닭 소리, 개 짖는 소리라도 모두 적을 수 있다.',
-    translations: {
-      en: 'Whether the sound of wind, the cry of the crane, the cluck of the chicken, or the bark of the dog — all sounds can be written down.',
-    },
   },
 ]
 
@@ -754,13 +631,14 @@ export const HUNMIN_PASSAGE_SECTIONS: HunminPassageSection[] = [
   { id: 'appraisal', classicLabel: '鄭麟趾序', passages: applyHunminPassageI18n(APPRAISAL) },
 ]
 
-function applyHunminPassageI18n(passages: HunminPassage[]): HunminPassage[] {
+type PassageSource = Omit<HunminPassage, 'korean' | 'translations'>
+
+function applyHunminPassageI18n(passages: PassageSource[]): HunminPassage[] {
+  const table: Record<string, Record<string, string>> = passageText
   return passages.map((passage) => {
-    const added: Record<string, string> = {}
-    for (const [lang, map] of Object.entries(hunminPassageI18n)) {
-      const text = map[passage.number]
-      if (text?.trim()) added[lang] = text
-    }
-    return { ...passage, translations: { ...passage.translations, ...added } }
+    const { ko = '', ...rest } = table[passage.number] ?? {}
+    const translations: Record<string, string> = {}
+    for (const [lang, text] of Object.entries(rest)) if (text.trim()) translations[lang] = text
+    return { ...passage, korean: ko, translations: translations as HunminPassage['translations'] }
   })
 }

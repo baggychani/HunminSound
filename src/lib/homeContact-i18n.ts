@@ -1,4 +1,5 @@
 import type { Lang } from '@/lib/i18n'
+import { homeText } from '@/data/home-text'
 
 /** 홈 4막 문의하기 — 언어별 문자열 */
 export type HomeContactMessages = {
@@ -33,7 +34,7 @@ export const HOME_CONTACT_BY_LANG: Record<Lang, HomeContactMessages> = {
     contactLabel: '함께 연구하기',
     contactTitle: '문의하기',
     contactDesc:
-      '한국어 음성학, MRI 음성 과학, 언어 유산 연구에 관심 있는 연구자·기관과의 협력을 환영합니다.',
+      homeText('contactDesc', 'ko'),
     contactEmail: '이메일',
     contactPhone: '전화',
     contactAddress: '주소',
@@ -60,7 +61,7 @@ export const HOME_CONTACT_BY_LANG: Record<Lang, HomeContactMessages> = {
     contactLabel: 'Collaborate',
     contactTitle: 'Get in touch',
     contactDesc:
-      'We welcome collaboration with researchers and institutions interested in Korean phonetics, MRI speech science, and linguistic heritage research.',
+      homeText('contactDesc', 'en'),
     contactEmail: 'Email',
     contactPhone: 'Phone',
     contactAddress: 'Address',
@@ -87,7 +88,7 @@ export const HOME_CONTACT_BY_LANG: Record<Lang, HomeContactMessages> = {
     contactLabel: '共同研究',
     contactTitle: 'お問い合わせ',
     contactDesc:
-      '韓国語音声学、MRI音声科学、言語遺産研究に関心のある研究者・機関との協力を歓迎します。',
+      homeText('contactDesc', 'ja'),
     contactEmail: 'メール',
     contactPhone: '電話',
     contactAddress: '住所',
@@ -114,7 +115,7 @@ export const HOME_CONTACT_BY_LANG: Record<Lang, HomeContactMessages> = {
     contactLabel: '合作研究',
     contactTitle: '联系我们',
     contactDesc:
-      '欢迎与对韩国语语音学、MRI语音科学及语言遗产研究感兴趣的研究人员和机构开展合作。',
+      homeText('contactDesc', 'zh'),
     contactEmail: '电子邮件',
     contactPhone: '电话',
     contactAddress: '地址',
@@ -141,7 +142,7 @@ export const HOME_CONTACT_BY_LANG: Record<Lang, HomeContactMessages> = {
     contactLabel: 'Collaborer',
     contactTitle: 'Nous contacter',
     contactDesc:
-      'Nous accueillons avec plaisir toute collaboration avec des chercheurs et des institutions intéressés par la phonétique coréenne, la science de la parole par IRM et la recherche sur le patrimoine linguistique.',
+      homeText('contactDesc', 'fr'),
     contactEmail: 'E-mail',
     contactPhone: 'Téléphone',
     contactAddress: 'Adresse',
@@ -168,7 +169,7 @@ export const HOME_CONTACT_BY_LANG: Record<Lang, HomeContactMessages> = {
     contactLabel: 'Zusammenarbeit',
     contactTitle: 'Kontakt',
     contactDesc:
-      'Wir begrüßen die Zusammenarbeit mit Forschern und Institutionen, die an koreanischer Phonetik, MRT-Sprachwissenschaft und der Erforschung des sprachlichen Erbes interessiert sind.',
+      homeText('contactDesc', 'de'),
     contactEmail: 'E-Mail',
     contactPhone: 'Telefon',
     contactAddress: 'Adresse',
@@ -195,7 +196,7 @@ export const HOME_CONTACT_BY_LANG: Record<Lang, HomeContactMessages> = {
     contactLabel: 'Colaborar',
     contactTitle: 'Contacto',
     contactDesc:
-      'Damos la bienvenida a la colaboración con investigadores e instituciones interesados en la fonética coreana, la ciencia de la voz por RM y la investigación del patrimonio lingüístico.',
+      homeText('contactDesc', 'es'),
     contactEmail: 'Correo',
     contactPhone: 'Teléfono',
     contactAddress: 'Dirección',
@@ -222,7 +223,7 @@ export const HOME_CONTACT_BY_LANG: Record<Lang, HomeContactMessages> = {
     contactLabel: 'सहयोग',
     contactTitle: 'संपर्क',
     contactDesc:
-      'हम कोरियाई ध्वनिविज्ञान, एमआरआई वाक् विज्ञान और भाषाई विरासत अनुसंधान में रुचि रखने वाले शोधकर्ताओं और संस्थानों के साथ सहयोग का स्वागत करते हैं।',
+      homeText('contactDesc', 'hi'),
     contactEmail: 'ईमेल',
     contactPhone: 'फ़ोन',
     contactAddress: 'पता',
@@ -249,7 +250,7 @@ export const HOME_CONTACT_BY_LANG: Record<Lang, HomeContactMessages> = {
     contactLabel: 'Hợp tác',
     contactTitle: 'Liên hệ',
     contactDesc:
-      'Chúng tôi hoan nghênh sự hợp tác với các nhà nghiên cứu và tổ chức quan tâm đến ngữ âm học tiếng Hàn, khoa học giọng nói MRI và nghiên cứu di sản ngôn ngữ.',
+      homeText('contactDesc', 'vi'),
     contactEmail: 'Email',
     contactPhone: 'Điện thoại',
     contactAddress: 'Địa chỉ',
@@ -276,7 +277,7 @@ export const HOME_CONTACT_BY_LANG: Record<Lang, HomeContactMessages> = {
     contactLabel: 'Сотрудничество',
     contactTitle: 'Связаться с нами',
     contactDesc:
-      'Мы приветствуем сотрудничество с исследователями и организациями, заинтересованными в корейской фонетике, МРТ-исследованиях речи и изучении языкового наследия.',
+      homeText('contactDesc', 'ru'),
     contactEmail: 'Эл. почта',
     contactPhone: 'Телефон',
     contactAddress: 'Адрес',
@@ -303,7 +304,7 @@ export const HOME_CONTACT_BY_LANG: Record<Lang, HomeContactMessages> = {
     contactLabel: 'تعاون',
     contactTitle: 'تواصل معنا',
     contactDesc:
-      'نرحب بالتعاون مع الباحثين والمؤسسات المهتمة بعلم الصوتيات الكوري، وعلم نطق الكلام بالرنين المغناطيسي (MRI)، وأبحاث التراث اللغوي.',
+      homeText('contactDesc', 'ar'),
     contactEmail: 'البريد الإلكتروني',
     contactPhone: 'الهاتف',
     contactAddress: 'العنوان',
@@ -330,7 +331,7 @@ export const HOME_CONTACT_BY_LANG: Record<Lang, HomeContactMessages> = {
     contactLabel: 'Birlikte araştırma',
     contactTitle: 'İletişim',
     contactDesc:
-      'Kore fonetiği, MRI konuşma bilimi ve dil mirası araştırmasıyla ilgilenen araştırmacı ve kurumlarla iş birliğini memnuniyetle karşılıyoruz.',
+      homeText('contactDesc', 'tr'),
     contactEmail: 'E-posta',
     contactPhone: 'Telefon',
     contactAddress: 'Adres',
@@ -357,7 +358,7 @@ export const HOME_CONTACT_BY_LANG: Record<Lang, HomeContactMessages> = {
     contactLabel: 'Riset bersama',
     contactTitle: 'Hubungi kami',
     contactDesc:
-      'Kami menyambut kerja sama dengan peneliti dan lembaga yang tertarik pada fonetik bahasa Korea, ilmu wicara MRI, dan penelitian warisan bahasa.',
+      homeText('contactDesc', 'id'),
     contactEmail: 'Surel',
     contactPhone: 'Telepon',
     contactAddress: 'Alamat',
@@ -384,7 +385,7 @@ export const HOME_CONTACT_BY_LANG: Record<Lang, HomeContactMessages> = {
     contactLabel: 'ร่วมวิจัย',
     contactTitle: 'ติดต่อ',
     contactDesc:
-      'เรายินดีร่วมงานกับนักวิจัยและสถาบันที่สนใจสัทศาสตร์ภาษาเกาหลี วิทยาศาสตร์เสียงพูดด้วย MRI และการวิจัยมรดกทางภาษา',
+      homeText('contactDesc', 'th'),
     contactEmail: 'อีเมล',
     contactPhone: 'โทรศัพท์',
     contactAddress: 'ที่อยู่',
