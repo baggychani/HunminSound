@@ -304,11 +304,15 @@ function DirectoryEditor({
 }: {
   groups: TeamDirectoryGroup[]
   translations: ResearchContent['translations']
-  onChange: (groups: TeamDirectoryGroup[]) => void
+  onChange: (update: (groups: TeamDirectoryGroup[]) => void) => void
   onTranslate: (key: string, lang: string, value: string) => void
 }) {
-  const updateGroup = (index: number, patch: Partial<TeamDirectoryGroup>) => {
-    onChange(groups.map((group, i) => (i === index ? { ...group, ...patch } : group)))
+  const updateGroup = (index: number, patch: (group: TeamDirectoryGroup) => Partial<TeamDirectoryGroup>) => {
+    onChange((list) => {
+      const group = list[index]
+      if (!group) return
+      list[index] = { ...group, ...patch(group) }
+    })
   }
 
   return (
@@ -320,7 +324,7 @@ function DirectoryEditor({
             <FieldLine
               label="직위"
               value={group.role}
-              onSave={(role) => updateGroup(index, { role })}
+              onSave={(role) => updateGroup(index, () => ({ role }))}
               translationKey={`team.directory.${index}.role`}
               translations={translations}
               onTranslate={(lang, value) => onTranslate(`team.directory.${index}.role`, lang, value)}
@@ -329,7 +333,7 @@ function DirectoryEditor({
               <FieldLine
                 label="괄호"
                 value={group.subtitle}
-                onSave={(subtitle) => updateGroup(index, { subtitle })}
+                onSave={(subtitle) => updateGroup(index, () => ({ subtitle }))}
                 translationKey={`team.directory.${index}.subtitle`}
                 translations={translations}
                 onTranslate={(lang, value) => onTranslate(`team.directory.${index}.subtitle`, lang, value)}
@@ -345,9 +349,11 @@ function DirectoryEditor({
                 <ClickEdit
                   value={name}
                   onSave={(value) => {
-                    const names = [...group.names]
-                    names[nameIndex] = value
-                    updateGroup(index, { names })
+                    updateGroup(index, (current) => {
+                      const names = [...current.names]
+                      names[nameIndex] = value
+                      return { names }
+                    })
                   }}
                   className="font-sans text-xs tracking-normal leading-relaxed text-ink"
                 />
@@ -355,10 +361,12 @@ function DirectoryEditor({
                   value={namesEn[nameIndex] ?? ''}
                   empty="영어 이름 없음"
                   onSave={(value) => {
-                    const nextEn = [...namesEn]
-                    while (nextEn.length < group.names.length) nextEn.push('')
-                    nextEn[nameIndex] = value
-                    updateGroup(index, { namesEn: nextEn })
+                    updateGroup(index, (current) => {
+                      const nextEn = [...(current.namesEn ?? current.names.map(() => ''))]
+                      while (nextEn.length < current.names.length) nextEn.push('')
+                      nextEn[nameIndex] = value
+                      return { namesEn: nextEn }
+                    })
                   }}
                   className="font-sans text-xs tracking-normal leading-relaxed text-ink-muted/80"
                 />
@@ -369,9 +377,13 @@ function DirectoryEditor({
                   onClick={() => {
                     const label = name.trim() || '이 이름'
                     if (!window.confirm(`${label}${eul(label)} 삭제할까요?`)) return
-                    const names = group.names.filter((_, i) => i !== nameIndex)
-                    const nextEn = namesEn.filter((_, i) => i !== nameIndex)
-                    updateGroup(index, { names, namesEn: nextEn })
+                    updateGroup(index, (current) => {
+                      const baseEn = current.namesEn ?? current.names.map(() => '')
+                      return {
+                        names: current.names.filter((_, i) => i !== nameIndex),
+                        namesEn: baseEn.filter((_, i) => i !== nameIndex),
+                      }
+                    })
                   }}
                   className={iconButtonClass}
                 >
@@ -382,9 +394,11 @@ function DirectoryEditor({
             <button
               type="button"
               onClick={() => {
-                const padded = [...namesEn]
-                while (padded.length < group.names.length) padded.push('')
-                updateGroup(index, { names: [...group.names, ''], namesEn: [...padded, ''] })
+                updateGroup(index, (current) => {
+                  const padded = [...(current.namesEn ?? current.names.map(() => ''))]
+                  while (padded.length < current.names.length) padded.push('')
+                  return { names: [...current.names, ''], namesEn: [...padded, ''] }
+                })
               }}
               className="my-3 inline-flex items-center gap-2 whitespace-nowrap rounded-sm border border-hanji-border px-3 py-2 font-sans text-sm tracking-normal text-ink hover:bg-hanji-warm"
             >
@@ -400,20 +414,14 @@ function DirectoryEditor({
 
 export default function AdminResearchPage() {
   const [data, setData] = useState<ResearchContent | null>(null)
-  const [sha, setSha] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const dataRef = useRef<ResearchContent | null>(null)
+  const savedRef = useRef<ResearchContent | null>(null)
   const shaRef = useRef<string | null>(null)
   const queueRef = useRef(Promise.resolve())
-
-  useEffect(() => {
-    dataRef.current = data
-  }, [data])
-  useEffect(() => {
-    shaRef.current = sha
-  }, [sha])
+  const genRef = useRef(0)
 
   useEffect(() => {
     let cancelled = false
@@ -428,9 +436,9 @@ export default function AdminResearchPage() {
         .then((body: { data: ResearchContent; sha: string | null }) => {
           if (cancelled || current !== ticket) return
           dataRef.current = body.data
+          savedRef.current = body.data
           shaRef.current = body.sha
           setData(body.data)
-          setSha(body.sha)
           setError(null)
         })
         .catch(() => { if (!cancelled && current === ticket) setError('데이터를 불러오지 못했습니다.') })
@@ -458,7 +466,6 @@ export default function AdminResearchPage() {
       }
       if (!res.ok) throw new Error(body?.message ?? '저장에 실패했습니다.')
       shaRef.current = body?.sha ?? null
-      setSha(body?.sha ?? null)
       setNotice('저장했습니다. 사이트에 반영되었습니다.')
       notifyCmsSaved()
     } catch (err) {
@@ -469,15 +476,31 @@ export default function AdminResearchPage() {
     }
   }, [])
 
+  // 저장 응답을 기다리면 추가·삭제 버튼이 멈춘 것처럼 보인다. 화면은 먼저 바꾸고, 저장은 뒤에서 이어 간다.
   const commit = useCallback((mutator: (draft: ResearchContent) => void) => {
+    const current = dataRef.current
+    if (!current) return Promise.reject(new Error('현재 내용을 불러오지 못했습니다.'))
+    const next = cloneDeep(current)
+    mutator(next)
+    dataRef.current = next
+    setData(next)
+    const gen = ++genRef.current
     const task = queueRef.current.then(async () => {
-      const current = dataRef.current
-      if (!current) throw new Error('현재 내용을 불러오지 못했습니다.')
-      const next = cloneDeep(current)
-      mutator(next)
-      await persist(next)
-      dataRef.current = next
-      setData(next)
+      try {
+        await persist(next)
+        savedRef.current = next
+        if (gen === genRef.current && dataRef.current !== next) {
+          dataRef.current = next
+          setData(next)
+        }
+      } catch (err) {
+        if (gen === genRef.current && savedRef.current) {
+          const restored = cloneDeep(savedRef.current)
+          dataRef.current = restored
+          setData(restored)
+        }
+        throw err
+      }
     })
     queueRef.current = task.catch(() => {})
     return task
@@ -535,9 +558,9 @@ export default function AdminResearchPage() {
                   throw new Error(body?.message ?? '기준본으로 되돌리지 못했습니다.')
                 }
                 dataRef.current = body.data
+                savedRef.current = body.data
                 shaRef.current = body.sha
                 setData(body.data)
-                setSha(body.sha)
                 setNotice('저장했습니다. 코드 기준본으로 되돌렸고 사이트에 반영되었습니다.')
                 notifyCmsSaved()
               } catch (err) {
@@ -605,8 +628,9 @@ export default function AdminResearchPage() {
       <DirectoryEditor
         groups={data.team.directory ?? []}
         translations={data.translations}
-        onChange={(groups) => commit((draft) => {
-          draft.team.directory = groups
+        onChange={(update) => commit((draft) => {
+          if (!draft.team.directory) draft.team.directory = []
+          update(draft.team.directory)
         })}
         onTranslate={saveTrans}
       />
