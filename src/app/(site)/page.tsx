@@ -16,6 +16,7 @@ import { HomeScrollProgress } from '@/components/home/HomeScrollProgress'
 import { HomeJamoField } from '@/components/home/HomeJamoField'
 import { HomeJamoMarquee } from '@/components/home/HomeJamoMarquee'
 import { useHomeActScroll } from '@/hooks/useHomeActScroll'
+import { isDesktopLayout } from '@/lib/viewportLayout'
 
 /** 2막 카드 커서 스포트라이트 — CSS 변수(--spot-x/--spot-y)만 갱신 */
 function handleSpotlightMove(e: React.MouseEvent<HTMLElement>) {
@@ -126,7 +127,7 @@ export default function HomePage() {
     if (!root) return
 
     const restoreHero4 = () => {
-      if (window.matchMedia('(min-width: 640px)').matches) return
+      if (isDesktopLayout()) return
       let fromForm = false
       try {
         fromForm = sessionStorage.getItem('home-mobile-act') === '4'
@@ -162,7 +163,7 @@ export default function HomePage() {
     const root = pageRef.current
     if (!root) return
     const onScroll = () => {
-      if (window.matchMedia('(min-width: 640px)').matches) return
+      if (isDesktopLayout()) return
       const w = root.clientWidth
       if (w < 1) return
       setMobileAct(Math.min(3, Math.max(0, Math.round(root.scrollLeft / w))))

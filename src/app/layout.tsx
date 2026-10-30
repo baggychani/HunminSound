@@ -7,6 +7,7 @@ import {
   Gowun_Batang,
 } from 'next/font/google'
 import { Providers } from '@/components/theme/Providers'
+import { HandsetFontFit } from '@/components/layout/HandsetFontFit'
 import { SITE_TAB_TITLE, SITE_URL } from '@/lib/siteMeta'
 import { languageFontVariables } from './fonts'
 import './globals.css'
@@ -109,6 +110,12 @@ export default function RootLayout({
       className={`${notoSerifKr.variable} ${notoSansKr.variable} ${notoSansDevanagari.variable} ${notoSansArabic.variable} ${gowunBatang.variable} ${languageFontVariables}`}
     >
       <body className="font-sans">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){function fit(){try{var phone=window.matchMedia('(max-device-width: 520px)').matches;var wide=window.innerWidth>=640;var root=document.documentElement;if(phone&&wide&&screen.width>0){root.style.fontSize=(16*window.innerWidth/screen.width)+'px'}else{root.style.removeProperty('font-size')}}catch(e){}}fit();window.addEventListener('resize',fit);window.addEventListener('orientationchange',fit)})();`,
+          }}
+        />
+        <HandsetFontFit />
         <Providers>{children}</Providers>
       </body>
     </html>

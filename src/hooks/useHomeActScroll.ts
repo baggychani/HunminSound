@@ -1,4 +1,5 @@
 import { useEffect, type RefObject } from 'react'
+import { DESKTOP_MQ } from '@/lib/viewportLayout'
 
 const WHEEL_THRESHOLD = 36
 const SCROLL_TIMEOUT_MS = 900
@@ -86,7 +87,7 @@ export function useHomeActScroll(
 ) {
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const desktopMq = window.matchMedia('(min-width: 640px)')
+    const desktopMq = window.matchMedia(DESKTOP_MQ)
     if (mq.matches || !desktopMq.matches) return undefined
 
     let locked = false

@@ -1,16 +1,17 @@
 'use client'
 
 import { useSyncExternalStore } from 'react'
+import { PHONE_MQ } from '@/lib/viewportLayout'
 
-/** Tailwind `sm` 미만 (640px 미만) — 모바일 전용 스타일 분기용 */
+/** 폰 레이아웃 — 창이 640px 미만이거나, 크롬 데스크톱 사이트로 연 폰 */
 function subscribe(onChange: () => void) {
-  const mq = window.matchMedia('(max-width: 639px)')
+  const mq = window.matchMedia(PHONE_MQ)
   mq.addEventListener('change', onChange)
   return () => mq.removeEventListener('change', onChange)
 }
 
 function getSnapshot() {
-  return window.matchMedia('(max-width: 639px)').matches
+  return window.matchMedia(PHONE_MQ).matches
 }
 
 function getServerSnapshot() {
