@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { findAdmin, getAdminAccounts } from '@/lib/adminAccounts'
-import { ADMIN_SESSION_COOKIE, createAdminSessionToken, getAdminSessionSecret } from '@/lib/adminSession'
+import { ADMIN_SESSION_COOKIE, adminSessionCookieOptions, createAdminSessionToken, getAdminSessionSecret } from '@/lib/adminSession'
 import { checkPublicRateLimit, getClientIp } from '@/lib/rateLimit'
 
 export async function POST(request: Request) {
@@ -35,12 +35,6 @@ export async function POST(request: Request) {
   const token = await createAdminSessionToken(secret, account.username)
 
   const res = NextResponse.json({ ok: true })
-  res.cookies.set(ADMIN_SESSION_COOKIE, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 60 * 60 * 24 * 7,
-  })
+  res.cookies.set(ADMIN_SESSION_COOKIE, token, adminSessionCookieOptions())
   return res
 }

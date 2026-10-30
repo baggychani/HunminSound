@@ -1,10 +1,14 @@
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
-import { ADMIN_SESSION_COOKIE, getAdminSessionSecret, verifyAdminSessionToken } from '@/lib/adminSession'
+import { ADMIN_SESSION_COOKIE, adminSessionCookieOptions, getAdminSessionSecret, readAdminSession } from '@/lib/adminSession'
 import { CmsConflictError } from '@/lib/cms-storage'
 
 export async function cmsUser() {
-  return verifyAdminSessionToken(getAdminSessionSecret(), cookies().get(ADMIN_SESSION_COOKIE)?.value)
+  const jar = cookies()
+  const session = await readAdminSession(getAdminSessionSecret(), jar.get(ADMIN_SESSION_COOKIE)?.value)
+  if (!session.ok) return null
+  if (session.renewed) jar.set(ADMIN_SESSION_COOKIE, session.token, adminSessionCookieOptions())
+  return session.username
 }
 export const noStore = { 'Cache-Control': 'no-store' }
 export function cmsError(error: unknown) {

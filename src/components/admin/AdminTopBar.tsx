@@ -279,7 +279,7 @@ export function AdminTopBar() {
               {codeOutbox.length > 0 && (
                 <div className="border-b border-hanji-border px-4 py-3">
                   <p className="font-sans text-[11px] leading-relaxed text-ink-soft">
-                    사이트에는 저장됐지만 아직 GitHub 코드에는 들어가지 않은 글입니다. 이 창을 열 때마다 다시 넣어 봅니다.
+                    사이트에는 저장됐지만 아직 GitHub 코드에는 들어가지 않은 글입니다. 매일 오전 9시에 한 번에 넣습니다.
                   </p>
                   <ul className="mt-2 space-y-1.5">
                     {codeOutbox.map((item) => (
@@ -502,9 +502,9 @@ function outboxReason(item: CodeOutboxNotice): string {
     if (/ (401|403|404)$/.test(item.error ?? '')) {
       return 'GitHub 토큰이 만료됐거나 권한이 없습니다. 사이트에는 정상으로 저장됐습니다. 코드로 고칠 사람은 npm run pull-site-text 를 먼저 실행해야 합니다.'
     }
-    return `GitHub에 넣지 못했습니다(${item.error ?? '알 수 없는 오류'}). 사이트에는 저장됐고, 다시 시도합니다.`
+    return `GitHub에 넣지 못했습니다(${item.error ?? '알 수 없는 오류'}). 사이트에는 저장됐고, 다음 오전 9시에 다시 시도합니다.`
   }
-  return '코드에 넣는 중입니다.'
+  return '매일 오전 9시에 코드에 들어갑니다.'
 }
 
 function DetailRow({ label, children }: { label: string; children: React.ReactNode }) {

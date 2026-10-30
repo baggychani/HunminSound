@@ -652,7 +652,6 @@ async function sendResearchToCode(before: ResearchContent, after: ResearchConten
 async function sendToCode(items: CodeOutboxItem[]) {
   try {
     await putOutbox(items)
-    await flushCodeOutbox()
   } catch (error) {
     console.error('[cms] code outbox failed:', error)
   }

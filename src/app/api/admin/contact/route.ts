@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 import { sendContactEmail } from '@/lib/sendContactEmail'
-import { ADMIN_SESSION_COOKIE, getAdminSessionSecret, verifyAdminSessionToken } from '@/lib/adminSession'
+import { cmsUser } from '@/lib/cms-api'
 
 export const runtime = 'nodejs'
 
 async function requireAdmin(): Promise<boolean> {
-  const cookieStore = await cookies()
-  const token = cookieStore.get(ADMIN_SESSION_COOKIE)?.value
-  return !!(await verifyAdminSessionToken(getAdminSessionSecret(), token))
+  return !!(await cmsUser())
 }
 
 export async function POST(req: NextRequest) {

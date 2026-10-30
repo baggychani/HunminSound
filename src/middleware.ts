@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { ADMIN_SESSION_COOKIE, getAdminSessionSecret, verifyAdminSessionToken } from '@/lib/adminSession'
+import { ADMIN_SESSION_COOKIE, adminSessionCookieOptions, getAdminSessionSecret, readAdminSession } from '@/lib/adminSession'
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -20,16 +20,20 @@ export async function middleware(request: NextRequest) {
   }
 
   const token = request.cookies.get(ADMIN_SESSION_COOKIE)?.value
-  const username = await verifyAdminSessionToken(secret, token)
+  const session = await readAdminSession(secret, token)
 
-  if (!username) {
+  if (!session.ok) {
     const url = request.nextUrl.clone()
     url.pathname = '/admin/login'
     url.searchParams.set('from', pathname)
-    return NextResponse.redirect(url)
+    const redirect = NextResponse.redirect(url)
+    redirect.cookies.set(ADMIN_SESSION_COOKIE, '', { ...adminSessionCookieOptions(), maxAge: 0 })
+    return redirect
   }
 
-  return NextResponse.next()
+  const response = NextResponse.next()
+  if (session.renewed) response.cookies.set(ADMIN_SESSION_COOKIE, session.token, adminSessionCookieOptions())
+  return response
 }
 
 export const config = {

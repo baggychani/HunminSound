@@ -1,3 +1,4 @@
 {
-  "ignoreCommand": "git log -1 --pretty=%s | grep -q '^\\[cms-save\\]'"
+  "ignoreCommand": "git log -1 --pretty=%s | grep -q '^\\[cms-save\\]'",
+  "crons": [{ "path": "/api/cron/sync-code", "schedule": "0 0 * * *" }]
 }
